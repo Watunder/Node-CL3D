@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "@kmamal/gl": "*",
+    "@kmamal/sdl": "*",
+    "canvas": "*",
+    "rollup": "*"
+  }
+}
