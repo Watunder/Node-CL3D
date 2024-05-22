@@ -3,9 +3,9 @@
 
 import * as CL3D from "./main.js";
 
-//var EVT_STANDARD = 0;
-//var EVT_2TCOORDS = 1;
-//var EVT_TANGENTS = 2;
+//const EVT_STANDARD = 0;
+//const EVT_2TCOORDS = 1;
+//const EVT_TANGENTS = 2;
 
 /**
  * A buffer containing a set of geometry with one material, usually part of a {@link Mesh}. 
@@ -94,7 +94,7 @@ export class MeshBuffer {
 	 * @private
 	 */
 	freeNativeArray() {
-		var obj = this.RendererNativeArray;
+		let obj = this.RendererNativeArray;
 		if (obj && obj.gl) {
 			// firefox doesn't garbage collect these arrays (Obviously a bug). So we need to collect them here ourselves.
 			if (obj.positionBuffer)
@@ -136,12 +136,12 @@ export class MeshBuffer {
 			this.Box.reset(0, 0, 0);
 
 		else {
-			var vtx = this.Vertices[0];
+			let vtx = this.Vertices[0];
 
 			this.Box.MinEdge = vtx.Pos.clone();
 			this.Box.MaxEdge = vtx.Pos.clone();
 
-			for (var i = 1; i < this.Vertices.length; ++i) {
+			for (let i = 1; i < this.Vertices.length; ++i) {
 				vtx = this.Vertices[i];
 				this.Box.addInternalPointByVector(vtx.Pos);
 			}
@@ -152,16 +152,16 @@ export class MeshBuffer {
 	 * @public
 	 */
 	createClone() {
-		var ret = new CL3D.MeshBuffer();
+		let ret = new CL3D.MeshBuffer();
 		ret.Box = this.Box.clone();
 		ret.Mat = this.Mat.clone();
 
 		if (this.Vertices) {
-			for (var i = 0; i < this.Vertices.length; ++i) {
+			for (let i = 0; i < this.Vertices.length; ++i) {
 				ret.Vertices.push(this.Vertices[i]);
 				/*
-				var v = new CL3D.Vertex3D();
-				var vold = this.Vertices[i];
+				let v = new CL3D.Vertex3D();
+				let vold = this.Vertices[i];
 				v.Pos = vold.Pos.clone();
 				v.Normal = vold.Normal.clone();
 				v.Color = vold.Color;
@@ -172,17 +172,17 @@ export class MeshBuffer {
 		}
 
 		if (this.Indices) {
-			for (var i = 0; i < this.Indices.length; ++i)
+			for (let i = 0; i < this.Indices.length; ++i)
 				ret.Indices.push(this.Indices[i]);
 		}
 
 		if (this.Tangents) {
-			for (var i = 0; i < this.Tangents.length; ++i)
+			for (let i = 0; i < this.Tangents.length; ++i)
 				ret.Tangents.push(this.Tangents[i].clone());
 		}
 
 		if (this.Binormals) {
-			for (var i = 0; i < this.Binormals.length; ++i)
+			for (let i = 0; i < this.Binormals.length; ++i)
 				ret.Binormals.push(this.Binormals[i].clone());
 		}
 

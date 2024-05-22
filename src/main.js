@@ -1,4 +1,4 @@
-export var gCCDebugInfoEnabled = true;
+export const gCCDebugInfoEnabled = true;
 
 export * from "./core.js";
 export { CLTimer } from "./flacetimer.js";

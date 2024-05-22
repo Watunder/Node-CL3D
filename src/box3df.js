@@ -33,7 +33,7 @@ export class Box3d {
 	 * @returns {CL3D.Box3d} clone
 	 */
 	clone() {
-		var c = new CL3D.Box3d();
+		let c = new CL3D.Box3d();
 		c.MinEdge = this.MinEdge.clone();
 		c.MaxEdge = this.MaxEdge.clone();
 		return c;
@@ -44,7 +44,7 @@ export class Box3d {
 	 * @returns {CL3D.Vect3d} center
 	 */
 	getCenter() {
-		var ret = this.MinEdge.add(this.MaxEdge);
+		let ret = this.MinEdge.add(this.MaxEdge);
 		ret.multiplyThisWithScal(0.5);
 		return ret;
 	}
@@ -62,10 +62,10 @@ export class Box3d {
 	 * @returns {Array} edges
 	 */
 	getEdges() {
-		var middle = this.getCenter();
-		var diag = middle.substract(this.MaxEdge);
+		let middle = this.getCenter();
+		let diag = middle.substract(this.MaxEdge);
 
-		var edges = new Array();
+		let edges = new Array();
 		edges.push(new CL3D.Vect3d(middle.X + diag.X, middle.Y + diag.Y, middle.Z + diag.Z));
 		edges.push(new CL3D.Vect3d(middle.X + diag.X, middle.Y - diag.Y, middle.Z + diag.Z));
 		edges.push(new CL3D.Vect3d(middle.X + diag.X, middle.Y + diag.Y, middle.Z - diag.Z));
@@ -84,12 +84,12 @@ export class Box3d {
 	 * @public
 	 */
 	intersectsWithLine(lineStart, lineEnd) {
-		var vect = lineEnd.substract(lineStart);
-		var len = vect.getLength();
+		let vect = lineEnd.substract(lineStart);
+		let len = vect.getLength();
 
 		vect.normalize();
 
-		var middle = lineStart.add(lineEnd).multiplyWithScal(0.5);
+		let middle = lineStart.add(lineEnd).multiplyWithScal(0.5);
 
 		return this.intersectsWithLineImpl(middle, vect, len * 0.5);
 	}
@@ -97,15 +97,15 @@ export class Box3d {
 	 * @private
 	 */
 	intersectsWithLineImpl(linemiddle, linevect, halflength) {
-		var e = this.getExtent().multiplyWithScal(0.5);
-		var t = this.getCenter().substract(linemiddle);
+		let e = this.getExtent().multiplyWithScal(0.5);
+		let t = this.getCenter().substract(linemiddle);
 
 		if ((Math.abs(t.X) > e.X + halflength * Math.abs(linevect.X)) ||
 			(Math.abs(t.Y) > e.Y + halflength * Math.abs(linevect.Y)) ||
 			(Math.abs(t.Z) > e.Z + halflength * Math.abs(linevect.Z)))
 			return false;
 
-		var r = e.Y * Math.abs(linevect.Z) + e.Z * Math.abs(linevect.Y);
+		let r = e.Y * Math.abs(linevect.Z) + e.Z * Math.abs(linevect.Y);
 		if (Math.abs(t.Y * linevect.Z - t.Z * linevect.Y) > r)
 			return false;
 

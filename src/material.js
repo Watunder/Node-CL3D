@@ -203,7 +203,7 @@ export class Material {
 		this.BackfaceCulling = mat.BackfaceCulling;
 	}
 	clone() {
-		var mat = new CL3D.Material();
+		let mat = new CL3D.Material();
 
 		mat.Type = this.Type;
 		mat.ZReadEnabled = this.ZReadEnabled;

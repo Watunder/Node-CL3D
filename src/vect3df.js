@@ -120,7 +120,7 @@ export class Vect3d {
 	 * @public
 	 */
 	normalize() {
-		var l = this.X * this.X + this.Y * this.Y + this.Z * this.Z;
+		let l = this.X * this.X + this.Y * this.Y + this.Z * this.Z;
 		if (l > -0.0000001 && l < 0.0000001)
 			return;
 
@@ -136,7 +136,7 @@ export class Vect3d {
 	 * @public
 	 */
 	getNormalized() {
-		var l = this.X * this.X + this.Y * this.Y + this.Z * this.Z;
+		let l = this.X * this.X + this.Y * this.Y + this.Z * this.Z;
 		if (l > -0.0000001 && l < 0.0000001)
 			return new CL3D.Vect3d(0, 0, 0);
 
@@ -148,7 +148,7 @@ export class Vect3d {
 	 * @public
 	 */
 	setLength(n) {
-		var l = this.X * this.X + this.Y * this.Y + this.Z * this.Z;
+		let l = this.X * this.X + this.Y * this.Y + this.Z * this.Z;
 		if (l > -0.0000001 && l < 0.0000001)
 			return;
 
@@ -214,9 +214,9 @@ export class Vect3d {
 	 * @param {CL3D.Vect3d} v another point
 	 */
 	getDistanceTo(v) {
-		var x = v.X - this.X;
-		var y = v.Y - this.Y;
-		var z = v.Z - this.Z;
+		let x = v.X - this.X;
+		let y = v.Y - this.Y;
+		let z = v.Z - this.Z;
 
 		return Math.sqrt(x * x + y * y + z * z);
 	}
@@ -226,9 +226,9 @@ export class Vect3d {
 	 * @param {CL3D.Vect3d} v another point
 	 */
 	getDistanceFromSQ(v) {
-		var x = v.X - this.X;
-		var y = v.Y - this.Y;
-		var z = v.Z - this.Z;
+		let x = v.X - this.X;
+		let y = v.Y - this.Y;
+		let z = v.Z - this.Z;
 
 		return x * x + y * y + z * z;
 	}
@@ -320,7 +320,7 @@ export class Vect3d {
 	 * @public
 	 */
 	getHorizontalAngle() {
-		var angle = new CL3D.Vect3d();
+		let angle = new CL3D.Vect3d();
 
 		angle.Y = CL3D.radToDeg(Math.atan2(this.X, this.Z));
 
@@ -329,7 +329,7 @@ export class Vect3d {
 		if (angle.Y >= 360.0)
 			angle.Y -= 360.0;
 
-		var z1 = Math.sqrt(this.X * this.X + this.Z * this.Z);
+		let z1 = Math.sqrt(this.X * this.X + this.Z * this.Z);
 
 		angle.X = CL3D.radToDeg(Math.atan2(z1, this.Y)) - 90.0;
 
@@ -346,11 +346,11 @@ export class Vect3d {
 	 */
 	rotateXYBy(degrees) {
 		degrees *= CL3D.DEGTORAD;
-		var cs = Math.cos(degrees);
-		var sn = Math.sin(degrees);
+		let cs = Math.cos(degrees);
+		let sn = Math.sin(degrees);
 
-		var oldX = this.X;
-		var oldY = this.Y;
+		let oldX = this.X;
+		let oldY = this.Y;
 
 		this.X = oldX * cs - oldY * sn;
 		this.Y = oldX * sn + oldY * cs;
@@ -361,11 +361,11 @@ export class Vect3d {
 	 */
 	rotateYZBy(degrees) {
 		degrees *= CL3D.DEGTORAD;
-		var cs = Math.cos(degrees);
-		var sn = Math.sin(degrees);
+		let cs = Math.cos(degrees);
+		let sn = Math.sin(degrees);
 
-		var oldY = this.Y;
-		var oldZ = this.Z;
+		let oldY = this.Y;
+		let oldZ = this.Z;
 
 		this.Y = oldY * cs - oldZ * sn;
 		this.Z = oldY * sn + oldZ * cs;
@@ -376,11 +376,11 @@ export class Vect3d {
 	 */
 	rotateXZBy(degrees) {
 		degrees *= CL3D.DEGTORAD;
-		var cs = Math.cos(degrees);
-		var sn = Math.sin(degrees);
+		let cs = Math.cos(degrees);
+		let sn = Math.sin(degrees);
 
-		var oldX = this.X;
-		var oldZ = this.Z;
+		let oldX = this.X;
+		let oldZ = this.Z;
 
 		this.X = oldX * cs - oldZ * sn;
 		this.Z = oldX * sn + oldZ * cs;
@@ -392,7 +392,7 @@ export class Vect3d {
 	 * @public
 	 */
 	getInterpolated(other, d) {
-		var inv = 1.0 - d;
+		let inv = 1.0 - d;
 		return new CL3D.Vect3d(other.X * inv + this.X * d, other.Y * inv + this.Y * d, other.Z * inv + this.Z * d);
 	}
 	/**

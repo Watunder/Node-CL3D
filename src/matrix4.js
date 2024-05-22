@@ -125,7 +125,7 @@ export class Matrix4 {
 	 * @public
 	 */
 	rotateVect(v) {
-		var tmp = v.clone();
+		let tmp = v.clone();
 		v.X = tmp.X * this.m00 + tmp.Y * this.m04 + tmp.Z * this.m08;
 		v.Y = tmp.X * this.m01 + tmp.Y * this.m05 + tmp.Z * this.m09;
 		v.Z = tmp.X * this.m02 + tmp.Y * this.m06 + tmp.Z * this.m10;
@@ -144,7 +144,7 @@ export class Matrix4 {
 	 * @public
 	 */
 	inverseRotateVect(v) {
-		var tmp = v.clone();
+		let tmp = v.clone();
 		v.X = tmp.X * this.m00 + tmp.Y * this.m01 + tmp.Z * this.m02;
 		v.Y = tmp.X * this.m04 + tmp.Y * this.m05 + tmp.Z * this.m06;
 		v.Z = tmp.X * this.m08 + tmp.Y * this.m09 + tmp.Z * this.m10;
@@ -172,9 +172,9 @@ export class Matrix4 {
 	 * @public
 	 */
 	transformVect(v) {
-		var tmpx = v.X * this.m00 + v.Y * this.m04 + v.Z * this.m08 + this.m12;
-		var tmpy = v.X * this.m01 + v.Y * this.m05 + v.Z * this.m09 + this.m13;
-		var tmpz = v.X * this.m02 + v.Y * this.m06 + v.Z * this.m10 + this.m14;
+		let tmpx = v.X * this.m00 + v.Y * this.m04 + v.Z * this.m08 + this.m12;
+		let tmpy = v.X * this.m01 + v.Y * this.m05 + v.Z * this.m09 + this.m13;
+		let tmpz = v.X * this.m02 + v.Y * this.m06 + v.Z * this.m10 + this.m14;
 
 		v.X = tmpx;
 		v.Y = tmpy;
@@ -214,10 +214,10 @@ export class Matrix4 {
 	transformPlane(plane) {
 		// this works with all matrices except those with a scale:
 
-		/*var member = plane.getMemberPoint();
+		/*let member = plane.getMemberPoint();
 		transformVect(member);
 	    
-		var origin = new CL3D.Vect3d();
+		let origin = new CL3D.Vect3d();
 		transformVect(plane.Normal);
 		transformVect(origin);
     
@@ -226,23 +226,23 @@ export class Matrix4 {
 	    
 		plane.Normal.normalize();*/
 		// this works as well, bit without scale:
-		/*var member = plane.getMemberPoint();
+		/*let member = plane.getMemberPoint();
 		transformVect(member);
 	    
-		var normal = plane.Normal.clone();
+		let normal = plane.Normal.clone();
 		rotateVect(normal);
 	    
 		plane.setPlane(member, normal);*/
-		var member = plane.getMemberPoint();
+		let member = plane.getMemberPoint();
 
 		// Fully transform the plane member point, i.e. rotate, translate and scale it.
 		this.transformVect(member);
 
-		var normal = plane.Normal.clone();
+		let normal = plane.Normal.clone();
 		normal.normalize();
 
 		// The normal needs to be rotated and inverse scaled, but not translated.
-		var scale = this.getScale();
+		let scale = this.getScale();
 
 		if (!CL3D.equals(scale.X, 0.0) && !CL3D.equals(scale.Y, 0.0) && !CL3D.equals(scale.Z, 0.0)
 			&& (!CL3D.equals(scale.X, 1.0) || !CL3D.equals(scale.Y, 1.0) || !CL3D.equals(scale.Z, 1.0))) {
@@ -262,7 +262,7 @@ export class Matrix4 {
 	 * @public
 	 */
 	multiply(m2) {
-		var mat = new CL3D.Matrix4(false);
+		let mat = new CL3D.Matrix4(false);
 
 		if (this.bIsIdentity) {
 			m2.copyTo(mat);
@@ -301,7 +301,7 @@ export class Matrix4 {
 	 * @public
 	 */
 	multiplyWith1x4Matrix(v) {
-		var tmp = v.clone();
+		let tmp = v.clone();
 		tmp.W = v['W'];
 
 		v.X = tmp.X * this.m00 + tmp.Y * this.m04 + tmp.Z * this.m08 + tmp.W * this.m12;
@@ -314,9 +314,9 @@ export class Matrix4 {
 	 * @public
 	 */
 	multiplyWith1x4Matrix2(v) {
-		var tmpX = v.X;
-		var tmpY = v.Y;
-		var tmpZ = v.Z;
+		let tmpX = v.X;
+		let tmpY = v.Y;
+		let tmpZ = v.Z;
 
 		v.X = tmpX * this.m00 + tmpY * this.m04 + tmpZ * this.m08 + this.m12;
 		v.Y = tmpX * this.m01 + tmpY * this.m05 + tmpZ * this.m09 + this.m13;
@@ -334,7 +334,7 @@ export class Matrix4 {
 			return true;
 		}
 
-		var d = (this.m00 * this.m05 - this.m01 * this.m04) * (this.m10 * this.m15 - this.m11 * this.m14) -
+		let d = (this.m00 * this.m05 - this.m01 * this.m04) * (this.m10 * this.m15 - this.m11 * this.m14) -
 			(this.m00 * this.m06 - this.m02 * this.m04) * (this.m09 * this.m15 - this.m11 * this.m13) +
 			(this.m00 * this.m07 - this.m03 * this.m04) * (this.m09 * this.m14 - this.m10 * this.m13) +
 			(this.m01 * this.m06 - this.m02 * this.m05) * (this.m08 * this.m15 - this.m11 * this.m12) -
@@ -372,7 +372,7 @@ export class Matrix4 {
 	 * @public
 	 */
 	makeInverse() {
-		var mat = new CL3D.Matrix4(false);
+		let mat = new CL3D.Matrix4(false);
 		if (this.getInverse(mat)) {
 			mat.copyTo(this);
 			return true;
@@ -385,7 +385,7 @@ export class Matrix4 {
 	 * @public
 	 */
 	getTransposed() {
-		var mat = new CL3D.Matrix4(false);
+		let mat = new CL3D.Matrix4(false);
 		mat.m00 = this.m00;
 		mat.m01 = this.m04;
 		mat.m02 = this.m08;
@@ -456,7 +456,7 @@ export class Matrix4 {
 	 * @public
 	 */
 	clone() {
-		var m = new CL3D.Matrix4(false);
+		let m = new CL3D.Matrix4(false);
 		this.copyTo(m);
 		return m;
 	}
@@ -477,8 +477,8 @@ export class Matrix4 {
 	 */
 	buildProjectionMatrixPerspectiveFovLH(fieldOfViewRadians,
 		aspectRatio, zNear, zFar) {
-		var h = 1.0 / Math.tan(fieldOfViewRadians / 2.0);
-		var w = (h / aspectRatio);
+		let h = 1.0 / Math.tan(fieldOfViewRadians / 2.0);
+		let w = (h / aspectRatio);
 
 		this.m00 = w;
 		this.m01 = 0;
@@ -563,13 +563,13 @@ export class Matrix4 {
 	 * @public
 	 */
 	buildCameraLookAtMatrixLH(position, target, upVector) {
-		var zaxis = target.substract(position);
+		let zaxis = target.substract(position);
 		zaxis.normalize();
 
-		var xaxis = upVector.crossProduct(zaxis);
+		let xaxis = upVector.crossProduct(zaxis);
 		xaxis.normalize();
 
-		var yaxis = zaxis.crossProduct(xaxis);
+		let yaxis = zaxis.crossProduct(xaxis);
 
 		this.m00 = xaxis.X;
 		this.m01 = yaxis.X;
@@ -607,19 +607,19 @@ export class Matrix4 {
 	 * @param {CL3D.Vect3d} rotation rotation vector
 	 */
 	setRotationRadians(rotation) {
-		var cr = Math.cos(rotation.X);
-		var sr = Math.sin(rotation.X);
-		var cp = Math.cos(rotation.Y);
-		var sp = Math.sin(rotation.Y);
-		var cy = Math.cos(rotation.Z);
-		var sy = Math.sin(rotation.Z);
+		let cr = Math.cos(rotation.X);
+		let sr = Math.sin(rotation.X);
+		let cp = Math.cos(rotation.Y);
+		let sp = Math.sin(rotation.Y);
+		let cy = Math.cos(rotation.Z);
+		let sy = Math.sin(rotation.Z);
 
 		this.m00 = (cp * cy);
 		this.m01 = (cp * sy);
 		this.m02 = (-sp);
 
-		var srsp = sr * sp;
-		var crsp = cr * sp;
+		let srsp = sr * sp;
+		let crsp = cr * sp;
 
 		this.m04 = (srsp * cy - cr * sy);
 		this.m05 = (srsp * sy + cr * cy);
@@ -638,17 +638,17 @@ export class Matrix4 {
 	 * @returns {CL3D.Vect3d} rotation vector
 	 */
 	getRotationDegrees() {
-		var Y = -Math.asin(this.m02);
-		var C = Math.cos(Y);
+		let Y = -Math.asin(this.m02);
+		let C = Math.cos(Y);
 		Y *= CL3D.RADTODEG;
 
-		var rotx;
-		var roty;
-		var X;
-		var Z;
+		let rotx;
+		let roty;
+		let X;
+		let Z;
 
 		if (Math.abs(C) > 0.00000001) {
-			var invC = (1.0 / C);
+			let invC = (1.0 / C);
 			rotx = this.m10 * invC;
 			roty = this.m06 * invC;
 			X = Math.atan2(roty, rotx) * CL3D.RADTODEG;
@@ -713,13 +713,13 @@ export class Matrix4 {
 	 * @param {CL3D.Box3d} box
 	 */
 	transformBoxEx(box) {
-		var edges = box.getEdges();
+		let edges = box.getEdges();
 
-		var i;
+		let i;
 		for (i = 0; i < 8; ++i)
 			this.transformVect(edges[i]);
 
-		var v = edges[0];
+		let v = edges[0];
 		box.MinEdge = v.clone();
 		box.MaxEdge = v.clone();
 
@@ -731,19 +731,19 @@ export class Matrix4 {
 	 * @param {CL3D.Box3d} box
 	 */
 	transformBoxEx2(box) {
-		var Amin = [box.MinEdge.X, box.MinEdge.Y, box.MinEdge.Z];
-		var Amax = [box.MaxEdge.X, box.MaxEdge.Y, box.MaxEdge.Z];
+		let Amin = [box.MinEdge.X, box.MinEdge.Y, box.MinEdge.Z];
+		let Amax = [box.MaxEdge.X, box.MaxEdge.Y, box.MaxEdge.Z];
 
-		var Bmin = [this.m12, this.m13, this.m14];
-		var Bmax = [this.m12, this.m13, this.m14];
+		let Bmin = [this.m12, this.m13, this.m14];
+		let Bmax = [this.m12, this.m13, this.m14];
 
-		var asarr = this.asArray();
+		let asarr = this.asArray();
 
-		for (var i = 0; i < 3; ++i) {
-			for (var j = 0; j < 3; ++j) {
-				var mv = asarr[j * 4 + i];
-				var a = mv * Amin[j];
-				var b = mv * Amax[j];
+		for (let i = 0; i < 3; ++i) {
+			for (let j = 0; j < 3; ++j) {
+				let mv = asarr[j * 4 + i];
+				let a = mv * Amin[j];
+				let b = mv * Amax[j];
 
 				if (a < b) {
 					Bmin[i] += a;

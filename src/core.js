@@ -10,54 +10,54 @@
  * @private
  * The value PI
  */
-export var PI = 3.14159265359;
+export const PI = 3.14159265359;
 
 /** 
  * @const 
  * @private
  * reciprocal PI value
  */
-export var RECIPROCAL_PI = 1.0 / 3.14159265359;
+export const RECIPROCAL_PI = 1.0 / 3.14159265359;
 
 /** 
  * @const 
  * @private
  * Half of PI
  */
-export var HALF_PI = 3.14159265359 / 2.0;
+export const HALF_PI = 3.14159265359 / 2.0;
 
 /** 
  * @const 
  * @private
  * Hih precision PI value
  */
-export var PI64 = 3.1415926535897932384626433832795028841971693993751;
+export const PI64 = 3.1415926535897932384626433832795028841971693993751;
 
 /** 
  * @const 
  * @private
  * Value to convert degrees to grad. Use {@link degToRad} to do this.
  */
-export var DEGTORAD = 3.14159265359 / 180.0;
+export const DEGTORAD = 3.14159265359 / 180.0;
 
 /** 
  * @const 
  * @private
  */
-export var RADTODEG = 180.0 / 3.14159265359;
+export const RADTODEG = 180.0 / 3.14159265359;
 
 /** 
  * Low tolerance value deciding which floating point values are considered equal.
  * @const 
  */
-export var TOLERANCE = 0.00000001;
+export const TOLERANCE = 0.00000001;
 
 
 
 /** 
  * Converts an angle from radians to degrees. 
  */
-export var radToDeg = function (radians) {
+export const radToDeg = function (radians) {
 	return radians * RADTODEG;
 };
 
@@ -65,28 +65,28 @@ export var radToDeg = function (radians) {
 /** 
  * Converts an angle from degrees to radians.
  */
-export var degToRad = function (deg) {
+export const degToRad = function (deg) {
 	return deg * DEGTORAD;
 }
 
 /** 
  * Returns if a floating point value is considered similar to 0, depending on {@link TOLERANCE}.
  */
-export var iszero = function (a) {
+export const iszero = function (a) {
 	return (a < 0.00000001) && (a > -0.00000001);
 }
 
 /** 
  * Returns if a floating point value is considered similar to 0, depending on {@link TOLERANCE}.
  */
-export var isone = function (a) {
+export const isone = function (a) {
 	return (a + 0.00000001 >= 1) && (a - 0.00000001 <= 1);
 }
 
 /** 
  * Returns if two floating point values are considered similar, depending on {@link TOLERANCE}.
  */
-export var equals = function (a, b) {
+export const equals = function (a, b) {
 	return (a + 0.00000001 >= b) && (a - 0.00000001 <= b);
 }
 
@@ -94,7 +94,7 @@ export var equals = function (a, b) {
 /** 
  * Returns a new value which is clamped between low and high. 
  */
-export var clamp = function (n, low, high) {
+export const clamp = function (n, low, high) {
 	if (n < low)
 		return low;
 
@@ -107,14 +107,14 @@ export var clamp = function (n, low, high) {
 /** 
  * Returns the fraction part of a floating point value. Given for example 6.788, this would return 0.788.
  */
-export var fract = function (n) {
+export const fract = function (n) {
 	return n - Math.floor(n);
 }
 
 /** 
  * Returns the maximum value of 3 input values.
  */
-export var max3 = function (a, b, c) {
+export const max3 = function (a, b, c) {
 	if (a > b) {
 		if (a > c)
 			return a;
@@ -131,7 +131,7 @@ export var max3 = function (a, b, c) {
 /** 
  * Returns the minimum of 3 input values. 
  */
-export var min3 = function (a, b, c) {
+export const min3 = function (a, b, c) {
 	if (a < b) {
 		if (a < c)
 			return a;
@@ -150,7 +150,7 @@ export var min3 = function (a, b, c) {
  * @param {Number} clr color
  * @returns {Number} color component value, a value between 0 and 255  
  */
-export var getAlpha = function (clr) {
+export const getAlpha = function (clr) {
 	return ((clr & 0xFF000000) >>> 24);
 }
 
@@ -159,7 +159,7 @@ export var getAlpha = function (clr) {
  * @param clr {Number} color
  * @returns {Number} color component value, a value between 0 and 255  
  */
-export var getRed = function (clr) {
+export const getRed = function (clr) {
 	return ((clr & 0x00FF0000) >> 16);
 }
 
@@ -168,7 +168,7 @@ export var getRed = function (clr) {
  * @param clr {Number} color
  * @returns {Number} color component value, a value between 0 and 255   
  */
-export var getGreen = function (clr) {
+export const getGreen = function (clr) {
 	return ((clr & 0x0000FF00) >> 8);
 }
 
@@ -177,7 +177,7 @@ export var getGreen = function (clr) {
  * @param clr {Number} 32 bit color
  * @returns {Number} color component value, a value between 0 and 255  
  */
-export var getBlue = function (clr) {
+export const getBlue = function (clr) {
 	return ((clr & 0x000000FF));
 }
 
@@ -189,7 +189,7 @@ export var getBlue = function (clr) {
  * @param b {Number} Blue component of the color (value between 0 and 255)
  * @returns {Number} 32 bit color 
  */
-export var createColor = function (a, r, g, b) {
+export const createColor = function (a, r, g, b) {
 	a = a & 0xff;
 	r = r & 0xff;
 	g = g & 0xff;
@@ -200,9 +200,9 @@ export var createColor = function (a, r, g, b) {
 
 
 /**
- * Creates a export var ColorF from 32bit value representing a color
+ * Creates a export const ColorF from 32bit value representing a color
  */
-export var createColorF = function(c) {
+export const createColorF = function(c) {
 	var r = new ColorF();
 	r.A = getAlpha(c) / 255.0;
 	r.R = getRed(c) / 255.0;
@@ -211,7 +211,7 @@ export var createColorF = function(c) {
 	return r;
 }
 
-export var convertIntColor = function (c) {
+export const convertIntColor = function (c) {
 	var a = (c >> 24) & 255.0;
 	var r = (c >> 16) & 255.0;
 	var g = (c >> 8) & 255.0;
@@ -222,7 +222,7 @@ export var convertIntColor = function (c) {
 /**
  * @private
  */
-export var getInterpolatedColor = function (clr1, clr2, f) {
+export const getInterpolatedColor = function (clr1, clr2, f) {
 	var invf = 1.0 - f;
 
 	return createColor(
@@ -235,7 +235,7 @@ export var getInterpolatedColor = function (clr1, clr2, f) {
 /**
  * @private
  */
-export var sgn = function (a) {
+export const sgn = function (a) {
 	if (a > 0.0)
 		return 1.0;
 
@@ -311,10 +311,10 @@ export class ColorF {
  * Global flag toggling if shadow maps should be rendered using a shadow map cascade or a single map.
  * This needs to be set before initialiting the engine.
  */
-export var UseShadowCascade = true;
+export const UseShadowCascade = true;
 
 /** 
  * @private
  * Global flag disabling post effects if hardware or browser is not capable of doing them.
  */
-export var Global_PostEffectsDisabled = false;
+export const Global_PostEffectsDisabled = false;

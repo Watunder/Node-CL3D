@@ -37,10 +37,10 @@ export class Mesh {
 	 * @returns {Number} number of polygons in this mesh
 	 */
 	GetPolyCount() {
-		var cnt = 0;
+		let cnt = 0;
 
 		if (this.MeshBuffers) {
-			for (var i = 0; i < this.MeshBuffers.length; ++i)
+			for (let i = 0; i < this.MeshBuffers.length; ++i)
 				if (this.MeshBuffers[i].Indices)
 					cnt += this.MeshBuffers[i].Indices.length;
 		}
@@ -52,11 +52,11 @@ export class Mesh {
 	 * @public
 	 */
 	createClone() {
-		var ret = new CL3D.Mesh();
+		let ret = new CL3D.Mesh();
 		ret.Box = this.Box.clone();
 
 		if (this.MeshBuffers) {
-			for (var i = 0; i < this.MeshBuffers.length; ++i)
+			for (let i = 0; i < this.MeshBuffers.length; ++i)
 				if (this.MeshBuffers[i])
 					ret.MeshBuffers.push(this.MeshBuffers[i].createClone());
 		}

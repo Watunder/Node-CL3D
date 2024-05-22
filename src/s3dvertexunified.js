@@ -57,8 +57,8 @@ export class Vertex3D {
 	}
 }
 
-export var cloneVertex3D = function (c) {
-	var r = new CL3D.Vertex3D();
+export const cloneVertex3D = function (c) {
+	let r = new CL3D.Vertex3D();
 	r.Pos = c.Pos.clone();
 	r.Color = c.Color;
 	r.Normal = c.Normal.clone();
@@ -70,8 +70,8 @@ export var cloneVertex3D = function (c) {
 /**
  * @private
  */
-export var createVertex = function (x, y, z, nx, ny, nz, clr, s, t) {
-	var vtx = new CL3D.Vertex3D(true);
+export const createVertex = function (x, y, z, nx, ny, nz, clr, s, t) {
+	let vtx = new CL3D.Vertex3D(true);
 	vtx.Pos.X = x;
 	vtx.Pos.Y = y;
 	vtx.Pos.Z = z;

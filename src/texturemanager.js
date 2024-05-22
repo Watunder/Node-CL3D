@@ -30,7 +30,7 @@ export class TextureManager {
 		if (url == null || url == "")
 			return null;
 
-		var t = this.getTextureFromName(url);
+		let t = this.getTextureFromName(url);
 
 		if (t != null)
 			return t;
@@ -41,7 +41,7 @@ export class TextureManager {
 			this.addTexture(t);
 
 			// start loading texture
-			var me = this;
+			let me = this;
 			t.Image = new Canvas.Image();
 			t.Image.onload = function () { me.onTextureLoaded(t); };
 			t.Image.src = t.Name;
@@ -64,7 +64,7 @@ export class TextureManager {
 	 */
 	onTextureLoaded(t) {
 		//console.log("http loaded texture: " + t.Name);
-		var r = this.TheRenderer;
+		let r = this.TheRenderer;
 		if (r == null)
 			return;
 		r.finalizeLoadedImageTexture(t);
@@ -75,10 +75,10 @@ export class TextureManager {
 	 * @public
 	 */
 	getCountOfTexturesToLoad() {
-		var ret = 0;
+		let ret = 0;
 
-		for (var i = 0; i < this.Textures.length; ++i) {
-			var t = this.Textures[i];
+		for (let i = 0; i < this.Textures.length; ++i) {
+			let t = this.Textures[i];
 			if (t.Loaded == false)
 				++ret;
 		}
@@ -89,8 +89,8 @@ export class TextureManager {
 	 * @private
 	 */
 	getTextureFromName(name) {
-		for (var i = 0; i < this.Textures.length; ++i) {
-			var t = this.Textures[i];
+		for (let i = 0; i < this.Textures.length; ++i) {
+			let t = this.Textures[i];
 			if (t.Name == name)
 				return t;
 		}
@@ -114,8 +114,8 @@ export class TextureManager {
 	 * @private
 	 */
 	removeTexture(tex) {
-		for (var i = 0; i < this.Textures.length; ++i) {
-			var t = this.Textures[i];
+		for (let i = 0; i < this.Textures.length; ++i) {
+			let t = this.Textures[i];
 			if (t == tex) {
 				this.Textures.splice(i, 1);
 				return true;
