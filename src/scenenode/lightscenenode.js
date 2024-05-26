@@ -1,6 +1,7 @@
 //+ Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
+import * as CL3D from "../main.js";
 
 /**
  * A class holding the data of a point light. This is used by the {@link CL3D.LightSceneNode} to send data to the renderer.
@@ -8,74 +9,74 @@
  * @constructor
  * @class A class holding the data of a point light.
  */
-CL3D.Light = function()
-{
-	this.Position = new CL3D.Vect3d(0,0,0); 
-	this.Color = new CL3D.ColorF();
-		
-	this.Radius = 100;
-	this.Attenuation = 1 / 100.0;
-	this.Direction = null;
-	this.IsDirectional = false;	
-}
+export class Light {
+	/**
+	 * 3D Position of the light
+	 * @public
+	 * @type Vect3d
+	 */
+	Position = null;
 
-/**
- * Creates an exact copy of this light data
- * @public
- */
-CL3D.Light.prototype.clone = function()
-{
-	var r = new CL3D.Light();
-	r.Position = this.Position.clone();
-	r.Color = this.Color.clone();
-	r.Radius = this.Radius;
-	r.Attenuation = this.Attenuation;
-	r.IsDirectional = this.IsDirectional;
-	r.Direction = this.Direction != null ? this.Direction.clone() : null;
-	return r;
-}
+	/**
+	 * Color of the light
+	 * @public
+	 * @type ColorF
+	 */
+	Color = null;
 
-/**
- * 3D Position of the light
- * @public
- * @type Vect3d
- */
-CL3D.Light.prototype.Position = null;
+	/**
+	 * Attenuation of the light. Default is 1 / 100.
+	 * @public
+	 * @type Number
+	 */
+	Attenuation = null;
 
-/**
- * Color of the light
- * @public
- * @type ColorF
- */
-CL3D.Light.prototype.Color = null;
+	/**
+	 * Radius of the light. Currently ignored.
+	 * @public
+	 * @type Number
+	 */
+	Radius = null;
 
-/**
- * Attenuation of the light. Default is 1 / 100.
- * @public
- * @type Number
- */
-CL3D.Light.prototype.Attenuation = null;
+	/**
+	 * Direction of the light. Only used if this is a directional light
+	 * @public
+	 * @type Vect3d
+	 */
+	Direction = null;
 
-/**
- * Radius of the light. Currently ignored.
- * @public
- * @type Number
- */
-CL3D.Light.prototype.Radius = null;
+	/**
+	 * Set this to true to make this a directional light
+	 * @public
+	 * @type Boolean
+	 */
+	IsDirectional = false;
 
-/**
- * Direction of the light. Only used if this is a directional light
- * @public
- * @type Vect3d
- */
-CL3D.Light.prototype.Direction = null;
+	constructor() {
+		this.Position = new CL3D.Vect3d(0, 0, 0);
+		this.Color = new CL3D.ColorF();
 
-/**
- * Set this to true to make this a directional light
- * @public
- * @type Boolean
- */
-CL3D.Light.prototype.IsDirectional = false;
+		this.Radius = 100;
+		this.Attenuation = 1 / 100.0;
+		this.Direction = null;
+		this.IsDirectional = false;
+	}
+
+	/**
+	 * Creates an exact copy of this light data
+	 * @public
+	 */
+	clone() {
+		var r = new CL3D.Light();
+		r.Position = this.Position.clone();
+		r.Color = this.Color.clone();
+		r.Radius = this.Radius;
+		r.Attenuation = this.Attenuation;
+		r.IsDirectional = this.IsDirectional;
+		r.Direction = this.Direction != null ? this.Direction.clone() : null;
+		return r;
+	}
+};
 
 /**
  * A class rendering a point light.
@@ -93,82 +94,77 @@ CL3D.Light.prototype.IsDirectional = false;
  * scene.getRootSceneNode().addChild(lightnode);
  *
  */
-CL3D.LightSceneNode = function(size)
-{
-	this.LightData = new CL3D.Light();	
-	this.Box = new CL3D.Box3d();
-	this.init();
-}
-CL3D.LightSceneNode.prototype = new CL3D.SceneNode();
+export class LightSceneNode extends CL3D.SceneNode {
+	/**
+	 * Radius, Position, Color and Attenuation of the light
+	 * @public
+	 * @type CL3D.Light
+	 */
+	LightData = null;
 
-/** 
- * Returns the type string of the scene node.
- * Returns 'light' for the light scene node.
- * @public
- * @returns {String} type name of the scene node.
- */
-CL3D.LightSceneNode.prototype.getType = function()
-{
-	return 'light';
-}
+	constructor(size) {
+		super();
 
-/**
- * Radius, Position, Color and Attenuation of the light
- * @public
- * @type CL3D.Light
- */
-CL3D.LightSceneNode.prototype.LightData = null;
+		this.LightData = new CL3D.Light();
+		this.Box = new CL3D.Box3d();
+		this.init();
+	}
 
-	
-/**
- * @private
- */
-CL3D.LightSceneNode.prototype.createClone = function(newparent, oldNodeId, newNodeId)
-{
-	var c = new CL3D.LightSceneNode();
-	this.cloneMembers(c, newparent, oldNodeId, newNodeId);
-		
-	c.LightData = this.LightData.clone();
-	c.Box = this.Box.clone();
-	
-	return c;
-}
+	/**
+	 * Returns the type string of the scene node.
+	 * Returns 'light' for the light scene node.
+	 * @public
+	 * @returns {String} type name of the scene node.
+	 */
+	getType() {
+		return 'light';
+	}
 
+	/**
+	 * @private
+	 */
+	createClone(newparent, oldNodeId, newNodeId) {
+		var c = new CL3D.LightSceneNode();
+		this.cloneMembers(c, newparent, oldNodeId, newNodeId);
 
-/**
- * @private
- */
-CL3D.LightSceneNode.prototype.OnRegisterSceneNode = function(mgr)
-{
-	if (this.Visible)
-		mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_LIGHTS);
-	
-	CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr); // register children 
-	
-	this.LightData.Position = this.getAbsolutePosition();
-}
+		c.LightData = this.LightData.clone();
+		c.Box = this.Box.clone();
 
-/**
- * Get the axis aligned, not transformed bounding box of this node.
- * This means that if this node is an animated 3d character, moving in a room, the bounding box will 
- * always be around the origin. To get the box in real world coordinates, just transform it with the matrix 
- * you receive with {@link getAbsoluteTransformation}() or simply use {@link getTransformedBoundingBox}(), which does the same.
- * @public
- * @returns {CL3D.Box3d} Bounding box of this scene node.
- */
-CL3D.LightSceneNode.prototype.getBoundingBox = function()
-{
-	return this.Box;
-}
+		return c;
+	}
 
+	/**
+	 * @private
+	 */
+	OnRegisterSceneNode(mgr) {
+		if (this.Visible)
+			mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_LIGHTS);
 
-/**
- * @private
- */
-CL3D.LightSceneNode.prototype.render = function(renderer)
-{
-	if (this.LightData.IsDirectional)
-		renderer.setDirectionalLight(this.LightData);
-	else
-		renderer.addDynamicLight(this.LightData);		
-}
+		CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr); // register children 
+
+		this.LightData.Position = this.getAbsolutePosition();
+	}
+
+	/**
+	 * Get the axis aligned, not transformed bounding box of this node.
+	 * This means that if this node is an animated 3d character, moving in a room, the bounding box will
+	 * always be around the origin. To get the box in real world coordinates, just transform it with the matrix
+	 * you receive with {@link getAbsoluteTransformation}() or simply use {@link getTransformedBoundingBox}(), which does the same.
+	 * @public
+	 * @returns {CL3D.Box3d} Bounding box of this scene node.
+	 */
+	getBoundingBox() {
+		return this.Box;
+	}
+
+	/**
+	 * @private
+	 */
+	render(renderer) {
+		if (this.LightData.IsDirectional)
+			renderer.setDirectionalLight(this.LightData);
+
+		else
+			renderer.addDynamicLight(this.LightData);
+	}
+};

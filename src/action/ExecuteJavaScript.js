@@ -4,6 +4,8 @@
 
 import * as CL3D from "../main.js";
 
+export let gCurrentJScriptNode = null;
+
 /**
  * @private
  * @constructor

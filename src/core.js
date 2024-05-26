@@ -317,4 +317,4 @@ export const UseShadowCascade = true;
  * @private
  * Global flag disabling post effects if hardware or browser is not capable of doing them.
  */
-export const Global_PostEffectsDisabled = false;
+export let Global_PostEffectsDisabled = false;

@@ -1,4 +1,5 @@
 export const gCCDebugInfoEnabled = true;
+export const DebugPostEffects = false;
 
 export * from "./core.js";
 export { CLTimer } from "./flacetimer.js";
@@ -35,10 +36,20 @@ export { Animator } from "./animator.js";
 export * from "./animator/main.js";
 
 export { SceneNode } from "./scenenode.js";
-//export * from "./scenenode/main.js";
+export * from "./scenenode/main.js";
+
+export { VideoStream } from "./videostream.js";
+export { BinaryStream } from "./binarystream.js";
 
 export * from "./utils/jsinflate.js";
 export { base64DecodeChars, base64decode } from "./utils/base64.js";
 
+export { gScriptingInterface, ScriptingInterface, AnimatorExtensionScript, ExtensionScriptProperty, ActionExtensionScript } from "./scriptinginterface.js";
+
+export { Scene } from "./flace/flacescene.js";
 export { Free3dScene } from "./flace/flacefree3dscene.js";
 export { CCDocument } from "./flace/flacedocument.js";
+export { CCFileLoader } from "./flace/ccfileloader.js";
+export { FlaceLoader } from "./flace/flaceloader.js";
+
+export { CopperLicht, startCopperLichtFromFile } from "./flace/flace.js";

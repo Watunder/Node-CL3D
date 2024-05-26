@@ -11,6 +11,8 @@ import * as CL3D from "../main.js";
  */
 export class ActionPlaySound extends CL3D.Action {
 	constructor() {
+		super();
+
 		this.Type = 'PlaySound';
 	}
 

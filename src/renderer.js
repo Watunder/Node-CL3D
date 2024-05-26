@@ -3,8 +3,8 @@
 // This file is part of the CopperLicht engine, (c) by N.Gebhardt
 
 import * as CL3D from "./main.js";
-import createContext from '@kmamal/gl'
-import Canvas from "canvas";
+//import createContext from '@kmamal/gl'
+//import Canvas from "canvas";
 
 const GLSL = String.raw;
 
@@ -2355,8 +2355,8 @@ export class Renderer {
 
 		let gl = this.gl;
 
-		//gl.flush();
-		gl.swap();
+		gl.flush();
+		//gl.swap();
 
 		//console.log("drawEnd");
 	}
@@ -2390,15 +2390,15 @@ export class Renderer {
 	 * @private
 	 */
 	ensuresizeok() {
-		// if (this.canvas == null || this.gl == null)
-		// 	return;
+		if (this.canvas == null || this.gl == null)
+			return;
 
-		// if (this.width == this.canvas.width &&
-		// 	this.height == this.canvas.height)
-		// 	return;
+		if (this.width == this.canvas.width &&
+			this.height == this.canvas.height)
+			return;
 
-		// this.width = this.canvas.width;
-		// this.height = this.canvas.height;
+		this.width = this.canvas.width;
+		this.height = this.canvas.height;
 
 		let gl = this.gl;
 
@@ -2411,15 +2411,19 @@ export class Renderer {
 	/**
 	 * @private
 	 */
-	init(width, height, native) {
+	init(canvaselement, /*width, height, native*/) {
+		this.canvas = canvaselement;
+
 		this.gl = null;
-		this.width = width;
-		this.height = height;
+		// this.width = width;
+		// this.height = height;
 		try {
-			this.gl = createContext(this.width, this.height, { window: native }); // { antialias: true }
+			//this.gl = createContext(this.width, this.height, window: native }); // { antialias: true }
+			this.gl = this.canvas.getContext("webgl2", {alpha: false });
 			this.UsesWebGL2 = true;
 		}
 		catch (e) {
+			console.log(e);
 		}
 
 		if (this.gl == null) {
@@ -3282,10 +3286,15 @@ export class Renderer {
 
 		if (!this.isPowerOfTwo(origwidth) || !this.isPowerOfTwo(origheight)) {
 			// Scale up the texture to the next highest power of two dimensions.
-			let tmpcanvas = Canvas.createCanvas();
+			// let tmpcanvas = Canvas.createCanvas();
+			// tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
+			// tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
+			// let tmpctx = tmpcanvas.getContext("2d");
+
+			var tmpcanvas = document.createElement("canvas");
 			tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
 			tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
-			let tmpctx = tmpcanvas.getContext("2d");
+			var tmpctx = tmpcanvas.getContext("2d");
 
 			tmpctx.fillStyle = "rgba(0, 255, 255, 1)";
 			tmpctx.fillRect(0, 0, tmpcanvas.width, tmpcanvas.height);
@@ -3338,10 +3347,15 @@ export class Renderer {
 
 		if (!this.isPowerOfTwo(origwidth) || !this.isPowerOfTwo(origheight)) {
 			// Scale up the texture to the next highest power of two dimensions.
-			let tmpcanvas = Canvas.createCanvas();
+			// let tmpcanvas = Canvas.createCanvas();
+			// tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
+			// tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
+			// let tmpctx = tmpcanvas.getContext("2d");
+
+			var tmpcanvas = document.createElement("canvas");
 			tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
 			tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
-			let tmpctx = tmpcanvas.getContext("2d");
+			var tmpctx = tmpcanvas.getContext("2d");
 
 			//tmpctx.fillStyle = "rgba(0, 255, 255, 1)";
 			//tmpctx.fillRect(0, 0, tmpcanvas.width, tmpcanvas.height);

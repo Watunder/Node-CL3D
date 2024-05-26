@@ -14,6 +14,67 @@ import * as CL3D from "./main.js";
  * @class The base class for scene nodes, a node in the hierarchical 3d scene rendering graph.
  */
 export class SceneNode {
+	/**
+	 * Position of the scene node, relative to its parent.
+	 * If you want the position in world coordinates, use {@link getAbsolutePosition}().
+	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately.
+	 * @type Vect3d
+	 * @public
+	 */
+	Pos = null;
+
+	/**
+	 * Rotation of the scene node, relative to its parent, in degrees.
+	 * Note that this is the relative rotation of the node. If you want the absolute rotation, use {@link getAbsoluteTransformation}().getRotation()
+	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately.
+	 * @type Vect3d
+	 * @public
+	 */
+	Rot = null;
+
+	/**
+	 * Scale of the scene node, relative to its parent, in degrees. Default is (1,1,1)
+	 * This is the scale of this node relative to its parent. If you want the absolute scale, use {@link getAbsoluteTransformation}().getScale()
+	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately. 
+	 * @type Vect3d
+	 * @public
+	 */
+	Scale = null;
+
+	/**
+	 * Defines whether the node should be visible (if all of its parents are visible). 
+	 * This is only an option set by the user, but has nothing to do with geometry culling.
+	 * @type Boolean
+	 * @public
+	 */
+	Visible = true;
+
+	/**
+	 * Defines the name of the scene node, completely freely usable by the user.
+	 * @type String
+	 * @public
+	 */
+	Name = '';
+
+	/**
+	 * Defines the id of the scene node, completely freely usable by the user.
+	 * @type Number
+	 * @public
+	 */
+	Id = -1;
+
+	/**
+	 * An optional {@link TriangleSelector}, giving access to the collision geometry of this scene node.
+	 * @type TriangleSelector
+	 * @public
+	 */
+	Selector = null;
+
+	/**
+	 * @private
+	 */
+	Parent = null;
+
 	constructor() {
 		this.Type = -1;
 		this.Pos = new CL3D.Vect3d();
@@ -32,6 +93,7 @@ export class SceneNode {
 		this.scene = null;
 		this.Selector = null;
 	}
+
 	/**
 	 * Initializes the scene node, can be called by scene nodes derived from this class.
 	 * @public
@@ -44,6 +106,7 @@ export class SceneNode {
 		this.Animators = new Array();
 		this.AbsoluteTransformation = new CL3D.Matrix4();
 	}
+
 	/**
 	 * Returns the parent scene node of this scene node.
 	 * @public
@@ -52,6 +115,7 @@ export class SceneNode {
 	getParent() {
 		return this.Parent;
 	}
+
 	/**
 	 * Returns an array with all child scene nodes of this node
 	 * @public
@@ -60,6 +124,7 @@ export class SceneNode {
 	getChildren() {
 		return this.Children;
 	}
+
 	/**
 	 * Returns the type string of the scene node.
 	 * For example 'camera' if this is a camera, or 'mesh' if it is a mesh scene node.
@@ -69,6 +134,7 @@ export class SceneNode {
 	getType() {
 		return 'none';
 	}
+
 	/**
 	 * Get the axis aligned, not transformed bounding box of this node.
 	 * This means that if this node is an animated 3d character, moving in a room, the bounding box will
@@ -80,6 +146,7 @@ export class SceneNode {
 	getBoundingBox() {
 		return new CL3D.Box3d();
 	}
+
 	/**
 	 * Returns an array of {@link Animator}s which are animating this scene node.
 	 * @public
@@ -88,6 +155,7 @@ export class SceneNode {
 	getAnimators() {
 		return this.Animators;
 	}
+
 	/**
 	 * Returns the first {@link Animator} attached to this scene node with the specified type.
 	 * @param type is a string with the type returned by {@link Animator}.getType(). A possible value
@@ -105,6 +173,7 @@ export class SceneNode {
 
 		return null;
 	}
+
 	/**
 	 * @private
 	 */
@@ -118,6 +187,7 @@ export class SceneNode {
 
 		return null;
 	}
+
 	/**
 	 * Returns the bounding box of this scene node, transformed with the absolute transformation of this scene node.
 	 * @returns {CL3D.Box3d} The axis aligned, transformed and animated absolute bounding box of this node.
@@ -128,6 +198,7 @@ export class SceneNode {
 		this.AbsoluteTransformation.transformBoxEx(b);
 		return b;
 	}
+
 	/**
 	 * @private
 	 */
@@ -168,6 +239,7 @@ export class SceneNode {
 		if (this.AbsoluteTransformation)
 			b.AbsoluteTransformation = this.AbsoluteTransformation.clone();
 	}
+
 	/**
 	 * Creates a clone of this scene node and its children.
 	 * @param {CL3D.SceneNode} newparent The new parent of the cloned scene node.
@@ -177,6 +249,7 @@ export class SceneNode {
 	createClone(newparent, oldNodeId, newNodeId) {
 		return null;
 	}
+
 	/**
 	 * Adds a scene node animator to the list of animators manipulating this scene node.
 	 * @param {CL3D.Animator} a the new CL3D.Animator to add.
@@ -186,6 +259,7 @@ export class SceneNode {
 		if (a != null)
 			this.Animators.push(a);
 	}
+
 	/**
 	 * Removes an animator from this scene node.
 	 * @public
@@ -205,6 +279,7 @@ export class SceneNode {
 			}
 		}
 	}
+
 	/**
 	 * Adds a child to this scene node.
 	 * If the scene node already has a parent it is first removed from the other parent.
@@ -221,6 +296,7 @@ export class SceneNode {
 			this.Children.push(n);
 		}
 	}
+
 	/**
 	 * Removes a child from this scene node.
 	 * @public
@@ -235,6 +311,7 @@ export class SceneNode {
 			}
 		}
 	}
+
 	/**
 	 * This method is called just before the rendering process of the whole scene.
 	 * Nodes may register themselves in the rendering pipeline during this call, precalculate
@@ -261,6 +338,7 @@ export class SceneNode {
 			}
 		}
 	}
+
 	/**
 	 * OnAnimate() is called just before rendering the whole scene.
 	 * Nodes may calculate or store animations here, and may do other useful things,
@@ -297,6 +375,7 @@ export class SceneNode {
 
 		return modified;
 	}
+
 	/**
 	 * Returns the relative transformation of the scene node.
 	 * The relative transformation is stored internally as 3 vectors: translation, rotation and scale.
@@ -318,6 +397,7 @@ export class SceneNode {
 
 		return mat;
 	}
+
 	/**
 	 * Updates the absolute position based on the relative and the parents position.
 	 * Note: This does not recursively update the parents absolute positions, so if you have a deeper hierarchy you might
@@ -333,6 +413,7 @@ export class SceneNode {
 		else
 			this.AbsoluteTransformation = this.getRelativeTransformation();
 	}
+
 	/**
 	 * Renders the node. Override to implement rendering your own scene node.
 	 * @public
@@ -341,6 +422,7 @@ export class SceneNode {
 	render(renderer) {
 		// TODO: implement in sub scene nodes
 	}
+
 	/**
 	 * Returns the absolute transformation matrix of the node, also known as world matrix.
 	 * Note: If local changes to the position, scale or rotation have been made to this scene node in this frame,
@@ -351,6 +433,7 @@ export class SceneNode {
 	getAbsoluteTransformation() {
 		return this.AbsoluteTransformation;
 	}
+
 	/**
 	 * Gets the absolute position of the node in world coordinates.
 	 * If you want the position of the node relative to its parent, use {@link Pos} instead, this is much faster as well.
@@ -362,6 +445,7 @@ export class SceneNode {
 	getAbsolutePosition() {
 		return this.AbsoluteTransformation.getTranslation();
 	}
+
 	/**
 	 * Get amount of materials used by this scene node.
 	 * @returns {Number} the amount of materials.
@@ -370,6 +454,7 @@ export class SceneNode {
 	getMaterialCount() {
 		return 0;
 	}
+
 	/**
 	 * Returns the material based on the zero based index i.
 	 * To get the amount of materials used by this scene node, use {@link getMaterialCount}().
@@ -381,6 +466,7 @@ export class SceneNode {
 	getMaterial(i) {
 		return null;
 	}
+
 	/**
 	 * Returns if the scene node and all its parents are actually visible.
 	 * For a quicker way, simply check the Visible property of this class. This method
@@ -400,6 +486,7 @@ export class SceneNode {
 
 		return true;
 	}
+
 	/**
 	 * Called after the deserialization process. Internal method used so that linked nodes link them with the deserialized other nodes.
 	 * @private
@@ -407,6 +494,7 @@ export class SceneNode {
 	onDeserializedWithChildren() {
 		// to be implemented in a specific node if at all.
 	}
+
 	/**
 	 * replaces all referenced ids of referenced nodes when the referenced node was a child and was cloned
 	 * @private
@@ -414,6 +502,7 @@ export class SceneNode {
 	replaceAllReferencedNodes(nodeChildOld, nodeChildNew) {
 		// to be implemented in a specific node if at all.
 	}
+
 	/**
 	 * replaces all referenced ids of referenced nodes when the referenced node was a child and was cloned
 	 * @private
@@ -431,102 +520,4 @@ export class SceneNode {
 
 		return an.ChildrenDontUseZBuffer;
 	}
-}
-
-
-
-
-/**
- * Position of the scene node, relative to its parent.
- * If you want the position in world coordinates, use {@link getAbsolutePosition}().
- * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately.
- * @type Vect3d
- * @public
- */
-CL3D.SceneNode.prototype.Pos = null;
-
-/**
- * Rotation of the scene node, relative to its parent, in degrees.
- * Note that this is the relative rotation of the node. If you want the absolute rotation, use {@link getAbsoluteTransformation}().getRotation()
- * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately.
- * @type Vect3d
- * @public
- */
-CL3D.SceneNode.prototype.Rot = null;
-
-/**
- * Scale of the scene node, relative to its parent, in degrees. Default is (1,1,1)
- * This is the scale of this node relative to its parent. If you want the absolute scale, use {@link getAbsoluteTransformation}().getScale()
- * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately. 
- * @type Vect3d
- * @public
- */
-CL3D.SceneNode.prototype.Scale = null;
-
-/**
- * Defines whether the node should be visible (if all of its parents are visible). 
- * This is only an option set by the user, but has nothing to do with geometry culling.
- * @type Boolean
- * @public
- */
-CL3D.SceneNode.prototype.Visible = true;
-
-/**
- * Defines the name of the scene node, completely freely usable by the user.
- * @type String
- * @public
- */
-CL3D.SceneNode.prototype.Name = '';
-
-/**
- * Defines the id of the scene node, completely freely usable by the user.
- * @type Number
- * @public
- */
-CL3D.SceneNode.prototype.Id = -1;
-
-/**
- * An optional {@link TriangleSelector}, giving access to the collision geometry of this scene node.
- * @type TriangleSelector
- * @public
- */
-CL3D.SceneNode.prototype.Selector = null;
-
-/**
- * @private
- */
-CL3D.SceneNode.prototype.Parent = null;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+};

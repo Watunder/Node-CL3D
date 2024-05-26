@@ -2,7 +2,7 @@
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
-import Canvas from "canvas";
+//import Canvas from "canvas";
 
 /**
  * Class representing a texture which can be loaded from an URL.
@@ -29,7 +29,7 @@ export class Texture {
 	/**
 	 * returns the image of the texture
 	 * @public
-	 * @type {Canvas.Image}
+	 * @type {Image}
 	 */
 	getImage() {
 		return this.Image;
