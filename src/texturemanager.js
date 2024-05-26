@@ -124,4 +124,6 @@ export class TextureManager {
 
 		return false;
 	}
-}
+};
+
+export const gTextureManager = new CL3D.TextureManager();
