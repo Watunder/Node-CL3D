@@ -1,34 +1,46 @@
-import sdl from '@kmamal/sdl';
-import * as CL3D from './dist/cl3d.mjs';
+import * as CL3D from "./dist/cl3d.mjs";
 
-const window = sdl.video.createWindow({
-	resizable: true,
-	opengl: true,
-})
+const canvas = '3darea';
+const file = 'copperlichtdata/index.ccbjs';
+const loading = '\
+Loading $PROGRESS$...<br/><br/>\
+<img style="max-width:50%" src="scenes/copperlichtdata/coppercubeloadinglogo.png" />';
+const error = '\
+Error: This browser does not support WebGL (or it is disabled).<br/>\
+See <a href=\"http://www.ambiera.com/copperlicht/browsersupport.html\">here</a> for details.';
 
-const { pixelWidth: width, pixelHeight: height, native } = window
-const textureManager = new CL3D.TextureManager();
-const render = new CL3D.Renderer(textureManager);
-textureManager.TheRenderer = render;
+let engine = CL3D.startCopperLichtFromFile(canvas, file, loading, error, true, true, "#000000");
+let cubeSceneNode = null;
 
-render.init(width, height, native);
+// this is called when loading the 3d scene has finished
+engine.OnLoadingComplete = () => {
+    let scene = engine.getScene();
+    if (scene) {
+        // find the cube scene node
+        cubeSceneNode = scene.getSceneNodeFromName('cubeMesh1');
 
-const redraw = () =>
-{
-	render.beginScene(CL3D.createColor(255,50,50,50));
-	render.draw2DRectangle(0,0,100,100,CL3D.createColor(255,255,255,255),true);
-	render.draw2DImage(0, 0, 400, 400, textureManager.getTexture("idle.png", true),true);
-	render.endScene();
+        // also, force the 3d engine to update the scene every frame
+        scene.setRedrawMode(CL3D.Scene.REDRAW_EVERY_FRAME);
+
+        // additional, let the sphere constantly rotate
+        let sphereSceneNode = scene.getSceneNodeFromName('sphereMesh1');
+        if (sphereSceneNode)
+            sphereSceneNode.addAnimator(new CL3D.AnimatorRotation(new CL3D.Vect3d(0, 1.6, 0.8)));
+    }
 }
 
-window.on('expose', redraw);
+document.onkeydown = (event) => {
+    let key = String.fromCharCode(event.keyCode);
 
-window.on('resize', ({ width: w, height: h, pixelWidth: pw, pixelHeight: ph }) =>
-{
-	render.width = w;
-	render.height = h;
+    // when pressed 'L', move the cube scene node a bit up
+    if (key == 'F' && cubeSceneNode)
+        cubeSceneNode.Pos.Y += 5;
 
-	render.ensuresizeok();
+    // when pressed 'G', move the cube scene node a bit down
+    if (key == 'G' && cubeSceneNode)
+        cubeSceneNode.Pos.Y -= 5;
 
-	redraw()
-});
+    // we need to call the key handler of the 3d engine as well, so that the user is
+    // able to move the camera using the keys
+    engine.handleKeyDown(event);
+};
