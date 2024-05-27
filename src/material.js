@@ -221,9 +221,9 @@ export class Material {
 	 * @public
 	 */
 	doesNotUseDepthMap() {
-		return this.Type == this.EMT_TRANSPARENT_ADD_COLOR ||
-			this.Type == this.EMT_TRANSPARENT_ALPHA_CHANNEL ||
-			this.Type == this.EMT_TRANSPARENT_REFLECTION_2_LAYER;
+		return this.Type == CL3D.Material.EMT_TRANSPARENT_ADD_COLOR ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_REFLECTION_2_LAYER;
 	}
 	/**
 	 * Returns true if the described material is transparent, used by SceneNodes to check if they
@@ -231,10 +231,10 @@ export class Material {
 	 * @public
 	 */
 	isTransparent() {
-		return this.Type == this.EMT_TRANSPARENT_ADD_COLOR ||
-			this.Type == this.EMT_TRANSPARENT_ALPHA_CHANNEL ||
-			this.Type == this.EMT_TRANSPARENT_ALPHA_CHANNEL_REF ||
-			this.Type == this.EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS ||
-			this.Type == this.EMT_TRANSPARENT_REFLECTION_2_LAYER;
+		return this.Type == CL3D.Material.EMT_TRANSPARENT_ADD_COLOR ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_REFLECTION_2_LAYER;
 	}
 }

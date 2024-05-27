@@ -3062,7 +3062,7 @@ export class Renderer {
 
 			else {
 				// webgl 2
-				ext = gl.getExtension('EXT_color_buffer_float');
+				let ext = gl.getExtension('EXT_color_buffer_float');
 				if (!ext)
 					return null;
 				this.ExtFloat2 = ext;

@@ -628,7 +628,7 @@ export class Scene {
 	renderShadowMap(renderer) {
 		// The code in this method is unfinished for now and only creates shadow map renderings for
 		// the internal test cases. It will be extended in future updates.
-		if (!initShadowMapRendering(renderer))
+		if (!this.initShadowMapRendering(renderer))
 			return false;
 
 		// find directional light
