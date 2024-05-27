@@ -13,6 +13,12 @@
 
 import * as CL3D from "../main.js";
 
+/**
+ * @type {Boolean}
+ * Global flag disabling post effects if hardware or browser is not capable of doing them.
+ */
+export let Global_PostEffectsDisabled = false;
+
 const GLSL = String.raw;
 
 /**
@@ -1694,7 +1700,7 @@ export class Scene {
 	 @private
 	*/
 	isAnyPostEffectActive() {
-		if (CL3D.Global_PostEffectsDisabled)
+		if (Global_PostEffectsDisabled)
 			return false;
 
 		if (this.isAnyPostEffectEnabledByUser())
@@ -2028,7 +2034,7 @@ export class Scene {
 				nPostProcessingShader = renderer.createMaterialType(renderer.vs_shader_normaltransform, shadercontent, null, null, null, shaderCallBack);
 
 				if (nPostProcessingShader == -1)
-					CL3D.Global_PostEffectsDisabled = true;
+					Global_PostEffectsDisabled = true;
 			}
 
 			this.PostProcessingShaderInstances.push(nPostProcessingShader);

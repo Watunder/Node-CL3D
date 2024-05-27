@@ -14,6 +14,11 @@
 import * as CL3D from "./main.js";
 
 /**
+ * @type {CL3D.ScriptingInterface}
+ */
+let gScriptingInterface = null;
+
+/**
  * @private
  */
 class vector3d {
@@ -129,16 +134,16 @@ export class ScriptingInterface {
 	 * @private
 	 */
 	static getScriptingInterface() {
-		if (CL3D.gScriptingInterface == null)
-			CL3D.gScriptingInterface = new CL3D.ScriptingInterface();
+		if (gScriptingInterface == null)
+			gScriptingInterface = new CL3D.ScriptingInterface();
 
-		return CL3D.gScriptingInterface;
+		return gScriptingInterface;
 	}
 	/**
 	 * @private
 	 */
 	static getScriptingInterfaceReadOnly() {
-		return CL3D.gScriptingInterface;
+		return gScriptingInterface;
 	}
 	/**
 	 * @private
@@ -213,7 +218,7 @@ export class ScriptingInterface {
 
 		var actionid = this.StoredExtensionScriptActionHandlers.length - 1;
 		if (this.StoredExtensionScriptActionHandlers[actionid]) {
-			var node = CL3D.gScriptingInterface.CurrentlyActiveScene.getRootSceneNode();
+			var node = gScriptingInterface.CurrentlyActiveScene.getRootSceneNode();
 
 			this.StoredExtensionScriptActionHandlers[actionid].execute(node, null, true);
 		}
@@ -328,11 +333,6 @@ export class ScriptingInterface {
 		return null;
 	}
 }
-
-/**
- * @type { CL3D.ScriptingInterface }
- */
-export let gScriptingInterface = null;
 
 // --------------------------------------------------------------
 // AnimatorExtensionScript

@@ -285,7 +285,7 @@ export class FlaceLoader {
 				this.Data.readInt();
 				var b = this.Data.readInt();
 				if((b & 1) != 0) this.Document.WaitUntilTexturesLoaded = true;
-				if((b & 16) != 0) CL3D.Global_PostEffectsDisabled = true;
+				if((b & 16) != 0) console.log(CL3D.Global_PostEffectsDisabled, " = true")
 				this.SkipToNextTag();
 				break;
 			case 37:

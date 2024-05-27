@@ -33,7 +33,7 @@ export { ActionSwitchToScene } from "./SwitchToScene.js";
 
 export { ActionOpenWebpage } from "./OpenWebpage.js";
 
-export { gCurrentJScriptNode, ActionExecuteJavaScript } from "./ExecuteJavaScript.js";
+export { ActionExecuteJavaScript } from "./ExecuteJavaScript.js";
 
 // camera
 export { ActionSetCameraTarget } from "./SetCameraTarget.js";

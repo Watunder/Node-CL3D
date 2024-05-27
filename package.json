@@ -4,6 +4,8 @@
     "@kmamal/gl": "*",
     "@kmamal/sdl": "*",
     "canvas": "*",
-    "rollup": "*"
+    "rollup": "*",
+    "@rollup/plugin-terser": "*",
+    "@typhonjs-build-test/esm-d-ts": "*"
   }
 }

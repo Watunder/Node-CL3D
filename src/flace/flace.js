@@ -19,9 +19,9 @@ import * as CL3D from "../main.js";
  */
 export const startCopperLichtFromFile = function(elementIdOfCanvas, filetoload, loadingScreenText, noWebGLText, fullpage, pointerLockForFPSCameras, loadingScreenBackgroundColor)
 {
-	var c = new CL3D.CopperLicht(elementIdOfCanvas, true, null, false, loadingScreenText, noWebGLText, fullpage, pointerLockForFPSCameras, loadingScreenBackgroundColor);
-	c.load(filetoload);
-	return c;
+	let engine = new CL3D.CopperLicht(elementIdOfCanvas, true, null, false, loadingScreenText, noWebGLText, fullpage, pointerLockForFPSCameras, loadingScreenBackgroundColor);
+	engine.load(filetoload);
+	return engine;
 }
 
 /**
@@ -166,8 +166,8 @@ export class CopperLicht {
 
 		this.DPR = window.devicePixelRatio || 1.0;
 		this.ElementIdOfCanvas = elementIdOfCanvas;
-		// this.VideoElement = document.getElementById("video");
-		// this.TextElement = document.getElementById("text");
+		this.VideoElement = document.getElementById("video");
+		this.TextElement = document.getElementById("text");
 		this.MainElement = document.getElementById(this.ElementIdOfCanvas);
 		this.Document = new CL3D.CCDocument();
 		this.TheRenderer = null;

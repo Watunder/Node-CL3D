@@ -1,15 +1,15 @@
 import * as CL3D from "./dist/cl3d.mjs";
 
 const canvas = '3darea';
-const file = 'copperlichtdata/index.ccbjs';
+const file = './copperlichtdata/index.ccbjs';
 const loading = '\
 Loading $PROGRESS$...<br/><br/>\
-<img style="max-width:50%" src="scenes/copperlichtdata/coppercubeloadinglogo.png" />';
+<img style="max-width:50%" src="./copperlichtdata/coppercubeloadinglogo.png" />';
 const error = '\
 Error: This browser does not support WebGL (or it is disabled).<br/>\
 See <a href=\"http://www.ambiera.com/copperlicht/browsersupport.html\">here</a> for details.';
 
-let engine = CL3D.startCopperLichtFromFile(canvas, file, loading, error, true, true, "#000000");
+const engine = CL3D.startCopperLichtFromFile(canvas, file, loading, error, true, true, "#000000");
 let cubeSceneNode = null;
 
 // this is called when loading the 3d scene has finished

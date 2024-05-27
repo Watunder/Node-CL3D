@@ -5,6 +5,10 @@
  * This file Contains basic helper functions to convert between angles, finding minima and maxima of numbers and similar
  */
 
+export const gCCDebugInfoEnabled = true;
+export const DebugPostEffects = false;
+export const UseShadowCascade = true;
+
 /** 
  * @const 
  * @private
@@ -303,18 +307,4 @@ export class ColorF {
 		r.B = this.B;
 		return r;
 	}
-
-}
-
-/** 
- * @public
- * Global flag toggling if shadow maps should be rendered using a shadow map cascade or a single map.
- * This needs to be set before initialiting the engine.
- */
-export const UseShadowCascade = true;
-
-/** 
- * @private
- * Global flag disabling post effects if hardware or browser is not capable of doing them.
- */
-export let Global_PostEffectsDisabled = false;
+};
