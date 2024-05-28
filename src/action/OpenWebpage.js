@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------
 
 import * as CL3D from "../main.js";
+import { openWebpage } from "../share/openWebpage.js";
 
 /**
  * @private
@@ -30,7 +31,7 @@ export class ActionOpenWebpage extends CL3D.Action{
 	 * @private
 	 */
 	execute(currentNode, sceneManager) {
-		//CL3D.gCCDebugOutput.print("opening" + this.Webpage + " with:" + this.Target);
-		window.open(this.Webpage, this.Target);
+		//console.log("opening" + this.Webpage + " with:" + this.Target);
+		openWebpage(this.Webpage, this.Target);
 	}
 };

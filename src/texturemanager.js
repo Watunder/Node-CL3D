@@ -2,7 +2,7 @@
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
-//import Canvas from "canvas";
+import { loadImage } from "./share/loadImage.js";
 
 /**
  * Texture manager containing all {@link Texture}s and able to load new ones, accessible via {@link CopperLicht.getTextureManager}().
@@ -42,9 +42,13 @@ export class TextureManager {
 
 			// start loading texture
 			let me = this;
-			t.Image = new Image();
-			t.Image.onload = function () { me.onTextureLoaded(t); };
-			t.Image.src = t.Name;
+			loadImage(t.Name).then((image) => {
+				t.Image = image;
+				me.onTextureLoaded(t);
+			});
+			// t.Image = new Image();
+			// t.Image.onload = function () { me.onTextureLoaded(t); };
+			// t.Image.src = t.Name;
 
 			//console.log("starting loading texture: " + t.Image.src);
 			return t;

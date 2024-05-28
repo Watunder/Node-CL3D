@@ -849,12 +849,14 @@ export function ccbDoesLineCollideWithBoundingBoxOfSceneNode(node, startX, start
 	return node.getTransformedBoundingBox().intersectsWithLine(lineStart, lineEnd);
 }
 
+import { endProgram } from "../share/endProgram.js";
+
 /**
  * @ignore
  */
 export function ccbEndProgram()
 {
-	window.close();
+	endProgram();
 }
 
 /**
@@ -1138,7 +1140,7 @@ export function ccbCallAction(actionid, value, node)
  */
 function print(s)
 {
-	CL3D.gCCDebugOutput.jsConsolePrint(s);
+	console.log(s);
 }
 
 /**

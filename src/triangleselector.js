@@ -583,7 +583,7 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 
 		this.constructTree(this.Root);
 
-		//CL3D.gCCDebugOutput.printError("Constructed Octtree with " + this.DebugNodeCount + 
+		//console.log("Constructed Octtree with " + this.DebugNodeCount + 
 		//	" nodes and triangles:" + this.DebugPolyCount);
 	}
 

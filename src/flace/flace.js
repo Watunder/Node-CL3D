@@ -2,6 +2,7 @@
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
+import { getDevicePixelRatio } from "../share/getDevicePixelRatio.js";
 
 /**
  * Creates an instance of the CopperLicht 3D engine by loading the scene from a CopperCube file.
@@ -17,8 +18,7 @@ import * as CL3D from "../main.js";
  * @public
  * @returns {CL3D.CopperLicht} the instance of the CopperLicht engine
  */
-export const startCopperLichtFromFile = function(elementIdOfCanvas, filetoload, loadingScreenText, noWebGLText, fullpage, pointerLockForFPSCameras, loadingScreenBackgroundColor)
-{
+export const startCopperLichtFromFile = function (elementIdOfCanvas, filetoload, loadingScreenText, noWebGLText, fullpage, pointerLockForFPSCameras, loadingScreenBackgroundColor) {
 	let engine = new CL3D.CopperLicht(elementIdOfCanvas, true, null, false, loadingScreenText, noWebGLText, fullpage, pointerLockForFPSCameras, loadingScreenBackgroundColor);
 	engine.load(filetoload);
 	return engine;
@@ -159,12 +159,12 @@ export class CopperLicht {
 	OnLoadingComplete = null;
 
 	constructor(elementIdOfCanvas, showInfoTexts, fps, showFPSCounter, loadingScreenText, noWebGLText, fullpage, pointerLockForFPSCameras, loadingScreenBackgroundColor) {
-		if ((showInfoTexts == null || showInfoTexts == true) && CL3D.gCCDebugInfoEnabled)
-		{
+		if ((showInfoTexts == null || showInfoTexts == true) && CL3D.gCCDebugInfoEnabled) {
 			/// TODO
 		}
 
-		this.DPR = window.devicePixelRatio || 1.0;
+		this.FPS = 60;
+		this.DPR = getDevicePixelRatio();
 		this.ElementIdOfCanvas = elementIdOfCanvas;
 		this.VideoElement = document.getElementById("video");
 		this.TextElement = document.getElementById("text");
@@ -178,7 +178,6 @@ export class CopperLicht {
 		this.LoadingAFile = false;
 		this.WaitingForTexturesToBeLoaded = false;
 		this.LoadingAnimationCounter = 0;
-		this.FPS = 60;
 		this.OnAnimate = null;
 		this.OnBeforeDrawAll = null;
 		this.OnAfterDrawAll = null;
@@ -230,7 +229,27 @@ export class CopperLicht {
 		// init scripting
 		CL3D.ScriptingInterface.getScriptingInterface().setEngine(this);
 	}
-	
+
+	mainLoop() {
+		// redraw every few seconds
+		const me = this;
+		const interval = 1000.0 / this.FPS;
+		let lastUpdate = CL3D.CLTimer.getTime();
+		const running = (now) => {
+			let elapsed = now - lastUpdate;
+			globalThis.requestAnimationFrame(running);
+
+			if (elapsed >= interval) {
+				me.draw3DIntervalHandler(now);
+
+				lastUpdate = now - (elapsed % interval);
+				// also adjusts for your interval not being
+				// a multiple of requestAnimationFrame's interval (usually 16.7ms)
+			}
+		};
+		globalThis.requestAnimationFrame(running);
+	}
+
 	/**
 	 * Initializes the renderer, you need to call this if you create the engine yourself without
 	 * using one of the startup functions like {@link startCopperLichtFromFile}.
@@ -241,7 +260,7 @@ export class CopperLicht {
 	initRenderer() {
 		return this.createRenderer();
 	}
-	
+
 	/**
 	 * return a reference to the currently used {@link Renderer}.
 	 * @public
@@ -249,10 +268,11 @@ export class CopperLicht {
 	getRenderer() {
 		return this.TheRenderer;
 	}
-	
+
 	/**
 	 * return a reference to the currently active {@link Scene}.
 	 * @public
+	 * @return {CL3D.Scene}
 	 */
 	getScene() {
 		if (this.Document == null)
@@ -260,7 +280,7 @@ export class CopperLicht {
 
 		return this.Document.getCurrentScene();
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -332,7 +352,7 @@ export class CopperLicht {
 			} catch (e) { }
 		}
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -343,7 +363,7 @@ export class CopperLicht {
 
 		return Math.sqrt((t[0].pageX - t[1].pageX) * (t[0].pageX - t[1].pageX) + (t[0].pageY - t[1].pageY) * (t[0].pageY - t[1].pageY));
 	}
-	
+
 	/**
 	 * Loads a the scene from a <a href="http://www.ambiera.com/coppercube/index.html" target="_blank">CopperCube</a> file and displays it.
 	 * This will also initialize the renderer if this has not been done before. You can also use the event handler {@link CopperLicht.OnLoadingComplete} to
@@ -369,64 +389,31 @@ export class CopperLicht {
 
 		return true;
 	}
-	
+
 	/**
 	 * @private
 	 */
-	createRenderer() {
+	createRenderer(width = 1280, height = 720, options = { alpha: false }) {
 		if (this.TheRenderer != null)
 			return true;
 
-		var c = this.MainElement;
-		if (c == null)
+		var canvaselement = this.MainElement;
+		if (canvaselement == null)
 			return false;
 
-		//var canvaselement = c;
-		//var canvaselement = document.createElement("canvas");
-		//c.parentNode.replaceChild(canvaselement, c);
-
 		this.TheRenderer = new CL3D.Renderer(this.TheTextureManager);
-		this.TheRenderer.init(c);
+		this.TheRenderer.init(width, height, options, canvaselement);
 
 		if (this.TheTextureManager)
 			this.TheTextureManager.TheRenderer = this.TheRenderer;
 
 		this.registerEventHandlers();
 
-		// TODO: Decoupling logic and render loop
-		// redraw every few seconds
-		var me = this;
-		var interval = 1000.0 / this.FPS;
-
-		//console.log("Using interval " + interval + " for fps:" + this.FPS);
-		var useRequestAnimationFrame = true; // on chrome 47, setInterval causes freezing, so use requestAnimationFrame instead
-
-		if (!useRequestAnimationFrame) {
-			setInterval(function () { me.draw3DIntervalHandler(); }, interval);
-		}
-
-		else {
-			var lastUpdate = CL3D.CLTimer.getTime();
-			var func = function (now) {
-				//var now = CL3D.CLTimer.getTime();
-				var elapsed = now - lastUpdate;
-				window.requestAnimationFrame(func);
-
-				if (elapsed >= interval) {
-					me.draw3DIntervalHandler(now);
-
-					lastUpdate = now - (elapsed % interval);
-					// also adjusts for your interval not being
-					// a multiple of requestAnimationFrame's interval (usually 16.7ms)
-				}
-			};
-
-			window.requestAnimationFrame(func);
-		}
+		this.mainLoop();
 
 		return true;
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -435,16 +422,18 @@ export class CopperLicht {
 		document.body.style.padding = "0";
 		document.body.style.overflow = 'hidden';
 	}
-	
+
 	/**
 	 * @private
 	 */
 	makeWholePageSize() {
-		var w = window.innerWidth || window.clientWidth;
-		var h = window.innerHeight || window.clientHeight;
+		var w = globalThis.innerWidth || globalThis.clientWidth;
+		var h = globalThis.innerHeight || globalThis.clientHeight;
 
 		this.MainElement.style.width = w + "px";
 		this.MainElement.style.height = h + "px";
+
+		this.DPR = getDevicePixelRatio();
 
 		this.MainElement.setAttribute("width", w * this.DPR);
 		this.MainElement.setAttribute("height", h * this.DPR);
@@ -455,7 +444,7 @@ export class CopperLicht {
 		// this.VideoElement.setAttribute("width", w * this.DPR);
 		// this.VideoElement.setAttribute("height", h * this.DPR);
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -477,7 +466,7 @@ export class CopperLicht {
 			/// TODO: FPS
 		}
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -521,7 +510,7 @@ export class CopperLicht {
 			///
 		}
 	}
-	
+
 	/**
 	 * Returns true of CopperLicht is currently loading a scene file
 	 * @public
@@ -529,7 +518,7 @@ export class CopperLicht {
 	isLoading() {
 		return this.LoadingAFile || this.WaitingForTexturesToBeLoaded;
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -575,7 +564,7 @@ export class CopperLicht {
 			}
 		}
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -590,7 +579,7 @@ export class CopperLicht {
 		if (this.OnLoadingComplete != null)
 			this.OnLoadingComplete();
 	}
-	
+
 	/**
 	 * Draws and animates the 3d scene.
 	 * To be called if you are using your own rendering loop, usually this has not to be called at all.
@@ -602,7 +591,7 @@ export class CopperLicht {
 		if (this.Document == null || this.TheRenderer == null)
 			return;
 
-		
+
 		if (this.isLoading())
 			return;
 
@@ -610,7 +599,7 @@ export class CopperLicht {
 
 		this.internalOnBeforeRendering();
 		var renderScene = this.Document.getCurrentScene();
-		
+
 		if (!this.IsPaused && renderScene) {
 			if (this.updateAllVideoStreams()) // at least one video is playing if it returns true
 				renderScene.forceRedrawNextFrame();
@@ -645,21 +634,21 @@ export class CopperLicht {
 
 		this.internalOnAfterRendering();
 	}
-	
+
 	/**
 	 * @private
 	 */
 	internalOnAfterRendering() {
 		this.setNextCameraActiveIfNeeded();
 	}
-	
+
 	/**
 	 * @private
 	 */
 	internalOnBeforeRendering() {
 		this.setNextCameraActiveIfNeeded();
 	}
-	
+
 	/**
 	 * Returns all available scenes.
 	 * Returns an array containing all {@link Scene}s.
@@ -671,7 +660,7 @@ export class CopperLicht {
 
 		return 0;
 	}
-	
+
 	/**
 	 * Adds a new CL3D.Scene
 	 * @public
@@ -683,7 +672,7 @@ export class CopperLicht {
 				this.Document.setCurrentScene(scene);
 		}
 	}
-	
+
 	/**
 	 * Switches the current scene to a new CL3D.Scene by scene name.
 	 * @param scene {String} The name of the new CL3D.Scene to be activated.
@@ -712,7 +701,7 @@ export class CopperLicht {
 
 		return false;
 	}
-	
+
 	/**
 	 * Switches the current scene to a new CL3D.Scene.
 	 * @param {CL3D.Scene} scene The new CL3D.Scene to be activated.
@@ -821,7 +810,7 @@ export class CopperLicht {
 		//console.log("Scene ready.");
 		return true;
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -841,7 +830,7 @@ export class CopperLicht {
 			this.NextCameraToSetActive = null;
 		}
 	}
-	
+
 	/**
 	 * When CopperLicht is created, it will register the document.onkeydown event with this function.
 	 * If you need to handle it yourself, you should call this function with the event parameter so
@@ -852,9 +841,6 @@ export class CopperLicht {
 		var scene = this.getScene();
 		if (scene == null)
 			return false;
-
-		if (evt == null)
-			evt = window.event; // hack for IE, it uses a global Event object
 
 		var usedToDoAction = false;
 
@@ -868,7 +854,7 @@ export class CopperLicht {
 
 		return this.handleEventPropagation(evt, usedToDoAction);
 	}
-	
+
 	/**
 	 * When CopperLicht is created, it will register the document.onkeyup event with this function.
 	 * If you need to handle it yourself, you should call this function with the event parameter so
@@ -879,9 +865,6 @@ export class CopperLicht {
 		var scene = this.getScene();
 		if (scene == null)
 			return false;
-
-		if (evt == null)
-			evt = window.event; // hack for IE, it uses a global Event object
 
 		var usedToDoAction = false;
 
@@ -895,7 +878,7 @@ export class CopperLicht {
 
 		return this.handleEventPropagation(evt, usedToDoAction);
 	}
-	
+
 	/**
 	 * Causes a key event to stop propagating if it has been used inside an animator
 	 * @private
@@ -913,7 +896,7 @@ export class CopperLicht {
 
 		return false;
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -921,7 +904,7 @@ export class CopperLicht {
 		if (an != null)
 			this.RegisteredAnimatorsForKeyUp.push(an);
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -929,7 +912,7 @@ export class CopperLicht {
 		if (an != null)
 			this.RegisteredAnimatorsForKeyDown.push(an);
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -948,7 +931,7 @@ export class CopperLicht {
 		this.CanvasTopLeftX = x;
 		this.CanvasTopLeftY = y;
 	}
-	
+
 	/**
 	 * @public
 	 * @description Returns true if the current document has the mouse pointer locked or not. Useful for first person shooters
@@ -956,7 +939,7 @@ export class CopperLicht {
 	isInPointerLockMode() {
 		return this.pointerIsCurrentlyLocked;
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -972,7 +955,7 @@ export class CopperLicht {
 		else
 			return e.clientX - this.MainElement.offsetLeft + document.body.scrollLeft;
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -988,7 +971,7 @@ export class CopperLicht {
 		else
 			return e.clientY - this.MainElement.offsetTop + document.body.scrollTop;
 	}
-	
+
 	/**
 	 * When CopperLicht is created, it will register the onmousedown event of the canvas with this function.
 	 * If you need to handle it yourself, you should call this function with the event parameter so
@@ -996,9 +979,6 @@ export class CopperLicht {
 	 * @public
 	 */
 	handleMouseDown(evt) {
-		if (evt == null)
-			evt = window.event; // hack for IE, it uses a global Event object
-
 		this.MouseIsDown = true;
 		this.MouseIsInside = true;
 
@@ -1031,7 +1011,7 @@ export class CopperLicht {
 
 		return this.handleEventPropagation(evt, true);
 	}
-	
+
 	/**
 	 * Returns if the mouse is overt the canvas at all
 	 * @public
@@ -1039,7 +1019,7 @@ export class CopperLicht {
 	isMouseOverCanvas() {
 		return this.MouseIsInside;
 	}
-	
+
 	/**
 	 * Returns the last X movement coordinate when in pointer lock mode
 	 * @public
@@ -1047,7 +1027,7 @@ export class CopperLicht {
 	getMouseMoveX() {
 		return this.MouseMoveX;
 	}
-	
+
 	/**
 	 * Returns the last Y movement coordinate when in pointer lock mode
 	 * @public
@@ -1055,7 +1035,7 @@ export class CopperLicht {
 	getMouseMoveY() {
 		return this.MouseMoveY;
 	}
-	
+
 	/**
 	 * Returns the last X coordinate in pixels of the cursor over the canvas, relative to the canvas.
 	 * see also {@link CopperLicht.OnMouseDown} and {@link CopperLicht.OnMouseUp}.
@@ -1064,7 +1044,7 @@ export class CopperLicht {
 	getMouseX() {
 		return this.MouseX;
 	}
-	
+
 	/**
 	 * Returns the last Y coordinate in pixels of the cursor over the canvas, relative to the canvas.
 	 * see also {@link CopperLicht.OnMouseDown} and {@link CopperLicht.OnMouseUp}.
@@ -1073,7 +1053,7 @@ export class CopperLicht {
 	getMouseY() {
 		return this.MouseY;
 	}
-	
+
 	/**
 	 * Returns if the mouse is currently pressed over the canvas.
 	 * @public
@@ -1081,7 +1061,7 @@ export class CopperLicht {
 	isMouseDown() {
 		return this.MouseIsDown;
 	}
-	
+
 	/**
 	 * Returns the last X coordinate where the mouse was pressed over the canvas.
 	 * see also {@link CopperLicht.OnMouseDown} and {@link CopperLicht.OnMouseUp}.
@@ -1090,7 +1070,7 @@ export class CopperLicht {
 	getMouseDownX() {
 		return this.MouseDownX;
 	}
-	
+
 	/**
 	 * Returns the last Y coordinate where the mouse was pressed over the canvas.
 	 * see also {@link CopperLicht.OnMouseDown} and {@link CopperLicht.OnMouseUp}.
@@ -1099,7 +1079,7 @@ export class CopperLicht {
 	getMouseDownY() {
 		return this.MouseDownY;
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -1114,7 +1094,7 @@ export class CopperLicht {
 			this.MouseDownY = this.MouseY;
 		}
 	}
-	
+
 	/**
 	 * When CopperLicht is created, it will register the onmouseup event of the canvas with this function.
 	 * If you need to handle it yourself, you should call this function with the event parameter so
@@ -1122,9 +1102,6 @@ export class CopperLicht {
 	 * @public
 	 */
 	handleMouseUp(evt) {
-		if (evt == null)
-			evt = window.event; // hack for IE, it uses a global Event object
-
 		this.MouseIsDown = false;
 
 		var scene = this.getScene();
@@ -1169,7 +1146,7 @@ export class CopperLicht {
 
 		this.sendMouseWheelEvent(delta);
 	}
-	
+
 	/**
 	 * When CopperLicht is created, it will register the onmousemove event of the canvas with this function.
 	 * If you need to handle it yourself, you should call this function with the event parameter so
@@ -1177,10 +1154,6 @@ export class CopperLicht {
 	 * @public
 	 */
 	handleMouseMove(evt) {
-		if (evt == null)
-			evt = window.event; // hack for IE, it uses a global Event object
-
-
 		if (this.isInPointerLockMode()) {
 			this.MouseMoveX = (evt['movementX'] || evt['mozMovementX'] || evt['webkitMovementX'] || 0);
 			this.MouseMoveY = (evt['movementY'] || evt['mozMovementY'] || evt['webkitMovementY'] || 0);
@@ -1204,7 +1177,7 @@ export class CopperLicht {
 
 		return this.handleEventPropagation(evt, true);
 	}
-	
+
 	/**
 	 * Returns a 3D point from a 2D pixel coordinate on the screen. Note: A 2D position on the screen does not represent one
 	 * single 3D point, but a actually a 3d line. So in order to get this line, use the 3d point returned by this function and the position
@@ -1243,7 +1216,7 @@ export class CopperLicht {
 		var ret = farLeftUp.add(lefttoright.multiplyWithScal(dx)).add(uptodown.multiplyWithScal(dy));
 		return ret;
 	}
-	
+
 	/**
 	 * Returns the 2D pixel position on the screen from a 3D position. Uses the current projection and view matrices stored in the renderer,
 	 * so the 3d scene should have been rendered at least once before to return a correct result.
@@ -1284,7 +1257,7 @@ export class CopperLicht {
 
 		return ret;
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -1294,7 +1267,7 @@ export class CopperLicht {
 
 		this.NextCameraToSetActive = cam;
 	}
-	
+
 	/**
 	 * Returns the {@link TextureManager} used to load textures.
 	 * @public
@@ -1303,7 +1276,7 @@ export class CopperLicht {
 	getTextureManager() {
 		return this.TheTextureManager;
 	}
-	
+
 	/**
 	 * @private
 	 * @param n: Current scene node
@@ -1338,7 +1311,7 @@ export class CopperLicht {
 				this.setCollisionWorldForAllSceneNodes(c, world);
 		}
 	}
-	
+
 	/**
 	 * Reloads a scene, triggered only by the CopperCube Action 'RestartScene'
 	 * @param {CL3D.Scene} scene The new CL3D.Scene to be reloaded.
@@ -1382,7 +1355,7 @@ export class CopperLicht {
 
 		return true;
 	}
-	
+
 	/**
 	 * @private
 	 * Updates the loading dialog if it is existing
@@ -1393,7 +1366,7 @@ export class CopperLicht {
 			this.LoadingDialog = null;
 		}
 	}
-	
+
 	/**
 	 * @private
 	 * Creates a nicely looking loading dialog, with the specified loading text
@@ -1402,8 +1375,8 @@ export class CopperLicht {
 		if (this.MainElement == null)
 			return;
 
-		this.MainElement.setAttribute("width", window.innerWidth || window.clientWidth);
-		this.MainElement.setAttribute("height", window.innerHeight || window.clientHeight);
+		this.MainElement.setAttribute("width", globalThis.innerWidth || globalThis.clientWidth);
+		this.MainElement.setAttribute("height", globalThis.innerHeight || globalThis.clientHeight);
 
 		var dlg_div = document.createElement("div");
 		this.MainElement.parentNode.appendChild(dlg_div);
@@ -1461,7 +1434,7 @@ export class CopperLicht {
 		if (forLoadingDlg)
 			this.LoadingDialog = dlg_div;
 	}
-	
+
 	/**
 	 * @private
 	 * Enables pointer lock after fullscreen change, if whished
@@ -1472,7 +1445,7 @@ export class CopperLicht {
 			this.requestPointerLock();
 		}
 	}
-	
+
 	/**
 	 * @private
 	 * Notifies the engine if a pointer lock was used
@@ -1487,7 +1460,7 @@ export class CopperLicht {
 			canvas.requestPointerLock();
 		}
 	}
-	
+
 	/**
 	 * @private
 	 * Notifies the engine if a pointer lock was used
@@ -1508,7 +1481,7 @@ export class CopperLicht {
 			this.pointerIsCurrentlyLocked = false;
 		}
 	}
-	
+
 	/**
 	 * @private
 	 * Handlers for pointer lock and fullscreen change
@@ -1526,7 +1499,7 @@ export class CopperLicht {
 		document.addEventListener('mozpointerlockchange', pointerLockChange, false);
 		document.addEventListener('webkitpointerlockchange', pointerLockChange, false);
 	}
-	
+
 	/**
 	 * Switches to fullscreen and locks the pointer if wanted. Note: This function must be called in reaction of a user interaction,
 	 * otherwise the browser will ignore this. The best is to call it from the event handler of for example an onClick even of a button.
@@ -1548,7 +1521,7 @@ export class CopperLicht {
 			elementToSetToFullsceen.webkitRequestFullscreen;
 		elementToSetToFullsceen.requestFullscreen();
 	}
-	
+
 	/**
 	 * @private
 	 * Internal video playback handler
@@ -1572,7 +1545,7 @@ export class CopperLicht {
 
 		return null;
 	}
-	
+
 	/**
 	 * @private
 	 * update all video streams

@@ -44,8 +44,8 @@ export class CameraSceneNode extends CL3D.SceneNode {
 	recalculateProjectionMatrix() {
 		this.Projection.buildProjectionMatrixPerspectiveFovLH(this.Fovy, this.Aspect, this.ZNear, this.ZFar);
 		// TODO: 0.05?
-		// this.viewVolume = screen.width / window.innerWidth * 0.05;
-		// this.Projection.buildProjectionMatrixPerspectiveOrthoLH(window.innerWidth * this.viewVolume, window.innerHeight * this.viewVolume, this.ZNear, this.ZFar);
+		// this.viewVolume = screen.width / globalThis.innerWidth * 0.05;
+		// this.Projection.buildProjectionMatrixPerspectiveOrthoLH(globalThis.innerWidth * this.viewVolume, globalThis.innerHeight * this.viewVolume, this.ZNear, this.ZFar);
 	}
 	/**
 	 * Returns the type string of the scene node.

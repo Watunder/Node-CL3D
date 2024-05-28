@@ -36,7 +36,7 @@ export class ActionExecuteJavaScript extends CL3D.Action {
 	execute(currentNode, sceneManager) {
 		gCurrentJScriptNode = currentNode;
 
-		eval(this.JScript);
+		(new Function(this.JScript))();
 
 		gCurrentJScriptNode = null;
 	}

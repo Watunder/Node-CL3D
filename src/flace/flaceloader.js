@@ -1477,7 +1477,7 @@ export class FlaceLoader {
 					}
 					// var blob = new Blob([b], {type: "text/plain;charset=utf-8"});
 					// saveAs(blob, c + ".js");
-					b != null && CL3D.ScriptingInterface.getScriptingInterface().executeCode(b)
+					b != null && CL3D.ScriptingInterface.getScriptingInterface().importCode(b)
 				}
 				this.SkipToNextTag();
 				break;

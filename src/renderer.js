@@ -3,8 +3,8 @@
 // This file is part of the CopperLicht engine, (c) by N.Gebhardt
 
 import * as CL3D from "./main.js";
-//import createContext from '@kmamal/gl'
-//import Canvas from "canvas";
+import { createContext } from "./share/createContext.js";
+import { createCanvas } from "./share/createCanvas.js";
 
 const GLSL = String.raw;
 
@@ -2411,20 +2411,21 @@ export class Renderer {
 	/**
 	 * @private
 	 */
-	init(canvaselement, /*width, height, native*/) {
+	init(width, height, options, canvaselement) {
 		this.canvas = canvaselement;
 
 		this.gl = null;
+		this.gl = createContext(width, height, options, canvaselement);
+		this.UsesWebGL2 = true;
 		// this.width = width;
 		// this.height = height;
-		try {
-			//this.gl = createContext(this.width, this.height, window: native }); // { antialias: true }
-			this.gl = this.canvas.getContext("webgl2", {alpha: false });
-			this.UsesWebGL2 = true;
-		}
-		catch (e) {
-			console.log(e);
-		}
+		// try {
+		// 	this.gl = this.canvas.getContext("webgl2", {alpha: false}); //{antialias: true}
+		// 	this.UsesWebGL2 = true;
+		// }
+		// catch (e) {
+		// 	console.log(e);
+		// }
 
 		if (this.gl == null) {
 			return false;
@@ -3286,15 +3287,10 @@ export class Renderer {
 
 		if (!this.isPowerOfTwo(origwidth) || !this.isPowerOfTwo(origheight)) {
 			// Scale up the texture to the next highest power of two dimensions.
-			// let tmpcanvas = Canvas.createCanvas();
-			// tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
-			// tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
-			// let tmpctx = tmpcanvas.getContext("2d");
-
-			var tmpcanvas = document.createElement("canvas");
+			let tmpcanvas = createCanvas();
 			tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
 			tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
-			var tmpctx = tmpcanvas.getContext("2d");
+			let tmpctx = tmpcanvas.getContext("2d");
 
 			tmpctx.fillStyle = "rgba(0, 255, 255, 1)";
 			tmpctx.fillRect(0, 0, tmpcanvas.width, tmpcanvas.height);
@@ -3347,15 +3343,15 @@ export class Renderer {
 
 		if (!this.isPowerOfTwo(origwidth) || !this.isPowerOfTwo(origheight)) {
 			// Scale up the texture to the next highest power of two dimensions.
-			// let tmpcanvas = Canvas.createCanvas();
-			// tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
-			// tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
-			// let tmpctx = tmpcanvas.getContext("2d");
-
-			var tmpcanvas = document.createElement("canvas");
+			let tmpcanvas = createCanvas();
 			tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
 			tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
-			var tmpctx = tmpcanvas.getContext("2d");
+			let tmpctx = tmpcanvas.getContext("2d");
+
+			// var tmpcanvas = document.createElement("canvas");
+			// tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
+			// tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
+			// var tmpctx = tmpcanvas.getContext("2d");
 
 			//tmpctx.fillStyle = "rgba(0, 255, 255, 1)";
 			//tmpctx.fillRect(0, 0, tmpcanvas.width, tmpcanvas.height);
@@ -3461,7 +3457,7 @@ export class Renderer {
 
 		if (!this.isPowerOfTwo(objToCopyFrom.width) || !this.isPowerOfTwo(objToCopyFrom.height)) {
 			// Scale up the texture to the next highest power of two dimensions.
-			let tmpcanvas = Canvas.createCanvas();
+			let tmpcanvas = createCanvas();
 			if (tmpcanvas != null) {
 				tmpcanvas.width = this.nextHighestPowerOfTwo(objToCopyFrom.width);
 				tmpcanvas.height = this.nextHighestPowerOfTwo(objToCopyFrom.height);

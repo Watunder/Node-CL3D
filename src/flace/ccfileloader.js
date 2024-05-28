@@ -6,124 +6,57 @@
  * @private
  */
 export class CCFileLoader {
-	constructor (filetoload, useArrayBufferReturn) {
+	constructor(filetoload, useArrayBufferReturn) {
 		this.FileToLoad = filetoload;
-		this.xmlhttp = false;
 		this.useArrayBufferReturn = useArrayBufferReturn;
-		// init xmlhttp
 
-		if (!this.xmlhttp && typeof XMLHttpRequest != 'undefined') 
-		{
-			try 
-			{
-				this.xmlhttp = new XMLHttpRequest();
-			}
-			catch (e) 
-			{
-				this.xmlhttp = false;
-			}
-		}
-
-		if (!this.xmlhttp && window.createRequest) 
-		{
-			try 
-			{
-				this.xmlhttp = window.createRequest();
-			}
-			catch (e) 
-			{
-				this.xmlhttp = false;
-			}
-		}
+		this.Controller = new AbortController();
 	}
-	
-	// functions
-	
-	load(functionCallBack, functionCallBackOnError)
-	{
-		if (this.xmlhttp == false)
-		{
-			CL3D.gCCDebugOutput.printError("Your browser doesn't support AJAX");
-			return;
+
+	load(functionCallBack, functionCallBackOnError) {
+		const me = this;
+		const signal = this.Controller.signal;
+
+		try {
+			fetch(this.FileToLoad, { signal })
+				.then((response) => {
+					if (!response.ok) {
+						let reportedError = false;
+
+						if (response.status != 200 && response.status != 0 && response.status != null) {
+							if (functionCallBackOnError) {
+								functionCallBackOnError('');
+								reportedError = true;
+							}
+							else
+								console.log("Could not open file " + me.FileToLoad + " (status:" + response.status + ")");
+						}
+					}
+					if (this.useArrayBufferReturn)
+						return response.arrayBuffer();
+					else
+						return response.text();
+				})
+				.then((data) => {
+					if (functionCallBack)
+						functionCallBack(data);
+				})
 		}
-		
-		var me = this;
-		
-		try
-		{
-			this.xmlhttp.open("GET", this.FileToLoad, true);
-			
-			// XMLHttpRequest.responseType is an enumerated value that defines the response type. 
-			// It can have the following values:
-			// "arraybuffer", "blob", "text, "document"
-			if (this.useArrayBufferReturn)
-				this.xmlhttp.responseType = "arraybuffer";
-		}
-		catch(e)
-		{
+		catch (e) {
 			if (functionCallBackOnError)
 				functionCallBackOnError(e.message);
-			else
-			{
-				CL3D.gCCDebugOutput.printError("Could not open file " + this.FileToLoad + ": " + e.message);
-				
-				// chrome doesn't allow loading local files anymore, check if this was the case
-				var browserVersion = navigator.appVersion; 
-				if (browserVersion != null && browserVersion.indexOf('Trident') != -1)
-					CL3D.gCCDebugOutput.printError("<i>Use a web server to run files in IE. Or start them from CopperCube.</i>", true);
+			else {
+				console.log("Could not open file " + this.FileToLoad + ": " + e.message);
 			}
-			
-			return;
-		}
-		
-		//this.xmlhttp.overrideMimeType("text/plain; charset=x-user-defined");
-		
-		this.xmlhttp.onreadystatechange = function() 
-		{ 
-			if (me.xmlhttp.readyState == 4) 
-			{
-				var reportedError = false;
-				
-				if (me.xmlhttp.status != 200 && me.xmlhttp.status != 0 && me.xmlhttp.status != null)
-				{
-					if (functionCallBackOnError)
-					{
-						functionCallBackOnError('');
-						reportedError = true;
-					}
-					else
-						CL3D.gCCDebugOutput.printError("Could not open file " + me.FileToLoad + " (status:" + me.xmlhttp.status + ")" );
-				}
-				
-				if (!reportedError && functionCallBack)
-					functionCallBack(me.xmlhttp.response); 
-			}
-		}
-		
-		try
-		{
-			this.xmlhttp.send(null);
-		}
-		catch(e)
-		{
-			if (functionCallBackOnError)
-				functionCallBackOnError('');
-			else
-				CL3D.gCCDebugOutput.printError("Could not open file " + me.FileToLoad); // + ": " + e.message);
-			return;
 		}
 	};
-	
-	// abort function
-	abort()
-	{
-		try
-		{
-			this.xmlhttp.abort();
+
+	abort() {
+		try {
+			this.Controller.abort();
 		}
-		catch(e)
-		{
-			//console.log("Could not abort " + me.FileToLoad); 
+		catch (e) {
+			console.log("Could not abort " + me.FileToLoad);
 		}
 	}
 };

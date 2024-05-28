@@ -41,7 +41,7 @@ export { BinaryStream } from "./binarystream.js";
 export * from "./utils/jsinflate.js";
 export { base64DecodeChars, base64decode } from "./utils/base64.js";
 
-export { ScriptingInterface, AnimatorExtensionScript, ExtensionScriptProperty, ActionExtensionScript } from "./scriptinginterface.js";
+export { gScriptingInterface, ScriptingInterface, AnimatorExtensionScript, ExtensionScriptProperty, ActionExtensionScript } from "./scriptinginterface.js";
 
 export { Global_PostEffectsDisabled, Scene } from "./flace/flacescene.js";
 export { Free3dScene } from "./flace/flacefree3dscene.js";

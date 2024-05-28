@@ -301,7 +301,7 @@ export class SkinnedMesh {
 		}
 
 		// debug output infos
-		//CL3D.gCCDebugOutput.print("HasAnimation:" + this.HasAnimation + " Roots:" + this.RootJoints.length + " Frames:" + this.AnimationFrames);
+		//console.log("HasAnimation:" + this.HasAnimation + " Roots:" + this.RootJoints.length + " Frames:" + this.AnimationFrames);
 	}
 
 	/**

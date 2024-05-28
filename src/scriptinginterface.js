@@ -16,7 +16,7 @@ import * as CL3D from "./main.js";
 /**
  * @type {CL3D.ScriptingInterface}
  */
-let gScriptingInterface = null;
+export let gScriptingInterface = null;
 
 /**
  * @private
@@ -180,7 +180,7 @@ export class ScriptingInterface {
 	 */
 	executeCode(code) {
 		try {
-			return eval(code);
+			return (new Function(code))();
 		}
 		catch (err) {
 			console.log(err);
@@ -217,11 +217,6 @@ export class ScriptingInterface {
 		this.StoredExtensionScriptActionHandlers.push(handler);
 
 		var actionid = this.StoredExtensionScriptActionHandlers.length - 1;
-		if (this.StoredExtensionScriptActionHandlers[actionid]) {
-			var node = gScriptingInterface.CurrentlyActiveScene.getRootSceneNode();
-
-			this.StoredExtensionScriptActionHandlers[actionid].execute(node, null, true);
-		}
 
 		return actionid;
 	}
@@ -350,8 +345,6 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 		this.ScriptIndex = -1;
 		this.bIsAttachedToCamera = false;
 		this.SMGr = scenemanager;
-
-		this.firstTime = true;
 	}
 
 	/**
@@ -418,11 +411,6 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 			this.initScript(n, engine);
 
 		if (this.ScriptIndex != -1) {
-			if (this.firstTime) {
-				this.initScript(n, engine, true);
-				this.firstTime = false;
-			}
-
 			// run script like this:
 			// _ccbScriptCache[0].onAnimate(ccbGetSceneNodeFromId(thescenenodeid), timeMs);
 			try {
@@ -442,51 +430,41 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	/**
 	 * @private
 	 */
-	initScript(n, engine, isCache) {
+	initScript(n, engine) {
 		if (engine.executeCode("typeof " + this.JsClassName + "== 'undefined'"))
 			return;
 
-		var executeCode = "";
+		let code = "";
 
 		// need to initialize script
-		// call something to register in global scriptCache:
-		// if (typeof _ccbScriptCache == 'undefined') _ccbScriptCache = new Array();
-		// _ccbScriptCache[0] = new behavior_MoveForward();
-		var ccbScriptName = "";
+		let ccbScriptName = "";
 
-		if (isCache) {
-			ccbScriptName = "_ccb_" + this.JsClassName;
-			executeCode += ccbScriptName + " = ";
-			executeCode += this.JsClassName;
-		}
+		this.ScriptIndex = engine.getUniqueCounterID();
 
-		else {
-			this.ScriptIndex = engine.getUniqueCounterID();
+		ccbScriptName = `_ccbScriptCache[${this.ScriptIndex}]`;
 
-			ccbScriptName = "_ccbScriptCache" + "[" + this.ScriptIndex + "]";
-			executeCode += "if (typeof _ccbScriptCache == 'undefined') _ccbScriptCache = new Array(); ";
-			executeCode += ccbScriptName;
-			executeCode += " = new " + this.JsClassName;
-			executeCode += "();";
-		}
+		code = `
+		if (typeof _ccbScriptCache == 'undefined')
+			_ccbScriptCache = new Array();
+		${ccbScriptName} = new ${this.JsClassName}();
+		`;
 
-		engine.executeCode(executeCode);
+		engine.executeCode(code);
 
 		// also, we need to init the instance with the properties the user set for this extension
-		// like here:
-		// _ccbScriptCache[0].PropName = 23;
-		// var objPrefix = "_ccbScriptCache[";
-		// objPrefix += this.ScriptIndex;
-		// objPrefix += "].";
-		var objPrefix = "this.";
+		const objPrefix = "this.";
 
-		executeCode = "try {";
-		executeCode += this.JsClassName + ".prototype._init = function() {";
-		executeCode += CL3D.ExtensionScriptProperty.generateInitJavaScriptCode(objPrefix, this.Properties);
-		executeCode += "};";
-		executeCode += "} catch(e) { }";
+		code = `
+		try {
+			${this.JsClassName}.prototype._init = function() {
+				${CL3D.ExtensionScriptProperty.generateInitJavaScriptCode(objPrefix, this.Properties)}
+			};
+		} catch(e) {
+			console.log(e);
+		}		
+		`;
 
-		engine.executeCode(executeCode);
+		engine.executeCode(code);
 
 		// and lastly, we need to register for getting events if the script has this feature
 		var bNodeIsCamera = false;
@@ -499,20 +477,17 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 
 		this.bIsAttachedToCamera = bNodeIsCamera;
 
-		// call something like
-		// try {
-		//   ccbRegisterBehaviorEventReceiver(typeof _ccbScriptCache[0].onMouseEvent != 'undefined',
-		//          typeof _ccbScriptCache[0].onKeyEvent != 'undefined');
-		// } catch(e) {}
-		executeCode = "try {";
-		executeCode += ccbScriptName + "._init();";
-		executeCode += "ccbRegisterBehaviorEventReceiver(typeof ";
-		executeCode += ccbScriptName;
-		executeCode += ".onMouseEvent != 'undefined', typeof ";
-		executeCode += ccbScriptName;
-		executeCode += ".onKeyEvent != 'undefined'); } catch(e) { }";
+		code = `
+		try {
+			${ccbScriptName}._init();
+			ccbRegisterBehaviorEventReceiver(typeof ${ccbScriptName}.onMouseEvent != 'undefined',
+												typeof ${ccbScriptName}.onKeyEvent != 'undefined');
+		} catch (e) {
+			console.log(e);
+		}
+		`;
 
-		engine.executeCode(executeCode);
+		engine.executeCode(code);
 	}
 
 	/**
@@ -547,7 +522,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 
 		this.sendMouseEvent(wasRightButton ? 4 : 2, 0);
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -572,7 +547,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	onMouseMove(event) {
 		this.sendMouseEvent(0, 0);
 	}
-	
+
 	/**
 	 * @private
 	 */
@@ -621,72 +596,50 @@ export class ExtensionScriptProperty {
 	 * @private
 	 */
 	static generateInitJavaScriptCode(objPrefix, properties) {
-		var executeCode = "";
+		let code = "";
 
-		for (var i = 0; i < properties.length; ++i) {
-			var prop = properties[i];
+		for (let i = 0; i < properties.length; ++i) {
+			let prop = properties[i];
 			if (prop == null)
 				continue;
 
-			executeCode += objPrefix;
-			executeCode += prop.Name;
-			executeCode += " = ";
-
+			let value = null;
 			switch (prop.Type) {
 				case 1: //irr::scene::EESAT_FLOAT:
-					executeCode += prop.FloatValue;
-					executeCode += "; ";
+					value = prop.FloatValue;
 					break;
 				case 2: //irr::scene::EESAT_STRING:
-					{
-						executeCode += "\"";
-						var escapedString = CL3D.ExtensionScriptProperty.stringReplace(prop.StringValue, "\"", "\\\"");
-						executeCode += escapedString;
-						executeCode += "\"; ";
-					}
+					value = "\"" + CL3D.ExtensionScriptProperty.stringReplace(prop.StringValue, "\"", "\\\"") + "\"";
 					break;
 				case 3: //irr::scene::EESAT_BOOL:
-					executeCode += prop.IntValue ? "true" : "false";
-					executeCode += "; ";
+					value = prop.IntValue ? "true" : "false";
 					break;
 				case 6: //irr::scene::EESAT_VECTOR3D:
-					executeCode += "new vector3d(";
-					executeCode += prop.VectorValue.X;
-					executeCode += ", ";
-					executeCode += prop.VectorValue.Y;
-					executeCode += ", ";
-					executeCode += prop.VectorValue.Z;
-					executeCode += "); ";
+					value = new vector3d(prop.VectorValue.X, prop.VectorValue.Y, prop.VectorValue.Z);
 					break;
 				case 7: //irr::scene::EESAT_TEXTURE:
-					executeCode += "\"";
-					executeCode += prop.TextureValue ? prop.TextureValue.Name : "";
-					executeCode += "\"; ";
+					value = "\"" + prop.TextureValue ? prop.TextureValue.Name : "" + "\"";
 					break;
 				case 8: //irr::scene::EESAT_SCENE_NODE_ID:
-					executeCode += "ccbGetSceneNodeFromId(";
-					executeCode += prop.IntValue;
-					executeCode += "); ";
+					value = ccbGetSceneNodeFromId(prop.IntValue);
 					break;
 				case 9: //irr::scene::EESAT_ACTION_REFERENCE:
-					{
-						var id = CL3D.ScriptingInterface.getScriptingInterface().registerExtensionScriptActionHandler(prop.ActionHandlerValue);
-
-						executeCode += id;
-						executeCode += "; ";
-					}
+					value = CL3D.ScriptingInterface.getScriptingInterface().registerExtensionScriptActionHandler(prop.ActionHandlerValue);
 					break;
 				case 0: //irr::scene::EESAT_INT:
 				case 5: //irr::scene::EESAT_COLOR:
 				case 4: //irr::scene::EESAT_ENUM:
 				default:
-					executeCode += prop.IntValue;
-					executeCode += "; ";
+					value = prop.IntValue;
 					break;
 			}
+
+			code += `
+				${objPrefix}${prop.Name} = ${value};
+			`;
 		}
 
-		return executeCode;
+		return code;
 	}
 
 	/**
@@ -732,7 +685,7 @@ export class ActionExtensionScript extends CL3D.Action {
 	 * @private
 	 */
 	createClone(oldNodeId, newNodeId) {
-		var a = new CL3D.Action.ActionExtensionScript();
+		var a = new CL3D.ActionExtensionScript();
 
 		a.JsClassName = this.JsClassName;
 
@@ -752,58 +705,54 @@ export class ActionExtensionScript extends CL3D.Action {
 	/**
 	 * @private
 	 */
-	execute(currentNode, sceneManager, isCache) {
+	execute(currentNode, sceneManager) {
 		if (this.JsClassName == null || this.JsClassName.length == 0 || currentNode == null)
 			return;
 
-		var engine = CL3D.ScriptingInterface.getScriptingInterface();
+		let engine = CL3D.ScriptingInterface.getScriptingInterface();
 
 		if (engine.executeCode("typeof " + this.JsClassName + "== 'undefined'"))
 			return;
 
-		var executeCode = "";
+		let code = "";
 
 		// need to initialize script
-		// call something to register in global scriptCache:
-		// _ccbScriptTmp = new action_MakeInvisible();
-		var ccbScriptName = "";
+		let ccbScriptName = "";
 
-		if (isCache) {
-			ccbScriptName = "_ccb_" + this.JsClassName;
-			executeCode += ccbScriptName + " = ";
-			executeCode += this.JsClassName;
-		}
+		ccbScriptName = "_ccbScriptTmp";
 
-		else {
-			ccbScriptName = "_ccbScriptTmp";
-			executeCode += ccbScriptName + " = new ";
-			executeCode += this.JsClassName;
-			executeCode += "();";
-		}
+		code = `
+			${ccbScriptName} = new ${this.JsClassName}();
+		`;
 
-		engine.executeCode(executeCode);
+		engine.executeCode(code);
 
 		// also, we need to init the instance with the properties the user set for this extension
-		// like here:
-		// _ccbScriptTmp.PropName = 23;
-		var objPrefix = "this.";
+		const objPrefix = "this.";
 
-		executeCode = "try { ";
-		executeCode += this.JsClassName + ".prototype._init = function() {";
-		executeCode += CL3D.ExtensionScriptProperty.generateInitJavaScriptCode(objPrefix, this.Properties);
-		executeCode += "};";
-		executeCode += "} catch(e) { }";
+		code = `
+		try {
+			${this.JsClassName}.prototype._init = function() {
+				${CL3D.ExtensionScriptProperty.generateInitJavaScriptCode(objPrefix, this.Properties)}
+			}
+		} catch(e) {
+			console.log(e);
+		}
+		`;
 
-		engine.executeCode(executeCode);
+		engine.executeCode(code);
 
 		// run script like this:
-		// _ccbScriptTmp.execute(ccbGetSceneNodeFromId(currentNodeId));
-		executeCode = "try { ";
-		executeCode += ccbScriptName + "._init();";
-		executeCode += ccbScriptName + ".execute(ccbGetSceneNodeFromId(";
-		executeCode += currentNode.Id;
-		executeCode += ")); } catch(e) { }";
 
-		engine.executeCode(executeCode);
+		code = `
+		try {
+			${ccbScriptName}._init();
+			${ccbScriptName}.execute(ccbGetSceneNodeFromId(${currentNode.Id});
+		} catch(e) {
+			console.log(e);
+		}
+		`;
+
+		engine.executeCode(code);
 	}
 };
