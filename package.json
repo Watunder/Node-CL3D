@@ -1,9 +1,13 @@
 {
   "type": "module",
-  "devDependencies": {
+  "dependencies": {
     "@kmamal/gl": "*",
     "@kmamal/sdl": "*",
     "canvas": "*",
+    "nc-screen": "*"
+  },
+  "devDependencies": {
+    "jest": "*",
     "rollup": "*",
     "@rollup/plugin-terser": "*",
     "@typhonjs-build-test/esm-d-ts": "*"
