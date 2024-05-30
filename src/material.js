@@ -76,10 +76,10 @@ export class Material {
 	/** 
 	 * Solid material, constant for using in {@link Material.Type}, specifying the type of the material.
 	 * Simply a single texture shown as diffuse material.
-	 * @const 
+	 * @static 
 	 * @public
 	 */
-	EMT_SOLID = 0;
+	static EMT_SOLID = 0;
 
 	//Material.EMT_SOLID_2_LAYER						= 1;
 
@@ -87,10 +87,10 @@ export class Material {
 	 * Lightmapped material, constant for using in {@link Material.Type}, specifying the type of the material.
 	 * There should be 2 textures: The first texture layer is a diffuse map, the second is a light map. This is 
 	 * the standard lightmap technique: The lightmap is multiplied onto the first texture.
-	 * @const 
+	 * @static 
 	 * @public
 	 */
-	EMT_LIGHTMAP = 2;
+	static EMT_LIGHTMAP = 2;
 
 	//Material.EMT_LIGHTMAP_ADD						= 3;
 	//Material.EMT_LIGHTMAP_M2						= 4;
@@ -107,54 +107,54 @@ export class Material {
 	/** 
 	 * Reflective material for creating metallic looking survaces, constant for using in {@link Material.Type}, specifying the type of the material.
 	 * There should be 2 textures: The first texture layer is a diffuse map, the second is the refleced surface.
-	 * @const 
+	 * @static 
 	 * @public
 	 */
-	EMT_REFLECTION_2_LAYER = 11;
+	static EMT_REFLECTION_2_LAYER = 11;
 
 	/** 
 	 * Transparent additive material, constant for using in {@link Material.Type}, specifying the type of the material.
 	 * Only the first texture is used. The new color is calculated by simply adding the source color and the destination color.
 	 * This means if for example a billboard using a texture with black background and a red circle on it is drawn with this material,
 	 * the result is that only the red circle will be drawn a little bit transparent, and everything which was black is 100% transparent and not visible.
-	 * @const 
+	 * @static 
 	 * @public
 	 */
-	EMT_TRANSPARENT_ADD_COLOR = 12;
+	static EMT_TRANSPARENT_ADD_COLOR = 12;
 
 	/** 
 	 * Transparent material based on the texture alpha channel, constant for using in {@link Material.Type}, specifying the type of the material.
 	 * The final color is blended together from the destination color and the texture color, using the alpha channel value as blend factor. Only first texture is used
-	 * @const 
+	 * @static 
 	 * @public
 	 */
-	EMT_TRANSPARENT_ALPHA_CHANNEL = 13;
+	static EMT_TRANSPARENT_ALPHA_CHANNEL = 13;
 
 
 	/** 
 	 * Transparent reflective material for creating metallic looking survaces, constant for using in {@link Material.Type}, specifying the type of the material.
 	 * There should be 2 textures: The first texture layer is a diffuse map including an alpha channel for transparency, the second is the refleced surface.
-	 * @const 
+	 * @static 
 	 * @public
 	 */
-	EMT_TRANSPARENT_REFLECTION_2_LAYER = 16;
+	static EMT_TRANSPARENT_REFLECTION_2_LAYER = 16;
 
 	/** 
 	 * Normal mapped material. Expects tangents and binormals to be existing in the mesh buffer, they are usually precalculated by the CopperCube editor.
 	 * There should be 2 textures: The first texture layer is a diffuse map, the second is the normal map.
-	 * @const 
+	 * @static 
 	 * @public
 	 */
-	EMT_NORMAL_MAP_SOLID = 17;
+	static EMT_NORMAL_MAP_SOLID = 17;
 
 	/** 
 	 * Transparent material based on the texture alpha channel, constant for using in {@link Material.Type}, specifying the type of the material.
 	 * The final color is blended together from the destination color and the texture color, using the alpha channel value as blend factor. Only first texture is used.
 	 * If the alpha value is < 0.5, the pixel is discarded.
-	 * @const 
+	 * @static 
 	 * @public
 	 */
-	EMT_TRANSPARENT_ALPHA_CHANNEL_REF = 14;
+	static EMT_TRANSPARENT_ALPHA_CHANNEL_REF = 14;
 
 	//Material.EMT_TRANSPARENT_VERTEX_ALPHA			= 15;
 	//Material.EMT_NORMAL_MAP_SOLID					= 17;
@@ -167,17 +167,17 @@ export class Material {
 
 	/** 
 	 * Solid material, blends based on vertex alpha between the two set textures. Used for terrain rendering.
-	 * @const 
+	 * @static 
 	 * @public
 	 */
-	EMT_SOLID_VERTEX_ALPHA_TWO_TEXTURE_BLEND = 25;
+	static EMT_SOLID_VERTEX_ALPHA_TWO_TEXTURE_BLEND = 25;
 
 	/** 
 	 * Like EMT_TRANSPARENT_ALPHA_CHANNEL_REF but moves by the wind, like for  moving grass or leaves.
-	 * @const 
+	 * @static 
 	 * @public
 	 */
-	EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS = 26;
+	static EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS = 26;
 
 	constructor() {
 		this.Type = 0;
@@ -221,9 +221,9 @@ export class Material {
 	 * @public
 	 */
 	doesNotUseDepthMap() {
-		return this.Type == this.EMT_TRANSPARENT_ADD_COLOR ||
-			this.Type == this.EMT_TRANSPARENT_ALPHA_CHANNEL ||
-			this.Type == this.EMT_TRANSPARENT_REFLECTION_2_LAYER;
+		return this.Type == CL3D.Material.EMT_TRANSPARENT_ADD_COLOR ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_REFLECTION_2_LAYER;
 	}
 	/**
 	 * Returns true if the described material is transparent, used by SceneNodes to check if they
@@ -231,10 +231,10 @@ export class Material {
 	 * @public
 	 */
 	isTransparent() {
-		return this.Type == this.EMT_TRANSPARENT_ADD_COLOR ||
-			this.Type == this.EMT_TRANSPARENT_ALPHA_CHANNEL ||
-			this.Type == this.EMT_TRANSPARENT_ALPHA_CHANNEL_REF ||
-			this.Type == this.EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS ||
-			this.Type == this.EMT_TRANSPARENT_REFLECTION_2_LAYER;
+		return this.Type == CL3D.Material.EMT_TRANSPARENT_ADD_COLOR ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS ||
+			this.Type == CL3D.Material.EMT_TRANSPARENT_REFLECTION_2_LAYER;
 	}
 }

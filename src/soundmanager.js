@@ -1,8 +1,6 @@
 //+ Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
-//import * as CL3D from "../main.js";
-
 import * as CL3D from "./main.js";
 
 /**
@@ -247,7 +245,7 @@ export class SoundSource {
 		this.Name = name;
 
 		var a = null;
-		try // some browsers (IE) don't support the audio element
+		try
 		{
 			a = new Audio();
 			a.src = name;

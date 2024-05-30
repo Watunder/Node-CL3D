@@ -44,7 +44,7 @@ export class ActionSetActiveCamera extends CL3D.Action {
 		if (nodeToHandle != null) {
 			if (nodeToHandle.getType() == 'camera') {
 				if (this.Engine) {
-					//CL3D.gCCDebugOutput.print("Setting camera to" + nodeToHandle.Name);
+					//console.log("Setting camera to" + nodeToHandle.Name);
 					this.Engine.setActiveCameraNextFrame(nodeToHandle);
 				}
 			}

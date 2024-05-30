@@ -5,6 +5,11 @@
 import * as CL3D from "../main.js";
 
 /**
+ * @type {CL3D.SceneNode}
+ */
+let gCurrentJScriptNode = null;
+
+/**
  * @private
  * @constructor
  * @class
@@ -29,10 +34,10 @@ export class ActionExecuteJavaScript extends CL3D.Action {
 	 * @private
 	 */
 	execute(currentNode, sceneManager) {
-		CL3D.gCurrentJScriptNode = currentNode;
+		gCurrentJScriptNode = currentNode;
 
-		eval(this.JScript);
+		(new Function(this.JScript))();
 
-		CL3D.gCurrentJScriptNode = null;
+		gCurrentJScriptNode = null;
 	}
 };

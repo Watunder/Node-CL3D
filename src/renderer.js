@@ -3,8 +3,8 @@
 // This file is part of the CopperLicht engine, (c) by N.Gebhardt
 
 import * as CL3D from "./main.js";
-import createContext from '@kmamal/gl'
-import Canvas from "canvas";
+import { createContext } from "./share/createContext.js";
+import { createCanvas } from "./share/createCanvas.js";
 
 const GLSL = String.raw;
 
@@ -1165,7 +1165,7 @@ export class Renderer {
 	 * You can use this to set the variables and uniforms in a custom shader by using this callback.
 	 * The first parameter of the function is the material type id, which gets returned for example by createMaterialType().
 	 * @example
-	 * let engine = startCopperLichtFromFile('3darea', 'test.ccbjs');
+	 * let engine = startCopperLichtFromFile(document.getElementById('3darea'), 'test.ccbjs');
 	 *
 	 * // [...] create a shader and material here using for example
 	 * // let newMaterialType = engine.getRenderer().
@@ -2320,7 +2320,7 @@ export class Renderer {
 
 		//console.log("drawBegin");
 		// adjust size
-		this.ensuresizeok();
+		this.ensuresizeok(this.width, this.height);
 
 		// clear graphics here
 		let gl = this.gl;
@@ -2356,7 +2356,8 @@ export class Renderer {
 		let gl = this.gl;
 
 		//gl.flush();
-		gl.swap();
+		if (gl.swap)
+			gl.swap();
 
 		//console.log("drawEnd");
 	}
@@ -2389,16 +2390,21 @@ export class Renderer {
 	/**
 	 * @private
 	 */
-	ensuresizeok() {
-		// if (this.canvas == null || this.gl == null)
-		// 	return;
+	ensuresizeok(width, height) {
+		if (this.gl == null)
+			return;
 
-		// if (this.width == this.canvas.width &&
-		// 	this.height == this.canvas.height)
-		// 	return;
+		if (this.canvas) {
+			if (this.width == this.canvas.width &&
+				this.height == this.canvas.height)
+				return;
 
-		// this.width = this.canvas.width;
-		// this.height = this.canvas.height;
+			this.width = this.canvas.width;
+			this.height = this.canvas.height;
+		} else {
+			this.width = width;
+			this.height = height;
+		}
 
 		let gl = this.gl;
 
@@ -2411,16 +2417,22 @@ export class Renderer {
 	/**
 	 * @private
 	 */
-	init(width, height, native) {
-		this.gl = null;
+	init(width, height, options, canvas) {
 		this.width = width;
 		this.height = height;
-		try {
-			this.gl = createContext(this.width, this.height, { window: native }); // { antialias: true }
-			this.UsesWebGL2 = true;
-		}
-		catch (e) {
-		}
+		this.canvas = canvas;
+
+		this.gl = null;
+		this.gl = createContext(width, height, options, canvas);
+
+		this.UsesWebGL2 = true;
+		// try {
+		// 	this.gl = this.canvas.getContext("webgl2", {alpha: false}); //{antialias: true}
+		// 	this.UsesWebGL2 = true;
+		// }
+		// catch (e) {
+		// 	console.log(e);
+		// }
 
 		if (this.gl == null) {
 			return false;
@@ -2429,7 +2441,7 @@ export class Renderer {
 		else {
 			this.removeCompatibilityProblems();
 			this.initWebGL();
-			this.ensuresizeok();
+			this.ensuresizeok(width, height);
 		}
 
 		return true;
@@ -3058,7 +3070,7 @@ export class Renderer {
 
 			else {
 				// webgl 2
-				ext = gl.getExtension('EXT_color_buffer_float');
+				let ext = gl.getExtension('EXT_color_buffer_float');
 				if (!ext)
 					return null;
 				this.ExtFloat2 = ext;
@@ -3282,7 +3294,7 @@ export class Renderer {
 
 		if (!this.isPowerOfTwo(origwidth) || !this.isPowerOfTwo(origheight)) {
 			// Scale up the texture to the next highest power of two dimensions.
-			let tmpcanvas = Canvas.createCanvas();
+			let tmpcanvas = createCanvas();
 			tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
 			tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
 			let tmpctx = tmpcanvas.getContext("2d");
@@ -3338,7 +3350,7 @@ export class Renderer {
 
 		if (!this.isPowerOfTwo(origwidth) || !this.isPowerOfTwo(origheight)) {
 			// Scale up the texture to the next highest power of two dimensions.
-			let tmpcanvas = Canvas.createCanvas();
+			let tmpcanvas = createCanvas();
 			tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
 			tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
 			let tmpctx = tmpcanvas.getContext("2d");
@@ -3447,7 +3459,7 @@ export class Renderer {
 
 		if (!this.isPowerOfTwo(objToCopyFrom.width) || !this.isPowerOfTwo(objToCopyFrom.height)) {
 			// Scale up the texture to the next highest power of two dimensions.
-			let tmpcanvas = Canvas.createCanvas();
+			let tmpcanvas = createCanvas();
 			if (tmpcanvas != null) {
 				tmpcanvas.width = this.nextHighestPowerOfTwo(objToCopyFrom.width);
 				tmpcanvas.height = this.nextHighestPowerOfTwo(objToCopyFrom.height);
