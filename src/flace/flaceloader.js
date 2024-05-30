@@ -208,7 +208,7 @@ export class FlaceLoader {
 				{
 					case 0:
 						b = {}; //temp
-						b.CurrentScene = CL3D.engine.Document.getCurrentScene();
+						b.CurrentScene = CL3D.gDocument.getCurrentScene();
 						b.getRootSceneNode = function(){return b.CurrentScene.RootNode};
 						b.registerSceneNodeAnimatorForEvents = b.CurrentScene.registerSceneNodeAnimatorForEvents;
 						b.RegisteredSceneNodeAnimatorsForEventsList = b.CurrentScene.RegisteredSceneNodeAnimatorsForEventsList;

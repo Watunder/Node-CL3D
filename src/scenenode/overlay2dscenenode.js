@@ -2,6 +2,8 @@
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
+import { createCanvas } from "../share/createCanvas.js";
+
 /**
  * A simple 2d overlay scene node which draws a 2d area over the 3d scene. Useful for displaying text, images and similar.
  * @class Scene Node which draws a 2d overlay with color, image and/or text
@@ -338,7 +340,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		this.destroyTextTextures(renderer);
 
 		// create new CL3D.Textures
-		var canvas = document.createElement("canvas");
+		var canvas = createCanvas();
 		if (canvas == null)
 			return;
 
@@ -347,7 +349,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 
 		var ctx = null;
 
-		try // some browsers don't support the 2D mode (IE WebGL)
+		try
 		{
 			ctx = canvas.getContext("2d");
 			if (ctx == null)

@@ -5,21 +5,25 @@ import * as CL3D from "../main.js";
 import { getDevicePixelRatio } from "../share/getDevicePixelRatio.js";
 
 /**
+ * @type {CL3D.CCDocument}
+ */
+export let gDocument = new CL3D.CCDocument();
+
+/**
  * Creates an instance of the CopperLicht 3D engine by loading the scene from a CopperCube file.
- * @param elementIdOfCanvas The id of the canvas in your html document.
- * @param filetoload a filename such as 'test.ccbjs' or 'test.ccbz' which will be loaded, displayed and animated by the 3d engine.
- * .ccbjs and .ccbz files can be created using the <a href="http://www.ambiera.com/coppercube/index.html" target="_blank">CopperCube editor</a>,
- * it is free to use for 14 days.
- * @param loadingScreenText {String} optional parameter specifying a loadingScreen text. Setting this to a text like "Loading" will cause
+ * @param {String} filetoload a filename such as 'test.ccbjs' or 'test.ccbz' which will be loaded, displayed and animated by the 3d engine.
+ * .ccbjs and .ccbz files can be created using {@link http://www.ambiera.com/coppercube/index.html | the CopperCube editor}.
+ * @param {HTMLCanvasElement=} mainElement The id of the canvas in your html document.
+ * @param {String=} loadingScreenText specifying a loadingScreen text. Setting this to a text like "Loading" will cause
  * a loading screen with this text to appear while the file is being loaded.
- * @param noWebGLText {String} optional parameter specifying a text to show when there is no webgl.
- * @param fullpage {Boolean} optional  parameter, set to true to expand canvas automatically to the full browser size.
- * @param pointerLockForFPSCameras {Boolean} optional  parameter, set to true to automatically use pointer lock for FPS cameras
+ * @param {String=} loadingScreenBackgroundColor  specifying a loadingScreen backfround color.
+ * @param {String=} noWebGLText specifying a text to show when there is no webgl.
+ * @param {Boolean=} fullpage set to true to expand canvas automatically to the full browser size.
  * @public
  * @returns {CL3D.CopperLicht} the instance of the CopperLicht engine
  */
-export const startCopperLichtFromFile = function (elementIdOfCanvas, filetoload, loadingScreenText, noWebGLText, fullpage, pointerLockForFPSCameras, loadingScreenBackgroundColor) {
-	let engine = new CL3D.CopperLicht(elementIdOfCanvas, true, null, false, loadingScreenText, noWebGLText, fullpage, pointerLockForFPSCameras, loadingScreenBackgroundColor);
+export const startCopperLichtFromFile = function (filetoload, mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullpage) {
+	let engine = new CL3D.CopperLicht(mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullpage);
 	engine.load(filetoload);
 	return engine;
 }
@@ -29,19 +33,17 @@ export const startCopperLichtFromFile = function (elementIdOfCanvas, filetoload,
  * You can create an instance of this class using for example {@link startCopperLichtFromFile}, but using
  * code like this will work of course as well:
  * @example
- * var engine = new CL3D.CopperLicht('yourCanvasID');
+ * var engine = new CL3D.CopperLicht(document.getElementById('yourCanvasID'));
  * engine.load('somefile.ccbz');
  * @class The main class of the CopperLicht engine, representing the 3D engine itself.
  * @param elementIdOfCanvas id of the canvas element embedded in the html, used to draw 3d graphics.
  * @param showInfoTexts if set to true, this shows loading indicators and error texts. If set to false no text is shown and
  * you have to do this yourself.
- * @param fps {Number} frames per second to draw. Uses a default of 60 if set to null.
  * @param showFPSCounter {Boolean} set to true to show a frames per second counter
  * @param loadingScreenText {String} optional parameter specifying a loadingScreen text. Setting this to a text like "Loading" will cause
  * a loading screen with this text to appear while the file is being loaded.
  * @param noWebGLText {String} optional parameter specifying a text to show when there is no webgl.
  * @param fullpage {Boolean} optional  parameter, set to true to expand canvas automatically to the full browser size.
- * @param pointerLockForFPSCameras {Boolean} optional  parameter, set to true to automatically use pointer lock for FPS cameras
  *
  * @constructor
  */
@@ -50,7 +52,7 @@ export class CopperLicht {
 	 * Event handler called before animating the scene. You can use this to manipulate the 3d scene every frame.
 	 * An example how to use it looks like this:
 	 * @example
-	 * var engine = startCopperLichtFromFile('3darea', 'test.ccbz');
+	 * var engine = startCopperLichtFromFile('test.ccbz', document.getElementById('3darea'));
 	 *
 	 * engine.OnAnimate = function()
 	 * {
@@ -69,7 +71,7 @@ export class CopperLicht {
 	 * mouse events in your game. Return 'true' if you handled the event yourself and don't want the 3D scene to reveive this
 	 * event. An example how to use it looks like this:
 	 * @example
-	 * var engine = startCopperLichtFromFile('3darea', 'test.ccbz');
+	 * var engine = startCopperLichtFromFile('test.ccbz', document.getElementById('3darea'));
 	 *
 	 * engine.OnMouseUp = function()
 	 * {
@@ -91,7 +93,7 @@ export class CopperLicht {
 	 * mouse events in your game. Return 'true' if you handled the event yourself and don't want the 3D scene to reveive this
 	 * event. An example how to use it looks like this:
 	 * @example
-	 * var engine = startCopperLichtFromFile('3darea', 'test.ccbz');
+	 * var engine = startCopperLichtFromFile('test.ccbz', document.getElementById('3darea'));
 	 *
 	 * engine.OnMouseDown = function()
 	 * {
@@ -112,7 +114,7 @@ export class CopperLicht {
 	 * Event handler called after the scene has been completely drawn. You can use this to draw some additional stuff like
 	 * 2d overlays or similar. Use it for example like here:
 	 * @example
-	 * var engine = startCopperLichtFromFile('3darea', 'test.ccbz');
+	 * var engine = startCopperLichtFromFile('test.ccbz', document.getElementById('3darea'));
 	 *
 	 * engine.OnAfterDrawAll = function()
 	 * {
@@ -130,7 +132,7 @@ export class CopperLicht {
 	 * Event handler called before the scene will be completely drawn. You can use this to draw some additional stuff like
 	 * weapons or similar. Use it for example like here:
 	 * @example
-	 * var engine = startCopperLichtFromFile('3darea', 'test.ccbz');
+	 * var engine = startCopperLichtFromFile('test.ccbz', document.getElementById('3darea'));
 	 *
 	 * engine.OnBeforeDrawAll = function()
 	 * {
@@ -148,7 +150,7 @@ export class CopperLicht {
 	 * Event handler called after the scene description file has been loaded sucessfully (see {@link CopperLicht.load}().
 	 * Can be used to hide a loading screen after loading of the file has been finished. Use it for example like here:
 	 * @example
-	 * var engine = startCopperLichtFromFile('3darea', 'test.ccbz');
+	 * var engine = startCopperLichtFromFile('test.ccbz', document.getElementById('3darea'));
 	 *
 	 * engine.OnLoadingComplete = function()
 	 * {
@@ -158,19 +160,15 @@ export class CopperLicht {
 	 */
 	OnLoadingComplete = null;
 
-	constructor(elementIdOfCanvas, showInfoTexts, fps, showFPSCounter, loadingScreenText, noWebGLText, fullpage, pointerLockForFPSCameras, loadingScreenBackgroundColor) {
-		if ((showInfoTexts == null || showInfoTexts == true) && CL3D.gCCDebugInfoEnabled) {
-			/// TODO
-		}
-
+	constructor(mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullpage) {
+		//
 		this.FPS = 60;
 		this.DPR = getDevicePixelRatio();
-		this.ElementIdOfCanvas = elementIdOfCanvas;
-		this.VideoElement = document.getElementById("video");
-		this.TextElement = document.getElementById("text");
-		this.MainElement = document.getElementById(this.ElementIdOfCanvas);
-		this.Document = new CL3D.CCDocument();
+
+		//
+		this.MainElement = mainElement;
 		this.TheRenderer = null;
+		this.IsBrowser = this.MainElement ? true : false;
 		this.IsPaused = false;
 		this.NextCameraToSetActive = null;
 		this.TheTextureManager = new CL3D.TextureManager();
@@ -185,18 +183,8 @@ export class CopperLicht {
 		this.requestPointerLockAfterFullscreen = false;
 		this.pointerIsCurrentlyLocked = false;
 		this.playingVideoStreams = new Array();
-		this.pointerLockForFPSCameras = pointerLockForFPSCameras;
 
-		this.fullpage = fullpage ? true : false;
-		if (this.fullpage)
-			this.initMakeWholePageSize();
-
-		if (noWebGLText == null)
-			this.NoWebGLText = "Error: This browser does not support WebGL (or it is disabled).<br/>See <a href=\"www.ambiera.com/copperlicht/browsersupport.html\">here</a> for details.";
-
-		else
-			this.NoWebGLText = noWebGLText;
-
+		//
 		this.RegisteredAnimatorsForKeyUp = new Array();
 		this.RegisteredAnimatorsForKeyDown = new Array();
 
@@ -213,18 +201,25 @@ export class CopperLicht {
 
 		this.LastCameraDragTime = 0; // flag to disable AnimatorOnClick actions when an AnimatorCameraFPS is currently dragging the camera
 
+		//
 		this.LoadingDialog = null;
 		if (loadingScreenText != null)
 			this.createTextDialog(true, loadingScreenText, loadingScreenBackgroundColor);
 
+		if (noWebGLText == null)
+			this.NoWebGLText = "Error: This browser does not support WebGL (or it is disabled).<br/>See <a href=\"www.ambiera.com/copperlicht/browsersupport.html\">here</a> for details.";
+		else
+			this.NoWebGLText = noWebGLText;
+
+		this.fullpage = fullpage ? true : false;
+		if (this.fullpage)
+			this.initMakeWholePageSize();
+
 		this.updateCanvasTopLeftPosition();
 
-		if (fps)
-			this.FPS = fps;
-
 		// redraw loading animator every few seconds
-		var me = this;
-		setInterval(function () { me.loadingUpdateIntervalHandler(); }, 500);
+		const me = this;
+		setInterval(() => { me.loadingUpdateIntervalHandler(); }, 500);
 
 		// init scripting
 		CL3D.ScriptingInterface.getScriptingInterface().setEngine(this);
@@ -234,20 +229,26 @@ export class CopperLicht {
 		// redraw every few seconds
 		const me = this;
 		const interval = 1000.0 / this.FPS;
-		let lastUpdate = CL3D.CLTimer.getTime();
-		const running = (now) => {
-			let elapsed = now - lastUpdate;
+
+		if (typeof globalThis.requestAnimationFrame == 'undefined') {
+			setInterval(() => { me.draw3DIntervalHandler(); }, interval);
+		}
+		else {
+			let lastUpdate = CL3D.CLTimer.getTime();
+			const running = (now) => {
+				let elapsed = now - lastUpdate;
+				globalThis.requestAnimationFrame(running);
+
+				if (elapsed >= interval) {
+					me.draw3DIntervalHandler(now);
+
+					lastUpdate = now - (elapsed % interval);
+					// also adjusts for your interval not being
+					// a multiple of requestAnimationFrame's interval (usually 16.7ms)
+				}
+			};
 			globalThis.requestAnimationFrame(running);
-
-			if (elapsed >= interval) {
-				me.draw3DIntervalHandler(now);
-
-				lastUpdate = now - (elapsed % interval);
-				// also adjusts for your interval not being
-				// a multiple of requestAnimationFrame's interval (usually 16.7ms)
-			}
-		};
-		globalThis.requestAnimationFrame(running);
+		}
 	}
 
 	/**
@@ -275,81 +276,87 @@ export class CopperLicht {
 	 * @return {CL3D.Scene}
 	 */
 	getScene() {
-		if (this.Document == null)
-			return null;
-
-		return this.Document.getCurrentScene();
+		return gDocument.getCurrentScene();
 	}
 
 	/**
 	 * @private
 	 */
 	registerEventHandlers() {
-		// key evt receiver
-		var me = this;
-		document.onkeydown = function (evt) { me.handleKeyDown(evt); };
-		document.onkeyup = function (evt) { me.handleKeyUp(evt); };
+		if (this.IsBrowser) {
+			// key evt receiver
+			const me = this;
+			document.onkeydown = (evt) => { me.handleKeyDown(evt); };
+			document.onkeyup = (evt) => { me.handleKeyUp(evt); };
 
-		var c = this.MainElement;
-		if (c != null) {
-			c.onmousemove = function (evt) { me.handleMouseMove(evt); };
-			c.onmousedown = function (evt) { me.handleMouseDown(evt); };
-			c.onmouseup = function (evt) { me.handleMouseUp(evt); };
+			const canvas = this.MainElement;
+			if (canvas != null) {
+				canvas.onmousemove = (evt) => { me.handleMouseMove(evt); };
+				canvas.onmousedown = (evt) => { me.handleMouseDown(evt); };
+				canvas.onmouseup = (evt) => { me.handleMouseUp(evt); };
 
-			c.onmouseover = function (evt) { me.MouseIsInside = true; };
-			c.onmouseout = function (evt) { me.MouseIsInside = false; };
+				canvas.onmouseover = (evt) => { me.MouseIsInside = true; };
+				canvas.onmouseout = (evt) => { me.MouseIsInside = false; };
 
-			this.setupEventHandlersForFullscreenChange();
+				this.setupEventHandlersForFullscreenChange();
 
-			try {
-				var w = function (evt) { me.handleMouseWheel(evt); };
-				c.addEventListener('mousewheel', w, false);
-				c.addEventListener('DOMMouseScroll', w, false);
-			} catch (e) { }
+				try {
+					const w = (evt) => { me.handleMouseWheel(evt); };
+					canvas.addEventListener('mousewheel', w, false);
+					canvas.addEventListener('DOMMouseScroll', w, false);
+				} catch (e) {
+					console.log(e);
+				}
 
-			// additionally, add touch support
-			try {
-				var touchstart = function (evt) {
-					// detect pinch start
-					if (evt.touches != null) {
-						me.IsTouchPinching = evt.touches.length == 2;
-						if (me.IsTouchPinching)
-							me.StartTouchPinchDistance = me.getPinchDistance(evt);
-					}
+				// additionally, add touch support
+				try {
+					const touchstart = (evt) => {
+						// detect pinch start
+						if (evt.touches != null) {
+							me.IsTouchPinching = evt.touches.length == 2;
+							if (me.IsTouchPinching)
+								me.StartTouchPinchDistance = me.getPinchDistance(evt);
+						}
 
-					// emulate normal mouse down
-					if (me.handleMouseDown(evt.changedTouches[0]))
-						me.handleEventPropagation(evt, true);
-				};
-				var touchend = function (evt) {
-					me.IsTouchPinching = false;
-
-					// emulate normal mouse up
-					if (me.handleMouseUp(evt.changedTouches[0]))
-						me.handleEventPropagation(evt, true);
-				};
-				var touchmove = function (evt) {
-					if (me.IsTouchPinching && evt.touches != null && evt.touches.length >= 2) {
-						// emulate mouse wheel, user it pinching
-						var dist = me.getPinchDistance(evt);
-						var delta = dist - me.StartTouchPinchDistance;
-						me.StartTouchPinchDistance = dist;
-						me.sendMouseWheelEvent(delta);
-					}
-
-					else {
-						// emular normal mouse move
-						if (me.handleMouseMove(evt.changedTouches[0]))
+						// emulate normal mouse down
+						if (me.handleMouseDown(evt.changedTouches[0]))
 							me.handleEventPropagation(evt, true);
-					}
-				};
+					};
+					const touchend = (evt) => {
+						me.IsTouchPinching = false;
 
-				c.addEventListener("touchstart", touchstart, false);
-				c.addEventListener("touchend", touchend, false);
-				c.addEventListener("touchcancel", touchend, false);
-				c.addEventListener("touchleave", touchend, false);
-				c.addEventListener("touchmove", touchmove, false);
-			} catch (e) { }
+						// emulate normal mouse up
+						if (me.handleMouseUp(evt.changedTouches[0]))
+							me.handleEventPropagation(evt, true);
+					};
+					const touchmove = (evt) => {
+						if (me.IsTouchPinching && evt.touches != null && evt.touches.length >= 2) {
+							// emulate mouse wheel, user it pinching
+							let dist = me.getPinchDistance(evt);
+							let delta = dist - me.StartTouchPinchDistance;
+							me.StartTouchPinchDistance = dist;
+							me.sendMouseWheelEvent(delta);
+						}
+
+						else {
+							// emular normal mouse move
+							if (me.handleMouseMove(evt.changedTouches[0]))
+								me.handleEventPropagation(evt, true);
+						}
+					};
+
+					canvas.addEventListener("touchstart", touchstart, false);
+					canvas.addEventListener("touchend", touchend, false);
+					canvas.addEventListener("touchcancel", touchend, false);
+					canvas.addEventListener("touchleave", touchend, false);
+					canvas.addEventListener("touchmove", touchmove, false);
+				} catch (e) {
+					console.log(e);
+				}
+			}
+		}
+		else {
+
 		}
 	}
 
@@ -377,7 +384,10 @@ export class CopperLicht {
 	 * @param functionToCallWhenLoaded (optional) a function to call when the file has been loaded
 	*/
 	load(filetoload, importIntoExistingDocument, functionToCallWhenLoaded) {
-		if (!this.createRenderer()) {
+		if (this.MainElement == null)
+			return;
+
+		if (!this.createRenderer(1280, 720, { alpha: false }, this.MainElement)) {
 			this.createTextDialog(false, this.NoWebGLText);
 			return false;
 		}
@@ -393,16 +403,12 @@ export class CopperLicht {
 	/**
 	 * @private
 	 */
-	createRenderer(width = 1280, height = 720, options = { alpha: false }) {
+	createRenderer(width, height, options, canvas) {
 		if (this.TheRenderer != null)
 			return true;
 
-		var canvaselement = this.MainElement;
-		if (canvaselement == null)
-			return false;
-
 		this.TheRenderer = new CL3D.Renderer(this.TheTextureManager);
-		this.TheRenderer.init(width, height, options, canvaselement);
+		this.TheRenderer.init(width, height, options, canvas);
 
 		if (this.TheTextureManager)
 			this.TheTextureManager.TheRenderer = this.TheRenderer;
@@ -437,12 +443,6 @@ export class CopperLicht {
 
 		this.MainElement.setAttribute("width", w * this.DPR);
 		this.MainElement.setAttribute("height", h * this.DPR);
-
-		// this.VideoElement.style.width = w + "px";
-		// this.VideoElement.style.height = h + "px";
-
-		// this.VideoElement.setAttribute("width", w * this.DPR);
-		// this.VideoElement.setAttribute("height", h * this.DPR);
 	}
 
 	/**
@@ -455,16 +455,6 @@ export class CopperLicht {
 
 		// draw
 		this.draw3dScene(timeMs);
-
-		// update fps counter
-		if (CL3D.gCCDebugInfoEnabled) {
-			var renderScene = this.Document.getCurrentScene();
-			var additionalText = null;
-
-			//if (renderScene != null)
-			//	additionalText = " skinned meshes rendered: " + renderScene.SkinnedMeshesRenderedLastTime;
-			/// TODO: FPS
-		}
 	}
 
 	/**
@@ -507,7 +497,7 @@ export class CopperLicht {
 		}
 
 		else {
-			///
+			/// TODO
 		}
 	}
 
@@ -532,11 +522,11 @@ export class CopperLicht {
 			// var blob = new Blob([docJSON], {type: "text/plain;charset=utf-8"});
 			// saveAs(blob, "doc.json");
 			if (!importIntoExistingDocument ||
-				this.Document == null ||
-				(this.Document != null && this.Document.Scenes.length == 0)) {
+				gDocument == null ||
+				(gDocument != null && gDocument.Scenes.length == 0)) {
 				// default behavior, load document and replace all data.
 				// Also, this is forced to do if there isn't a current document or scene.
-				this.Document = doc;
+				gDocument = doc;
 
 				// store fileconent for later possible reload (RestartSceneAction)
 				if (loader.LoadedAReloadAction) {
@@ -557,7 +547,7 @@ export class CopperLicht {
 				if (!copyRootNodeChildren || !newRootNodeChildrenParent) {
 					for (var sceneNr = 0; sceneNr < doc.Scenes.length; ++sceneNr) {
 						// console.log("imported scene " + doc.Scenes[sceneNr].Name);
-						this.Document.addScene(doc.Scenes[sceneNr]);
+						gDocument.addScene(doc.Scenes[sceneNr]);
 					}
 
 				}
@@ -570,7 +560,7 @@ export class CopperLicht {
 	 */
 	startFirstSceneAfterEverythingLoaded() {
 		// set active scene
-		this.gotoScene(this.Document.getCurrentScene());
+		this.gotoScene(gDocument.getCurrentScene());
 
 		// draw
 		this.draw3dScene();
@@ -588,7 +578,7 @@ export class CopperLicht {
 	 * @public
 	 */
 	draw3dScene(timeMs) {
-		if (this.Document == null || this.TheRenderer == null)
+		if (gDocument == null || this.TheRenderer == null)
 			return;
 
 
@@ -598,7 +588,7 @@ export class CopperLicht {
 		this.updateCanvasTopLeftPosition();
 
 		this.internalOnBeforeRendering();
-		var renderScene = this.Document.getCurrentScene();
+		var renderScene = gDocument.getCurrentScene();
 
 		if (!this.IsPaused && renderScene) {
 			if (this.updateAllVideoStreams()) // at least one video is playing if it returns true
@@ -655,8 +645,8 @@ export class CopperLicht {
 	 * @public
 	 */
 	getScenes() {
-		if (this.Document)
-			return this.Document.Scenes;
+		if (gDocument)
+			return gDocument.Scenes;
 
 		return 0;
 	}
@@ -666,10 +656,10 @@ export class CopperLicht {
 	 * @public
 	 */
 	addScene(scene) {
-		if (this.Document) {
-			this.Document.Scenes.push(scene);
-			if (this.Document.Scenes.length == 1)
-				this.Document.setCurrentScene(scene);
+		if (gDocument) {
+			gDocument.Scenes.push(scene);
+			if (gDocument.Scenes.length == 1)
+				gDocument.setCurrentScene(scene);
 		}
 	}
 
@@ -680,10 +670,10 @@ export class CopperLicht {
 	 * @public
 	 */
 	gotoSceneByName(scenename, ignorecase) {
-		if (!this.Document)
+		if (!gDocument)
 			return false;
 
-		var scenes = this.Document.Scenes;
+		var scenes = gDocument.Scenes;
 		var name = scenename;
 		if (ignorecase)
 			name = name.toLowerCase();
@@ -719,7 +709,7 @@ export class CopperLicht {
 
 		var activeCamera = null;
 
-		this.Document.setCurrentScene(scene);
+		gDocument.setCurrentScene(scene);
 
 		// make sprites of old scene invisible
 		//if (CurrentActiveScene)
@@ -803,7 +793,7 @@ export class CopperLicht {
 		CL3D.ScriptingInterface.getScriptingInterface().setActiveScene(scene);
 
 		// set upate mode
-		scene.setRedrawMode(this.Document.UpdateMode);
+		scene.setRedrawMode(gDocument.UpdateMode);
 		scene.forceRedrawNextFrame();
 
 		// done
@@ -818,7 +808,7 @@ export class CopperLicht {
 		if (this.NextCameraToSetActive == null)
 			return;
 
-		var scene = this.Document.getCurrentScene();
+		var scene = gDocument.getCurrentScene();
 		if (scene == null)
 			return;
 
@@ -1318,7 +1308,7 @@ export class CopperLicht {
 	 * @public
 	 */
 	reloadScene(sceneName) {
-		if (!sceneName || !this.Document)
+		if (!sceneName || !gDocument)
 			return false;
 
 		if (this.LastLoadedFileContent == null)
@@ -1327,10 +1317,10 @@ export class CopperLicht {
 		var scene = null;
 		var sceneidx = -1;
 
-		for (var i = 0; i < this.Document.Scenes.length; ++i) {
-			if (sceneName == this.Document.Scenes[i].Name) {
+		for (var i = 0; i < gDocument.Scenes.length; ++i) {
+			if (sceneName == gDocument.Scenes[i].Name) {
 				sceneidx = i;
-				scene = this.Document.Scenes[i];
+				scene = gDocument.Scenes[i];
 				break;
 			}
 		}
@@ -1343,10 +1333,10 @@ export class CopperLicht {
 			this.LastLoadedFilename, this.TheTextureManager, this.TheMeshCache, this);
 
 		if (newscene != null) {
-			var currentlyActive = this.Document.getCurrentScene() == scene;
+			var currentlyActive = gDocument.getCurrentScene() == scene;
 
 			// replace old scene with new scene
-			this.Document.Scenes[sceneidx] = newscene;
+			gDocument.Scenes[sceneidx] = newscene;
 
 			// restart the scene if it is currently active
 			if (currentlyActive)
@@ -1451,12 +1441,14 @@ export class CopperLicht {
 	 * Notifies the engine if a pointer lock was used
 	 */
 	requestPointerLock() {
-		var canvas = this.MainElement;
+		const canvas = this.MainElement;
 
 		if (canvas) {
-			canvas.requestPointerLock = canvas['requestPointerLock'] ||
+			canvas.requestPointerLock =
+				canvas['requestPointerLock'] ||
 				canvas['mozRequestPointerLock'] ||
 				canvas['webkitRequestPointerLock'];
+
 			canvas.requestPointerLock();
 		}
 	}
@@ -1466,7 +1458,7 @@ export class CopperLicht {
 	 * Notifies the engine if a pointer lock was used
 	 */
 	onPointerLockChanged() {
-		var canvas = this.MainElement;
+		const canvas = this.MainElement;
 
 		if (document['PointerLockElement'] === canvas ||
 			document['pointerLockElement'] === canvas ||
@@ -1487,9 +1479,9 @@ export class CopperLicht {
 	 * Handlers for pointer lock and fullscreen change
 	 */
 	setupEventHandlersForFullscreenChange() {
-		var me = this;
-		var fullscreenChange = function () { me.onFullscreenChanged(); };
-		var pointerLockChange = function () { me.onPointerLockChanged(); };
+		const me = this;
+		const fullscreenChange = () => { me.onFullscreenChanged(); };
+		const pointerLockChange = () => { me.onPointerLockChanged(); };
 
 		document.addEventListener('fullscreenchange', fullscreenChange, false);
 		document.addEventListener('mozfullscreenchange', fullscreenChange, false);

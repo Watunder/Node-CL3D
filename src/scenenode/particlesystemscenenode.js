@@ -11,7 +11,7 @@ import * as CL3D from "../main.js";
  * @example 
  * // Example showing how to create a particle system:
  * // create the 3d engine
- * var engine = new CL3D.CopperLicht('3darea');
+ * var engine = new CL3D.CopperLicht(document.getElementById('3darea'));
  * 
  * if (!engine.initRenderer())
  * 	return; // this browser doesn't support WebGL

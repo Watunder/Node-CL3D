@@ -180,7 +180,7 @@ export class ScriptingInterface {
 	 */
 	executeCode(code) {
 		try {
-			return (new Function(code))();
+			return (new Function("return " + code))();
 		}
 		catch (err) {
 			console.log(err);
@@ -431,7 +431,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	 * @private
 	 */
 	initScript(n, engine) {
-		if (engine.executeCode("typeof " + this.JsClassName + "== 'undefined'"))
+		if (engine.executeCode(`typeof ${this.JsClassName} == 'undefined'`))
 			return;
 
 		let code = "";
@@ -711,7 +711,7 @@ export class ActionExtensionScript extends CL3D.Action {
 
 		let engine = CL3D.ScriptingInterface.getScriptingInterface();
 
-		if (engine.executeCode("typeof " + this.JsClassName + "== 'undefined'"))
+		if (engine.executeCode(`typeof ${this.JsClassName} == 'undefined'`))
 			return;
 
 		let code = "";

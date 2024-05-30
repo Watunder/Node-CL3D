@@ -10,7 +10,7 @@ export default [
         ],
         output: {
             format: 'esm',
-            file: './dist/cl3d.mjs'
+            file: './dist/cl3d.js'
         }
     }
 ]

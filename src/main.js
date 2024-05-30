@@ -44,9 +44,9 @@ export { base64DecodeChars, base64decode } from "./utils/base64.js";
 export { gScriptingInterface, ScriptingInterface, AnimatorExtensionScript, ExtensionScriptProperty, ActionExtensionScript } from "./scriptinginterface.js";
 
 export { Global_PostEffectsDisabled, Scene } from "./flace/flacescene.js";
-export { Free3dScene } from "./flace/flacefree3dscene.js";
 export { CCDocument } from "./flace/flacedocument.js";
+export { Free3dScene } from "./flace/flacefree3dscene.js";
 export { CCFileLoader } from "./flace/ccfileloader.js";
 export { FlaceLoader } from "./flace/flaceloader.js";
 
-export { CopperLicht, startCopperLichtFromFile } from "./flace/flace.js";
+export { gDocument, CopperLicht, startCopperLichtFromFile } from "./flace/flace.js";

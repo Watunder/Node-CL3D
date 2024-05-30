@@ -8,14 +8,13 @@ if (typeof globalThis.WebGLRenderingContext == "undefined") {
     })
 }
 else {
-    createContextImpl = (width, height, options, canvaselement) => {
+    createContextImpl = (width, height, options, canvas) => {
         width = width | 0;
         height = height | 0;
         if (!(width > 0 && height > 0)) {
             return null;
         }
-
-        const canvas = canvaselement;
+        
         if (!canvas) {
             return null;
         }
@@ -73,6 +72,6 @@ else {
     }
 }
 
-export const createContext = (width, height, options, canvaselement) => {
-    return createContextImpl(width, height, options, canvaselement);
+export const createContext = (width, height, options, canvas) => {
+    return createContextImpl(width, height, options, canvas);
 }

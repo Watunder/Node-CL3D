@@ -4,12 +4,14 @@
     "@kmamal/gl": "*",
     "@kmamal/sdl": "*",
     "canvas": "*",
-    "nc-screen": "*"
+    "nc-screen": "*",
+    "steamworks.js": "*"
   },
   "devDependencies": {
     "jest": "*",
     "rollup": "*",
     "@rollup/plugin-terser": "*",
-    "@typhonjs-build-test/esm-d-ts": "*"
+    "@typhonjs-build-test/esm-d-ts": "*",
+    "bpkg": "*"
   }
 }
