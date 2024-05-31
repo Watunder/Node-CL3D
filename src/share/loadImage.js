@@ -25,6 +25,6 @@ else {
     }
 }
 
-export const loadImage = async (src, options) => {
+export const loadImage = (src, options) => {
     return loadImageImpl(src, options);
 }

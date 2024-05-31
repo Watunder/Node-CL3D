@@ -53,6 +53,8 @@ export class FlaceLoader {
 	{
 		var a = this.Filename,
 			b = a.lastIndexOf("/");
+		if(b == -1)
+			b = a.lastIndexOf("\\");
 		if(b != -1) a = a.substring(0, b + 1);
 		this.PathRoot = a
 	}
@@ -156,7 +158,7 @@ export class FlaceLoader {
 		if(a <= 0) return "";
 		return this.readUTFBytes(a)
 	}
-	
+
 	fixedFromCharCode(a)
 	{
 		if(a > 65535)

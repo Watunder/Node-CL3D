@@ -2547,7 +2547,7 @@ export class Renderer {
 		let finalFramentShader = fragmentShaderSource;
 
 		let head_append = GLSL`
-		#version 100
+		//#version 100
 		precision mediump float;
 		`;
 
@@ -3457,18 +3457,16 @@ export class Renderer {
 		let texture = gl.createTexture();
 		let objToCopyFrom = t.Image;
 
-		if (!this.isPowerOfTwo(objToCopyFrom.width) || !this.isPowerOfTwo(objToCopyFrom.height)) {
-			// Scale up the texture to the next highest power of two dimensions.
-			let tmpcanvas = createCanvas();
-			if (tmpcanvas != null) {
-				tmpcanvas.width = this.nextHighestPowerOfTwo(objToCopyFrom.width);
-				tmpcanvas.height = this.nextHighestPowerOfTwo(objToCopyFrom.height);
-				let tmpctx = tmpcanvas.getContext("2d");
-				tmpctx.drawImage(objToCopyFrom,
-					0, 0, objToCopyFrom.width, objToCopyFrom.height,
-					0, 0, tmpcanvas.width, tmpcanvas.height);
-				objToCopyFrom = tmpcanvas;
-			}
+		// Scale up the texture to the next highest power of two dimensions.
+		let tmpcanvas = createCanvas();
+		if (tmpcanvas != null) {
+			tmpcanvas.width = this.nextHighestPowerOfTwo(objToCopyFrom.width);
+			tmpcanvas.height = this.nextHighestPowerOfTwo(objToCopyFrom.height);
+			let tmpctx = tmpcanvas.getContext("2d");
+			tmpctx.drawImage(objToCopyFrom,
+				0, 0, objToCopyFrom.width, objToCopyFrom.height,
+				0, 0, tmpcanvas.width, tmpcanvas.height);
+			objToCopyFrom = tmpcanvas;
 		}
 
 		gl.bindTexture(gl.TEXTURE_2D, texture);
