@@ -492,6 +492,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 * @private
 	 */
 	setKeyBool(down, code) {
+		/// Browser
 		// 37 = left arrow key
 		// 38 = up arrow key
 		// 39 = right arrow key
@@ -501,7 +502,17 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 		// 68 = d or D
 		// 83 = s or S
 		// 32 = space
-		if (code == 37 || code == 65) {
+		/// SDL
+		// 80 = left arrow key
+		// 82 = up arrow key
+		// 79 = right arrow key
+		// 81 = down arrow key
+		// 4 = a or A
+		// 26 = w or W
+		// 7 = d or D
+		// 22 = s or S
+		// 44 = space
+		if (code == 37 || code == 65 || code == 80 || code == 4) {
 			this.leftKeyDown = down;
 
 			// fix chrome key down problem (key down sometimes doesn't arrive)
@@ -509,7 +520,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 			return true;
 		}
 
-		if (code == 39 || code == 68) {
+		if (code == 39 || code == 68 || code == 79 || code == 7) {
 			this.rightKeyDown = down;
 
 			// fix chrome key down problem (key down sometimes doesn't arrive)
@@ -517,7 +528,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 			return true;
 		}
 
-		if (code == 38 || code == 87) {
+		if (code == 38 || code == 87 || code == 82 || code == 26) {
 			this.upKeyDown = down;
 
 			// fix chrome key down problem (key down sometimes doesn't arrive)
@@ -525,7 +536,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 			return true;
 		}
 
-		if (code == 40 || code == 83) {
+		if (code == 40 || code == 83 || code == 81 || code == 22) {
 			this.downKeyDown = down;
 
 			// fix chrome key down problem (key down sometimes doesn't arrive)
@@ -533,7 +544,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 			return true;
 		}
 
-		if (code == 32) {
+		if (code == 32 || code == 44) {
 			// jump key
 			this.jumpKeyDown = down;
 			return true;

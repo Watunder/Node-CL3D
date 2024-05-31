@@ -257,8 +257,8 @@ export class CopperLicht {
 	 * @public
 	 * @param {Integer} width the width of the rendering surface in pixels.
 	 * @param {Integer} height the height of the rendering surface in pixels.
-	 * @param {WebGLContextAttributes} options 
-	 * @param {HTMLCanvasElement=} canvas 
+	 * @param {WebGLContextAttributes} options
+	 * @param {HTMLCanvasElement=} canvas
 	 * @return returns true if successful and false if not (if the browser does not support webgl,
 	 * for example).
 	 */
@@ -388,17 +388,17 @@ export class CopperLicht {
 	 * @param functionToCallWhenLoaded (optional) a function to call when the file has been loaded
 	*/
 	load(filetoload, importIntoExistingDocument, functionToCallWhenLoaded) {
-		if (this.MainElement == null)
-			return;
-
-		if (!this.createRenderer(1280, 720, { alpha: false }, this.MainElement)) {
-			this.createTextDialog(false, this.NoWebGLText);
-			return false;
+		if (this.MainElement)
+		{
+			if (!this.createRenderer(1280, 720, { alpha: false }, this.MainElement)) {
+				this.createTextDialog(false, this.NoWebGLText);
+				return false;
+			}
 		}
 
 		var me = this;
 		this.LoadingAFile = true;
-		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1);
+		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1, this.IsBrowser);
 		l.load(function (p) { me.parseFile(p, filetoload, importIntoExistingDocument); if (functionToCallWhenLoaded) functionToCallWhenLoaded(); });
 
 		return true;
@@ -518,7 +518,7 @@ export class CopperLicht {
 	 */
 	parseFile(filecontent, filename, importIntoExistingDocument, copyRootNodeChildren, newRootNodeChildrenParent) {
 		this.LoadingAFile = false;
-
+		
 		var loader = new CL3D.FlaceLoader();
 		var doc = loader.loadFile(filecontent, filename, this.TheTextureManager, this.TheMeshCache, this, copyRootNodeChildren, newRootNodeChildrenParent);
 		if (doc != null) {
@@ -878,11 +878,12 @@ export class CopperLicht {
 	 * @private
 	 */
 	handleEventPropagation(evt, usedToDoAction) {
-		if (usedToDoAction) {
+		if (this.IsBrowser && usedToDoAction) {
 			try {
 				evt.preventDefault();
 			}
 			catch (e) {
+				console.log(e);
 			}
 
 			return true;
@@ -937,33 +938,41 @@ export class CopperLicht {
 	/**
 	 * @private
 	 */
-	getMousePosXFromEvent(e) {
+	getMousePosXFromEvent(evt) {
 		if (this.isInPointerLockMode()) {
 			var w = this.TheRenderer.getWidth();
 			return (w / 2.0);
 		}
 
-		if (e.pageX)
-			return e.pageX - this.CanvasTopLeftX;
-
-		else
-			return e.clientX - this.MainElement.offsetLeft + document.body.scrollLeft;
+		if (this.IsBrowser) {
+			if (evt.pageX)
+				return evt.pageX - this.CanvasTopLeftX;
+			else
+				return evt.clientX - this.MainElement.offsetLeft + document.body.scrollLeft;
+		}
+		else {
+			return evt.x;
+		}
 	}
 
 	/**
 	 * @private
 	 */
-	getMousePosYFromEvent(e) {
+	getMousePosYFromEvent(evt) {
 		if (this.isInPointerLockMode()) {
 			var h = this.TheRenderer.getHeight();
 			return (h / 2.0);
 		}
 
-		if (e.pageY)
-			return e.pageY - this.CanvasTopLeftY;
-
-		else
-			return e.clientY - this.MainElement.offsetTop + document.body.scrollTop;
+		if (this.IsBrowser) {
+			if (evt.pageY)
+				return evt.pageY - this.CanvasTopLeftY;
+			else
+				return evt.clientY - this.MainElement.offsetTop + document.body.scrollTop;
+		}
+		else {
+			return evt.y;
+		}
 	}
 
 	/**
