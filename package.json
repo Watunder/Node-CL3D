@@ -5,13 +5,15 @@
     "@kmamal/sdl": "*",
     "canvas": "*",
     "nc-screen": "*",
-    "steamworks.js": "*"
+    "steamworks.js": "*",
+    "file-fetch": "*"
   },
   "devDependencies": {
     "jest": "*",
     "rollup": "*",
     "@rollup/plugin-terser": "*",
     "@typhonjs-build-test/esm-d-ts": "*",
-    "bpkg": "*"
+    "bpkg": "*",
+    "minimist": "*"
   }
 }
