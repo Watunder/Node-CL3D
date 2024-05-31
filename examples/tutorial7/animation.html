@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<script type="text/javascript" src="../../dist/spector.bundle.js"></script>
+<body>
+	<div align="center">
+		<canvas id="3darea">
+		</canvas>
+	</div>
+	<script type="module">
+		import * as CL3D from "../../dist/cl3d.js";
+
+		CL3D.startCopperLichtFromFile('copperlichtdata/animation.ccbjs', document.getElementById('3darea'), 'Loading $PROGRESS$...<br/><br/><img style="max-width:50%" src="copperlichtdata/coppercubeloadinglogo.png" />', "#000000", 'Error: This browser does not support WebGL (or it is disabled).<br/>See <a href=\"http://www.ambiera.com/copperlicht/browsersupport.html\">here</a> for details.', false);
+	
+		const spector = new SPECTOR.Spector();
+		spector.displayUI();
+	</script>
+	<br/>
+	<div align="center">
+		<small>Created using <a href="http://www.ambiera.com/coppercube/index.html">CopperCube</a></small>	</div>
+</body>
+</html>
