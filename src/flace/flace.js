@@ -255,11 +255,15 @@ export class CopperLicht {
 	 * Initializes the renderer, you need to call this if you create the engine yourself without
 	 * using one of the startup functions like {@link startCopperLichtFromFile}.
 	 * @public
+	 * @param {Integer} width the width of the rendering surface in pixels.
+	 * @param {Integer} height the height of the rendering surface in pixels.
+	 * @param {WebGLContextAttributes} options 
+	 * @param {HTMLCanvasElement=} canvas 
 	 * @return returns true if successful and false if not (if the browser does not support webgl,
 	 * for example).
 	 */
-	initRenderer() {
-		return this.createRenderer();
+	initRenderer(width, height, options, canvas) {
+		return this.createRenderer(width, height, options, canvas);
 	}
 
 	/**

@@ -5,7 +5,7 @@ export { Vect3d } from "./vect3df.js";
 export { Vect2d } from "./vect2df.js";
 export { Box3d } from "./box3df.js";
 export { Matrix4 } from "./matrix4.js";
-export { Vertex3D, cloneVertex3D, createVertex} from "./s3dvertexunified.js";
+export { Vertex3D, cloneVertex3D, createVertex, createSimpleVertex} from "./s3dvertexunified.js";
 
 export { Mesh } from "./mesh.js";
 export { MeshBuffer } from "./meshbuffer.js";

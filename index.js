@@ -32,10 +32,10 @@ class MySceneNode extends CL3D.SceneNode {
 		// set indices and vertices
 		buf.Indices = [0, 2, 3, 2, 1, 3, 1, 0, 3, 2, 0, 1];
 
-		buf.Vertices.push(CL3D.createVertex(0, 0, 10, 0, 0));
-		buf.Vertices.push(CL3D.createVertex(10, 0, -10, 1, 0));
-		buf.Vertices.push(CL3D.createVertex(0, 20, 0, 0, 1));
-		buf.Vertices.push(CL3D.createVertex(-10, 20, -10, 1, 1));
+		buf.Vertices.push(CL3D.createSimpleVertex(0, 0, 10, 0, 0));
+		buf.Vertices.push(CL3D.createSimpleVertex(10, 0, -10, 1, 0));
+		buf.Vertices.push(CL3D.createSimpleVertex(0, 20, 0, 0, 1));
+		buf.Vertices.push(CL3D.createSimpleVertex(-10, 20, -10, 1, 1));
 
 		// set the texture of the material
 		buf.Mat.Tex1 = engine.getTextureManager().getTexture("");

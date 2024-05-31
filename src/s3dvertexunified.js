@@ -85,3 +85,16 @@ export const createVertex = function (x, y, z, nx, ny, nz, clr, s, t) {
 	vtx.TCoords2.Y = t;
 	return vtx;
 }
+
+/**
+ * @private
+ */
+export const createSimpleVertex = function (x, y, z, s, t) {
+	let vtx = new CL3D.Vertex3D(true);
+	vtx.Pos.X = x;
+	vtx.Pos.Y = y;
+	vtx.Pos.Z = z;
+	vtx.TCoords.X = s;
+	vtx.TCoords.Y = t;
+	return vtx;
+}
