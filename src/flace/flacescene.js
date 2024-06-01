@@ -27,168 +27,168 @@ const GLSL = String.raw;
  * The scene holds all {@link CL3D.SceneNode}s and is able to draw and animate them.
  */
 export class Scene {
-	/** 
+	/**
 	 * Constant for using in {@link Scene.setRedrawMode}, specifying the scene should be redrawn only when the camera changed
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static REDRAW_WHEN_CAM_MOVED = 2;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.setRedrawMode}, specifying the scene should be redrawn only when the scene has changed
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static REDRAW_WHEN_SCENE_CHANGED = 1;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.setRedrawMode}, specifying the scene should be redrawn every frame.
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static REDRAW_EVERY_FRAME = 2;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.registerNodeForRendering}, specifying the render mode of a scene node.
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static RENDER_MODE_SKYBOX = 1;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.registerNodeForRendering}, specifying the render mode of a scene node.
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static RENDER_MODE_DEFAULT = 0;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.registerNodeForRendering}, specifying the render mode of a scene node.
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static RENDER_MODE_LIGHTS = 2;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.registerNodeForRendering}, specifying the render mode of a scene node.
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static RENDER_MODE_CAMERA = 3;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.registerNodeForRendering}, specifying the render mode of a scene node.
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static RENDER_MODE_TRANSPARENT = 4;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.registerNodeForRendering}, specifying the render mode of a scene node.
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static RENDER_MODE_2DOVERLAY = 5;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.registerNodeForRendering}, specifying the render mode of a scene node.
-	 * Used by objects in order to render the fully animated scene as separate pass into their 
-	 * own render target texture. They can call drawRegistered3DNodes() for this once this pass is called. 
-	 * @static 
+	 * Used by objects in order to render the fully animated scene as separate pass into their
+	 * own render target texture. They can call drawRegistered3DNodes() for this once this pass is called.
+	 * @static
 	 * @public
-	 */	
+	 */
 	static RENDER_MODE_RTT_SCENE = 6;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.registerNodeForRendering}, specifying the render mode of a scene node.
 	 * Used by the scene manager to indicate that the current rendering call is for drawing into a shadow buffer
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static RENDER_MODE_SHADOW_BUFFER = 8;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.registerNodeForRendering}, specifying the render mode of a scene node.
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static TRANSPARENT_SOLID_AFTER_ZBUFFER_CLEAR = 9;
 
-	/** 
+	/**
 	 * Constant for using in {@link Scene.registerNodeForRendering}, specifying the render mode of a scene node.
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static RENDER_MODE_TRANSPARENT_AFTER_ZBUFFER_CLEAR = 10;
 
-	/** 
+	/**
 	 * Constant for post effect mode
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static EPOSTEFFECT_BLOOM = 0;
 
-	/** 
+	/**
 	 * Constant for post effect mode
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static EPOSTEFFECT_BLACK_AND_WHITE = 1;
 
-	/** 
+	/**
 	 * Constant for post effect mode
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static EPOSTEFFECT_INVERT = 2;
 
-	/** 
+	/**
 	 * Constant for post effect mode
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static EPOSTEFFECT_BLUR = 3;
 
-	/** 
+	/**
 	 * Constant for post effect mode
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static EPOSTEFFECT_COLORIZE = 4;
 
-	/** 
+	/**
 	 * Constant for post effect mode
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static EPOSTEFFECT_VIGNETTE = 5;
 
-	/** 
+	/**
 	 * Constant for post effect mode
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static EPOSTEFFECT_LIGHT_TRESHOLD = 6;
 
-	/** 
+	/**
 	 * Constant for post effect mode
-	 * @static 
+	 * @static
 	 * @public
-	 */	
+	 */
 	static EPOSTEFFECT_BLUR_HORIZONTAL = 7;
 
-	/** 
+	/**
 	 * Constant for post effect mode
-	 * @const 
+	 * @const
 	 * @public
-	 */	
+	 */
 	static EPOSTEFFECT_BLUR_VERTICAL = 8;
 
-	/** 
+	/**
 	 * Constant for post effect mode
-	 * @const 
+	 * @const
 	 * @public
-	 */	
+	 */
 	static EPOSTEFFECT_COUNT = 9;
 
 	/**
@@ -231,7 +231,7 @@ export class Scene {
 	ShadowMappingEnabled = false;
 
 	/**
-	 * Value for influencing which pixels are taken for in shadow and which are not. 
+	 * Value for influencing which pixels are taken for in shadow and which are not.
 	 * Depends on your scene. Tweak it so that the shadows in your scene look the way you want them to,
 	 * values like 0.001, 0.0001 or even 0.00001 are usual.
 	 * @public
@@ -256,14 +256,14 @@ export class Scene {
 
 	/**
 	 * Use orthogonal light for shadows. Usually leave this 'true'.
-	 * @public 
+	 * @public
 	 */
 	ShadowMapOrthogonal = true;
 
 	/**
-	 * this gives a way to adjust the detail: Between how long are shadows visible in 
+	 * this gives a way to adjust the detail: Between how long are shadows visible in
 	 * the distance and how detailed the shadow map is in close vicinity. Make the value bigger
-	 * (like 1.0) for longer viewable shadows but with smaller details, and smaller (like 0.2) 
+	 * (like 1.0) for longer viewable shadows but with smaller details, and smaller (like 0.2)
 	 * for detailed shadow which don't have a big view distance.
 	 * @public
 	 * @type Number
@@ -515,7 +515,7 @@ export class Scene {
 		// clear
 		this.TheSkyBoxSceneNode = null;
 
-		// animate 
+		// animate
 		var sceneChanged = false;
 
 		if (this.clearDeletionList(false))
@@ -535,7 +535,7 @@ export class Scene {
 			CL3D.ScriptingInterface.getScriptingInterface().needsRedraw();
 
 		if (!needToRedraw) {
-			//Debug.print("Don't need to redraw at all.");				
+			//Debug.print("Don't need to redraw at all.");
 			return false;
 		}
 
@@ -688,7 +688,7 @@ export class Scene {
 				break;
 
 			// find a good position for directional light so that all shadows are in the light/camera frustrum:
-			// frustrum should be minimal (to keep resolution high) and contain all objects. 
+			// frustrum should be minimal (to keep resolution high) and contain all objects.
 			// Best approach would be like this:
 			// 	- calculate BBox around visible objects
 			//	- transform the corners of the box light space (using light view matrix)
@@ -734,7 +734,7 @@ export class Scene {
 			cam.ViewMatrix.buildCameraLookAtMatrixLH(lightpos, lightTarget, upVector);
 
 			var zNear = 1.0; // cam.ZNear default is 0.1, but it works much better with 1.0
-			var zFar = Math.max(100.0, frustrumLength) * 2.0; //cam.ZFar; 
+			var zFar = Math.max(100.0, frustrumLength) * 2.0; //cam.ZFar;
 
 			if (this.ShadowMapOrthogonal)
 				cam.Projection.buildProjectionMatrixPerspectiveOrthoLH(orthoViewWidth, orthoViewWidth, zNear, zFar);
@@ -763,7 +763,7 @@ export class Scene {
 				renderer.setView(cam.ViewMatrix);
 			}
 
-			// Calculate culling 
+			// Calculate culling
 			var cullingBox = this.getCullingBBoxAndStoreCameraFrustrum(renderer,
 				renderer.getProjection(), renderer.getView(), lightpos);
 
@@ -889,7 +889,7 @@ export class Scene {
 			renderer.ShadowMapBias1 = this.ShadowMapBias1;
 			renderer.ShadowMapBias2 = this.ShadowMapBias2;
 			renderer.ShadowMapOpacity = this.ShadowMapOpacity;
-			renderer.ShadowMapBackfaceBias = this.ShadowMapBackfaceBias;
+			renderer.ShadowMapBackFaceBias = this.ShadowMapBackfaceBias;
 		}
 
 		// now do normal drawing
@@ -900,7 +900,7 @@ export class Scene {
 			this.CurrentRenderMode = CL3D.Scene.RENDER_MODE_RTT_SCENE; // note: this is done inside the loop because calling the 'render'
 
 			// method might likely cause this object to render the scene into
-			// a RTT, and then this gets set to something differently 
+			// a RTT, and then this gets set to something differently
 			// before the next RTT, so we set it back
 			this.RenderToTextureNodes[i].render(renderer);
 		}
@@ -1008,7 +1008,7 @@ export class Scene {
 			this.ActiveCamera.render(renderer);
 		}
 
-		// skybox 
+		// skybox
 		this.CurrentRenderMode = CL3D.Scene.RENDER_MODE_SKYBOX;
 		if (this.SkyBoxSceneNode)
 			this.SkyBoxSceneNode.render(renderer);
@@ -1027,7 +1027,7 @@ export class Scene {
 		var i; // i
 		var nodesRendered = 0;
 
-		// draw lights	
+		// draw lights
 		// sort lights
 		if (camPos != null && this.LightsToRender.length > 0) {
 			this.LightsToRender.sort(function (a, b) {
@@ -1509,7 +1509,7 @@ export class Scene {
 			metaselector = new CL3D.MetaTriangleSelector();
 		}
 
-		// static meshes 
+		// static meshes
 		for (var i = 0; i < ar.length; ++i) {
 			var fnode = ar[i];
 
@@ -1769,9 +1769,9 @@ export class Scene {
 		return Math.pow(2, Math.ceil(Math.log(aSize) / Math.log(2)));
 
 		// nearest would work like this:
-		// return Math.pow( 2, Math.round( Math.log( aSize ) / Math.log( 2 ) ) ); 
+		// return Math.pow( 2, Math.round( Math.log( aSize ) / Math.log( 2 ) ) );
 	}
-	
+
 	/**
 	 @private
 	*/
@@ -1791,7 +1791,7 @@ export class Scene {
 
 		var bufName = "postEffectRTT";
 		bufName += nCopyNumber;
-		bufName += "s" + sizeFactor; // prevents deleting textures too often, which causes some browser to lose the D3D context sometimes. 
+		bufName += "s" + sizeFactor; // prevents deleting textures too often, which causes some browser to lose the D3D context sometimes.
 
 		var tex = this.LastUsedRenderer.findTexture(bufName);
 
@@ -2030,7 +2030,7 @@ export class Scene {
 			}
 
 			if (shadercontent != '') {
-				// create shader 
+				// create shader
 				nPostProcessingShader = renderer.createMaterialType(renderer.vs_shader_normaltransform, shadercontent, null, null, null, shaderCallBack);
 
 				if (nPostProcessingShader == -1)

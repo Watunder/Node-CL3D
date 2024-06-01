@@ -2425,14 +2425,8 @@ export class Renderer {
 		this.gl = null;
 		this.gl = createContext(width, height, options, canvas);
 
-		this.UsesWebGL2 = true;
-		// try {
-		// 	this.gl = this.canvas.getContext("webgl2", {alpha: false}); //{antialias: true}
-		// 	this.UsesWebGL2 = true;
-		// }
-		// catch (e) {
-		// 	console.log(e);
-		// }
+		if (canvas)
+			this.UsesWebGL2 = true;
 
 		if (this.gl == null) {
 			return false;
@@ -3057,10 +3051,10 @@ export class Renderer {
 			// or else gl.checkFramebufferStatus will never return gl.FRAMEBUFFER_COMPLETE for a floating point texture
 			if (!this.UsesWebGL2) {
 				// webgl 1
-				let ext = gl.getExtension('OES_texture_float');
-				if (!ext)
+				let ext1 = gl.getExtension('OES_texture_float');
+				if (!ext1)
 					return null;
-				this.ExtFloat = ext;
+				this.ExtFloat = ext1;
 
 				let ext2 = gl.getExtension('OES_texture_float_linear'); // for linear filtering
 				if (!ext2)
@@ -3070,15 +3064,15 @@ export class Renderer {
 
 			else {
 				// webgl 2
-				let ext = gl.getExtension('EXT_color_buffer_float');
-				if (!ext)
+				let ext1 = gl.getExtension('EXT_color_buffer_float');
+				if (!ext1)
 					return null;
-				this.ExtFloat2 = ext;
+				this.ExtFloat2 = ext1;
 
-				ext = gl.getExtension('OES_texture_float_linear'); // for linear filtering
-				if (!ext)
+				let ext2 = gl.getExtension('OES_texture_float_linear'); // for linear filtering
+				if (!ext2)
 					return null;
-				this.ExtFloatLinear = ext;
+				this.ExtFloatLinear = ext2;
 			}
 		}
 
