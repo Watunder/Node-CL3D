@@ -3,17 +3,20 @@ const args = await import("minimist").then(async (module) => {
 	return module.default(process.argv.slice(2));
 });
 
+const example = args["example"] || "tutorial" + String(randomInt(1, 8));
+
 // dependcy module
-import path from "node:path";
-import url from "node:url";
+import path from "path";
+import url from "url";
 import sdl from "@kmamal/sdl";
-import * as CL3D from "./dist/cl3d.js";
+import * as CL3D from "../dist/cl3d.js";
+import { randomInt } from "crypto";
 
 // local file path
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const __example = path.join(__dirname, "examples", args["example"]);
+const __example = path.join(path.resolve(__dirname, "../"), "examples", example);
 const __exampledata = path.join(__example, "copperlichtdata");
 
 // init window
@@ -27,14 +30,18 @@ const window = sdl.video.createWindow({
 
 const { pixelWidth: width, pixelHeight: height, native } = window;
 
+window.on("close", () => {
+	process.exit();
+})
+
 // bind input
 const bindInput = (engine) => {
-	window.on("keyDown", ({ scancode: scancode, shift: shift }) => {
-		engine.handleKeyDown({ keyCode: scancode, shiftKey: shift })
+	window.on("keyDown", ({ scancode: scancode, key: key, alt: alt, shift: shift }) => {
+		engine.handleKeyDown({ keyCode: scancode, shiftKey: shift });
 	});
 
-	window.on("keyUp", ({ scancode: scancode, shift: shift }) => {
-		engine.handleKeyUp({ keyCode: scancode, shiftKey: shift })
+	window.on("keyUp", ({ scancode: scancode, key: key, alt: alt, shift: shift }) => {
+		engine.handleKeyUp({ keyCode: scancode, shiftKey: shift });
 	});
 
 	window.on("mouseMove", ({ x: x, y: y }) => {
@@ -63,7 +70,7 @@ const bindInput = (engine) => {
 }
 
 // run cl3d
-switch (args["example"] || "tutorial1") {
+switch (example) {
 	case "tutorial1":
 		{
 			// create the 3d engine
@@ -550,6 +557,6 @@ switch (args["example"] || "tutorial1") {
 
 	default:
 		{
-			console.log(`${args["example"]} does not exsit!`);
+			console.log(`${example} does not exsit!`);
 		}
 }
