@@ -189,9 +189,11 @@ export class ScriptingInterface {
 	/**
 	 * @private
 	 */
-	importCode(code) {
+	async importCode(code) {
 		try {
-			return import("data:text/javascript;charset=utf-8," + encodeURIComponent(code));
+			await import("data:text/javascript;charset=utf-8," + encodeURIComponent(code)).then(async (module) => {
+				globalThis[module.default.name] = module.default;
+			});
 		}
 		catch (err) {
 			console.log(err);
@@ -461,7 +463,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 			};
 		} catch(e) {
 			console.log(e);
-		}		
+		}
 		`;
 
 		engine.executeCode(code);

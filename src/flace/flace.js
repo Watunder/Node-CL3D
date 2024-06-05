@@ -399,7 +399,7 @@ export class CopperLicht {
 		var me = this;
 		this.LoadingAFile = true;
 		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1, this.IsBrowser);
-		l.load(function (p) { me.parseFile(p, filetoload, importIntoExistingDocument); if (functionToCallWhenLoaded) functionToCallWhenLoaded(); });
+		l.load(async (p) => { await me.parseFile(p, filetoload, importIntoExistingDocument); if (functionToCallWhenLoaded) functionToCallWhenLoaded(); });
 
 		return true;
 	}
@@ -516,11 +516,11 @@ export class CopperLicht {
 	/**
 	 * @private
 	 */
-	parseFile(filecontent, filename, importIntoExistingDocument, copyRootNodeChildren, newRootNodeChildrenParent) {
+	async parseFile(filecontent, filename, importIntoExistingDocument, copyRootNodeChildren, newRootNodeChildrenParent) {
 		this.LoadingAFile = false;
 		
 		var loader = new CL3D.FlaceLoader();
-		var doc = loader.loadFile(filecontent, filename, this.TheTextureManager, this.TheMeshCache, this, copyRootNodeChildren, newRootNodeChildrenParent);
+		var doc = await loader.loadFile(filecontent, filename, this.TheTextureManager, this.TheMeshCache, this, copyRootNodeChildren, newRootNodeChildrenParent);
 		if (doc != null) {
 			// var docJSON = JSON.stringify(JSON.decycle(doc));
 			// var blob = new Blob([docJSON], {type: "text/plain;charset=utf-8"});

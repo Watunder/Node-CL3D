@@ -7,7 +7,7 @@ import * as CL3D from "../main.js";
 /**
  * @type {CL3D.SceneNode}
  */
-let gCurrentJScriptNode = null;
+export let gCurrentJScriptNode = null;
 
 /**
  * @private

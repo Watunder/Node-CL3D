@@ -21,7 +21,7 @@ export class FlaceLoader {
 		return b
 	}
 
-	loadFile(a, b, c, e, f, g, h)
+	async loadFile(a, b, c, e, f, g, h)
 	{
 		this.CopyRootNodeChildren = g;
 		this.NewRootNodeChildrenParent = h;
@@ -44,7 +44,7 @@ export class FlaceLoader {
 		this.Document = b = new CL3D.CCDocument;
 		this.setRootPath();
 		this.Data = new CL3D.BinaryStream(a);
-		if(!this.parseFile()) return null;
+		if(!await this.parseFile()) return null;
 		this.StoredFileContent = a;
 		return b
 	}
@@ -59,7 +59,7 @@ export class FlaceLoader {
 		this.PathRoot = a
 	}
 
-	parseFile()
+	async parseFile()
 	{
 		if(this.Data.readSI32() != 1701014630) return false;
 		this.Data.readSI32();
@@ -82,7 +82,7 @@ export class FlaceLoader {
 					}
 					break;
 				case 12:
-					this.readEmbeddedFiles();
+					await this.readEmbeddedFiles();
 					break;
 				default:
 					this.SkipToNextTag()
@@ -1454,7 +1454,7 @@ export class FlaceLoader {
 			}
 	}
 
-	readEmbeddedFiles()
+	async readEmbeddedFiles()
 	{
 		for(var a = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < a;) switch (this.readTag())
 		{
@@ -1479,7 +1479,7 @@ export class FlaceLoader {
 					}
 					// var blob = new Blob([b], {type: "text/plain;charset=utf-8"});
 					// saveAs(blob, c + ".js");
-					b != null && CL3D.ScriptingInterface.getScriptingInterface().importCode(b)
+					b != null && await CL3D.ScriptingInterface.getScriptingInterface().importCode(b)
 				}
 				this.SkipToNextTag();
 				break;

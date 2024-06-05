@@ -50,3 +50,5 @@ export { CCFileLoader } from "./flace/ccfileloader.js";
 export { FlaceLoader } from "./flace/flaceloader.js";
 
 export { gDocument, CopperLicht, startCopperLichtFromFile } from "./flace/flace.js";
+
+export { initCCBCommand } from "./trunk/ccbCommand.js";
