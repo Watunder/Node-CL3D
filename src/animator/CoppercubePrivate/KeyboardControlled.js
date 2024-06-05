@@ -95,27 +95,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
      * @private
      */
     setKeyBool(down, code) {
-		/// Browser
-		// 37 = left arrow key
-		// 38 = up arrow key
-		// 39 = right arrow key
-		// 40 = down arrow key
-		// 65 = a or A
-		// 87 = w or W
-		// 68 = d or D
-		// 83 = s or S
-		// 32 = space
-		/// SDL
-		// 80 = left arrow key
-		// 82 = up arrow key
-		// 79 = right arrow key
-		// 81 = down arrow key
-		// 4 = a or A
-		// 26 = w or W
-		// 7 = d or D
-		// 22 = s or S
-		// 44 = space
-        if (code == 37 || code == 65 || code == 80 || code == 4) {
+        if (code == "a" || code == "left") {
             this.leftKeyDown = down;
 
             // fix chrome key down problem (key down sometimes doesn't arrive)
@@ -123,7 +103,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
             return true;
         }
 
-        if (code == 39 || code == 68 || code == 79 || code == 7) {
+        if (code == "d" || code == "right") {
             this.rightKeyDown = down;
 
             // fix chrome key down problem (key down sometimes doesn't arrive)
@@ -131,7 +111,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
             return true;
         }
 
-        if (code == 38 || code == 87 || code == 82 || code == 26) {
+        if (code == "w" || code == "up") {
             this.upKeyDown = down;
 
             // fix chrome key down problem (key down sometimes doesn't arrive)
@@ -139,7 +119,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
             return true;
         }
 
-        if (code == 40 || code == 83 || code == 81 || code == 22) {
+        if (code == "s" || code == "down") {
             this.downKeyDown = down;
 
             // fix chrome key down problem (key down sometimes doesn't arrive)
@@ -147,7 +127,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
             return true;
         }
 
-        if (code == 32 || code == 44) {
+        if (code == "space") {
             // jump key
             this.jumpKeyDown = down;
             return true;
@@ -161,7 +141,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
      */
     onKeyDown(evt) {
         this.ShiftIsDown = (evt.shiftKey == 1);
-        return this.setKeyBool(true, evt.keyCode);
+        return this.setKeyBool(true, evt.key);
     }
 
     /**
@@ -169,7 +149,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
      */
     onKeyUp(evt) {
         this.ShiftIsDown = (evt.shiftKey == 1);
-        return this.setKeyBool(false, evt.keyCode);
+        return this.setKeyBool(false, evt.key);
     }
 
     /**
