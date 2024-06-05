@@ -3,7 +3,7 @@ const args = await import("minimist").then(async (module) => {
 	return module.default(process.argv.slice(2));
 });
 
-const example = args["example"] || "tutorial" + String(randomInt(1, 8));
+const example = args["example"] || `tutorial${randomInt(1, 8)}`;
 
 // dependcy module
 import path from "path";
@@ -36,12 +36,18 @@ window.on("close", () => {
 
 // bind input
 const bindInput = (engine) => {
-	window.on("keyDown", ({ scancode: scancode, key: key, alt: alt, shift: shift }) => {
-		engine.handleKeyDown({ keyCode: scancode, shiftKey: shift });
+	window.on("keyDown", ({ key: key, alt: alt, shift: shift }) => {
+		if (alt == true && key == "return") {
+			window.setFullscreen(!window.fullscreen);
+
+			return true;
+		}
+
+		engine.handleKeyDown({ key: key, shiftKey: shift });
 	});
 
-	window.on("keyUp", ({ scancode: scancode, key: key, alt: alt, shift: shift }) => {
-		engine.handleKeyUp({ keyCode: scancode, shiftKey: shift });
+	window.on("keyUp", ({ key: key, alt: alt, shift: shift }) => {
+		engine.handleKeyUp({ key: key, shiftKey: shift });
 	});
 
 	window.on("mouseMove", ({ x: x, y: y }) => {
@@ -489,7 +495,7 @@ switch (example) {
 
 			let lastPlayedAnimation = 0;
 
-			window.on("keyDown", ({ scancode: scancode }) => {
+			window.on("keyDown", ({ key: key }) => {
 				let scene = engine.getScene();
 				if (!scene)
 					return;
@@ -498,7 +504,7 @@ switch (example) {
 				let soldier = scene.getSceneNodeFromName("soldier");
 
 				if (soldier) {
-					if (scancode == 42) // space has been pressed
+					if (key == "space") // space has been pressed
 					{
 						// switch to next animation
 						// select the next animation:
@@ -515,7 +521,7 @@ switch (example) {
 						soldier.setAnimation(nextAnimationName);
 					}
 					else
-						if (scancode == 6 || scancode == 32) // "c" has been pressed
+						if (key == "c") // "c" has been pressed
 						{
 							// clone soldier
 

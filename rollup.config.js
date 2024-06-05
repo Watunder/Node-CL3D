@@ -29,6 +29,7 @@ const dynamaticImportings = [
             'canvas',
             'nc-screen',
             '@kmamal/gl',
+            '@kmamal/sdl',
             'file-fetch'
         ]
     }
@@ -37,7 +38,7 @@ const dynamaticImportings = [
 let replacedImportings = {};
 if (dynamaticImportings.some(({ externalModules }) => {
     for (let i = 0; i < externalModules.length; ++i) {
-        replacedImportings[`'${externalModules[i]}'`] = `import('./bpkg/${externalModules[i]}.js')`;
+        replacedImportings[`"${externalModules[i]}"`] = `import("./bpkg/${externalModules[i]}.js")`;
     }
 }));
 
@@ -47,6 +48,7 @@ export default [
         onwarn,
         plugins: [
             generateDTS.plugin(),
+            terser()
         ],
         output: {
             format: 'esm',
@@ -68,7 +70,8 @@ export default [
         ],
         output: {
             format: 'esm',
-            dir: './dist/bundle'
+            dir: './dist/bundle',
+            chunkFileNames: '[name].js'
         },
         external: [
             ...dynamaticImportings[0].builtinModules

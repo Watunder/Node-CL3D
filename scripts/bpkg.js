@@ -14,7 +14,7 @@ packageConfig.some(({ dependencies }) => {
             release: false, // not ready
             target: 'esm',
         });
-    })
+    });
 });
 
 // TODO: copy libraries
