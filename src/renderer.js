@@ -1869,8 +1869,8 @@ export class Renderer {
 		if (program.locShadowMapBias2)
 			gl.uniform1f(program.locShadowMapBias2, this.ShadowMapBias2);
 
-		if (program.locShadowMapBackfaceBias)
-			gl.uniform1f(program.locShadowMapBackfaceBias, this.ShadowMapBackfaceBias);
+		if (process.env.RAUB_ENV && program.locShadowMapBackfaceBias)
+			gl.uniform1f(program.locShadowMapBackfaceBias, this.ShadowMapBackFaceBias);
 
 		if (program.locShadowMapOpacity)
 			gl.uniform1f(program.locShadowMapOpacity, this.ShadowMapOpacity);
@@ -2359,6 +2359,9 @@ export class Renderer {
 		if (gl.swap)
 			gl.swap();
 
+		if (process.env.RAUB_ENV)
+			this.window.swapBuffers();
+
 		//console.log("drawEnd");
 	}
 	/**
@@ -2423,7 +2426,20 @@ export class Renderer {
 		this.canvas = canvas;
 
 		this.gl = null;
-		this.gl = createContext(width, height, options, canvas);
+		let obj = createContext(width, height, options, canvas);
+		if (obj.gl) {
+			this.gl = obj.gl;
+			this.glfw = obj.glfw;
+			this.window = obj.window;
+
+			this.window.on('resize', (event) => {
+				this.ensuresizeok(event.width, event.height);
+			});
+			
+			//this.UsesWebGL2 = true;
+		}
+		else
+			this.gl = obj;
 
 		if (canvas)
 			this.UsesWebGL2 = true;
@@ -3460,7 +3476,11 @@ export class Renderer {
 			tmpctx.drawImage(objToCopyFrom,
 				0, 0, objToCopyFrom.width, objToCopyFrom.height,
 				0, 0, tmpcanvas.width, tmpcanvas.height);
-			objToCopyFrom = tmpcanvas;
+
+			if (process.env.RAUB_ENV)
+				objToCopyFrom = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
+			else
+				objToCopyFrom = tmpcanvas;
 		}
 
 		gl.bindTexture(gl.TEXTURE_2D, texture);

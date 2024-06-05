@@ -95,7 +95,8 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
      * @private
      */
     setKeyBool(down, code) {
-        code = code.toLowerCase();
+        if (code)
+            code = code.toLowerCase();
         if (code == "a" || code == "left" || code == "arrowleft") {
             this.leftKeyDown = down;
 
@@ -220,7 +221,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
 
         if (this.UseAcceleration && timeDiff) {
             if (bForward || bBackward) {
-                // accelerate normally 
+                // accelerate normally
                 if (this.AccelerationIsForward != bForward) {
                     // user change direction.
                     if (this.DecelerationSpeed == 0)

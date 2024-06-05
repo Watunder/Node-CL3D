@@ -4,14 +4,14 @@
 import * as CL3D from "../main.js";
 
 /**
- * Special scene node animator for first person shooter cameras. 
+ * Special scene node animator for first person shooter cameras.
  * This scene node animator can be attached to a {@link CL3D.CameraSceneNode} to make it act like a first person shooter.
  * By pressing the cursor keys or WASD, the camera will move and by having the mouse button pressed while moving, the camera
  * will look around.
  * @constructor
  * @public
  * @extends CL3D.Animator
- * @class Special scene node animator for first person shooter cameras. 
+ * @class Special scene node animator for first person shooter cameras.
  * @param {CL3D.CameraSceneNode} cam an instance of a {@link CL3D.CameraSceneNode} this animator will be attached to. Can be null if the camera is not yet known.
  * @param {CL3D.CopperLicht} engine An instance of the {@link CopperLicht} 3d engine, for receiving the mouse and keyboard input.
  */
@@ -25,7 +25,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	MaxVerticalAngle = 88.0;
 
 	/**
-	 * Maximal movment speed of the camera. 
+	 * Maximal movment speed of the camera.
 	 * @default 0.06
 	 * @public
 	 * @type Number
@@ -273,33 +273,33 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 		if (this.MayZoom)
 		{
 			var newFov = CL3D.radToDeg(this.Camera.getFov());
-		    
+
 			this.targetZoomValue += this.getAdditionalZoomDiff() * timeDiff;
-							    
+
 			if (this.targetZoomValue < this.minZoom)
 				this.targetZoomValue = this.minZoom;
 			if (this.targetZoomValue > this.maxZoom)
 				this.targetZoomValue = this.maxZoom;
-			    
+
 			var localZoomSpeed = this.zoomSpeed;
 			localZoomSpeed = Math.abs(this.targetZoomValue - newFov) / 8.0;
 			if (localZoomSpeed  < this.zoomSpeed)
 				localZoomSpeed  = this.zoomSpeed;
-									    
+
 			if (newFov < this.maxZoom-localZoomSpeed && newFov < this.targetZoomValue)
 			{
 				newFov += localZoomSpeed;
 				if (newFov > this.maxZoom)
 					newFov = this.maxZoom;
 			}
-		    
+
 			if (newFov > this.minZoom+localZoomSpeed && newFov > this.targetZoomValue)
 			{
 				newFov -= localZoomSpeed;
 				if (newFov < this.minZoom)
 					newFov = this.minZoom;
 			}
-    
+
 			this.Camera.setFov(CL3D.degToRad(newFov));
 		}*/
 		// change camera target with mouse
@@ -313,7 +313,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 		if (this.CursorControl != null)
 			pointerLocked = this.CursorControl.isInPointerLockMode();
 
-		var maxdiff = 300; // to limit the maximum diff in pixels			
+		var maxdiff = 300; // to limit the maximum diff in pixels
 		var ydiff = 0;
 		var RotateSpeedFactX = 1 / 50000.0;
 		var RotateSpeedFactY = 1 / 50000.0;
@@ -399,7 +399,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 			else if (this.moveByMouseDown || this.moveByPanoDrag) {
 				if (this.CursorControl.isMouseDown()) {
 					// this works nice, but not for touch controls
-					// xdiff = (this.CursorControl.getMouseX() - this.CursorControl.getMouseDownX());		
+					// xdiff = (this.CursorControl.getMouseX() - this.CursorControl.getMouseDownX());
 					// if (xdiff != 0)
 					//	this.CursorControl.LastCameraDragTime = now;
 					// so do it like this now:
@@ -464,10 +464,10 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 */
 	onMouseWheel(delta) {
 		/*this.targetZoomValue += delta * this.zoomSpeed;
-		 
+
 		 if (this.targetZoomValue < this.minZoom)
 			this.targetZoomValue = this.minZoom;
-		    
+
 		 if (this.targetZoomValue > this.maxZoom)
 			this.targetZoomValue = this.maxZoom;*/
 	}
@@ -492,7 +492,8 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 * @private
 	 */
 	setKeyBool(down, code) {
-		code = code.toLowerCase();
+		if (code)
+			code = code.toLowerCase();
 		if (code == "a" || code == "left" || code == "arrowleft") {
 			this.leftKeyDown = down;
 

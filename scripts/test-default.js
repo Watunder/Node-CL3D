@@ -3,13 +3,13 @@ const args = await import("minimist").then(async (module) => {
 	return module.default(process.argv.slice(2));
 });
 
-const example = args["example"] || `tutorial${randomInt(1, 8)}`;
+const example = args["example"] || `tutorial${randomInt(1, 9)}`;
 
 // dependcy module
 import path from "path";
 import url from "url";
 import sdl from "@kmamal/sdl";
-import * as CL3D from "../dist/cl3d.js";
+import * as CL3D from "../src/main.js";
 import { randomInt } from "crypto";
 
 // local file path
@@ -91,7 +91,7 @@ switch (example) {
 			engine.addScene(scene);
 
 			scene.setBackgroundColor(CL3D.createColor(1, 100, 0, 0));
-			scene.setRedrawMode(CL3D.Scene.REDRAW_WHEN_SCENE_CHANGED);
+			scene.setRedrawMode(CL3D.Scene.REDRAW_WHEN_CAM_MOVED);
 
 			// add a cube to test out
 			let cubenode = new CL3D.CubeSceneNode();
@@ -243,7 +243,7 @@ switch (example) {
 			engine.addScene(scene);
 
 			scene.setBackgroundColor(CL3D.createColor(1, 0, 0, 0));
-			scene.setRedrawMode(CL3D.Scene.REDRAW_WHEN_SCENE_CHANGED);
+			scene.setRedrawMode(CL3D.Scene.REDRAW_WHEN_CAM_MOVED);
 
 			// add a transparent billboard scene node with a text sign
 			for (let i = 0; i < 50; ++i) {
@@ -313,7 +313,7 @@ switch (example) {
 			engine.addScene(scene);
 
 			scene.setBackgroundColor(CL3D.createColor(1, 0, 0, 0));
-			scene.setRedrawMode(CL3D.Scene.REDRAW_WHEN_SCENE_CHANGED);
+			scene.setRedrawMode(CL3D.Scene.REDRAW_WHEN_CAM_MOVED);
 
 			// add a sky box
 			let skybox = new CL3D.SkyBoxSceneNode();
@@ -446,12 +446,12 @@ switch (example) {
 			// every time the user presses space, we want to do a collision test with the wall
 			// and create a cube where we hit the wall
 
-			window.on("keyDown", ({ scancode: scancode }) => {
+			window.on("keyDown", ({ key: key }) => {
 				let scene = engine.getScene();
 				if (!scene)
 					return;
 
-				if (scancode == 44) // space has been pressed
+				if (key == "space") // space has been pressed
 				{
 					let cam = scene.getActiveCamera();
 

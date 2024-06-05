@@ -230,8 +230,11 @@ export class CopperLicht {
 		const me = this;
 		const interval = 1000.0 / this.FPS;
 
-		if (typeof globalThis.requestAnimationFrame == 'undefined') {
-			setInterval(() => { me.draw3DIntervalHandler(); }, interval);
+		if (typeof globalThis.requestAnimationFrame == 'undefined' || process.env.RAUB_ENV) {
+			setInterval(() => { me.draw3DIntervalHandler(interval); }, interval);
+			if (process.env.RAUB_ENV) {
+				setInterval(() => { this.TheRenderer.glfw.pollEvents(); }, 0);
+			}
 		}
 		else {
 			let lastUpdate = CL3D.CLTimer.getTime();
@@ -388,8 +391,7 @@ export class CopperLicht {
 	 * @param functionToCallWhenLoaded (optional) a function to call when the file has been loaded
 	*/
 	load(filetoload, importIntoExistingDocument, functionToCallWhenLoaded) {
-		if (this.MainElement)
-		{
+		if (this.MainElement) {
 			if (!this.createRenderer(1280, 720, { alpha: false }, this.MainElement)) {
 				this.createTextDialog(false, this.NoWebGLText);
 				return false;
@@ -518,7 +520,7 @@ export class CopperLicht {
 	 */
 	async parseFile(filecontent, filename, importIntoExistingDocument, copyRootNodeChildren, newRootNodeChildrenParent) {
 		this.LoadingAFile = false;
-		
+
 		var loader = new CL3D.FlaceLoader();
 		var doc = await loader.loadFile(filecontent, filename, this.TheTextureManager, this.TheMeshCache, this, copyRootNodeChildren, newRootNodeChildrenParent);
 		if (doc != null) {

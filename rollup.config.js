@@ -19,11 +19,11 @@ const onwarn = (warning, rollupWarn) => {
     }
 }
 
-const dynamaticImportings = [
+const imports = [
     {
         builtinModules: [
             'child_process',
-            'module'
+            'module',
         ],
         externalModules: [
             'canvas',
@@ -31,12 +31,16 @@ const dynamaticImportings = [
             '@kmamal/gl',
             '@kmamal/sdl',
             'file-fetch'
+        ],
+        optionalModules: [
+            '3d-core-raub',
+            'image-raub'
         ]
     }
 ];
 
 let replacedImportings = {};
-if (dynamaticImportings.some(({ externalModules }) => {
+if (imports.some(({ externalModules }) => {
     for (let i = 0; i < externalModules.length; ++i) {
         replacedImportings[`"${externalModules[i]}"`] = `import("./bpkg/${externalModules[i]}.js")`;
     }
@@ -48,15 +52,21 @@ export default [
         onwarn,
         plugins: [
             generateDTS.plugin(),
-            terser()
+            terser(),
+            replace({
+                delimiters: ['\\b', '\\b(?!\\.)'],
+                'process.env.RAUB_ENV': false,
+                preventAssignment: true
+            })
         ],
         output: {
             format: 'esm',
             file: './dist/cl3d.js'
         },
         external: [
-            ...dynamaticImportings[0].builtinModules,
-            ...dynamaticImportings[0].externalModules,
+            ...imports[0].builtinModules,
+            ...imports[0].externalModules,
+            ...imports[0].optionalModules
         ]
     },
     {
@@ -74,7 +84,8 @@ export default [
             chunkFileNames: '[name].js'
         },
         external: [
-            ...dynamaticImportings[0].builtinModules
+            ...imports[0].builtinModules,
+            ...imports[0].optionalModules
         ]
     }
 ]
