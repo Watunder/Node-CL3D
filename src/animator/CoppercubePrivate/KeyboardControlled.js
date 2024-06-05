@@ -95,7 +95,8 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
      * @private
      */
     setKeyBool(down, code) {
-        if (code == "a" || code == "left") {
+        code = code.toLowerCase();
+        if (code == "a" || code == "left" || code == "arrowleft") {
             this.leftKeyDown = down;
 
             // fix chrome key down problem (key down sometimes doesn't arrive)
@@ -103,7 +104,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
             return true;
         }
 
-        if (code == "d" || code == "right") {
+        if (code == "d" || code == "right" || code == "arrowright") {
             this.rightKeyDown = down;
 
             // fix chrome key down problem (key down sometimes doesn't arrive)
@@ -111,7 +112,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
             return true;
         }
 
-        if (code == "w" || code == "up") {
+        if (code == "w" || code == "up" || code == "arrowup") {
             this.upKeyDown = down;
 
             // fix chrome key down problem (key down sometimes doesn't arrive)
@@ -119,7 +120,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
             return true;
         }
 
-        if (code == "s" || code == "down") {
+        if (code == "s" || code == "down" || code == "arrowdown") {
             this.downKeyDown = down;
 
             // fix chrome key down problem (key down sometimes doesn't arrive)
@@ -127,7 +128,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
             return true;
         }
 
-        if (code == "space") {
+        if (code == "space" || code == " ") {
             // jump key
             this.jumpKeyDown = down;
             return true;
@@ -139,17 +140,17 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
     /**
      * @private
      */
-    onKeyDown(evt) {
-        this.ShiftIsDown = (evt.shiftKey == 1);
-        return this.setKeyBool(true, evt.key);
+    onKeyDown(event) {
+        this.ShiftIsDown = (event.shiftKey == 1);
+        return this.setKeyBool(true, event.key);
     }
 
     /**
      * @private
      */
-    onKeyUp(evt) {
-        this.ShiftIsDown = (evt.shiftKey == 1);
-        return this.setKeyBool(false, evt.key);
+    onKeyUp(event) {
+        this.ShiftIsDown = (event.shiftKey == 1);
+        return this.setKeyBool(false, event.key);
     }
 
     /**
