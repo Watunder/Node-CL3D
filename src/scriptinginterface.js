@@ -340,6 +340,8 @@ export class ScriptingInterface {
  */
 export class AnimatorExtensionScript extends CL3D.Animator {
 	constructor(scenemanager) {
+		super();
+
 		this.JsClassName = null;
 		this.Properties = new Array();
 		this.bAcceptsMouseEvents = false;
@@ -678,6 +680,8 @@ export class ExtensionScriptProperty {
  */
 export class ActionExtensionScript extends CL3D.Action {
 	constructor() {
+		super();
+
 		this.Type = 'ExtensionScript';
 		this.Properties = new Array();
 		this.JsClassName = null;

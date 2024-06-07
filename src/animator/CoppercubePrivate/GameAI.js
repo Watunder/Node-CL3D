@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 import * as CL3D from "../../main.js";
-    
+
 /**
  * @constructor
  * @class
@@ -12,6 +12,8 @@ import * as CL3D from "../../main.js";
  */
 export class AnimatorGameAI extends CL3D.Animator {
     constructor(scene, engine) {
+        super();
+
         // constants for the commands (from coppercube editor):
         // private static const EMT_PLAYER:int = 0;
         // private static const EMT_STAND_STILL:int = 1;
@@ -74,7 +76,7 @@ export class AnimatorGameAI extends CL3D.Animator {
         this.NearestSceneNodeFromAIAnimator_maxDistance = 0;
 
     }
-        
+
     /**
      * Returns the type of the animator.
      * For the AnimatorGameAI, this will return 'gameai'.
@@ -83,7 +85,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     getType() {
         return 'gameai';
     }
-        
+
     /**
      * @private
      */
@@ -113,7 +115,7 @@ export class AnimatorGameAI extends CL3D.Animator {
 
         return a;
     }
-        
+
     /**
      * Animates the scene node it is attached to and returns true if scene node was modified.
      * @private
@@ -157,7 +159,7 @@ export class AnimatorGameAI extends CL3D.Animator {
 
             else {
                 // not reached position yet
-                // check if we possibly hit a wall. This can be done easily by getting the moving speed and 
+                // check if we possibly hit a wall. This can be done easily by getting the moving speed and
                 // checking the start position and start time
                 var cancelled = false;
 
@@ -228,7 +230,7 @@ export class AnimatorGameAI extends CL3D.Animator {
             // see if we can check for the target
             // now do high level ai calculation here
             if (this.AIType == 1 || //EMT_STAND_STILL ||
-                this.AIType == 2 || //EMT_RANDOMLY_PATROL) 
+                this.AIType == 2 || //EMT_RANDOMLY_PATROL)
                 this.AIType == 3) {
                 var attackTargetNode = this.scanForAttackTargetIfNeeded(timeMs, currentPos);
                 if (attackTargetNode != null) {
@@ -315,7 +317,7 @@ export class AnimatorGameAI extends CL3D.Animator {
 
         return changedNode;
     }
-        
+
     /**
      * returns if rotation changed, returns true/false
      * @private
@@ -366,7 +368,7 @@ export class AnimatorGameAI extends CL3D.Animator {
         node.Rot = wantedRot;
         return true;
     }
-        
+
     /**
      * @private
      */
@@ -379,7 +381,7 @@ export class AnimatorGameAI extends CL3D.Animator {
         this.CurrentCommandExpectedTickCount = 0; // invalid for this command
         this.setAnimation(node, 1); //EAT_WALK);
     }
-        
+
     /**
      * @private
      */
@@ -399,7 +401,7 @@ export class AnimatorGameAI extends CL3D.Animator {
             this.CurrentCommandExpectedTickCount = animDuration;
         }
     }
-        
+
     /**
      * @private
      */
@@ -407,7 +409,7 @@ export class AnimatorGameAI extends CL3D.Animator {
         this.CurrentCommand = 0; //EMT_DO_NOTHING;
         this.setAnimation(node, 0); //EAT_STAND);
     }
-        
+
     /**
      * @private
      */
@@ -420,7 +422,7 @@ export class AnimatorGameAI extends CL3D.Animator {
 
         var animDuration = this.setAnimation(node, 3); //EAT_DIE);
     }
-        
+
     /**
      * @private
      */
@@ -447,7 +449,7 @@ export class AnimatorGameAI extends CL3D.Animator {
 
         return this.isPositionVisibleFromPosition(pos1, pos2);
     }
-        
+
     /**
      * @private
      */
@@ -461,7 +463,7 @@ export class AnimatorGameAI extends CL3D.Animator {
 
         return true;
     }
-        
+
     /**
      * @private
      */
@@ -498,7 +500,7 @@ export class AnimatorGameAI extends CL3D.Animator {
             this.getNearestSceneNodeFromAIAnimatorAndDistance(child, currentpos, tag);
         }
     }
-        
+
     /**
      * @private
      */
@@ -520,7 +522,7 @@ export class AnimatorGameAI extends CL3D.Animator {
 
         return null;
     }
-        
+
     /**
      * @private
      */
@@ -535,7 +537,7 @@ export class AnimatorGameAI extends CL3D.Animator {
 
         return ret;
     }
-        
+
     /**
      * @private
      */
@@ -547,7 +549,7 @@ export class AnimatorGameAI extends CL3D.Animator {
         sz.Y = 0;
         return sz.getLength();
     }
-        
+
     /**
      * @private
      */
@@ -561,7 +563,7 @@ export class AnimatorGameAI extends CL3D.Animator {
 
         return "";
     }
-        
+
     /**
      * @private
      */
@@ -597,28 +599,28 @@ export class AnimatorGameAI extends CL3D.Animator {
 
         return 0;
     }
-        
+
     /**
      * @private
      */
     isCurrentlyShooting() {
         return this.CurrentlyShooting;
     }
-        
+
     /**
      * @private
      */
     getCurrentlyShootingLine() {
         return this.CurrentlyShootingLine;
     }
-        
+
     /**
      * @private
      */
     isAlive() {
         return this.Health > 0;
     }
-        
+
     /**
      * @private
      */
@@ -645,7 +647,7 @@ export class AnimatorGameAI extends CL3D.Animator {
                 this.ActionHandlerOnHit.execute(node);
         }
     }
-        
+
     /**
      * @private
      */
