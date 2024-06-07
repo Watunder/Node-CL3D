@@ -287,14 +287,14 @@ export class FlaceLoader {
 				this.Data.readInt();
 				var b = this.Data.readInt();
 				if((b & 1) != 0) this.Document.WaitUntilTexturesLoaded = true;
-				if((b & 16) != 0) console.log(CL3D.Global_PostEffectsDisabled, " = true")
+				if((b & 16) != 0) console.log(`CL3D.Global_PostEffectsDisabled = true`)
 				this.SkipToNextTag();
 				break;
 			case 37:
 				b = this.Data.readInt();
 				this.Data.readInt();
 				if((b & 1) != 0)
-					if(CL3D.gCCDebugInfoEnabled) console.log(CL3D.gCCDebugInfoEnabled, " = true");
+					if(CL3D.gCCDebugInfoEnabled) console.log(`CL3D.gCCDebugInfoEnabled = true`);
 				if((b & 2) != 0)
 				{
 					this.Data.readInt();
@@ -335,7 +335,7 @@ export class FlaceLoader {
 				a.ShadowMappingEnabled = this.Data.readBoolean();
 				a.ShadowMapBias1 = this.Data.readFloat();
 				a.ShadowMapBias2 = this.Data.readFloat();
-				a.ShadowMapBackfaceBias = this.Data.readFloat();
+				a.ShadowMapBackFaceBias = this.Data.readFloat();
 				a.ShadowMapOpacity = this.Data.readFloat();
 				a.ShadowMapCameraViewDetailFactor = this.Data.readFloat();
 				break;

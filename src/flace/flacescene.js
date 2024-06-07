@@ -252,7 +252,7 @@ export class Scene {
 	 * @public
 	 * @type Number
 	 */
-	ShadowMapBackfaceBias = 0.5;
+	ShadowMapBackFaceBias = 0.5;
 
 	/**
 	 * Use orthogonal light for shadows. Usually leave this 'true'.
@@ -889,7 +889,7 @@ export class Scene {
 			renderer.ShadowMapBias1 = this.ShadowMapBias1;
 			renderer.ShadowMapBias2 = this.ShadowMapBias2;
 			renderer.ShadowMapOpacity = this.ShadowMapOpacity;
-			renderer.ShadowMapBackFaceBias = this.ShadowMapBackfaceBias;
+			renderer.ShadowMapBackFaceBias = this.ShadowMapBackFaceBias;
 		}
 
 		// now do normal drawing

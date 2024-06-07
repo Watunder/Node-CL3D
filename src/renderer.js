@@ -1869,8 +1869,8 @@ export class Renderer {
 		if (program.locShadowMapBias2)
 			gl.uniform1f(program.locShadowMapBias2, this.ShadowMapBias2);
 
-		if (process.env.RAUB_ENV && program.locShadowMapBackfaceBias)
-			gl.uniform1f(program.locShadowMapBackfaceBias, this.ShadowMapBackFaceBias);
+		if (this.canvas || process.env.RAUB_ENV && program.locShadowMapBackFaceBias)
+			gl.uniform1f(program.locShadowMapBackFaceBias, this.ShadowMapBackFaceBias);
 
 		if (program.locShadowMapOpacity)
 			gl.uniform1f(program.locShadowMapOpacity, this.ShadowMapOpacity);
@@ -2435,8 +2435,8 @@ export class Renderer {
 			this.window.on('resize', (event) => {
 				this.ensuresizeok(event.width, event.height);
 			});
-			
-			//this.UsesWebGL2 = true;
+
+			this.UsesWebGL2 = true;
 		}
 		else
 			this.gl = obj;
@@ -2748,7 +2748,7 @@ export class Renderer {
 			program.locWorldviewprojLight2 = gl.getUniformLocation(program, "worldviewprojLight2");
 			program.locShadowMapBias1 = gl.getUniformLocation(program, "shadowMapBias1");
 			program.locShadowMapBias2 = gl.getUniformLocation(program, "shadowMapBias2");
-			program.locShadowMapBackfaceBias = gl.getUniformLocation(program, "shadowMapBackFaceBias");
+			program.locShadowMapBackFaceBias = gl.getUniformLocation(program, "shadowMapBackFaceBias");
 			program.locShadowMapOpacity = gl.getUniformLocation(program, "shadowOpacity");
 
 
