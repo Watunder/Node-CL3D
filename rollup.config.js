@@ -42,7 +42,7 @@ const imports = [
 let replacedImportings = {};
 if (imports.some(({ externalModules }) => {
     for (let i = 0; i < externalModules.length; ++i) {
-        replacedImportings[`"${externalModules[i]}"`] = `import("./bpkg/${externalModules[i]}.js")`;
+        replacedImportings[`'${externalModules[i]}'`] = `import("./bpkg/${externalModules[i]}.js")`;
     }
 }));
 
@@ -52,9 +52,10 @@ export default [
         onwarn,
         plugins: [
             generateDTS.plugin(),
-            terser(),
+            //terser(),
             replace({
                 delimiters: ['\\b', '\\b(?!\\.)'],
+                'process.env.SDL_ENV': true,
                 'process.env.RAUB_ENV': false,
                 preventAssignment: true
             })

@@ -1,12 +1,14 @@
 {
   "type": "module",
   "name": "cl3d",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CopperLicht in Node.js and browser ",
   "keywords": [
     "nodejs",
     "webgl",
+    "multi-platform",
     "browser",
+    "canvas",
     "es6-modules",
     "copperlicht",
     "cl3d"
@@ -26,7 +28,7 @@
   "main": "./dist/cl3d.js",
   "scripts": {
     "build": "npx rollup -c",
-    "test-default": "cd scripts && node test-default.js",
+    "test-sdl": "set SDL_ENV=develop && cd scripts && node test-sdl.js",
     "test-raub": "set RAUB_ENV=develop && cd scripts && node test-raub.js",
     "bpkg": "cd scripts && node bpkg.js",
     "install": "cd scripts && node install.js",

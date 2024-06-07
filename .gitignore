@@ -1,4 +1,8 @@
 .dts/
 
+_coppercube/
+_develop/
+
 dist/
+neo_frameworks/
 node_modules/

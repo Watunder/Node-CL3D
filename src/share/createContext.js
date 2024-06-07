@@ -8,7 +8,7 @@ if (typeof globalThis.WebGLRenderingContext == "undefined") {
                 return { gl, window, glfw };
             }
         });
-    } else {
+    } else if (process.env.SDL_ENV) {
         await import('@kmamal/gl').then(async (module) => {
             createContextImpl = (width, height, options) => {
                 return module.default(width, height, options);
