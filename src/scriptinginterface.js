@@ -21,7 +21,7 @@ export let gScriptingInterface = null;
 /**
  * @private
  */
-class vector3d {
+export class vector3d {
 	/**
 	 * X coordinate of the vector
 	 * @private
@@ -192,7 +192,9 @@ export class ScriptingInterface {
 	async importCode(code) {
 		try {
 			await import("data:text/javascript;charset=utf-8," + encodeURIComponent(code)).then(async (module) => {
-				globalThis[module.default.name] = module.default;
+				if (module.default) {
+					globalThis[module.default.name] = module.default;
+				}
 			});
 		}
 		catch (err) {

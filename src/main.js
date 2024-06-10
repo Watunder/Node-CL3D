@@ -5,17 +5,17 @@ export { Vect3d } from "./vect3df.js";
 export { Vect2d } from "./vect2df.js";
 export { Box3d } from "./box3df.js";
 export { Matrix4 } from "./matrix4.js";
-export { Vertex3D, cloneVertex3D, createVertex, createSimpleVertex} from "./s3dvertexunified.js";
+export { Vertex3D, cloneVertex3D, createVertex, createSimpleVertex } from "./s3dvertexunified.js";
 
 export { Mesh } from "./mesh.js";
 export { MeshBuffer } from "./meshbuffer.js";
-export { MeshCache, SkinnedMeshJoint, SkinnedMeshWeight, SkinnedMeshScaleKey, SkinnedMeshPositionKey, SkinnedMeshRotationKey, NamedAnimationRange, SkinnedMesh} from "./skinnedmesh.js";
+export { MeshCache, SkinnedMeshJoint, SkinnedMeshWeight, SkinnedMeshScaleKey, SkinnedMeshPositionKey, SkinnedMeshRotationKey, NamedAnimationRange, SkinnedMesh } from "./skinnedmesh.js";
 
 export { Material } from "./material.js";
 export { Texture } from "./texture.js";
 export { gTextureManager, TextureManager } from "./texturemanager.js";
 
-export { gSoundManager, SoundManager, SoundSource, PlayingSound} from "./soundmanager.js";
+export { gSoundManager, SoundManager, SoundSource, PlayingSound } from "./soundmanager.js";
 
 export { Line3d } from "./line3d.js";
 export { Plane3d } from "./plane3d.js";
@@ -51,4 +51,4 @@ export { FlaceLoader } from "./flace/flaceloader.js";
 
 export { gDocument, CopperLicht, startCopperLichtFromFile } from "./flace/flace.js";
 
-export { initCCBCommand } from "./trunk/ccbCommand.js";
+export * from "./trunk/ccbCommand.js";

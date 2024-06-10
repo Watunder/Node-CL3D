@@ -1,4 +1,5 @@
 import * as CL3D from "../main.js";
+import { getDirName } from "../share/getDirName.js";
 
 export class FlaceLoader {
 	constructor () {
@@ -1479,6 +1480,7 @@ export class FlaceLoader {
 					}
 					// var blob = new Blob([b], {type: "text/plain;charset=utf-8"});
 					// saveAs(blob, c + ".js");
+					b.replaceAll("__dirname", getDirName());
 					b != null && await CL3D.ScriptingInterface.getScriptingInterface().importCode(b)
 				}
 				this.SkipToNextTag();

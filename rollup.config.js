@@ -24,6 +24,7 @@ const imports = [
         builtinModules: [
             'child_process',
             'module',
+            'path'
         ],
         externalModules: [
             'canvas',

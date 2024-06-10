@@ -38,6 +38,9 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		}`;
 		
 	fs_shader_water = GLSL`
+		//#version 100
+		precision mediump float;
+
 		uniform sampler2D texture1;
 		uniform sampler2D texture2;
 		uniform float mWaveHeight;
