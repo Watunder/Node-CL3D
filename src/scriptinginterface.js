@@ -6,6 +6,7 @@
 // public API implementation for CopperCube script extensions and generic JavaScript API
 // ------------------------------------------------------------------------------------------------
 
+globalThis._ccbScriptCache = new Array();
 
 // ------------------------------------------------------------------------------------------------
 // simple vector class
@@ -180,7 +181,7 @@ export class ScriptingInterface {
 	 */
 	executeCode(code) {
 		try {
-			return (new Function("return " + code))();
+			return (new Function(code))();
 		}
 		catch (err) {
 			console.log(err);
@@ -442,22 +443,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 
 		let code = "";
 
-		// need to initialize script
-		let ccbScriptName = "";
-
-		this.ScriptIndex = engine.getUniqueCounterID();
-
-		ccbScriptName = `_ccbScriptCache[${this.ScriptIndex}]`;
-
-		code = `
-		if (typeof _ccbScriptCache == 'undefined')
-			_ccbScriptCache = new Array();
-		${ccbScriptName} = new ${this.JsClassName}();
-		`;
-
-		engine.executeCode(code);
-
-		// also, we need to init the instance with the properties the user set for this extension
+		// we need to init the instance with the properties the user set for this extension
 		const objPrefix = "this.";
 
 		code = `
@@ -472,16 +458,15 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 
 		engine.executeCode(code);
 
-		// and lastly, we need to register for getting events if the script has this feature
-		var bNodeIsCamera = false;
+		this.ScriptIndex = engine.getUniqueCounterID();
 
-		var fcam = null;
-		if (n.getType() == 'camera') {
-			fcam = n;
-			bNodeIsCamera = true;
-		}
+		let ccbScriptName = `_ccbScriptCache[${this.ScriptIndex}]`;
 
-		this.bIsAttachedToCamera = bNodeIsCamera;
+		code = `
+		${ccbScriptName} = new ${this.JsClassName}();
+		`;
+
+		engine.executeCode(code);
 
 		code = `
 		try {
@@ -494,6 +479,17 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 		`;
 
 		engine.executeCode(code);
+
+		// we need to register for getting events if the script has this feature
+		let bNodeIsCamera = false;
+
+		let fcam = null;
+		if (n.getType() == 'camera') {
+			fcam = n;
+			bNodeIsCamera = true;
+		}
+
+		this.bIsAttachedToCamera = bNodeIsCamera;
 	}
 
 	/**
@@ -724,18 +720,7 @@ export class ActionExtensionScript extends CL3D.Action {
 
 		let code = "";
 
-		// need to initialize script
-		let ccbScriptName = "";
-
-		ccbScriptName = "_ccbScriptTmp";
-
-		code = `
-			${ccbScriptName} = new ${this.JsClassName}();
-		`;
-
-		engine.executeCode(code);
-
-		// also, we need to init the instance with the properties the user set for this extension
+		// we need to init the instance with the properties the user set for this extension
 		const objPrefix = "this.";
 
 		code = `
@@ -750,7 +735,15 @@ export class ActionExtensionScript extends CL3D.Action {
 
 		engine.executeCode(code);
 
-		// run script like this:
+		this.ScriptIndex = engine.getUniqueCounterID();
+
+		let ccbScriptName = `_ccbScriptCache[${this.ScriptIndex}]`;
+
+		code = `
+			${ccbScriptName} = new ${this.JsClassName}();
+		`;
+
+		engine.executeCode(code);
 
 		code = `
 		try {

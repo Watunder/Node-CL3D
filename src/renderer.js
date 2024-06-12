@@ -3468,19 +3468,21 @@ export class Renderer {
 		let objToCopyFrom = t.Image;
 
 		// Scale up the texture to the next highest power of two dimensions.
-		let tmpcanvas = createCanvas();
-		if (tmpcanvas != null) {
-			tmpcanvas.width = this.nextHighestPowerOfTwo(objToCopyFrom.width);
-			tmpcanvas.height = this.nextHighestPowerOfTwo(objToCopyFrom.height);
-			let tmpctx = tmpcanvas.getContext("2d");
-			tmpctx.drawImage(objToCopyFrom,
-				0, 0, objToCopyFrom.width, objToCopyFrom.height,
-				0, 0, tmpcanvas.width, tmpcanvas.height);
-
-			if (process.env.RAUB_ENV)
-				objToCopyFrom = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
-			else
-				objToCopyFrom = tmpcanvas;
+		if (process.env.RAUB_ENV || process.env.SDL_ENV || !this.isPowerOfTwo(objToCopyFrom.width) || !this.isPowerOfTwo(objToCopyFrom.height)) {
+			let tmpcanvas = createCanvas();
+			if (tmpcanvas != null) {
+				tmpcanvas.width = this.nextHighestPowerOfTwo(objToCopyFrom.width);
+				tmpcanvas.height = this.nextHighestPowerOfTwo(objToCopyFrom.height);
+				let tmpctx = tmpcanvas.getContext("2d");
+				tmpctx.drawImage(objToCopyFrom,
+					0, 0, objToCopyFrom.width, objToCopyFrom.height,
+					0, 0, tmpcanvas.width, tmpcanvas.height);
+	
+				if (process.env.RAUB_ENV)
+					objToCopyFrom = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
+				else
+					objToCopyFrom = tmpcanvas;
+			}
 		}
 
 		gl.bindTexture(gl.TEXTURE_2D, texture);
