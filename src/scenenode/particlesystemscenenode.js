@@ -202,7 +202,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	/**
 	 * If GravityAffector is true, this will define the gravity vector. A useful value would be (0,-0.03,0), for example.
 	 * @public
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 * @default null
 	 */
 	Gravity = null;

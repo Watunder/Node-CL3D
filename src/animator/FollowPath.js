@@ -283,7 +283,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 
 	/**
 	 * Define the path this animator should follow
-	 * @param path {PathSceneNode} scene node representing the path
+	 * @param path {CL3D.PathSceneNode} scene node representing the path
 	 * @public
 	 */
 	setPathToFollow(path) {

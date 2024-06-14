@@ -18,7 +18,7 @@ export class SceneNode {
 	 * Position of the scene node, relative to its parent.
 	 * If you want the position in world coordinates, use {@link getAbsolutePosition}().
 	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately.
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 * @public
 	 */
 	Pos = null;
@@ -27,7 +27,7 @@ export class SceneNode {
 	 * Rotation of the scene node, relative to its parent, in degrees.
 	 * Note that this is the relative rotation of the node. If you want the absolute rotation, use {@link getAbsoluteTransformation}().getRotation()
 	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately.
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 * @public
 	 */
 	Rot = null;
@@ -36,7 +36,7 @@ export class SceneNode {
 	 * Scale of the scene node, relative to its parent, in degrees. Default is (1,1,1)
 	 * This is the scale of this node relative to its parent. If you want the absolute scale, use {@link getAbsoluteTransformation}().getScale()
 	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately. 
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 * @public
 	 */
 	Scale = null;
@@ -65,7 +65,7 @@ export class SceneNode {
 
 	/**
 	 * An optional {@link TriangleSelector}, giving access to the collision geometry of this scene node.
-	 * @type TriangleSelector
+	 * @type {CL3D.TriangleSelector}
 	 * @public
 	 */
 	Selector = null;
@@ -119,7 +119,7 @@ export class SceneNode {
 	/**
 	 * Returns an array with all child scene nodes of this node
 	 * @public
-	 * @returns {Array}
+	 * @returns {CL3D.SceneNode}
 	 */
 	getChildren() {
 		return this.Children;
@@ -150,7 +150,7 @@ export class SceneNode {
 	/**
 	 * Returns an array of {@link Animator}s which are animating this scene node.
 	 * @public
-	 * @returns {Array} Bounding box of this scene node.
+	 * @returns {CL3D.Animator[]} Bounding box of this scene node.
 	 */
 	getAnimators() {
 		return this.Animators;

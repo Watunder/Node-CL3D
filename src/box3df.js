@@ -12,14 +12,14 @@ export class Box3d {
 	/**
 	 * Minimal Edge of the bounding box
 	 * @public
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 */
 	MinEdge = null;
 
 	/**
 	 * Maximal Edge of the bounding box
 	 * @public
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 */
 	MaxEdge = null;
 
