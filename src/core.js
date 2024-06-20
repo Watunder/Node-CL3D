@@ -8,6 +8,10 @@
 export const gCCDebugInfoEnabled = true;
 export const DebugPostEffects = false;
 export const UseShadowCascade = true;
+export const Extensions = {
+	draw: () => { },
+	readAnimator: (loader, type, rootSceneNode, sceneManager) => { },
+}
 
 /** 
  * @const 
@@ -206,7 +210,7 @@ export const createColor = function (a, r, g, b) {
 /**
  * Creates a export const ColorF from 32bit value representing a color
  */
-export const createColorF = function(c) {
+export const createColorF = function (c) {
 	var r = new ColorF();
 	r.A = getAlpha(c) / 255.0;
 	r.R = getRed(c) / 255.0;

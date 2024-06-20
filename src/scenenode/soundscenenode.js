@@ -16,6 +16,7 @@ export class SoundSceneNode extends CL3D.SceneNode {
 		this.init();
 
 		this.Box = new CL3D.Box3d();
+		this.TheSound = "";
 		this.MinDistance = 0;
 		this.MaxDistance = 0;
 		this.PlayMode = 0;
