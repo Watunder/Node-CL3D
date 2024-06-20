@@ -222,6 +222,11 @@ export class ScriptingInterface {
 		this.StoredExtensionScriptActionHandlers.push(handler);
 
 		var actionid = this.StoredExtensionScriptActionHandlers.length - 1;
+		if (this.StoredExtensionScriptActionHandlers[actionid])
+		{
+			var node = gScriptingInterface.CurrentlyActiveScene.getRootSceneNode();
+			this.StoredExtensionScriptActionHandlers[actionid].execute(node, null);
+		}
 
 		return actionid;
 	}
@@ -617,13 +622,13 @@ export class ExtensionScriptProperty {
 					value = prop.IntValue ? "true" : "false";
 					break;
 				case 6: //irr::scene::EESAT_VECTOR3D:
-					value = new vector3d(prop.VectorValue.X, prop.VectorValue.Y, prop.VectorValue.Z);
+					value = `new vector3d(${prop.VectorValue.X}, ${prop.VectorValue.Y}, ${prop.VectorValue.Z})`;
 					break;
 				case 7: //irr::scene::EESAT_TEXTURE:
 					value = "\"" + prop.TextureValue ? prop.TextureValue.Name : "" + "\"";
 					break;
 				case 8: //irr::scene::EESAT_SCENE_NODE_ID:
-					value = ccbGetSceneNodeFromId(prop.IntValue);
+					value = `ccbGetSceneNodeFromId(${prop.IntValue})`;
 					break;
 				case 9: //irr::scene::EESAT_ACTION_REFERENCE:
 					value = CL3D.ScriptingInterface.getScriptingInterface().registerExtensionScriptActionHandler(prop.ActionHandlerValue);
@@ -748,7 +753,7 @@ export class ActionExtensionScript extends CL3D.Action {
 		code = `
 		try {
 			${ccbScriptName}._init();
-			${ccbScriptName}.execute(ccbGetSceneNodeFromId(${currentNode.Id});
+			${ccbScriptName}.execute(ccbGetSceneNodeFromId(${currentNode.Id}));
 		} catch(e) {
 			console.log(e);
 		}

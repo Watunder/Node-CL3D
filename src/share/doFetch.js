@@ -3,7 +3,6 @@ let doFetchImpl = () => { }
 if (typeof globalThis.Image == "undefined") {
     await import('file-fetch').then(async (module) => {
         doFetchImpl = (input, init) => {
-            console.log(111)
             return module.default(input, init);
         }
     });
