@@ -58,8 +58,11 @@ export class FlaceLoader {
 		this.CursorControl = cursorControl;
 		this.TheTextureManager != null && CL3D.ScriptingInterface.getScriptingInterface().setTextureManager(this.TheTextureManager);
 
-		if(filecontent != null && this.Filename.indexOf(".ccbz") != -1) filecontent = this.ArrayBufferToString(filecontent);
-		if(filecontent == null || filecontent.length == 0)
+		if(filecontent != null && this.Filename.indexOf(".ccbz") != -1 || this.Filename.indexOf(".ccp") != -1)
+		{
+			filecontent = this.ArrayBufferToString(filecontent);
+		}
+		if(filecontent == null || filecontent.length == 0 || filecontent.byteLength != null)
 		{
 			console.log("Error: Could not load file '" + this.Filename + "'");
 			return null;
@@ -363,7 +366,7 @@ export class FlaceLoader {
 	 */
 	readFreeScene(scene)
 	{
-		var nextTagPos = this.NextTagPos;
+		let nextTagPos = this.NextTagPos;
 		for(this.readScene(scene); this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 1007:
@@ -868,8 +871,10 @@ export class FlaceLoader {
 
 	ReadTextureRef()
 	{
-		let texture = this.ReadFileStrRef(),
-			texturePath = this.PathRoot + texture;
+		let texturePath = "";
+		let texture = this.ReadFileStrRef();
+		if (this.Filename.indexOf(".ccp") != -1) texturePath = texture;
+		else texturePath = this.PathRoot + texture;
 		if(this.TheTextureManager != null && texture != "") return this.TheTextureManager.getTexture(texturePath, true);
 		return null;
 	}

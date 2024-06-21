@@ -399,7 +399,7 @@ export class CopperLicht {
 
 		var me = this;
 		this.LoadingAFile = true;
-		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1, this.IsBrowser);
+		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccb') != -1 || filetoload.indexOf('.ccp') != -1, this.IsBrowser);
 		l.load(async (p) => { await me.parseFile(p, filetoload, importIntoExistingDocument); if (functionToCallWhenLoaded) functionToCallWhenLoaded(); });
 
 		return true;
