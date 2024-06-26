@@ -37,6 +37,26 @@ export class FlaceLoader {
 		return data;
 	}
 
+	StringToUint8Array(str)
+	{
+		let buf = new ArrayBuffer(str.length);
+		let bufView = new Uint8Array(buf);
+		for (let index=0; index < str.length; index++) {
+		  bufView[index] = str.charCodeAt(index);
+		}
+		return bufView;
+	}
+
+	StringToUint16Array(str)
+	{
+		let buf = new ArrayBuffer(str.length*2);
+		let bufView = new Uint16Array(buf);
+		for (let index=0; index < str.length; index++) {
+		  bufView[index] = str.charCodeAt(index);
+		}
+		return bufView;
+	}
+
 	/** 
 	 * @param {ArrayBuffer|String} filecontent 
 	 * @param {String} filename 
@@ -71,7 +91,7 @@ export class FlaceLoader {
 		else if(this.Filename.indexOf(".ccbjs") != -1) filecontent = CL3D.base64decode(filecontent);
 		this.Document = new CL3D.CCDocument;
 		this.setRootPath();
-		this.Data = new CL3D.BinaryStream(filecontent);
+		this.Data = new CL3D.StringBinary(filecontent);
 		if(!await this.parseFile()) return null;
 		this.StoredFileContent = filecontent;
 		return this.Document;
@@ -287,7 +307,7 @@ export class FlaceLoader {
 		this.TheTextureManager = textureManager;
 		this.TheMeshCache = meshCache;
 		this.CursorControl = cursorControl;
-		this.Data = new CL3D.BinaryStream(filecontent);
+		this.Data = new CL3D.StringBinary(filecontent);
 		this.setRootPath();
 		this.Data.readSI32();
 		this.Data.readSI32();
