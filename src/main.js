@@ -36,7 +36,7 @@ export { SceneNode } from "./scenenode.js";
 export * from "./scenenode/main.js";
 
 export { VideoStream } from "./videostream.js";
-export { BinaryStream } from "./binarystream.js";
+export { StringBinary } from "./stringbinary.js";
 
 export * from "./utils/jsinflate.js";
 export { base64DecodeChars, base64decode } from "./utils/base64.js";
