@@ -39,7 +39,7 @@ export { VideoStream } from "./videostream.js";
 export { StringBinary } from "./stringbinary.js";
 
 export * from "./utils/jsinflate.js";
-export { base64DecodeChars, base64decode } from "./utils/base64.js";
+export { base64DecodeChars, base64decode } from "./utils/base64decode.js";
 
 export { gScriptingInterface, ScriptingInterface, AnimatorExtensionScript, ExtensionScriptProperty, ActionExtensionScript, vector3d } from "./scriptinginterface.js";
 
