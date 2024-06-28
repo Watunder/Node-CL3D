@@ -16,21 +16,21 @@ export class Triangle3d {
 	/**
 	 * First point of the triangle
 	 * @public
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 */
 	pointA = null;
 
 	/**
 	 * Second point of the triangle
 	 * @public
-	 * @type Vect3d 
+	 * @type {CL3D.Vect3d}
 	 */
 	pointB = null;
 
 	/**
 	 * Third point of the triangle
 	 * @public
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 */
 	pointC = null;
 

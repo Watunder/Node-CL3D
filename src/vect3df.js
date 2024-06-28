@@ -53,7 +53,7 @@ export class Vect3d {
 	/**
 	 * Creates a copy of this vector and returns it
 	 * @public
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 */
 	clone() {
 		return new CL3D.Vect3d(this.X, this.Y, this.Z);

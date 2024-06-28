@@ -960,9 +960,8 @@ export class Scene {
 			}
 		}
 
-		// draw effect
-		// if (CL3D.engine.OnEffekseerDraw)
-		// 	CL3D.engine.OnEffekseerDraw();
+		// draw extensions
+		CL3D.Extensions.draw();
 
 		// draw overlays
 		this.CurrentRenderMode = CL3D.Scene.RENDER_MODE_2DOVERLAY;

@@ -26,7 +26,7 @@ export class Mesh {
 	/**
 	 * Returns an Array of all {@link MeshBuffer}s in this mesh.
 	 * @public
-	 * @returns {Array} array of {@link MeshBuffer}s
+	 * @returns {CL3D.MeshBuffer[]} array of {@link MeshBuffer}s
 	 */
 	GetMeshBuffers() {
 		return this.MeshBuffers;

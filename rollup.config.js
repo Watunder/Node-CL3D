@@ -1,6 +1,6 @@
 import path from 'path';
 import terser from '@rollup/plugin-terser';
-import replace from "@rollup/plugin-replace";
+import replace from '@rollup/plugin-replace';
 import { generateDTS } from '@typhonjs-build-test/esm-d-ts';
 
 const onwarn = (warning, rollupWarn) => {
@@ -56,7 +56,7 @@ export default [
             //terser(),
             replace({
                 delimiters: ['\\b', '\\b(?!\\.)'],
-                'process.env.SDL_ENV': true,
+                'process.env.SDL_ENV': false,
                 'process.env.RAUB_ENV': false,
                 preventAssignment: true
             })

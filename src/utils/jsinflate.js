@@ -60,7 +60,7 @@ export default ((GLOBAL) => {
     var zip_wp;			// current position in slide
     var zip_fixed_tl = null;	// inflate static
     var zip_fixed_td;		// inflate static
-    var zip_fixed_bl, fixed_bd;	// inflate static
+    var zip_fixed_bl, zip_fixed_bd;	// inflate static
     var zip_bit_buf;		// bit buffer
     var zip_bit_len;		// bits in bit buffer
     var zip_method;
@@ -777,5 +777,5 @@ export default ((GLOBAL) => {
         return out;
     };
 
-   
+
 })(globalThis);

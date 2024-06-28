@@ -14,14 +14,14 @@ export class Line3d {
     /**
      * Start point of the line
      * @public
-     * @type Vect3d
+     * @type {CL3D.Vect3d}
      */
     Start = null;
 
     /**
      * End point of the line
      * @public
-     * @type Vect3d
+     * @type {CL3D.Vect3d}
      */
     End = null;
     

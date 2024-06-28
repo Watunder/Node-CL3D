@@ -1109,11 +1109,11 @@ globalThis.ccbRegisterBehaviorEventReceiver = (bForMouse, bForKeyboard) => {
  * @param {function} fobj A callback function which will be called with the received data once the request is finished. This will also be called if the request ailed, with an empty string as parameter.
  * @returns {Number} The function returns an unique Id, for identifying this request.
  */
-globalThis.ccbDoHTTPRequest = (url, fobj) => {
+globalThis.ccbDoHTTPRequest = (url, fobj, useArrayBufferReturn = false, isBrowser = true) => {
 	++CL3D.gScriptingInterface.LastHTTPRequestId;
 	var id = CL3D.gScriptingInterface.LastHTTPRequestId;
 
-	var loader = new CL3D.CCFileLoader(url);
+	var loader = new CL3D.CCFileLoader(url, useArrayBufferReturn, isBrowser);
 
 	var itemarray = CL3D.gScriptingInterface.ccbRegisteredHTTPCallbackArray;
 	var f = new Object();

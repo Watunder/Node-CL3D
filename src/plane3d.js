@@ -20,7 +20,7 @@ export class Plane3d {
 	/**
 	 * plane normal
 	 * @public
-	 * @type Vect3d 
+	 * @type {CL3D.Vect3d}
 	 */
 	Normal = null;
 

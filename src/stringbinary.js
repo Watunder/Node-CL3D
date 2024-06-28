@@ -3,7 +3,7 @@
  * @constructor
  * @private
  */
-export class BinaryStream {
+export class StringBinary {
 	constructor(data) {
 		this._buffer = data;
 		this._length = data.length;

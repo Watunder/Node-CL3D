@@ -25,7 +25,7 @@ export class MeshBuffer {
 	/**
 	 * Material of the geometry, of type {@link Material}.
 	 * @public
-	 * @type Material
+	 * @type {CL3D.Material}
 	 */
 	Mat = null;
 

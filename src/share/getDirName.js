@@ -12,7 +12,9 @@ if (typeof globalThis.location == "undefined") {
 }
 else {
     getDirNameImpl = () => {
-        return globalThis.location.href;
+        const __filename = globalThis.location.href;
+        const __dirname = __filename.slice(0, __filename.lastIndexOf("/"));
+        return __dirname;
     }
 }
 

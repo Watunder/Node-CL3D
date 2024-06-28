@@ -13,14 +13,14 @@ export class Light {
 	/**
 	 * 3D Position of the light
 	 * @public
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 */
 	Position = null;
 
 	/**
 	 * Color of the light
 	 * @public
-	 * @type ColorF
+	 * @type {CL3D.ColorF}
 	 */
 	Color = null;
 
@@ -41,7 +41,7 @@ export class Light {
 	/**
 	 * Direction of the light. Only used if this is a directional light
 	 * @public
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 */
 	Direction = null;
 
