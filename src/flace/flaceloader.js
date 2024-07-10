@@ -26,8 +26,8 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {ArrayBuffer} buffer 
-	 * @returns 
+	 * @param {ArrayBuffer} buffer
+	 * @returns
 	 */
 	ArrayBufferToString(buffer)
 	{
@@ -57,15 +57,15 @@ export class FlaceLoader {
 		return bufView;
 	}
 
-	/** 
-	 * @param {ArrayBuffer|String} filecontent 
-	 * @param {String} filename 
-	 * @param {CL3D.TextureManager} textureManager 
-	 * @param {CL3D.MeshCache} meshCache 
-	 * @param {CL3D.CopperLicht} cursorControl 
-	 * @param {Boolean} copyRootNodeChildren 
-	 * @param {CL3D.SceneNode} newRootNodeChildrenParent 
-	 * @returns 
+	/**
+	 * @param {ArrayBuffer|String} filecontent
+	 * @param {String} filename
+	 * @param {CL3D.TextureManager} textureManager
+	 * @param {CL3D.MeshCache} meshCache
+	 * @param {CL3D.CopperLicht} cursorControl
+	 * @param {Boolean} copyRootNodeChildren
+	 * @param {CL3D.SceneNode} newRootNodeChildrenParent
+	 * @returns
 	 */
 	async loadFile(filecontent, filename, textureManager, meshCache, cursorControl, copyRootNodeChildren, newRootNodeChildrenParent)
 	{
@@ -163,7 +163,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.Matrix4} mat4 
+	 * @param {CL3D.Matrix4} mat4
 	 */
 	ReadIntoExistingMatrix(mat4)
 	{
@@ -194,7 +194,7 @@ export class FlaceLoader {
 			if(sourceRead + extraBytesToRead >= sourceEnd) return chars.join("");
 			for(let z = extraBytesToRead; z >= 0; --z)
 			{
-				ch += bytes[sourceRead]; 
+				ch += bytes[sourceRead];
 				++sourceRead;
 				if(z != 0) ch <<= 6
 			}
@@ -271,7 +271,7 @@ export class FlaceLoader {
 								this.registerSceneNodeAnimatorForEvents = this.CurrentScene.registerSceneNodeAnimatorForEvents;
 								this.RegisteredSceneNodeAnimatorsForEventsList = this.CurrentScene.RegisteredSceneNodeAnimatorsForEventsList;
 							}
-							
+
 							getRootSceneNode() {
 								return this.CurrentScene.RootNode;
 							}
@@ -289,17 +289,17 @@ export class FlaceLoader {
 		}
 	}
 
-	/** 
-	 * @param {ArrayBuffer|String} filecontent 
-	 * @param {CL3D.Free3dScene} scene 
-	 * @param {Number} sceneindex 
-	 * @param {String} filename 
-	 * @param {CL3D.TextureManager} textureManager 
-	 * @param {CL3D.MeshCache} meshCache 
-	 * @param {CL3D.CopperLicht} cursorControl 
-	 * @param {Boolean} copyRootNodeChildren 
-	 * @param {CL3D.SceneNode} newRootNodeChildrenParent 
-	 * @returns 
+	/**
+	 * @param {ArrayBuffer|String} filecontent
+	 * @param {CL3D.Free3dScene} scene
+	 * @param {Number} sceneindex
+	 * @param {String} filename
+	 * @param {CL3D.TextureManager} textureManager
+	 * @param {CL3D.MeshCache} meshCache
+	 * @param {CL3D.CopperLicht} cursorControl
+	 * @param {Boolean} copyRootNodeChildren
+	 * @param {CL3D.SceneNode} newRootNodeChildrenParent
+	 * @returns
 	 */
 	reloadScene(filecontent, scene, sceneindex, filename, textureManager, meshCache, cursorControl)
 	{
@@ -382,7 +382,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.Free3dScene} scene 
+	 * @param {CL3D.Free3dScene} scene
 	 */
 	readFreeScene(scene)
 	{
@@ -440,7 +440,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.Free3dScene} scene 
+	 * @param {CL3D.Free3dScene} scene
 	 */
 	readFreeScene2(scene)
 	{
@@ -532,7 +532,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.Free3dScene} scene 
+	 * @param {CL3D.Free3dScene} scene
 	 */
 	ReadSceneGraph(scene)
 	{
@@ -547,7 +547,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {Object} params 
+	 * @param {Object} params
 	 */
 	AddSceneNodeParams(node, params)
 	{
@@ -563,9 +563,9 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.Free3dScene} scene 
-	 * @param {CL3D.SceneNode} node 
-	 * @param {Number} depth 
+	 * @param {CL3D.Free3dScene} scene
+	 * @param {CL3D.SceneNode} node
+	 * @param {Number} depth
 	 */
 	ReadSceneNode(scene, node, depth)
 	{
@@ -584,7 +584,7 @@ export class FlaceLoader {
 				bIsVisible: this.Data.readBoolean(),
 				culling: this.Data.readInt()
 			};
-				
+
 			if(depth == 0)
 			{
 				if (!this.CopyRootNodeChildren)
@@ -733,7 +733,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.MeshSceneNode} node 
+	 * @param {CL3D.MeshSceneNode} node
 	 */
 	readFlaceMeshNode(node)
 	{
@@ -901,7 +901,7 @@ export class FlaceLoader {
 
 	/**
 	 * @ignore
-	 * @param {CL3D.HotspotSceneNode} node 
+	 * @param {CL3D.HotspotSceneNode} node
 	 */
 	readFlaceHotspotNode(node)
 	{
@@ -921,7 +921,7 @@ export class FlaceLoader {
 
 	/**
 	 * @ignore
-	 * @param {CL3D.HotspotSceneNode} node  
+	 * @param {CL3D.HotspotSceneNode} node
 	 */
 	readHotspotData(node)
 	{
@@ -953,7 +953,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.CameraSceneNode} node 
+	 * @param {CL3D.CameraSceneNode} node
 	 */
 	readFlaceCameraNode(node)
 	{
@@ -969,7 +969,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.WaterSurfaceSceneNode} node 
+	 * @param {CL3D.WaterSurfaceSceneNode} node
 	 */
 	readWaterNode(node)
 	{
@@ -986,7 +986,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.LightSceneNode} node 
+	 * @param {CL3D.LightSceneNode} node
 	 */
 	readFlaceLightNode(node)
 	{
@@ -1001,7 +1001,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.BillboardSceneNode} node 
+	 * @param {CL3D.BillboardSceneNode} node
 	 */
 	readFlaceBillBoardNode(node)
 	{
@@ -1013,7 +1013,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.SoundSceneNode} node 
+	 * @param {CL3D.SoundSceneNode} node
 	 */
 	readFlace3DSoundNode(node)
 	{
@@ -1031,7 +1031,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.PathSceneNode} node 
+	 * @param {CL3D.PathSceneNode} node
 	 */
 	readFlacePathNode(node)
 	{
@@ -1044,7 +1044,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.ParticleSystemSceneNode} node 
+	 * @param {CL3D.ParticleSystemSceneNode} node
 	 */
 	readParticleSystemSceneNode(node)
 	{
@@ -1087,7 +1087,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.Mobile2DInputSceneNode} node 
+	 * @param {CL3D.Mobile2DInputSceneNode} node
 	 */
 	readFlace2DMobileInput(node)
 	{
@@ -1118,7 +1118,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.Overlay2DSceneNode} node 
+	 * @param {CL3D.Overlay2DSceneNode} node
 	 */
 	readFlace2DOverlay(node)
 	{
@@ -1157,9 +1157,9 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.SceneNode} node 
-	 * @param {CL3D.Scene} scene 
-	 * @returns 
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} scene
+	 * @returns
 	 */
 	ReadAnimator(node, scene)
 	{
@@ -1399,8 +1399,8 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {Array} props 
-	 * @param {CL3D.Free3dScene} scene 
+	 * @param {Array} props
+	 * @param {CL3D.Free3dScene} scene
 	 */
 	ReadExtensionScriptProperties(props, scene)
 	{
@@ -1441,8 +1441,8 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.Scene} scene 
-	 * @returns 
+	 * @param {CL3D.Scene} scene
+	 * @returns
 	 */
 	ReadActionHandlerSection(scene)
 	{
@@ -1456,8 +1456,8 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.ActionHandler} actionHandler 
-	 * @param {CL3D.Scene} scene 
+	 * @param {CL3D.ActionHandler} actionHandler
+	 * @param {CL3D.Scene} scene
 	 */
 	ReadActionHandler(actionHandler, scene)
 	{
@@ -1511,7 +1511,7 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.AnimatedMeshSceneNode} node 
+	 * @param {CL3D.AnimatedMeshSceneNode} node
 	 */
 	readFlaceAnimatedMeshNode(node)
 	{
@@ -1551,8 +1551,8 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.AnimatedMeshSceneNode} nodeToLink 
-	 * @returns 
+	 * @param {CL3D.AnimatedMeshSceneNode} nodeToLink
+	 * @returns
 	 */
 	ReadAnimatedMeshRef(nodeToLink)
 	{
@@ -1573,8 +1573,8 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {CL3D.SkinnedMesh|CL3D.SkinnedMeshJoint} mesh 
-	 * @param {Number} size 
+	 * @param {CL3D.SkinnedMesh|CL3D.SkinnedMeshJoint} mesh
+	 * @param {Number} size
 	 */
 	readSkinnedMesh(mesh, size)
 	{
@@ -1600,7 +1600,7 @@ export class FlaceLoader {
 					let parentIndex = this.Data.readInt();
 					loadedJoints.push(joint);
 					parentIndex >= 0 && parentIndex < loadedJoints.length && loadedJoints[parentIndex].Children.push(joint);
-					
+
 					let attachedMeshesCount = this.Data.readInt();
 					for(let index = 0; index < attachedMeshesCount; ++index) joint.AttachedMeshes.push(this.Data.readInt());
 
@@ -1678,9 +1678,9 @@ export class FlaceLoader {
 	}
 
 	/**
-	 * @param {Number} actionType 
-	 * @param {CL3D.Scene} scene 
-	 * @returns 
+	 * @param {Number} actionType
+	 * @param {CL3D.Scene} scene
+	 * @returns
 	 */
 	ReadAction(actionType, scene)
 	{

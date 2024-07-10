@@ -4,9 +4,9 @@
 import * as CL3D from "./main.js";
 
 /**
- * A scene node is a node in the hierarchical scene graph. Every scene node may have children, which are also scene 
- * nodes. Children move relative to their parent's position. If the parent of a node is not visible, its children 
- * won't be visible either. In this way, it is for example easily possible to attach a light to a moving car, 
+ * A scene node is a node in the hierarchical scene graph. Every scene node may have children, which are also scene
+ * nodes. Children move relative to their parent's position. If the parent of a node is not visible, its children
+ * won't be visible either. In this way, it is for example easily possible to attach a light to a moving car,
  * or to place a walking character on a moving platform on a moving ship.
  * <br/> <br/>
  * Concrete implementations are for example: {@link CL3D.CameraSceneNode}, {@link CL3D.BillboardSceneNode}, {@link CL3D.PathSceneNode}, {@link CL3D.MeshSceneNode}, {@link CL3D.SkyBoxSceneNode}.
@@ -35,14 +35,14 @@ export class SceneNode {
 	/**
 	 * Scale of the scene node, relative to its parent, in degrees. Default is (1,1,1)
 	 * This is the scale of this node relative to its parent. If you want the absolute scale, use {@link getAbsoluteTransformation}().getScale()
-	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately. 
+	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately.
 	 * @type {CL3D.Vect3d}
 	 * @public
 	 */
 	Scale = null;
 
 	/**
-	 * Defines whether the node should be visible (if all of its parents are visible). 
+	 * Defines whether the node should be visible (if all of its parents are visible).
 	 * This is only an option set by the user, but has nothing to do with geometry culling.
 	 * @type Boolean
 	 * @public
@@ -85,8 +85,13 @@ export class SceneNode {
 		this.Culling = 0;
 		this.Id = -1;
 		this.Parent = null;
-
+		/**
+		 * @type {CL3D.SceneNode[]}
+		 */
 		this.Children = new Array();
+		/**
+		 * @type {CL3D.Animator[]}
+		 */
 		this.Animators = new Array();
 
 		this.AbsoluteTransformation = new CL3D.Matrix4();

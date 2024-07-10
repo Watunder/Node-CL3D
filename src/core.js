@@ -10,6 +10,7 @@ export const DebugPostEffects = false;
 export const UseShadowCascade = true;
 export const Extensions = {
 	draw: () => { },
+	setWorld: () => { },
 	readAnimator: (loader, type, rootSceneNode, sceneManager) => { },
 }
 

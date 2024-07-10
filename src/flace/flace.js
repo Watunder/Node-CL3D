@@ -439,8 +439,8 @@ export class CopperLicht {
 	 */
 	makeWholePageSize() {
 		if (this.tmpWidth != globalThis.innerWidth || this.tmpHeight != globalThis.innerHeight) {
-			this.tmpWidth = globalThis.innerWidth || globalThis.clientWidth;
-			this.tmpHeight = globalThis.innerHeight || globalThis.clientHeight;
+			this.tmpWidth = globalThis.innerWidth;
+			this.tmpHeight = globalThis.innerHeight;
 	
 			this.MainElement.style.width = this.tmpWidth + "px";
 			this.MainElement.style.height = this.tmpHeight + "px";
@@ -816,6 +816,7 @@ export class CopperLicht {
 
 			// create collision geometry
 			scene.CollisionWorld = scene.createCollisionGeometry(true);
+			CL3D.Extensions.setWorld(scene.CollisionWorld);
 			this.setCollisionWorldForAllSceneNodes(scene.getRootSceneNode(), scene.CollisionWorld);
 		}
 
@@ -1403,6 +1404,9 @@ export class CopperLicht {
 	createTextDialog(forLoadingDlg, text, loadingScreenBackgroundColor) {
 		if (this.MainElement == null)
 			return;
+
+		this.MainElement.setAttribute("width", globalThis.innerWidth);
+		this.MainElement.setAttribute("height", globalThis.innerHeight);
 
 		var dlg_div = document.createElement("div");
 		this.MainElement.parentNode.appendChild(dlg_div);

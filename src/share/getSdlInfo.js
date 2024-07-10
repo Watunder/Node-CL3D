@@ -1,6 +1,6 @@
 let getSdlInfoImpl = () => { }
 
-if (typeof globalThis.Image == "undefined") {
+if (typeof globalThis.NodeJS != 'undefined') {
     await import('@kmamal/sdl').then(async (module) => {
         getSdlInfoImpl = () => {
             return module.default.info;

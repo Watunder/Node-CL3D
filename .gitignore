@@ -4,5 +4,6 @@ _coppercube/
 _develop/
 
 dist/
+geo_toolkits/
 neo_frameworks/
 node_modules/
