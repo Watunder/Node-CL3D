@@ -6,6 +6,7 @@
 // public API implementation for CopperCube script extensions and generic JavaScript API
 // ------------------------------------------------------------------------------------------------
 
+globalThis._ccbScriptCache = new Array();
 
 // ------------------------------------------------------------------------------------------------
 // simple vector class
@@ -180,7 +181,7 @@ export class ScriptingInterface {
 	 */
 	executeCode(code) {
 		try {
-			return (new Function("return " + code))();
+			return (new Function(code))();
 		}
 		catch (err) {
 			console.log(err);
@@ -221,6 +222,11 @@ export class ScriptingInterface {
 		this.StoredExtensionScriptActionHandlers.push(handler);
 
 		var actionid = this.StoredExtensionScriptActionHandlers.length - 1;
+		if (this.StoredExtensionScriptActionHandlers[actionid])
+		{
+			var node = gScriptingInterface.CurrentlyActiveScene.getRootSceneNode();
+			this.StoredExtensionScriptActionHandlers[actionid].execute(node, null);
+		}
 
 		return actionid;
 	}
@@ -442,22 +448,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 
 		let code = "";
 
-		// need to initialize script
-		let ccbScriptName = "";
-
-		this.ScriptIndex = engine.getUniqueCounterID();
-
-		ccbScriptName = `_ccbScriptCache[${this.ScriptIndex}]`;
-
-		code = `
-		if (typeof _ccbScriptCache == 'undefined')
-			_ccbScriptCache = new Array();
-		${ccbScriptName} = new ${this.JsClassName}();
-		`;
-
-		engine.executeCode(code);
-
-		// also, we need to init the instance with the properties the user set for this extension
+		// we need to init the instance with the properties the user set for this extension
 		const objPrefix = "this.";
 
 		code = `
@@ -472,16 +463,15 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 
 		engine.executeCode(code);
 
-		// and lastly, we need to register for getting events if the script has this feature
-		var bNodeIsCamera = false;
+		this.ScriptIndex = engine.getUniqueCounterID();
 
-		var fcam = null;
-		if (n.getType() == 'camera') {
-			fcam = n;
-			bNodeIsCamera = true;
-		}
+		let ccbScriptName = `_ccbScriptCache[${this.ScriptIndex}]`;
 
-		this.bIsAttachedToCamera = bNodeIsCamera;
+		code = `
+		${ccbScriptName} = new ${this.JsClassName}();
+		`;
+
+		engine.executeCode(code);
 
 		code = `
 		try {
@@ -494,6 +484,17 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 		`;
 
 		engine.executeCode(code);
+
+		// we need to register for getting events if the script has this feature
+		let bNodeIsCamera = false;
+
+		let fcam = null;
+		if (n.getType() == 'camera') {
+			fcam = n;
+			bNodeIsCamera = true;
+		}
+
+		this.bIsAttachedToCamera = bNodeIsCamera;
 	}
 
 	/**
@@ -621,13 +622,13 @@ export class ExtensionScriptProperty {
 					value = prop.IntValue ? "true" : "false";
 					break;
 				case 6: //irr::scene::EESAT_VECTOR3D:
-					value = new vector3d(prop.VectorValue.X, prop.VectorValue.Y, prop.VectorValue.Z);
+					value = `new vector3d(${prop.VectorValue.X}, ${prop.VectorValue.Y}, ${prop.VectorValue.Z})`;
 					break;
 				case 7: //irr::scene::EESAT_TEXTURE:
 					value = "\"" + prop.TextureValue ? prop.TextureValue.Name : "" + "\"";
 					break;
 				case 8: //irr::scene::EESAT_SCENE_NODE_ID:
-					value = ccbGetSceneNodeFromId(prop.IntValue);
+					value = `ccbGetSceneNodeFromId(${prop.IntValue})`;
 					break;
 				case 9: //irr::scene::EESAT_ACTION_REFERENCE:
 					value = CL3D.ScriptingInterface.getScriptingInterface().registerExtensionScriptActionHandler(prop.ActionHandlerValue);
@@ -724,18 +725,7 @@ export class ActionExtensionScript extends CL3D.Action {
 
 		let code = "";
 
-		// need to initialize script
-		let ccbScriptName = "";
-
-		ccbScriptName = "_ccbScriptTmp";
-
-		code = `
-			${ccbScriptName} = new ${this.JsClassName}();
-		`;
-
-		engine.executeCode(code);
-
-		// also, we need to init the instance with the properties the user set for this extension
+		// we need to init the instance with the properties the user set for this extension
 		const objPrefix = "this.";
 
 		code = `
@@ -750,12 +740,20 @@ export class ActionExtensionScript extends CL3D.Action {
 
 		engine.executeCode(code);
 
-		// run script like this:
+		this.ScriptIndex = engine.getUniqueCounterID();
+
+		let ccbScriptName = `_ccbScriptCache[${this.ScriptIndex}]`;
+
+		code = `
+			${ccbScriptName} = new ${this.JsClassName}();
+		`;
+
+		engine.executeCode(code);
 
 		code = `
 		try {
 			${ccbScriptName}._init();
-			${ccbScriptName}.execute(ccbGetSceneNodeFromId(${currentNode.Id});
+			${ccbScriptName}.execute(ccbGetSceneNodeFromId(${currentNode.Id}));
 		} catch(e) {
 			console.log(e);
 		}

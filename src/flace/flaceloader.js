@@ -5,72 +5,121 @@ export class FlaceLoader {
 	constructor () {
 		this.Data = this.Document = null;
 		this.Filename = "";
+		this.CurrentTagSize = 0;
 		this.NextTagPos = 0;
-		this.CursorControl = this.TheTextureManager = null;
+		this.CursorControl = null;
+		this.TheTextureManager = null;
 		this.PathRoot = "";
-		this.StoredFileContent = this.TheMeshCache = null;
+		this.StoredFileContent = null;
+		this.TheMeshCache = null;
 		this.LoadedAReloadAction = false;
-
-		this.trailingUTF8Bytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5];
+		this.trailingUTF8Bytes = [
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+			2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5,
+		];
 	}
 
-	ArrayBufferToString(a)
+	/**
+	 * @param {ArrayBuffer} buffer
+	 * @returns
+	 */
+	ArrayBufferToString(buffer)
 	{
-		var b = "";
-		a = new Uint8Array(a);
-		for(var c = 0; c < a.byteLength; c++) b += String.fromCharCode(a[c]);
-		return b
+		let data = "";
+		let array = new Uint8Array(buffer);
+		for(let index = 0; index < array.byteLength; index++) data += String.fromCharCode(array[index]);
+		return data;
 	}
 
-	async loadFile(a, b, c, e, f, g, h)
+	StringToUint8Array(str)
 	{
-		this.CopyRootNodeChildren = g;
-		this.NewRootNodeChildrenParent = h;
-
-		this.Filename = b;
-		this.TheTextureManager = c;
-		this.CursorControl = f;
-		this.TheMeshCache = e;
-		this.TheTextureManager != null && CL3D.ScriptingInterface.getScriptingInterface().setTextureManager(c);
-		if(a != null && b.indexOf(".ccbz") != -1) a = this.ArrayBufferToString(a);
-		if(a == null || a.length == 0)
-		{
-			console.log("Error: Could not load file '" + b + "'");
-			a = navigator.appVersion;
-			a != null && a.indexOf("Chrome") != -1 && console.log("<i>For using local files with Chrome, run the file from a web server<br/>Or use Firefox instead. Or run it from CopperCube.</i>", true);
-			return null
+		let buf = new ArrayBuffer(str.length);
+		let bufView = new Uint8Array(buf);
+		for (let index=0; index < str.length; index++) {
+		  bufView[index] = str.charCodeAt(index);
 		}
-		if(b.indexOf(".ccbz") != -1) a = JSInflate.inflate(a);
-		else if(b.indexOf(".ccbjs") != -1) a = CL3D.base64decode(a);
-		this.Document = b = new CL3D.CCDocument;
+		return bufView;
+	}
+
+	StringToUint16Array(str)
+	{
+		let buf = new ArrayBuffer(str.length*2);
+		let bufView = new Uint16Array(buf);
+		for (let index=0; index < str.length; index++) {
+		  bufView[index] = str.charCodeAt(index);
+		}
+		return bufView;
+	}
+
+	/**
+	 * @param {ArrayBuffer|String} filecontent
+	 * @param {String} filename
+	 * @param {CL3D.TextureManager} textureManager
+	 * @param {CL3D.MeshCache} meshCache
+	 * @param {CL3D.CopperLicht} cursorControl
+	 * @param {Boolean} copyRootNodeChildren
+	 * @param {CL3D.SceneNode} newRootNodeChildrenParent
+	 * @returns
+	 */
+	async loadFile(filecontent, filename, textureManager, meshCache, cursorControl, copyRootNodeChildren, newRootNodeChildrenParent)
+	{
+		this.CopyRootNodeChildren = copyRootNodeChildren;
+		this.NewRootNodeChildrenParent = newRootNodeChildrenParent;
+
+		this.Filename = filename;
+		this.TheTextureManager = textureManager;
+		this.TheMeshCache = meshCache;
+		this.CursorControl = cursorControl;
+		this.TheTextureManager != null && CL3D.ScriptingInterface.getScriptingInterface().setTextureManager(this.TheTextureManager);
+
+		if(filecontent != null && this.Filename.indexOf(".ccbz") != -1 || this.Filename.indexOf(".ccp") != -1)
+		{
+			filecontent = this.ArrayBufferToString(filecontent);
+		}
+		if(filecontent == null || filecontent.length == 0 || filecontent.byteLength != null)
+		{
+			console.log("Error: Could not load file '" + this.Filename + "'");
+			return null;
+		}
+		if(this.Filename.indexOf(".ccbz") != -1) filecontent = JSInflate.inflate(filecontent);
+		else if(this.Filename.indexOf(".ccbjs") != -1) filecontent = CL3D.base64decode(filecontent);
+		this.Document = new CL3D.CCDocument;
 		this.setRootPath();
-		this.Data = new CL3D.BinaryStream(a);
+		this.Data = new CL3D.StringBinary(filecontent);
 		if(!await this.parseFile()) return null;
-		this.StoredFileContent = a;
-		return b
+		this.StoredFileContent = filecontent;
+		return this.Document;
 	}
 
 	setRootPath()
 	{
-		var a = this.Filename,
-			b = a.lastIndexOf("/");
-		if(b == -1)
-			b = a.lastIndexOf("\\");
-		if(b != -1) a = a.substring(0, b + 1);
-		this.PathRoot = a
+		let path = this.Filename;
+		let end = path.lastIndexOf("/");
+		if(end == -1)
+			end = path.lastIndexOf("\\");
+		if(end != -1) path = path.substring(0, end + 1);
+		this.PathRoot = path;
 	}
 
 	async parseFile()
 	{
-		if(this.Data.readSI32() != 1701014630) return false;
-		this.Data.readSI32();
-		this.Data.readUI32();
-		for(var a = 0; this.Data.bytesAvailable() > 0;)
+		let magic = this.Data.readSI32();
+		let version = this.Data.readSI32();
+		let len = this.Data.readUI32();
+		if(magic != 1701014630) return false;
+
+		for(let index = 0; this.Data.bytesAvailable() > 0;)
 		{
-			var b = this.readTag();
-			++a;
-			if(a == 1 && b != 1) return false;
-			switch (b)
+			let tag = this.readTag();
+			++index;
+			if(index == 1 && tag != 1) return false;
+			switch (tag)
 			{
 				case 1:
 					if (this.CopyRootNodeChildren)
@@ -86,93 +135,98 @@ export class FlaceLoader {
 					await this.readEmbeddedFiles();
 					break;
 				default:
-					this.SkipToNextTag()
+					this.SkipToNextTag();
 			}
 		}
-		return true
+		return true;
 	}
 
 	SkipToNextTag()
 	{
-		this.Data.seek(this.NextTagPos, true)
+		this.Data.seek(this.NextTagPos, true);
 	}
 
 	readTag()
 	{
-		var a = 0;
-		a = this.Data.readUnsignedShort();
-		var b = 0;
-		this.CurrentTagSize = b = this.Data.readUnsignedInt();
-		this.NextTagPos = this.Data.getPosition() + b;
-		return a
+		let tag = 0;
+		tag = this.Data.readUnsignedShort();
+		this.CurrentTagSize = this.Data.readUnsignedInt();
+		this.NextTagPos = this.Data.getPosition() + this.CurrentTagSize;
+		return tag;
 	}
 
 	ReadMatrix()
 	{
-		var a = new CL3D.Matrix4(false);
-		this.ReadIntoExistingMatrix(a);
-		return a
+		let mat4 = new CL3D.Matrix4(false);
+		this.ReadIntoExistingMatrix(mat4);
+		return mat4;
 	}
 
-	ReadIntoExistingMatrix(a)
+	/**
+	 * @param {CL3D.Matrix4} mat4
+	 */
+	ReadIntoExistingMatrix(mat4)
 	{
-		for(var b = 0; b < 16; ++b) a.setByIndex(b, this.Data.readFloat())
+		for(let index = 0; index < 16; ++index) mat4.setByIndex(index, this.Data.readFloat());
 	}
 
 	ReadQuaternion()
 	{
-		var a = new CL3D.Quaternion;
-		a.W = this.Data.readFloat();
-		a.X = this.Data.readFloat();
-		a.Y = this.Data.readFloat();
-		a.Z = this.Data.readFloat();
-		return a
+		let quat = new CL3D.Quaternion;
+		quat.W = this.Data.readFloat();
+		quat.X = this.Data.readFloat();
+		quat.Y = this.Data.readFloat();
+		quat.Z = this.Data.readFloat();
+		return quat;
 	}
 
-	readUTFBytes(a)
+	readUTFBytes(sourceEnd)
 	{
-		for(var b = 0,
-			c = [], e = [0, 12416, 925824, 63447168, 4194836608, 2181570688], f = [], g = 0; g < a; ++g) f.push(this.Data.readNumber(1));
-		for(; b < a;)
+		let sourceRead = 0;
+		let chars = [];
+		let offsetsFromUTF8 = [0, 12416, 925824, 63447168, 4194836608, 2181570688];
+		let bytes = [];
+		for(let index = 0; index < sourceEnd; ++index) bytes.push(this.Data.readNumber(1));
+		for(; sourceRead < sourceEnd;)
 		{
-			g = 0;
-			var i = this.trailingUTF8Bytes[f[b]];
-			if(b + i >= a) return c.join("");
-			for(var h = i; h >= 0; --h)
+			let ch = 0;
+			let extraBytesToRead = this.trailingUTF8Bytes[bytes[sourceRead]];
+			if(sourceRead + extraBytesToRead >= sourceEnd) return chars.join("");
+			for(let z = extraBytesToRead; z >= 0; --z)
 			{
-				g += f[b];
-				++b;
-				if(h != 0) g <<= 6
+				ch += bytes[sourceRead];
+				++sourceRead;
+				if(z != 0) ch <<= 6
 			}
-			if(b > a) break;
-			g -= e[i];
-			if(g < 1114111) c.push(this.fixedFromCharCode(g));
-			else return c.join("")
+			if(sourceRead > sourceEnd) break;
+			ch -= offsetsFromUTF8[extraBytesToRead];
+			if(ch < 1114111) chars.push(this.fixedFromCharCode(ch));
+			else return chars.join("");
 		}
-		return c.join("")
+		return chars.join("");
 	}
 
 	ReadString()
 	{
-		var a = this.Data.readUnsignedInt();
-		if(a > 104857600) return "";
-		if(a <= 0) return "";
-		return this.readUTFBytes(a)
+		let int = this.Data.readUnsignedInt();
+		if(int > 104857600) return "";
+		if(int <= 0) return "";
+		return this.readUTFBytes(int);
 	}
 
-	fixedFromCharCode(a)
+	fixedFromCharCode(int)
 	{
-		if(a > 65535)
+		if(int > 65535)
 		{
-			a -= 65536;
-			return String.fromCharCode(55296 + (a >> 10), 56320 + (a & 1023))
+			int -= 65536;
+			return String.fromCharCode(55296 + (int >> 10), 56320 + (int & 1023));
 		}
-		else return String.fromCharCode(a)
+		else return String.fromCharCode(int);
 	}
 
 	readDocument()
 	{
-		for(var a = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < a;) switch (this.readTag())
+		for(let nextTagPos = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 1004:
 				this.Document.CurrentScene = this.Data.readInt();
@@ -181,12 +235,12 @@ export class FlaceLoader {
 				this.readPublishSettings();
 				break;
 			case 2:
-				var b = null;
+				let flacescene = null;
 				switch (this.Data.readInt())
 				{
 					case 0:
-						b = new CL3D.Free3dScene;
-						this.readFreeScene(b);
+						flacescene = new CL3D.Free3dScene;
+						this.readFreeScene(flacescene);
 						break;
 					case 1:
 						/// TODO
@@ -194,151 +248,174 @@ export class FlaceLoader {
 					default:
 						this.SkipToNextTag()
 				}
-				this.Document.addScene(b);
+				this.Document.addScene(flacescene);
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
 	}
 
 	readDocument2()
 	{
-		for(var a = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < a;) switch (this.readTag())
+		for(let nextTagPos = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 2:
-				var b = null;
+				let flacescene = null;
 				switch (this.Data.readInt())
 				{
 					case 0:
-						b = {}; //temp
-						b.CurrentScene = CL3D.gDocument.getCurrentScene();
-						b.getRootSceneNode = function(){return b.CurrentScene.RootNode};
-						b.registerSceneNodeAnimatorForEvents = b.CurrentScene.registerSceneNodeAnimatorForEvents;
-						b.RegisteredSceneNodeAnimatorsForEventsList = b.CurrentScene.RegisteredSceneNodeAnimatorsForEventsList;
-						b.RootNode = null;
-						this.readFreeScene2(b);
+						flacescene = new class {
+							constructor() {
+								this.RootNode = null;
+								this.CurrentScene = CL3D.gDocument.getCurrentScene();
+								this.registerSceneNodeAnimatorForEvents = this.CurrentScene.registerSceneNodeAnimatorForEvents;
+								this.RegisteredSceneNodeAnimatorsForEventsList = this.CurrentScene.RegisteredSceneNodeAnimatorsForEventsList;
+							}
+
+							getRootSceneNode() {
+								return this.CurrentScene.RootNode;
+							}
+						};
+
+						this.readFreeScene2(flacescene);
 						break;
 					default:
 						this.SkipToNextTag()
 				}
-				this.Document.addScene(b);
+				this.Document.addScene(flacescene);
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
 	}
 
-	reloadScene(a, b, c, e, f, g, i)
+	/**
+	 * @param {ArrayBuffer|String} filecontent
+	 * @param {CL3D.Free3dScene} scene
+	 * @param {Number} sceneindex
+	 * @param {String} filename
+	 * @param {CL3D.TextureManager} textureManager
+	 * @param {CL3D.MeshCache} meshCache
+	 * @param {CL3D.CopperLicht} cursorControl
+	 * @param {Boolean} copyRootNodeChildren
+	 * @param {CL3D.SceneNode} newRootNodeChildrenParent
+	 * @returns
+	 */
+	reloadScene(filecontent, scene, sceneindex, filename, textureManager, meshCache, cursorControl)
 	{
-		this.Filename = e;
-		this.TheTextureManager = f;
-		this.CursorControl = i;
-		this.TheMeshCache = g;
-		this.Data = new CL3D.BinaryStream(a);
+		this.Filename = filename;
+		this.TheTextureManager = textureManager;
+		this.TheMeshCache = meshCache;
+		this.CursorControl = cursorControl;
+		this.Data = new CL3D.StringBinary(filecontent);
 		this.setRootPath();
 		this.Data.readSI32();
 		this.Data.readSI32();
 		this.Data.readUI32();
-		a = -1;
-		e = this.readTag();
-		if(e != 1) return null;
-		for(b = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < b;)
+		let loadedSceneCount = -1;
+		let tag = this.readTag();
+		if(tag != 1) return null;
+		for(let nextTagPos = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;)
 		{
-			e = this.readTag();
-			switch (e)
+			tag = this.readTag();
+			switch (tag)
 			{
 				case 2:
-					e = this.Data.readInt();
-					++a;
-					if(a == c)
+					let sceneType = this.Data.readInt();
+					++loadedSceneCount;
+					if(loadedSceneCount == sceneindex)
 					{
-						c = null;
-						switch (e)
+						let flacescene = null;
+						switch (sceneType)
 						{
 							case 0:
-								c = new CL3D.Free3dScene;
-								this.readFreeScene(c);
+								flacescene = new CL3D.Free3dScene;
+								this.readFreeScene(flacescene);
 								break;
 							case 1:
 								/// TODO
 								break;
 							default:
-								this.SkipToNextTag()
+								this.SkipToNextTag();
 						}
-						return c
+						return flacescene;
 					}
 					else this.SkipToNextTag();
 				default:
-					this.SkipToNextTag()
+					this.SkipToNextTag();
 			}
 		}
-		return null
+		return null;
 	}
 
 	readPublishSettings()
 	{
-		this.Data.readInt();
+		this.Data.readInt(); // Target
 		this.Document.ApplicationTitle = this.ReadString();
-		for(var a = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < a;) switch (this.readTag())
+		let flag = 0;
+		for(let nextTagPos = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 35:
 				this.Data.readInt();
 				this.Data.readInt();
 				this.Data.readInt();
 				this.Data.readInt();
-				var b = this.Data.readInt();
-				if((b & 1) != 0) this.Document.WaitUntilTexturesLoaded = true;
-				if((b & 16) != 0) console.log(`CL3D.Global_PostEffectsDisabled = true`)
+				flag = this.Data.readInt();
+				if((flag & 1) != 0) this.Document.WaitUntilTexturesLoaded = true;
+				if((flag & 16) != 0) console.log(`CL3D.Global_PostEffectsDisabled = true`)
 				this.SkipToNextTag();
 				break;
 			case 37:
-				b = this.Data.readInt();
+				flag = this.Data.readInt();
 				this.Data.readInt();
-				if((b & 1) != 0)
+				if((flag & 1) != 0)
 					if(CL3D.gCCDebugInfoEnabled) console.log(`CL3D.gCCDebugInfoEnabled = true`);
-				if((b & 2) != 0)
+				if((flag & 2) != 0)
 				{
 					this.Data.readInt();
 					this.ReadString()
-				}(b & 4) != 0 && this.ReadString();
+				}(flag & 4) != 0 && this.ReadString();
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
 	}
 
-	readFreeScene(a)
+	/**
+	 * @param {CL3D.Free3dScene} scene
+	 */
+	readFreeScene(scene)
 	{
-		var b = this.NextTagPos;
-		for(this.readScene(a); this.Data.bytesAvailable() > 0 && this.Data.getPosition() < b;) switch (this.readTag())
+		let nextTagPos = this.NextTagPos;
+		for(this.readScene(scene); this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 1007:
-				a.DefaultCameraPos = this.Read3DVectF();
-				a.DefaultCameraTarget = this.Read3DVectF();
+				scene.DefaultCameraPos = this.Read3DVectF();
+				scene.DefaultCameraTarget = this.Read3DVectF();
 				break;
 			case 8:
-				this.ReadSceneGraph(a);
+				this.ReadSceneGraph(scene);
 				break;
 			case 1008:
-				a.Gravity = this.Data.readFloat();
+				scene.Gravity = this.Data.readFloat();
 				break;
 			case 1009:
-				a.FogEnabled = this.Data.readBoolean();
-				a.FogDensity = this.Data.readFloat();
-				a.FogColor = this.Data.readInt();
+				scene.FogEnabled = this.Data.readBoolean();
+				scene.FogDensity = this.Data.readFloat();
+				scene.FogColor = this.Data.readInt();
 				break;
 			case 1010:
 				this.Data.readBoolean();
-				a.WindSpeed = this.Data.readFloat();
-				a.WindStrength = this.Data.readFloat();
+				scene.WindSpeed = this.Data.readFloat();
+				scene.WindStrength = this.Data.readFloat();
 				break;
 			case 1011:
-				a.ShadowMappingEnabled = this.Data.readBoolean();
-				a.ShadowMapBias1 = this.Data.readFloat();
-				a.ShadowMapBias2 = this.Data.readFloat();
-				a.ShadowMapBackFaceBias = this.Data.readFloat();
-				a.ShadowMapOpacity = this.Data.readFloat();
-				a.ShadowMapCameraViewDetailFactor = this.Data.readFloat();
+				scene.ShadowMappingEnabled = this.Data.readBoolean();
+				scene.ShadowMapBias1 = this.Data.readFloat();
+				scene.ShadowMapBias2 = this.Data.readFloat();
+				scene.ShadowMapBackFaceBias = this.Data.readFloat();
+				scene.ShadowMapOpacity = this.Data.readFloat();
+				scene.ShadowMapCameraViewDetailFactor = this.Data.readFloat();
 				break;
 			case 1012:
 				if (this.CopyRootNodeChildren)
@@ -347,518 +424,417 @@ export class FlaceLoader {
 				}
 				else
 				{
-					for(var c = 0; c < 6; ++c) a.PostEffectData[c].Active = this.Data.readBoolean();
-					a.PE_bloomBlurIterations = this.Data.readInt();
-					a.PE_bloomTreshold = this.Data.readFloat();
-					a.PE_blurIterations = this.Data.readInt();
-					a.PE_colorizeColor = this.Data.readInt();
-					a.PE_vignetteIntensity = this.Data.readFloat();
-					a.PE_vignetteRadiusA = this.Data.readFloat();
-					a.PE_vignetteRadiusB = this.Data.readFloat();
+					for(let index = 0; index < 6; ++index) scene.PostEffectData[index].Active = this.Data.readBoolean();
+					scene.PE_bloomBlurIterations = this.Data.readInt();
+					scene.PE_bloomTreshold = this.Data.readFloat();
+					scene.PE_blurIterations = this.Data.readInt();
+					scene.PE_colorizeColor = this.Data.readInt();
+					scene.PE_vignetteIntensity = this.Data.readFloat();
+					scene.PE_vignetteRadiusA = this.Data.readFloat();
+					scene.PE_vignetteRadiusB = this.Data.readFloat();
 				}
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
 	}
 
-	readFreeScene2(a)
+	/**
+	 * @param {CL3D.Free3dScene} scene
+	 */
+	readFreeScene2(scene)
 	{
-		var b = this.NextTagPos;
-		for(this.readScene(a); this.Data.bytesAvailable() > 0 && this.Data.getPosition() < b;) switch (this.readTag())
+		let nextTagPos = this.NextTagPos;
+		for(this.readScene(scene); this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 8:
-				this.ReadSceneGraph(a);
+				this.ReadSceneGraph(scene);
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
 	}
 
 	Read3DVectF()
 	{
-		var a = new CL3D.Vect3d;
-		a.X = this.Data.readFloat();
-		a.Y = this.Data.readFloat();
-		a.Z = this.Data.readFloat();
-		return a
+		let vect3d = new CL3D.Vect3d;
+		vect3d.X = this.Data.readFloat();
+		vect3d.Y = this.Data.readFloat();
+		vect3d.Z = this.Data.readFloat();
+		return vect3d;
 	}
 
 	ReadColorF()
 	{
-		var a = new CL3D.ColorF;
-		a.R = this.Data.readFloat();
-		a.G = this.Data.readFloat();
-		a.B = this.Data.readFloat();
-		a.A = this.Data.readFloat();
-		return a
+		let color = new CL3D.ColorF;
+		color.R = this.Data.readFloat();
+		color.G = this.Data.readFloat();
+		color.B = this.Data.readFloat();
+		color.A = this.Data.readFloat();
+		return color;
 	}
 
 	ReadColorFAsInt()
 	{
-		var a = this.Data.readFloat(),
-			b = this.Data.readFloat(),
-			c = this.Data.readFloat(),
-			e = this.Data.readFloat();
-		if(a > 1) a = 1;
-		if(b > 1) b = 1;
-		if(c > 1) c = 1;
-		if(e > 1) e = 1;
-		return CL3D.createColor(e * 255, a * 255, b * 255, c * 255)
+		let A = this.Data.readFloat(),
+			R = this.Data.readFloat(),
+			G = this.Data.readFloat(),
+			B = this.Data.readFloat();
+		if(A > 1) A = 1;
+		if(R > 1) R = 1;
+		if(G > 1) G = 1;
+		if(B > 1) B = 1;
+		return CL3D.createColor(A * 255, R * 255, G * 255, B * 255);
 	}
 
 	Read2DVectF()
 	{
-		var a = new CL3D.Vect2d;
-		a.X = this.Data.readFloat();
-		a.Y = this.Data.readFloat();
-		return a
+		let vect2d = new CL3D.Vect2d;
+		vect2d.X = this.Data.readFloat();
+		vect2d.Y = this.Data.readFloat();
+		return vect2d;
 	}
 
 	Read3DBoxF()
 	{
-		var a = new CL3D.Box3d;
-		a.MinEdge = this.Read3DVectF();
-		a.MaxEdge = this.Read3DVectF();
-		return a
+		let box3d = new CL3D.Box3d;
+		box3d.MinEdge = this.Read3DVectF();
+		box3d.MaxEdge = this.Read3DVectF();
+		return box3d;
 	}
 
-	readScene(a)
+	readScene(scene)
 	{
 		if(this.readTag() == 26)
 		{
 			if (this.CopyRootNodeChildren)
 			{
-				a.Name = this.ReadString();
-				var folder = new CL3D.DummyTransformationSceneNode();
-				folder.Name = a.Name;
+				scene.Name = this.ReadString();
+				let folder = new CL3D.DummyTransformationSceneNode();
+				folder.Name = scene.Name;
 				//folder.Visible = false;
 				this.NewRootNodeChildrenParent.addChild(folder);
-				a.RootNode = folder;
+				scene.RootNode = folder;
 				this.SkipToNextTag();
 			}
 			else
 			{
-				a.Name = this.ReadString();
-				a.BackgroundColor = this.Data.readInt()
+				scene.Name = this.ReadString();
+				scene.BackgroundColor = this.Data.readInt();
 			}
 		}
-		else this.JumpBackFromTagReading()
+		else this.JumpBackFromTagReading();
 	}
 
 	JumpBackFromTagReading()
 	{
-		this.Data.position -= 10
+		this.Data.position -= 10;
 	}
 
-	ReadSceneGraph(a)
+	/**
+	 * @param {CL3D.Free3dScene} scene
+	 */
+	ReadSceneGraph(scene)
 	{
-		for(var b = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < b;) switch (this.readTag())
+		for(let nextTagPos = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 9:
-				this.ReadSceneNode(a, a.RootNode, 0);
+				this.ReadSceneNode(scene, scene.RootNode, 0);
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
 	}
 
-	ReadSceneNode(a, b, c)
+	/**
+	 * @param {Object} params
+	 */
+	AddSceneNodeParams(node, params)
 	{
-		if(b != null)
+		node.Type = params.nodeType;
+		node.Pos = params.pos;
+		node.Rot = params.rot;
+		node.Scale = params.scale;
+		node.Visible = params.bIsVisible;
+		node.Name = params.name;
+		node.Culling = params.culling;
+		node.Id = params.nodeId;
+		node.scene = params.scene;
+	}
+
+	/**
+	 * @param {CL3D.Free3dScene} scene
+	 * @param {CL3D.SceneNode} node
+	 * @param {Number} depth
+	 */
+	ReadSceneNode(scene, node, depth)
+	{
+		if(node != null)
 		{
-			var e = this.NextTagPos,
-				f = this.Data.readInt(),
-				g = this.Data.readInt(),
-				i = this.ReadString(),
-				h = this.Read3DVectF(),
-				j = this.Read3DVectF(),
-				m = this.Read3DVectF(),
-				k = this.Data.readBoolean(),
-				l = this.Data.readInt(),
-				d = null,
-				o = 0;
-			if(c == 0)
+			let nextTagPos = this.NextTagPos;
+			let lastCreatedSceneNode = null;
+			let materialCountRead = 0;
+			let params = {
+				nodeType: this.Data.readInt(),
+				nodeId: this.Data.readInt(),
+				name: this.ReadString(),
+				pos: this.Read3DVectF(),
+				rot: this.Read3DVectF(),
+				scale: this.Read3DVectF(),
+				bIsVisible: this.Data.readBoolean(),
+				culling: this.Data.readInt()
+			};
+
+			if(depth == 0)
 			{
 				if (!this.CopyRootNodeChildren)
 				{
-					b.Visible = k;
-					b.Name = i;
-					b.Culling = l
+					node.Visible = params.bIsVisible;
+					node.Name = params.name;
+					node.Culling = params.culling;
 				}
 			}
-			for(; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < e;) switch (this.readTag())
+			for(; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 			{
 				case 9:
-					this.ReadSceneNode(a, d ? d : b, c + 1);
+					this.ReadSceneNode(scene, lastCreatedSceneNode ? lastCreatedSceneNode : node, depth + 1);
 					break;
 				case 10:
-					switch (f)
+					switch (params.nodeType)
 					{
 						case 2037085030:
-							d = new CL3D.SkyBoxSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readFlaceMeshNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.SkyBoxSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlaceMeshNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1752395110:
-							d = new CL3D.MeshSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readFlaceMeshNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.MeshSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlaceMeshNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1835950438:
-							d = new CL3D.AnimatedMeshSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readFlaceAnimatedMeshNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.AnimatedMeshSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlaceAnimatedMeshNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1953526632:
-							d = new CL3D.HotspotSceneNode(this.CursorControl, null);
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readFlaceHotspotNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.HotspotSceneNode(this.CursorControl, null);
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlaceHotspotNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1819042406:
-							d = new CL3D.BillboardSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readFlaceBillBoardNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.BillboardSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlaceBillBoardNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1835098982:
-							d = new CL3D.CameraSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.scene = a;
-							d.Id = g;
-							this.readFlaceCameraNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.CameraSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlaceCameraNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1751608422:
-							d = new CL3D.LightSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readFlaceLightNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.LightSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlaceLightNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1935946598:
-							d = new CL3D.SoundSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readFlace3DSoundNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.SoundSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlace3DSoundNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1752461414:
-							d = new CL3D.PathSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readFlacePathNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.PathSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlacePathNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1954112614:
-							d = new CL3D.DummyTransformationSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							d.Box = this.Read3DBoxF();
-							for(var n = 0; n < 16; ++n) d.RelativeTransformationMatrix.setByIndex(n, this.Data.readFloat());
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.DummyTransformationSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							lastCreatedSceneNode.Box = this.Read3DBoxF();
+							this.ReadIntoExistingMatrix(lastCreatedSceneNode.RelativeTransformationMatrix);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1868837478:
-							d = new CL3D.Overlay2DSceneNode(this.CursorControl);
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readFlace2DOverlay(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.Overlay2DSceneNode(this.CursorControl);
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlace2DOverlay(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1668575334:
-							d = new CL3D.ParticleSystemSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readParticleSystemSceneNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.ParticleSystemSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readParticleSystemSceneNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1835283046:
-							d = new CL3D.Mobile2DInputSceneNode(this.CursorControl, a);
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readFlace2DMobileInput(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.Mobile2DInputSceneNode(this.CursorControl, scene);
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readFlace2DMobileInput(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						case 1920103526:
-							d = new CL3D.TerrainSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							d.Box = this.Read3DBoxF();
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.TerrainSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							lastCreatedSceneNode.Box = this.Read3DBoxF();
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode.updateAbsolutePosition();
 							this.SkipToNextTag();
 							break;
 						case 1920235366:
-							d = new CL3D.WaterSurfaceSceneNode;
-							d.Type = f;
-							d.Pos = h;
-							d.Rot = j;
-							d.Scale = m;
-							d.Visible = k;
-							d.Name = i;
-							d.Culling = l;
-							d.Id = g;
-							d.scene = a;
-							this.readWaterNode(d);
-							b.addChild(d);
-							d = d;
-							d.updateAbsolutePosition();
+							lastCreatedSceneNode = new CL3D.WaterSurfaceSceneNode;
+							this.AddSceneNodeParams(lastCreatedSceneNode, params);
+							this.readWaterNode(lastCreatedSceneNode);
+							node.addChild(lastCreatedSceneNode);
+							lastCreatedSceneNode = lastCreatedSceneNode
+							lastCreatedSceneNode.updateAbsolutePosition();
 							break;
 						default:
-							if(c == 0 && !this.CopyRootNodeChildren) a.AmbientLight = this.ReadColorF();
+							if(depth == 0 && !this.CopyRootNodeChildren) scene.AmbientLight = this.ReadColorF();
 							this.SkipToNextTag();
 							break
 					}
 					break;
 				case 11:
-					n = this.ReadMaterial();
-					d && d.getMaterial(o) && d.getMaterial(o).setFrom(n);
-					++o;
+					let mat = this.ReadMaterial();
+					lastCreatedSceneNode && lastCreatedSceneNode.getMaterial(materialCountRead) && lastCreatedSceneNode.getMaterial(materialCountRead).setFrom(mat);
+					++materialCountRead;
 					break;
 				case 25:
-					n = d;
-					if(n == null && c == 0) n = a.getRootSceneNode();
-					this.ReadAnimator(n, a);
+					if(lastCreatedSceneNode == null && depth == 0) lastCreatedSceneNode = scene.getRootSceneNode();
+					this.ReadAnimator(lastCreatedSceneNode, scene);
 					break;
 				default:
-					this.SkipToNextTag()
+					this.SkipToNextTag();
 			}
-			d && d.onDeserializedWithChildren()
+			lastCreatedSceneNode && lastCreatedSceneNode.onDeserializedWithChildren();
 		}
 	}
 
-	readFlaceMeshNode(a)
+	/**
+	 * @param {CL3D.MeshSceneNode} node
+	 */
+	readFlaceMeshNode(node)
 	{
-		var b = this.NextTagPos;
-		a.Box = this.Read3DBoxF();
+		let nextTagPos = this.NextTagPos;
+		node.Box = this.Read3DBoxF();
 		this.Data.readBoolean();
-		a.ReceivesStaticShadows = this.Data.readBoolean();
-		a.DoesCollision = this.Data.readBoolean();
-		for(a.OccludesLight = this.Data.readBoolean(); this.Data.bytesAvailable() > 0 && this.Data.getPosition() < b;) switch (this.readTag())
+		node.ReceivesStaticShadows = this.Data.readBoolean();
+		node.DoesCollision = this.Data.readBoolean();
+		node.OccludesLight = this.Data.readBoolean();
+		for(; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 14:
-				var c = this.ReadMesh();
-				a.OwnedMesh = c;
+				node.OwnedMesh = this.ReadMesh();
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
 	}
 
 	ReadMesh()
 	{
-		var a = new CL3D.Mesh;
-		a.Box = this.Read3DBoxF();
-		for(var b = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < b;) switch (this.readTag())
+		let mesh = new CL3D.Mesh;
+		mesh.Box = this.Read3DBoxF();
+		for(let nextTagPos = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 15:
-				var c = this.ReadMeshBuffer();
-				c != null && a.AddMeshBuffer(c);
+				let buffer = this.ReadMeshBuffer();
+				buffer != null && mesh.AddMeshBuffer(buffer);
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
-		return a
+		return mesh;
 	}
 
 	ReadMeshBuffer()
 	{
-		var a = new CL3D.MeshBuffer;
-		a.Box = this.Read3DBoxF();
-		for(var b = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < b;) switch (this.readTag())
+		let buffer = new CL3D.MeshBuffer;
+		buffer.Box = this.Read3DBoxF();
+		for(let nextTagPos = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 11:
-				a.Mat = this.ReadMaterial();
+				buffer.Mat = this.ReadMaterial();
 				break;
 			case 16:
-				for(var c = Math.floor(this.CurrentTagSize / 2), e = 0; e < c; ++e) a.Indices.push(this.Data.readShort());
+				let indicesCount = Math.floor(this.CurrentTagSize / 2);
+				for(let index = 0; index < indicesCount; ++index) buffer.Indices.push(this.Data.readShort());
 				break;
 			case 17:
-				c = Math.floor(this.CurrentTagSize / 36);
-				for(e = 0; e < c; ++e)
+				let verticesCount = Math.floor(this.CurrentTagSize / 36);
+				for(let index = 0; index < verticesCount; ++index)
 				{
-					var f = new CL3D.Vertex3D;
-					f.Pos = this.Read3DVectF();
-					f.Normal = this.Read3DVectF();
-					f.Color = this.Data.readInt();
-					f.TCoords = this.Read2DVectF();
-					f.TCoords2 = new CL3D.Vect2d;
-					a.Vertices.push(f)
+					let vertex3d = new CL3D.Vertex3D;
+					vertex3d.Pos = this.Read3DVectF();
+					vertex3d.Normal = this.Read3DVectF();
+					vertex3d.Color = this.Data.readInt();
+					vertex3d.TCoords = this.Read2DVectF();
+					vertex3d.TCoords2 = new CL3D.Vect2d;
+					buffer.Vertices.push(vertex3d);
 				}
 				break;
 			case 18:
-				c = Math.floor(this.CurrentTagSize / 44);
-				for(e = 0; e < c; ++e)
+				let tCoordsVerticesCount = Math.floor(this.CurrentTagSize / 44);
+				for(let index = 0; index < tCoordsVerticesCount; ++index)
 				{
-					f = new CL3D.Vertex3D;
-					f.Pos = this.Read3DVectF();
-					f.Normal = this.Read3DVectF();
-					f.Color = this.Data.readInt();
-					f.TCoords = this.Read2DVectF();
-					f.TCoords2 = this.Read2DVectF();
-					a.Vertices.push(f)
+					let vertex3d = new CL3D.Vertex3D;
+					vertex3d.Pos = this.Read3DVectF();
+					vertex3d.Normal = this.Read3DVectF();
+					vertex3d.Color = this.Data.readInt();
+					vertex3d.TCoords = this.Read2DVectF();
+					vertex3d.TCoords2 = this.Read2DVectF();
+					buffer.Vertices.push(vertex3d);
 				}
 				break;
 			case 19:
-				c = this.CurrentTagSize / 60;
-				a.Tangents = [];
-				a.Binormals = [];
-				for(e = 0; e < c; ++e)
+				let TangentsVerticesCount = this.CurrentTagSize / 60;
+				buffer.Tangents = [];
+				buffer.Binormals = [];
+				for(let index = 0; index < TangentsVerticesCount; ++index)
 				{
-					f = new CL3D.Vertex3D;
-					f.Pos = this.Read3DVectF();
-					f.Normal = this.Read3DVectF();
-					f.Color = this.Data.readInt();
-					f.TCoords = this.Read2DVectF();
-					f.TCoords2 = new CL3D.Vect2d;
-					a.Tangents.push(this.Read3DVectF());
-					a.Binormals.push(this.Read3DVectF());
-					a.Vertices.push(f)
+					let vertex3d = new CL3D.Vertex3D;
+					vertex3d.Pos = this.Read3DVectF();
+					vertex3d.Normal = this.Read3DVectF();
+					vertex3d.Color = this.Data.readInt();
+					vertex3d.TCoords = this.Read2DVectF();
+					vertex3d.TCoords2 = new CL3D.Vect2d;
+					buffer.Tangents.push(this.Read3DVectF());
+					buffer.Binormals.push(this.Read3DVectF());
+					buffer.Vertices.push(vertex3d);
 				}
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
-		return a
+		return buffer;
 	}
 
 	ReadMaterial()
 	{
-		var a = new CL3D.Material;
-		a.Type = this.Data.readInt();
+		let mat = new CL3D.Material;
+		mat.Type = this.Data.readInt();
 		this.Data.readInt();
 		this.Data.readInt();
 		this.Data.readInt();
@@ -868,555 +844,588 @@ export class FlaceLoader {
 		this.Data.readInt();
 		this.Data.readBoolean();
 		this.Data.readBoolean();
-		a.Lighting = this.Data.readBoolean();
-		a.ZWriteEnabled = this.Data.readBoolean();
+		mat.Lighting = this.Data.readBoolean();
+		mat.ZWriteEnabled = this.Data.readBoolean();
 		this.Data.readByte();
-		a.BackfaceCulling = this.Data.readBoolean();
+		mat.BackfaceCulling = this.Data.readBoolean();
 		this.Data.readBoolean();
 		this.Data.readBoolean();
 		this.Data.readBoolean();
-		for(var b = 0; b < 4; ++b)
+		for(let index = 0; index < 4; ++index)
 		{
-			var c = this.ReadTextureRef();
-			switch (b)
+			let texture = this.ReadTextureRef();
+			switch (index)
 			{
 				case 0:
-					a.Tex1 = c;
+					mat.Tex1 = texture;
 					break;
 				case 1:
-					a.Tex2 = c;
-					break
+					mat.Tex2 = texture;
+					break;
 			}
 			this.Data.readBoolean();
 			this.Data.readBoolean();
 			this.Data.readBoolean();
-			if(this.Data.readShort() != 0) switch (b)
+			if(this.Data.readShort() != 0) switch (index)
 			{
 				case 0:
-					a.ClampTexture1 = true;
+					mat.ClampTexture1 = true;
 					break;
 				case 1:
-					break
+					break;
 			}
 		}
-		return a
+		return mat;
 	}
 
 	ReadFileStrRef()
 	{
-		return this.ReadString()
+		return this.ReadString();
 	}
 
 	ReadSoundRef()
 	{
-		var a = this.PathRoot + this.ReadFileStrRef();
-		return CL3D.gSoundManager.getSoundFromSoundName(a, true)
+		let sound = this.PathRoot + this.ReadFileStrRef();
+		return CL3D.gSoundManager.getSoundFromSoundName(sound, true);
 	}
 
 	ReadTextureRef()
 	{
-		var a = this.ReadFileStrRef(),
-			b = this.PathRoot + a;
-		if(this.TheTextureManager != null && a != "") return this.TheTextureManager.getTexture(b, true);
-		return null
+		let texturePath = "";
+		let texture = this.ReadFileStrRef();
+		if (this.Filename.indexOf(".ccp") != -1) texturePath = texture;
+		else texturePath = this.PathRoot + texture;
+		if(this.TheTextureManager != null && texture != "") return this.TheTextureManager.getTexture(texturePath, true);
+		return null;
 	}
 
-	readFlaceHotspotNode(a)
+	/**
+	 * @ignore
+	 * @param {CL3D.HotspotSceneNode} node
+	 */
+	readFlaceHotspotNode(node)
 	{
-		var b = this.NextTagPos;
-		a.Box = this.Read3DBoxF();
-		a.Width = this.Data.readInt();
-		for(a.Height = this.Data.readInt(); this.Data.bytesAvailable() > 0 && this.Data.getPosition() < b;) switch (this.readTag())
+		let nextTagPos = this.NextTagPos;
+		node.Box = this.Read3DBoxF();
+		node.Width = this.Data.readInt();
+		node.Height = this.Data.readInt();
+		for(; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 3:
-				this.readHotspotData(a);
+				this.readHotspotData(node);
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
 	}
 
-	readHotspotData(a)
+	/**
+	 * @ignore
+	 * @param {CL3D.HotspotSceneNode} node
+	 */
+	readHotspotData(node)
 	{
-		var b = this.NextTagPos;
-		a.caption = this.ReadString();
-		a.TheTexture = this.ReadTextureRef();
+		let nextTagPos = this.NextTagPos;
+		node.caption = this.ReadString();
+		node.TheTexture = this.ReadTextureRef();
 		this.Read2DVectF();
 		this.Data.readInt();
-		a.dateLimit = this.ReadString();
-		for(a.useDateLimit = this.Data.readBoolean(); this.Data.bytesAvailable() > 0 && this.Data.getPosition() < b;) switch (this.readTag())
+		node.dateLimit = this.ReadString();
+		node.useDateLimit = this.Data.readBoolean();
+		for(; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 6:
-				a.bExecuteJavaScript = true;
-				a.executeJavaScript = this.ReadString();
+				node.bExecuteJavaScript = true;
+				node.executeJavaScript = this.ReadString();
 				break;
 			case 4:
-				a.bGotoScene = true;
-				a.gotoScene = this.ReadString();
+				node.bGotoScene = true;
+				node.gotoScene = this.ReadString();
 				break;
 			case 5:
-				a.bOpenWebsite = true;
-				a.website = this.ReadString();
-				a.websiteTarget = this.ReadString();
+				node.bOpenWebsite = true;
+				node.website = this.ReadString();
+				node.websiteTarget = this.ReadString();
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
 	}
 
-	readFlaceCameraNode(a)
+	/**
+	 * @param {CL3D.CameraSceneNode} node
+	 */
+	readFlaceCameraNode(node)
 	{
-		a.Box = this.Read3DBoxF();
-		a.Target = this.Read3DVectF();
-		a.UpVector = this.Read3DVectF();
-		a.Fovy = this.Data.readFloat();
-		a.Aspect = this.Data.readFloat();
-		a.ZNear = this.Data.readFloat();
-		a.ZFar = this.Data.readFloat();
-		a.Active = this.Data.readBoolean();
-		a.recalculateProjectionMatrix()
+		node.Box = this.Read3DBoxF();
+		node.Target = this.Read3DVectF();
+		node.UpVector = this.Read3DVectF();
+		node.Fovy = this.Data.readFloat();
+		node.Aspect = this.Data.readFloat();
+		node.ZNear = this.Data.readFloat();
+		node.ZFar = this.Data.readFloat();
+		node.Active = this.Data.readBoolean();
+		node.recalculateProjectionMatrix();
 	}
 
-	readWaterNode(a)
+	/**
+	 * @param {CL3D.WaterSurfaceSceneNode} node
+	 */
+	readWaterNode(node)
 	{
 		this.Data.readInt();
-		a.Details = this.Data.readInt();
-		a.WaterFlowDirection.X = this.Data.readFloat();
-		a.WaterFlowDirection.Y = this.Data.readFloat();
-		a.WaveLength = this.Data.readFloat();
-		a.WaveHeight = this.Data.readFloat();
-		a.WaterColor = this.Data.readInt();
-		a.ColorWhenUnderwater = this.Data.readBoolean();
-		a.UnderWaterColor = this.Data.readInt();
-		this.readFlaceMeshNode(a)
+		node.Details = this.Data.readInt();
+		node.WaterFlowDirection.X = this.Data.readFloat();
+		node.WaterFlowDirection.Y = this.Data.readFloat();
+		node.WaveLength = this.Data.readFloat();
+		node.WaveHeight = this.Data.readFloat();
+		node.WaterColor = this.Data.readInt();
+		node.ColorWhenUnderwater = this.Data.readBoolean();
+		node.UnderWaterColor = this.Data.readInt();
+		this.readFlaceMeshNode(node);
 	}
 
-	readFlaceLightNode(a)
+	/**
+	 * @param {CL3D.LightSceneNode} node
+	 */
+	readFlaceLightNode(node)
 	{
-		a.Box = this.Read3DBoxF();
-		if(this.Data.readInt() == 2) a.LightData.IsDirectional = true;
-		a.LightData.Color = this.ReadColorF();
+		node.Box = this.Read3DBoxF();
+		if(this.Data.readInt() == 2) node.LightData.IsDirectional = true;
+		node.LightData.Color = this.ReadColorF();
 		this.ReadColorF();
 		this.Data.readBoolean();
-		a.LightData.Direction = this.Read3DVectF();
-		var b = this.Data.readFloat();
-		a.LightData.Radius = b;
-		if(b != 0) a.LightData.Attenuation = 1 / b
+		node.LightData.Direction = this.Read3DVectF();
+		node.LightData.Radius = this.Data.readFloat();
+		if(node.LightData.Radius != 0) node.LightData.Attenuation = 1 / node.LightData.Radius;
 	}
 
-	readFlaceBillBoardNode(a)
+	/**
+	 * @param {CL3D.BillboardSceneNode} node
+	 */
+	readFlaceBillBoardNode(node)
 	{
-		a.MeshBuffer.Box = this.Read3DBoxF();
-		a.Box = a.MeshBuffer.Box;
-		a.SizeX = this.Data.readFloat();
-		a.SizeY = this.Data.readFloat();
-		var b = this.Data.readByte();
-		a.IsVertical = (b & 2) != 0
+		node.MeshBuffer.Box = this.Read3DBoxF();
+		node.Box = node.MeshBuffer.Box;
+		node.SizeX = this.Data.readFloat();
+		node.SizeY = this.Data.readFloat();
+		node.IsVertical = (this.Data.readByte() & 2) != 0;
 	}
 
-	readFlace3DSoundNode(a)
+	/**
+	 * @param {CL3D.SoundSceneNode} node
+	 */
+	readFlace3DSoundNode(node)
 	{
-		a.Box = this.Read3DBoxF();
-		a.TheSound = this.ReadSoundRef();
-		a.MinDistance = this.Data.readFloat();
-		a.MaxDistance = this.Data.readFloat();
-		a.PlayMode = this.Data.readInt();
-		a.DeleteWhenFinished = this.Data.readBoolean();
-		a.MaxTimeInterval = this.Data.readInt();
-		a.MinTimeInterval = this.Data.readInt();
-		a.Volume = this.Data.readFloat();
-		a.PlayAs2D = this.Data.readBoolean();
-		this.Data.readInt()
-	}
-
-	readFlacePathNode(a)
-	{
-		a.Box = this.Read3DBoxF();
-		a.Tightness = this.Data.readFloat();
-		a.IsClosedCircle = this.Data.readBoolean();
+		node.Box = this.Read3DBoxF();
+		node.TheSound = this.ReadSoundRef();
+		node.MinDistance = this.Data.readFloat();
+		node.MaxDistance = this.Data.readFloat();
+		node.PlayMode = this.Data.readInt();
+		node.DeleteWhenFinished = this.Data.readBoolean();
+		node.MaxTimeInterval = this.Data.readInt();
+		node.MinTimeInterval = this.Data.readInt();
+		node.Volume = this.Data.readFloat();
+		node.PlayAs2D = this.Data.readBoolean();
 		this.Data.readInt();
-		for(var b = this.Data.readInt(), c = 0; c < b; ++c) a.Nodes.push(this.Read3DVectF())
 	}
 
-	readParticleSystemSceneNode(a)
+	/**
+	 * @param {CL3D.PathSceneNode} node
+	 */
+	readFlacePathNode(node)
 	{
-		a.Direction = this.Read3DVectF();
-		a.MaxAngleDegrees = this.Data.readInt();
-		a.EmittArea = this.Read3DVectF();
-		a.MinLifeTime = this.Data.readInt();
-		a.MaxLifeTime = this.Data.readInt();
-		a.MaxParticles = this.Data.readInt();
-		a.MinParticlesPerSecond = this.Data.readInt();
-		a.MaxParticlesPerSecond = this.Data.readInt();
-		a.MinStartColor = this.Data.readInt();
-		a.MaxStartColor = this.Data.readInt();
-		a.MinStartSizeX = this.Data.readFloat();
-		a.MinStartSizeY = this.Data.readFloat();
-		a.MaxStartSizeX = this.Data.readFloat();
-		a.MaxStartSizeY = this.Data.readFloat();
-		var b = this.Data.readInt();
-		if(b & 1)
-		{
-			a.FadeOutAffector = true;
-			a.FadeOutTime = this.Data.readInt();
-			a.FadeTargetColor = this.Data.readInt()
-		}
-		else a.FadeOutAffector = false;
-		if(b & 2)
-		{
-			a.GravityAffector = true;
-			a.GravityAffectingTime = this.Data.readInt();
-			a.Gravity = this.Read3DVectF()
-		}
-		else a.GravityAffector = false;
-		if(b & 4)
-		{
-			a.ScaleAffector = true;
-			a.ScaleToX = this.Data.readFloat();
-			a.ScaleToY = this.Data.readFloat()
-		}
-		else a.ScaleAffector = false
+		node.Box = this.Read3DBoxF();
+		node.Tightness = this.Data.readFloat();
+		node.IsClosedCircle = this.Data.readBoolean();
+		this.Data.readInt();
+		let countNodes = this.Data.readInt();
+		for(let index = 0; index < countNodes; ++index) node.Nodes.push(this.Read3DVectF());
 	}
 
-	readFlace2DMobileInput(a)
+	/**
+	 * @param {CL3D.ParticleSystemSceneNode} node
+	 */
+	readParticleSystemSceneNode(node)
+	{
+		node.Direction = this.Read3DVectF();
+		node.MaxAngleDegrees = this.Data.readInt();
+		node.EmittArea = this.Read3DVectF();
+		node.MinLifeTime = this.Data.readInt();
+		node.MaxLifeTime = this.Data.readInt();
+		node.MaxParticles = this.Data.readInt();
+		node.MinParticlesPerSecond = this.Data.readInt();
+		node.MaxParticlesPerSecond = this.Data.readInt();
+		node.MinStartColor = this.Data.readInt();
+		node.MaxStartColor = this.Data.readInt();
+		node.MinStartSizeX = this.Data.readFloat();
+		node.MinStartSizeY = this.Data.readFloat();
+		node.MaxStartSizeX = this.Data.readFloat();
+		node.MaxStartSizeY = this.Data.readFloat();
+		let flag = this.Data.readInt();
+		if(flag & 1)
+		{
+			node.FadeOutAffector = true;
+			node.FadeOutTime = this.Data.readInt();
+			node.FadeTargetColor = this.Data.readInt()
+		}
+		else node.FadeOutAffector = false;
+		if(flag & 2)
+		{
+			node.GravityAffector = true;
+			node.GravityAffectingTime = this.Data.readInt();
+			node.Gravity = this.Read3DVectF();
+		}
+		else node.GravityAffector = false;
+		if(flag & 4)
+		{
+			node.ScaleAffector = true;
+			node.ScaleToX = this.Data.readFloat();
+			node.ScaleToY = this.Data.readFloat();
+		}
+		else node.ScaleAffector = false;
+	}
+
+	/**
+	 * @param {CL3D.Mobile2DInputSceneNode} node
+	 */
+	readFlace2DMobileInput(node)
 	{
 		this.Data.readInt();
-		a.SizeModeIsAbsolute = this.Data.readBoolean();
-		if(a.SizeModeIsAbsolute)
+		node.SizeModeIsAbsolute = this.Data.readBoolean();
+		if(node.SizeModeIsAbsolute)
 		{
-			a.PosAbsoluteX = this.Data.readInt();
-			a.PosAbsoluteY = this.Data.readInt();
-			a.SizeAbsoluteWidth = this.Data.readInt();
-			a.SizeAbsoluteHeight = this.Data.readInt()
+			node.PosAbsoluteX = this.Data.readInt();
+			node.PosAbsoluteY = this.Data.readInt();
+			node.SizeAbsoluteWidth = this.Data.readInt();
+			node.SizeAbsoluteHeight = this.Data.readInt();
 		}
 		else
 		{
-			a.PosRelativeX = this.Data.readFloat();
-			a.PosRelativeY = this.Data.readFloat();
-			a.SizeRelativeWidth = this.Data.readFloat();
-			a.SizeRelativeHeight = this.Data.readFloat()
+			node.PosRelativeX = this.Data.readFloat();
+			node.PosRelativeY = this.Data.readFloat();
+			node.SizeRelativeWidth = this.Data.readFloat();
+			node.SizeRelativeHeight = this.Data.readFloat();
 		}
-		a.ShowBackGround = this.Data.readBoolean();
-		a.BackGroundColor = this.Data.readInt();
-		a.Texture = this.ReadTextureRef();
-		a.TextureHover = this.ReadTextureRef();
-		a.RetainAspectRatio = this.Data.readBoolean();
-		a.CursorTex = this.ReadTextureRef();
-		a.InputMode = this.Data.readInt();
-		if(a.InputMode == 1) a.KeyCode = this.Data.readInt()
+		node.ShowBackGround = this.Data.readBoolean();
+		node.BackGroundColor = this.Data.readInt();
+		node.Texture = this.ReadTextureRef();
+		node.TextureHover = this.ReadTextureRef();
+		node.RetainAspectRatio = this.Data.readBoolean();
+		node.CursorTex = this.ReadTextureRef();
+		node.InputMode = this.Data.readInt();
+		if(node.InputMode == 1) node.KeyCode = this.Data.readInt();
 	}
 
-	readFlace2DOverlay(a)
+	/**
+	 * @param {CL3D.Overlay2DSceneNode} node
+	 */
+	readFlace2DOverlay(node)
 	{
-		if(this.Data.readInt() & 1) a.BlurImage = true;
-		a.SizeModeIsAbsolute = this.Data.readBoolean();
-		if(a.SizeModeIsAbsolute)
+		if(this.Data.readInt() & 1) node.BlurImage = true;
+		node.SizeModeIsAbsolute = this.Data.readBoolean();
+		if(node.SizeModeIsAbsolute)
 		{
-			a.PosAbsoluteX = this.Data.readInt();
-			a.PosAbsoluteY = this.Data.readInt();
-			a.SizeAbsoluteWidth = this.Data.readInt();
-			a.SizeAbsoluteHeight = this.Data.readInt()
+			node.PosAbsoluteX = this.Data.readInt();
+			node.PosAbsoluteY = this.Data.readInt();
+			node.SizeAbsoluteWidth = this.Data.readInt();
+			node.SizeAbsoluteHeight = this.Data.readInt();
 		}
 		else
 		{
-			a.PosRelativeX = this.Data.readFloat();
-			a.PosRelativeY = this.Data.readFloat();
-			a.SizeRelativeWidth = this.Data.readFloat();
-			a.SizeRelativeHeight = this.Data.readFloat()
+			node.PosRelativeX = this.Data.readFloat();
+			node.PosRelativeY = this.Data.readFloat();
+			node.SizeRelativeWidth = this.Data.readFloat();
+			node.SizeRelativeHeight = this.Data.readFloat();
 		}
-		a.ShowBackGround = this.Data.readBoolean();
-		a.BackGroundColor = this.Data.readInt();
-		a.Texture = this.ReadTextureRef();
-		a.TextureHover = this.ReadTextureRef();
-		a.RetainAspectRatio = this.Data.readBoolean();
-		a.DrawText = this.Data.readBoolean();
-		a.TextAlignment = this.Data.readByte();
-		a.Text = this.ReadString();
-		a.FontName = this.ReadString();
-		a.TextColor = this.Data.readInt();
-		a.AnimateOnHover = this.Data.readBoolean();
-		a.OnHoverSetFontColor = this.Data.readBoolean();
-		a.HoverFontColor = this.Data.readInt();
-		a.OnHoverSetBackgroundColor = this.Data.readBoolean();
-		a.HoverBackgroundColor = this.Data.readInt();
-		a.OnHoverDrawTexture = this.Data.readBoolean()
+		node.ShowBackGround = this.Data.readBoolean();
+		node.BackGroundColor = this.Data.readInt();
+		node.Texture = this.ReadTextureRef();
+		node.TextureHover = this.ReadTextureRef();
+		node.RetainAspectRatio = this.Data.readBoolean();
+		node.DrawText = this.Data.readBoolean();
+		node.TextAlignment = this.Data.readByte();
+		node.Text = this.ReadString();
+		node.FontName = this.ReadString();
+		node.TextColor = this.Data.readInt();
+		node.AnimateOnHover = this.Data.readBoolean();
+		node.OnHoverSetFontColor = this.Data.readBoolean();
+		node.HoverFontColor = this.Data.readInt();
+		node.OnHoverSetBackgroundColor = this.Data.readBoolean();
+		node.HoverBackgroundColor = this.Data.readInt();
+		node.OnHoverDrawTexture = this.Data.readBoolean();
 	}
 
-	ReadAnimator(a, b)
+	/**
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} scene
+	 * @returns
+	 */
+	ReadAnimator(node, scene)
 	{
-		if(a)
+		if(node)
 		{
-			var c = null;
-			switch (this.Data.readInt())
+			let animator = null;
+			let flag = 0;
+			let type = this.Data.readInt();
+			switch (type)
 			{
 				case 100:
-					b = new CL3D.AnimatorRotation;
-					b.Rotation = this.Read3DVectF();
-					c = b;
+					animator = new CL3D.AnimatorRotation;
+					animator.Rotation = this.Read3DVectF();
 					break;
 				case 101:
-					b = new CL3D.AnimatorFlyStraight;
-					b.Start = this.Read3DVectF();
-					b.End = this.Read3DVectF();
-					b.TimeForWay = this.Data.readInt();
-					b.Loop = this.Data.readBoolean();
-					b.recalculateImidiateValues();
-					c = b;
+					animator = new CL3D.AnimatorFlyStraight;
+					animator.Start = this.Read3DVectF();
+					animator.End = this.Read3DVectF();
+					animator.TimeForWay = this.Data.readInt();
+					animator.Loop = this.Data.readBoolean();
+					animator.recalculateImidiateValues();
 					break;
 				case 102:
-					b = new CL3D.AnimatorFlyCircle;
-					b.Center = this.Read3DVectF();
-					b.Direction = this.Read3DVectF();
-					b.Radius = this.Data.readFloat();
-					b.Speed = this.Data.readFloat();
-					b.init();
-					c = b;
+					animator = new CL3D.AnimatorFlyCircle;
+					animator.Center = this.Read3DVectF();
+					animator.Direction = this.Read3DVectF();
+					animator.Radius = this.Data.readFloat();
+					animator.Speed = this.Data.readFloat();
+					animator.init();
 					break;
 				case 103:
-					b = new CL3D.AnimatorCollisionResponse;
-					b.Radius = this.Read3DVectF();
+					animator = new CL3D.AnimatorCollisionResponse;
+					animator.Radius = this.Read3DVectF();
 					this.Data.readFloat();
-					b.AffectedByGravity = !CL3D.equals(this.Data.readFloat(), 0);
+					animator.AffectedByGravity = !CL3D.equals(this.Data.readFloat(), 0);
 					this.Data.readFloat();
-					b.Translation = this.Read3DVectF();
-					c = this.Data.readInt();
+					animator.Translation = this.Read3DVectF();
+					flag = this.Data.readInt();
 					this.Data.readInt();
 					this.Data.readInt();
-					if(c & 1) b.UseInclination = true;
-					b.SlidingSpeed = this.Data.readFloat();
-					c = b;
+					if(flag & 1) animator.UseInclination = true;
+					animator.SlidingSpeed = this.Data.readFloat();
 					break;
 				case 104:
-					b = new CL3D.AnimatorCameraFPS(a, this.CursorControl);
-					b.MaxVerticalAngle = this.Data.readFloat();
-					b.MoveSpeed = this.Data.readFloat();
-					b.RotateSpeed = this.Data.readFloat();
-					b.JumpSpeed = this.Data.readFloat();
-					b.NoVerticalMovement = this.Data.readBoolean();
-					c = this.Data.readInt();
-					if(c & 1)
+					animator = new CL3D.AnimatorCameraFPS(node, this.CursorControl);
+					animator.MaxVerticalAngle = this.Data.readFloat();
+					animator.MoveSpeed = this.Data.readFloat();
+					animator.RotateSpeed = this.Data.readFloat();
+					animator.JumpSpeed = this.Data.readFloat();
+					animator.NoVerticalMovement = this.Data.readBoolean();
+					flag = this.Data.readInt();
+					if(flag & 1)
 					{
-						b.moveByMouseMove = false;
-						b.moveByMouseDown = true
+						animator.moveByMouseMove = false;
+						animator.moveByMouseDown = true;
 					}
 					else
 					{
-						b.moveByMouseMove = true;
-						b.moveByMouseDown = false
+						animator.moveByMouseMove = true;
+						animator.moveByMouseDown = false;
 					}
-					if(c & 2) b.MoveSmoothing = this.Data.readInt();
-					if(c & 4) b.ChildrenDontUseZBuffer = true;
-					if(a)
+					if(flag & 2) animator.MoveSmoothing = this.Data.readInt();
+					if(flag & 4) animator.ChildrenDontUseZBuffer = true;
+					if(node.getType() == "camera")
 					{
-						b.targetZoomValue = CL3D.radToDeg(a.Fovy);
-						b.maxZoom = b.targetZoomValue + 10;
-						b.zoomSpeed = (b.maxZoom - b.minZoom) / 50
+						animator.targetZoomValue = CL3D.radToDeg(node.Fovy);
+						animator.maxZoom = node.targetZoomValue + 10;
+						animator.zoomSpeed = (node.maxZoom - node.minZoom) / 50;
 					}
-					c = b;
 					break;
 				case 105:
-					b = new CL3D.AnimatorCameraModelViewer(a, this.CursorControl);
-					b.Radius = this.Data.readFloat();
-					b.RotateSpeed = this.Data.readFloat();
-					b.NoVerticalMovement = this.Data.readBoolean();
-					c = this.Data.readInt();
-					if(c & 2)
+					animator = new CL3D.AnimatorCameraModelViewer(node, this.CursorControl);
+					animator.Radius = this.Data.readFloat();
+					animator.RotateSpeed = this.Data.readFloat();
+					animator.NoVerticalMovement = this.Data.readBoolean();
+					flag = this.Data.readInt();
+					if(flag & 2)
 					{
-						b.SlideAfterMovementEnd = true;
-						b.SlidingSpeed = this.Data.readFloat()
+						animator.SlideAfterMovementEnd = true;
+						animator.SlidingSpeed = this.Data.readFloat();
 					}
-					if(c & 4)
+					if(flag & 4)
 					{
-						b.AllowZooming = true;
-						b.MinZoom = this.Data.readFloat();
-						b.MaxZoom = this.Data.readFloat();
-						b.ZoomSpeed = this.Data.readFloat()
+						animator.AllowZooming = true;
+						animator.MinZoom = this.Data.readFloat();
+						animator.MaxZoom = this.Data.readFloat();
+						animator.ZoomSpeed = this.Data.readFloat();
 					}
-					c = b;
 					break;
 				case 106:
-					var e = new CL3D.AnimatorFollowPath(b);
-					e.TimeNeeded = this.Data.readInt();
-					e.LookIntoMovementDirection = this.Data.readBoolean();
-					e.PathToFollow = this.ReadString();
-					e.OnlyMoveWhenCameraActive = this.Data.readBoolean();
-					e.AdditionalRotation = this.Read3DVectF();
-					e.EndMode = this.Data.readByte();
-					e.CameraToSwitchTo = this.ReadString();
-					c = this.Data.readInt();
-					if(c & 1) e.TimeDisplacement = this.Data.readInt();
-					if(e.EndMode == 3 || e.EndMode == 4) e.TheActionHandler = this.ReadActionHandlerSection(b);
-					c = e;
+					animator = new CL3D.AnimatorFollowPath(scene);
+					animator.TimeNeeded = this.Data.readInt();
+					animator.LookIntoMovementDirection = this.Data.readBoolean();
+					animator.PathToFollow = this.ReadString();
+					animator.OnlyMoveWhenCameraActive = this.Data.readBoolean();
+					animator.AdditionalRotation = this.Read3DVectF();
+					animator.EndMode = this.Data.readByte();
+					animator.CameraToSwitchTo = this.ReadString();
+					flag = this.Data.readInt();
+					if(flag & 1) animator.TimeDisplacement = this.Data.readInt();
+					if(animator.EndMode == 3 || animator.EndMode == 4) animator.TheActionHandler = this.ReadActionHandlerSection(scene);
 					break;
 				case 107:
-					c = new CL3D.AnimatorOnClick(b, this.CursorControl);
-					c.BoundingBoxTestOnly = this.Data.readBoolean();
-					c.CollidesWithWorld = this.Data.readBoolean();
+					animator = new CL3D.AnimatorOnClick(scene, this.CursorControl);
+					animator.BoundingBoxTestOnly = this.Data.readBoolean();
+					animator.CollidesWithWorld = this.Data.readBoolean();
 					this.Data.readInt();
-					c.TheActionHandler = this.ReadActionHandlerSection(b);
-					c = c;
+					animator.TheActionHandler = this.ReadActionHandlerSection(scene);
 					break;
 				case 108:
-					e = new CL3D.AnimatorOnProximity(b);
-					e.EnterType = this.Data.readInt();
-					e.ProximityType = this.Data.readInt();
-					e.Range = this.Data.readFloat();
-					e.SceneNodeToTest = this.Data.readInt();
-					c = this.Data.readInt();
-					if(c & 1)
+					animator = new CL3D.AnimatorOnProximity(scene);
+					animator.EnterType = this.Data.readInt();
+					animator.ProximityType = this.Data.readInt();
+					animator.Range = this.Data.readFloat();
+					animator.SceneNodeToTest = this.Data.readInt();
+					flag = this.Data.readInt();
+					if(flag & 1)
 					{
-						e.AreaType = 1;
-						e.RangeBox = this.Read3DVectF()
+						animator.AreaType = 1;
+						animator.RangeBox = this.Read3DVectF()
 					}
-					e.TheActionHandler = this.ReadActionHandlerSection(b);
-					c = e;
+					animator.TheActionHandler = this.ReadActionHandlerSection(scene);
 					break;
 				case 109:
-					b = new CL3D.AnimatorAnimateTexture;
-					b.TextureChangeType = this.Data.readInt();
-					b.TimePerFrame = this.Data.readInt();
-					b.TextureIndexToChange = this.Data.readInt();
-					b.Loop = this.Data.readBoolean();
-					c = this.Data.readInt();
-					b.Textures = [];
-					for(e = 0; e < c; ++e) b.Textures.push(this.ReadTextureRef());
-					c = b;
+					animator = new CL3D.AnimatorAnimateTexture;
+					animator.TextureChangeType = this.Data.readInt();
+					animator.TimePerFrame = this.Data.readInt();
+					animator.TextureIndexToChange = this.Data.readInt();
+					animator.Loop = this.Data.readBoolean();
+					tanimcount = this.Data.readInt();
+					animator.Textures = [];
+					for(let index = 0; index < tanimcount; ++index) animator.Textures.push(this.ReadTextureRef());
 					break;
 				case 110:
-					c = new CL3D.AnimatorOnMove(b, this.CursorControl);
-					c.BoundingBoxTestOnly = this.Data.readBoolean();
-					c.CollidesWithWorld = this.Data.readBoolean();
+					animator = new CL3D.AnimatorOnMove(scene, this.CursorControl);
+					animator.BoundingBoxTestOnly = this.Data.readBoolean();
+					animator.CollidesWithWorld = this.Data.readBoolean();
 					this.Data.readInt();
-					c.ActionHandlerOnLeave = this.ReadActionHandlerSection(b);
-					c.ActionHandlerOnEnter = this.ReadActionHandlerSection(b);
-					c = c;
+					animator.ActionHandlerOnLeave = this.ReadActionHandlerSection(scene);
+					animator.ActionHandlerOnEnter = this.ReadActionHandlerSection(scene);
 					break;
 				case 111:
-					c = new CL3D.AnimatorTimer(b);
-					c.TickEverySeconds = this.Data.readInt();
+					animator = new CL3D.AnimatorTimer(scene);
+					animator.TickEverySeconds = this.Data.readInt();
 					this.Data.readInt();
-					c.TheActionHandler = this.ReadActionHandlerSection(b);
-					c = c;
+					animator.TheActionHandler = this.ReadActionHandlerSection(scene);
 					break;
 				case 112:
-					c = new CL3D.AnimatorOnKeyPress(b, this.CursorControl);
-					c.KeyPressType = this.Data.readInt();
-					c.KeyCode = this.Data.readInt();
-					c.IfCameraOnlyDoIfActive = this.Data.readBoolean();
+					animator = new CL3D.AnimatorOnKeyPress(scene, this.CursorControl);
+					animator.KeyPressType = this.Data.readInt();
+					animator.KeyCode = this.Data.readInt();
+					animator.IfCameraOnlyDoIfActive = this.Data.readBoolean();
 					this.Data.readInt();
-					c.TheActionHandler = this.ReadActionHandlerSection(b);
-					c = c;
+					animator.TheActionHandler = this.ReadActionHandlerSection(scene);
 					break;
 				case 113:
-					e = new CL3D.AnimatorGameAI(b);
-					e.AIType = this.Data.readInt();
-					e.MovementSpeed = this.Data.readFloat();
-					e.ActivationRadius = this.Data.readFloat();
-					e.CanFly = this.Data.readBoolean();
-					e.Health = this.Data.readInt();
-					e.Tags = this.ReadString();
-					e.AttacksAIWithTags = this.ReadString();
-					e.PatrolRadius = this.Data.readFloat();
-					e.RotationSpeedMs = this.Data.readInt();
-					e.AdditionalRotationForLooking = this.Read3DVectF();
-					e.StandAnimation = this.ReadString();
-					e.WalkAnimation = this.ReadString();
-					e.DieAnimation = this.ReadString();
-					e.AttackAnimation = this.ReadString();
-					if(e.AIType == 3) e.PathIdToFollow = this.Data.readInt();
-					c = this.Data.readInt();
-					if(c & 1) e.PatrolWaitTimeMs = this.Data.readInt();
+					animator = new CL3D.AnimatorGameAI(scene);
+					animator.AIType = this.Data.readInt();
+					animator.MovementSpeed = this.Data.readFloat();
+					animator.ActivationRadius = this.Data.readFloat();
+					animator.CanFly = this.Data.readBoolean();
+					animator.Health = this.Data.readInt();
+					animator.Tags = this.ReadString();
+					animator.AttacksAIWithTags = this.ReadString();
+					animator.PatrolRadius = this.Data.readFloat();
+					animator.RotationSpeedMs = this.Data.readInt();
+					animator.AdditionalRotationForLooking = this.Read3DVectF();
+					animator.StandAnimation = this.ReadString();
+					animator.WalkAnimation = this.ReadString();
+					animator.DieAnimation = this.ReadString();
+					animator.AttackAnimation = this.ReadString();
+					if(animator.AIType == 3) animator.PathIdToFollow = this.Data.readInt();
+					flag = this.Data.readInt();
+					if(flag & 1) animator.PatrolWaitTimeMs = this.Data.readInt();
 					else
 					{
-						e.PatrolWaitTimeMs = 1E4;
-						if(e.MovementSpeed != 0) e.PatrolWaitTimeMs = e.PatrolRadius / (e.MovementSpeed / 1E3)
+						animator.PatrolWaitTimeMs = 1E4;
+						if(animator.MovementSpeed != 0) animator.PatrolWaitTimeMs = animator.PatrolRadius / (animator.MovementSpeed / 1E3);
 					}
-					e.ActionHandlerOnAttack = this.ReadActionHandlerSection(b);
-					e.ActionHandlerOnActivate = this.ReadActionHandlerSection(b);
-					e.ActionHandlerOnHit = this.ReadActionHandlerSection(b);
-					e.ActionHandlerOnDie = this.ReadActionHandlerSection(b);
-					c = e;
+					animator.ActionHandlerOnAttack = this.ReadActionHandlerSection(scene);
+					animator.ActionHandlerOnActivate = this.ReadActionHandlerSection(scene);
+					animator.ActionHandlerOnHit = this.ReadActionHandlerSection(scene);
+					animator.ActionHandlerOnDie = this.ReadActionHandlerSection(scene);
 					break;
 				case 114:
-					b = new CL3D.Animator3rdPersonCamera;
-					b.SceneNodeIDToFollow = this.Data.readInt();
-					b.AdditionalRotationForLooking = this.Read3DVectF();
-					b.FollowMode = this.Data.readInt();
-					b.FollowSmoothingSpeed = this.Data.readFloat();
-					b.TargetHeight = this.Data.readFloat();
-					c = this.Data.readInt();
-					b.CollidesWithWorld = c & 1 ? true : false;
-					c = b;
+					animator = new CL3D.Animator3rdPersonCamera;
+					animator.SceneNodeIDToFollow = this.Data.readInt();
+					animator.AdditionalRotationForLooking = this.Read3DVectF();
+					animator.FollowMode = this.Data.readInt();
+					animator.FollowSmoothingSpeed = this.Data.readFloat();
+					animator.TargetHeight = this.Data.readFloat();
+					flag = this.Data.readInt();
+					animator.CollidesWithWorld = flag & 1 ? true : false;
 					break;
 				case 115:
-					b = new CL3D.AnimatorKeyboardControlled(b, this.CursorControl);
+					animator = new CL3D.AnimatorKeyboardControlled(scene, this.CursorControl);
 					this.Data.readInt();
-					b.RunSpeed = this.Data.readFloat();
-					b.MoveSpeed = this.Data.readFloat();
-					b.RotateSpeed = this.Data.readFloat();
-					b.JumpSpeed = this.Data.readFloat();
-					b.AdditionalRotationForLooking = this.Read3DVectF();
-					b.StandAnimation = this.ReadString();
-					b.WalkAnimation = this.ReadString();
-					b.JumpAnimation = this.ReadString();
-					b.RunAnimation = this.ReadString();
-					c = this.Data.readInt();
-					if(c & 1) b.DisableWithoutActiveCamera = true;
-					if(c & 2)
+					animator.RunSpeed = this.Data.readFloat();
+					animator.MoveSpeed = this.Data.readFloat();
+					animator.RotateSpeed = this.Data.readFloat();
+					animator.JumpSpeed = this.Data.readFloat();
+					animator.AdditionalRotationForLooking = this.Read3DVectF();
+					animator.StandAnimation = this.ReadString();
+					animator.WalkAnimation = this.ReadString();
+					animator.JumpAnimation = this.ReadString();
+					animator.RunAnimation = this.ReadString();
+					flag = this.Data.readInt();
+					if(flag & 1) animator.DisableWithoutActiveCamera = true;
+					if(flag & 2)
 					{
-						b.UseAcceleration = true;
-						b.AccelerationSpeed = this.Data.readFloat();
-						b.DecelerationSpeed = this.Data.readFloat()
+						animator.UseAcceleration = true;
+						animator.AccelerationSpeed = this.Data.readFloat();
+						animator.DecelerationSpeed = this.Data.readFloat();
 					}
-					if(c & 4) b.PauseAfterJump = true;
-					c = b;
+					if(flag & 4) animator.PauseAfterJump = true;
 					break;
 				case 116:
-					c = new CL3D.AnimatorOnFirstFrame(b);
-					c.AlsoOnReload = this.Data.readBoolean();
+					animator = new CL3D.AnimatorOnFirstFrame(scene);
+					animator.AlsoOnReload = this.Data.readBoolean();
 					this.Data.readInt();
-					c.TheActionHandler = this.ReadActionHandlerSection(b);
-					c = c;
+					animator.TheActionHandler = this.ReadActionHandlerSection(scene);
 					break;
 				case 117:
-					c = new CL3D.AnimatorExtensionScript(b);
-					c.JsClassName = this.ReadString();
+					animator = new CL3D.AnimatorExtensionScript(scene);
+					animator.JsClassName = this.ReadString();
 					this.Data.readInt();
-					this.ReadExtensionScriptProperties(c.Properties, b);
-					c = c;
+					this.ReadExtensionScriptProperties(animator.Properties, scene);
 					break;
 				default:
-					this.SkipToNextTag();
-					return
+					animator = CL3D.Extensions.readAnimator(this, type, node, scene);
+					animator || this.SkipToNextTag();
+					return;
 			}
-			c && a.addAnimator(c)
+			animator && node.addAnimator(animator);
 		}
-		else this.SkipToNextTag()
+		else this.SkipToNextTag();
 	}
 
-	ReadExtensionScriptProperties(a, b)
+	/**
+	 * @param {Array} props
+	 * @param {CL3D.Free3dScene} scene
+	 */
+	ReadExtensionScriptProperties(props, scene)
 	{
-		for(var c = this.Data.readInt(), e = 0; e < c; ++e)
+		let propCount = this.Data.readInt()
+		for(let index = 0; index < propCount; ++index)
 		{
-			var f = new CL3D.ExtensionScriptProperty;
-			f.Type = this.Data.readInt();
-			f.Name = this.ReadString();
-			switch (f.Type)
+			let prop = new CL3D.ExtensionScriptProperty;
+			prop.Type = this.Data.readInt();
+			prop.Name = this.ReadString();
+			switch (prop.Type)
 			{
 				case 1:
-					f.FloatValue = this.Data.readFloat();
+					prop.FloatValue = this.Data.readFloat();
 					break;
 				case 2:
-					f.StringValue = this.ReadString();
+					prop.StringValue = this.ReadString();
 					break;
 				case 6:
-					f.VectorValue = this.Read3DVectF();
+					prop.VectorValue = this.Read3DVectF();
 					break;
 				case 7:
-					f.TextureValue = this.ReadTextureRef();
+					prop.TextureValue = this.ReadTextureRef();
 					break;
 				case 9:
-					f.ActionHandlerValue = this.ReadActionHandlerSection(b);
+					prop.ActionHandlerValue = this.ReadActionHandlerSection(scene);
 					break;
 				case 0:
 				case 4:
@@ -1424,442 +1433,482 @@ export class FlaceLoader {
 				case 8:
 				case 3:
 				default:
-					f.IntValue = this.Data.readInt();
-					break
+					prop.IntValue = this.Data.readInt();
+					break;
 			}
-			a.push(f)
+			props.push(prop);
 		}
 	}
 
-	ReadActionHandlerSection(a)
+	/**
+	 * @param {CL3D.Scene} scene
+	 * @returns
+	 */
+	ReadActionHandlerSection(scene)
 	{
 		if(this.Data.readInt())
 		{
-			var b = new CL3D.ActionHandler(a);
-			this.ReadActionHandler(b, a);
-			return b
+			let actionHandler = new CL3D.ActionHandler(scene);
+			this.ReadActionHandler(actionHandler, scene);
+			return actionHandler;
 		}
-		return null
+		return null;
 	}
 
-	ReadActionHandler(a, b)
+	/**
+	 * @param {CL3D.ActionHandler} actionHandler
+	 * @param {CL3D.Scene} scene
+	 */
+	ReadActionHandler(actionHandler, scene)
 	{
-		var c = this.readTag();
-		if(c != 29) this.SkipToNextTag();
+		let tag = this.readTag();
+		if(tag != 29) this.SkipToNextTag();
 		else
-			for(var e = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < e;)
+			for(let nextTagPos = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;)
 			{
-				c = this.readTag();
-				if(c == 30)(c = this.ReadAction(this.Data.readInt(), b)) && a.addAction(c);
-				else this.SkipToNextTag()
+				let tag = this.readTag();
+				if(tag == 30) {
+					let action = this.ReadAction(this.Data.readInt(), scene);
+				  	if(action) actionHandler.addAction(action);
+				}
+				else this.SkipToNextTag();
 			}
 	}
 
 	async readEmbeddedFiles()
 	{
-		for(var a = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < a;) switch (this.readTag())
+		for(let nextTagPos = this.NextTagPos; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos;) switch (this.readTag())
 		{
 			case 13:
-				var b = this.Data.readInt(),
-					c = this.ReadString(),
-					e = this.Data.readInt();
-				if(b & 4)
+				let flag = this.Data.readInt(),
+					name = this.ReadString(),
+					filesize = this.Data.readInt();
+				if(flag & 4)
 				{
-					if(b = this.TheMeshCache.getMeshFromName(c)) b.containsData() ? this.SkipToNextTag() : this.readSkinnedMesh(b, e)
+					let mesh = this.TheMeshCache.getMeshFromName(name);
+					if (mesh) mesh.containsData() ? this.SkipToNextTag() : this.readSkinnedMesh(mesh, filesize);
 				}
-				else if(b & 8)
+				else if(flag & 8)
 				{
-					b = null;
+					let code = "";
 					try
 					{
-						b = this.readUTFBytes(e)
+						code = this.readUTFBytes(filesize);
 					}
-					catch (f)
+					catch (error)
 					{
-						console.log("error reading script: " + f)
+						console.log("error reading script: " + error);
 					}
-					// var blob = new Blob([b], {type: "text/plain;charset=utf-8"});
-					// saveAs(blob, c + ".js");
-					b.replaceAll("__dirname", getDirName());
-					b != null && await CL3D.ScriptingInterface.getScriptingInterface().importCode(b)
+
+					code = code.replaceAll("__dirname", getDirName());
+					code != null && await CL3D.ScriptingInterface.getScriptingInterface().importCode(code);
 				}
 				this.SkipToNextTag();
 				break;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
 	}
 
-	readFlaceAnimatedMeshNode(a)
+	/**
+	 * @param {CL3D.AnimatedMeshSceneNode} node
+	 */
+	readFlaceAnimatedMeshNode(node)
 	{
-		a.Box = this.Read3DBoxF();
+		node.Box = this.Read3DBoxF();
 		this.Data.readBoolean();
 		this.Data.readInt();
-		var b = this.Data.readInt(),
-			c = this.Data.readInt();
-		a.FramesPerSecond = this.Data.readFloat();
+		let startFrame = this.Data.readInt(),
+			endFrame = this.Data.readInt();
+		node.FramesPerSecond = this.Data.readFloat();
 		this.Data.readByte();
-		a.Looping = this.Data.readBoolean();
-		var e = this.Data.readInt();
-		if(e == 0)
+		node.Looping = this.Data.readBoolean();
+		let flag = this.Data.readInt();
+		if(flag == 0)
 		{
-			a.BlendTimeMs = 250;
-			a.AnimationBlendingEnabled = true
+			node.BlendTimeMs = 250;
+			node.AnimationBlendingEnabled = true;
 		}
-		else if(e & 1)
+		else if(flag & 1)
 		{
-			a.BlendTimeMs = this.Data.readInt();
-			a.AnimationBlendingEnabled = a.BlendTimeMs > 0
+			node.BlendTimeMs = this.Data.readInt();
+			node.AnimationBlendingEnabled = node.BlendTimeMs > 0;
 		}
-		a.setMesh(this.ReadAnimatedMeshRef(a));
-		a.StartFrame = b;
-		a.EndFrame = c;
-		if(e & 2)
+		node.setMesh(this.ReadAnimatedMeshRef(node));
+		node.StartFrame = startFrame;
+		node.EndFrame = endFrame;
+		if(flag & 2)
 		{
-			b = this.Data.readInt();
-			for(c = 0; c < b; ++c)
+			let dummyCount = this.Data.readInt();
+			for(let index = 0; index < dummyCount; ++index)
 			{
-				e = new CL3D.SAnimatedDummySceneNodeChild;
-				e.NodeIDToLink = this.Data.readInt();
-				e.JointIdx = this.Data.readInt();
-				a.AnimatedDummySceneNodes.push(e)
+				let dummy = new CL3D.SAnimatedDummySceneNodeChild;
+				dummy.NodeIDToLink = this.Data.readInt();
+				dummy.JointIdx = this.Data.readInt();
+				node.AnimatedDummySceneNodes.push(dummy);
 			}
 		}
 	}
 
-	ReadAnimatedMeshRef(a)
+	/**
+	 * @param {CL3D.AnimatedMeshSceneNode} nodeToLink
+	 * @returns
+	 */
+	ReadAnimatedMeshRef(nodeToLink)
 	{
-		var b = this.ReadFileStrRef(),
-			c = this.TheMeshCache.getMeshFromName(b);
-		if(c == null)
+		let name = this.ReadFileStrRef(),
+			mesh = this.TheMeshCache.getMeshFromName(name);
+		if(mesh == null)
 		{
-			c = new CL3D.SkinnedMesh;
-			c.Name = b;
-			this.TheMeshCache.addMesh(c);
-			c = c
+			mesh = new CL3D.SkinnedMesh;
+			mesh.Name = name;;
+			this.TheMeshCache.addMesh(mesh);
 		}
-		if(a != null && c != null)
+		if(nodeToLink != null && mesh != null)
 		{
-			if(c.AnimatedMeshesToLink == null) c.AnimatedMeshesToLink = [];
-			c.AnimatedMeshesToLink.push(a)
+			if(mesh.AnimatedMeshesToLink == null) mesh.AnimatedMeshesToLink = [];
+			mesh.AnimatedMeshesToLink.push(nodeToLink);
 		}
-		return c
+		return mesh;
 	}
 
-	readSkinnedMesh(a, b)
+	/**
+	 * @param {CL3D.SkinnedMesh|CL3D.SkinnedMeshJoint} mesh
+	 * @param {Number} size
+	 */
+	readSkinnedMesh(mesh, size)
 	{
-		if(a != null)
+		if(mesh != null)
 		{
-			var c = this.Data.readInt();
-			a.DefaultFPS = this.Data.readFloat();
-			if(c & 1) a.StaticCollisionBoundingBox = this.Read3DBoxF();
-			c = this.NextTagPos;
-			b = this.Data.getPosition() + b;
-			for(var e = [], f = 0; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < c && this.Data.getPosition() < b;)
+			let flag = this.Data.readInt();
+			mesh.DefaultFPS = this.Data.readFloat();
+			if(flag & 1) mesh.StaticCollisionBoundingBox = this.Read3DBoxF();
+			let nextTagPos = this.NextTagPos;
+			let endSkinnedMeshPos = this.Data.getPosition() + size;
+			let loadedJoints = [];
+			for(let index = 0; this.Data.bytesAvailable() > 0 && this.Data.getPosition() < nextTagPos && this.Data.getPosition() < endSkinnedMeshPos;)
 			{
-				var g = this.readTag();
-				if(g == 33)
+				let tag = this.readTag();
+				if(tag == 33)
 				{
-					g = new CL3D.SkinnedMeshJoint;
-					g.Name = this.ReadString();
-					g.LocalMatrix = this.ReadMatrix();
-					g.GlobalInversedMatrix = this.ReadMatrix();
-					a.AllJoints.push(g);
-					f = this.Data.readInt();
-					e.push(g);
-					f >= 0 && f < e.length && e[f].Children.push(g);
-					f = this.Data.readInt();
-					for(var i = 0; i < f; ++i) g.AttachedMeshes.push(this.Data.readInt());
-					i = this.Data.readInt();
-					for(f = 0; f < i; ++f)
+					let joint = new CL3D.SkinnedMeshJoint;
+					joint.Name = this.ReadString();
+					joint.LocalMatrix = this.ReadMatrix();
+					joint.GlobalInversedMatrix = this.ReadMatrix();
+					mesh.AllJoints.push(joint);
+
+					let parentIndex = this.Data.readInt();
+					loadedJoints.push(joint);
+					parentIndex >= 0 && parentIndex < loadedJoints.length && loadedJoints[parentIndex].Children.push(joint);
+
+					let attachedMeshesCount = this.Data.readInt();
+					for(let index = 0; index < attachedMeshesCount; ++index) joint.AttachedMeshes.push(this.Data.readInt());
+
+					let keycount = this.Data.readInt();
+					for(index = 0; index < keycount; ++index)
 					{
-						var h = new CL3D.SkinnedMeshPositionKey;
-						h.frame = this.Data.readFloat();
-						h.position = this.Read3DVectF();
-						g.PositionKeys.push(h)
+						let posKey = new CL3D.SkinnedMeshPositionKey;
+						posKey.frame = this.Data.readFloat();
+						posKey.position = this.Read3DVectF();
+						joint.PositionKeys.push(posKey);
 					}
-					i = this.Data.readInt();
-					for(f = 0; f < i; ++f)
+
+					keycount = this.Data.readInt();
+					for(index = 0; index < keycount; ++index)
 					{
-						h = new CL3D.SkinnedMeshScaleKey;
-						h.frame = this.Data.readFloat();
-						h.scale = this.Read3DVectF();
-						g.ScaleKeys.push(h)
+						let scaleKey = new CL3D.SkinnedMeshScaleKey;
+						scaleKey.frame = this.Data.readFloat();
+						scaleKey.scale = this.Read3DVectF();
+						joint.ScaleKeys.push(scaleKey);
 					}
-					i = this.Data.readInt();
-					for(f = 0; f < i; ++f)
+
+					keycount = this.Data.readInt();
+					for(index = 0; index < keycount; ++index)
 					{
-						h = new CL3D.SkinnedMeshRotationKey;
-						h.frame = this.Data.readFloat();
-						h.rotation = this.ReadQuaternion();
-						g.RotationKeys.push(h)
+						let rotKey = new CL3D.SkinnedMeshRotationKey;
+						rotKey.frame = this.Data.readFloat();
+						rotKey.rotation = this.ReadQuaternion();
+						joint.RotationKeys.push(rotKey);
 					}
-					i = this.Data.readInt();
-					for(f = 0; f < i; ++f)
+
+					keycount = this.Data.readInt();
+					for(index = 0; index < keycount; ++index)
 					{
-						h = new CL3D.SkinnedMeshWeight;
-						h.buffer_id = this.Data.readUnsignedShort();
-						h.vertex_id = this.Data.readInt();
-						h.strength = this.Data.readFloat();
-						g.Weights.push(h)
+						let weight = new CL3D.SkinnedMeshWeight;
+						weight.buffer_id = this.Data.readUnsignedShort();
+						weight.vertex_id = this.Data.readInt();
+						weight.strength = this.Data.readFloat();
+						joint.Weights.push(weight);
 					}
 				}
-				else if(g == 15)
+				else if(tag == 15)
 				{
-					g = this.ReadMeshBuffer();
-					g != null && a.AddMeshBuffer(g)
+					let buffer = this.ReadMeshBuffer();
+					buffer != null && mesh.AddMeshBuffer(buffer);
 				}
-				else if(g == 34)
+				else if(tag == 34)
 				{
-					g = new CL3D.NamedAnimationRange;
-					g.Name = this.ReadString();
-					g.Begin = this.Data.readFloat();
-					g.End = this.Data.readFloat();
-					g.FPS = this.Data.readFloat();
-					a.addNamedAnimationRange(g)
+					let range = new CL3D.NamedAnimationRange;
+					range.Name = this.ReadString();
+					range.Begin = this.Data.readFloat();
+					range.End = this.Data.readFloat();
+					range.FPS = this.Data.readFloat();
+					mesh.addNamedAnimationRange(range);
 				}
-				else this.SkipToNextTag()
+				else this.SkipToNextTag();
 			}
 			try
 			{
-				a.finalize()
+				mesh.finalize();
 			}
-			catch (j)
+			catch (error)
 			{
-				console.log("error finalizing skinned mesh: " + j)
+				console.log("error finalizing skinned mesh: " + error);
 			}
-			if(a.AnimatedMeshesToLink && a.AnimatedMeshesToLink.length)
+			if(mesh.AnimatedMeshesToLink && mesh.AnimatedMeshesToLink.length)
 			{
-				for(f = 0; f < a.AnimatedMeshesToLink.length; ++f)(c = a.AnimatedMeshesToLink[f]) && c.setFrameLoop(c.StartFrame, c.EndFrame);
-				a.AnimatedMeshesToLink = null
+				for(let index = 0; index < mesh.AnimatedMeshesToLink.length; ++index) {
+					let node = mesh.AnimatedMeshesToLink[index];
+					if (node) node.setFrameLoop(node.StartFrame, node.EndFrame);
+				}
+
+				mesh.AnimatedMeshesToLink = null;
 			}
 		}
 	}
 
-	ReadAction(a, b)
+	/**
+	 * @param {Number} actionType
+	 * @param {CL3D.Scene} scene
+	 * @returns
+	 */
+	ReadAction(actionType, scene)
 	{
-		var c = 0;
-		switch (a)
+		let action = null;
+		let flag = 0;
+		switch (actionType)
 		{
 			case 0:
-				c = new CL3D.ActionMakeSceneNodeInvisible;
-				c.InvisibleMakeType = this.Data.readInt();
-				c.SceneNodeToMakeInvisible = this.Data.readInt();
-				c.ChangeCurrentSceneNode = this.Data.readBoolean();
+				action = new CL3D.ActionMakeSceneNodeInvisible;
+				action.InvisibleMakeType = this.Data.readInt();
+				action.SceneNodeToMakeInvisible = this.Data.readInt();
+				action.ChangeCurrentSceneNode = this.Data.readBoolean();
 				this.Data.readInt();
-				return c;
+				return action;
 			case 1:
-				b = new CL3D.ActionChangeSceneNodePosition;
-				b.PositionChangeType = this.Data.readInt();
-				b.SceneNodeToChangePosition = this.Data.readInt();
-				b.ChangeCurrentSceneNode = this.Data.readBoolean();
-				b.Vector = this.Read3DVectF();
-				if(b.PositionChangeType == 4) b.Area3DEnd = this.Read3DVectF();
-				b.RelativeToCurrentSceneNode = this.Data.readBoolean();
-				b.SceneNodeRelativeTo = this.Data.readInt();
-				c = this.Data.readInt();
-				if(c & 1)
+				action = new CL3D.ActionChangeSceneNodePosition;
+				action.PositionChangeType = this.Data.readInt();
+				action.SceneNodeToChangePosition = this.Data.readInt();
+				action.ChangeCurrentSceneNode = this.Data.readBoolean();
+				action.Vector = this.Read3DVectF();
+				if(action.PositionChangeType == 4) action.Area3DEnd = this.Read3DVectF();
+				action.RelativeToCurrentSceneNode = this.Data.readBoolean();
+				action.SceneNodeRelativeTo = this.Data.readInt();
+				flag = this.Data.readInt();
+				if(flag & 1)
 				{
-					b.UseAnimatedMovement = true;
-					b.TimeNeededForMovementMs = this.Data.readInt()
+					action.UseAnimatedMovement = true;
+					action.TimeNeededForMovementMs = this.Data.readInt()
 				}
-				return b;
+				return action;
 			case 2:
-				b = new CL3D.ActionChangeSceneNodeRotation;
-				b.RotationChangeType = this.Data.readInt();
-				b.SceneNodeToChangeRotation = this.Data.readInt();
-				b.ChangeCurrentSceneNode = this.Data.readBoolean();
-				b.Vector = this.Read3DVectF();
-				b.RotateAnimated = false;
-				c = this.Data.readInt();
-				if(c & 1)
+				action = new CL3D.ActionChangeSceneNodeRotation;
+				action.RotationChangeType = this.Data.readInt();
+				action.SceneNodeToChangeRotation = this.Data.readInt();
+				action.ChangeCurrentSceneNode = this.Data.readBoolean();
+				action.Vector = this.Read3DVectF();
+				action.RotateAnimated = false;
+				flag = this.Data.readInt();
+				if(flag & 1)
 				{
-					b.RotateAnimated = true;
-					b.TimeNeededForRotationMs = this.Data.readInt()
+					action.RotateAnimated = true;
+					action.TimeNeededForRotationMs = this.Data.readInt()
 				}
-				return b;
+				return action;
 			case 3:
-				c = new CL3D.ActionChangeSceneNodeScale;
-				c.ScaleChangeType = this.Data.readInt();
-				c.SceneNodeToChangeScale = this.Data.readInt();
-				c.ChangeCurrentSceneNode = this.Data.readBoolean();
-				c.Vector = this.Read3DVectF();
+				action = new CL3D.ActionChangeSceneNodeScale;
+				action.ScaleChangeType = this.Data.readInt();
+				action.SceneNodeToChangeScale = this.Data.readInt();
+				action.ChangeCurrentSceneNode = this.Data.readBoolean();
+				action.Vector = this.Read3DVectF();
 				this.Data.readInt();
-				return c;
+				return action;
 			case 4:
-				c = new CL3D.ActionChangeSceneNodeTexture;
-				c.TextureChangeType = this.Data.readInt();
-				c.SceneNodeToChange = this.Data.readInt();
-				c.ChangeCurrentSceneNode = this.Data.readBoolean();
-				c.TheTexture = this.ReadTextureRef();
-				if(c.TextureChangeType == 1) c.IndexToChange = this.Data.readInt();
+				action = new CL3D.ActionChangeSceneNodeTexture;
+				action.TextureChangeType = this.Data.readInt();
+				action.SceneNodeToChange = this.Data.readInt();
+				action.ChangeCurrentSceneNode = this.Data.readBoolean();
+				action.TheTexture = this.ReadTextureRef();
+				if(action.TextureChangeType == 1) action.IndexToChange = this.Data.readInt();
 				this.Data.readInt();
-				return c;
+				return action;
 			case 5:
-				b = new CL3D.ActionPlaySound;
-				c = this.Data.readInt();
-				b.PlayLooped = (c & 1) != 0;
-				b.TheSound = this.ReadSoundRef();
-				b.MinDistance = this.Data.readFloat();
-				b.MaxDistance = this.Data.readFloat();
-				b.Volume = this.Data.readFloat();
-				b.PlayAs2D = this.Data.readBoolean();
-				b.SceneNodeToPlayAt = this.Data.readInt();
-				b.PlayAtCurrentSceneNode = this.Data.readBoolean();
-				b.Position3D = this.Read3DVectF();
-				return b;
+				action = new CL3D.ActionPlaySound;
+				flag = this.Data.readInt();
+				action.PlayLooped = (flag & 1) != 0;
+				action.TheSound = this.ReadSoundRef();
+				action.MinDistance = this.Data.readFloat();
+				action.MaxDistance = this.Data.readFloat();
+				action.Volume = this.Data.readFloat();
+				action.PlayAs2D = this.Data.readBoolean();
+				action.SceneNodeToPlayAt = this.Data.readInt();
+				action.PlayAtCurrentSceneNode = this.Data.readBoolean();
+				action.Position3D = this.Read3DVectF();
+				return action;
 			case 6:
-				c = new CL3D.ActionStopSound;
-				c.SoundChangeType = this.Data.readInt();
-				return c;
+				action = new CL3D.ActionStopSound;
+				action.SoundChangeType = this.Data.readInt();
+				return action;
 			case 7:
-				c = new CL3D.ActionExecuteJavaScript;
+				action = new CL3D.ActionExecuteJavaScript;
 				this.Data.readInt();
-				c.JScript = this.ReadString();
-				return c;
+				action.JScript = this.ReadString();
+				return action;
 			case 8:
-				c = new CL3D.ActionOpenWebpage;
+				action = new CL3D.ActionOpenWebpage;
 				this.Data.readInt();
-				c.Webpage = this.ReadString();
-				c.Target = this.ReadString();
-				return c;
+				action.Webpage = this.ReadString();
+				action.Target = this.ReadString();
+				return action;
 			case 9:
-				c = new CL3D.ActionSetSceneNodeAnimation;
-				c.SceneNodeToChangeAnim = this.Data.readInt();
-				c.ChangeCurrentSceneNode = this.Data.readBoolean();
-				c.Loop = this.Data.readBoolean();
-				c.AnimName = this.ReadString();
+				action = new CL3D.ActionSetSceneNodeAnimation;
+				action.SceneNodeToChangeAnim = this.Data.readInt();
+				action.ChangeCurrentSceneNode = this.Data.readBoolean();
+				action.Loop = this.Data.readBoolean();
+				action.AnimName = this.ReadString();
 				this.Data.readInt();
-				return c;
+				return action;
 			case 10:
-				c = new CL3D.ActionSwitchToScene(this.CursorControl);
-				c.SceneName = this.ReadString();
+				action = new CL3D.ActionSwitchToScene(this.CursorControl);
+				action.SceneName = this.ReadString();
 				this.Data.readInt();
-				return c;
+				return action;
 			case 11:
-				c = new CL3D.ActionSetActiveCamera(this.CursorControl);
-				c.CameraToSetActive = this.Data.readInt();
+				action = new CL3D.ActionSetActiveCamera(this.CursorControl);
+				action.CameraToSetActive = this.Data.readInt();
 				this.Data.readInt();
-				return c;
+				return action;
 			case 12:
-				b = new CL3D.ActionSetCameraTarget;
-				b.PositionChangeType = this.Data.readInt();
-				b.SceneNodeToChangePosition = this.Data.readInt();
-				b.ChangeCurrentSceneNode = this.Data.readBoolean();
-				b.Vector = this.Read3DVectF();
-				b.RelativeToCurrentSceneNode = this.Data.readBoolean();
-				b.SceneNodeRelativeTo = this.Data.readInt();
-				c = this.Data.readInt();
-				if(c & 1)
+				action = new CL3D.ActionSetCameraTarget;
+				action.PositionChangeType = this.Data.readInt();
+				action.SceneNodeToChangePosition = this.Data.readInt();
+				action.ChangeCurrentSceneNode = this.Data.readBoolean();
+				action.Vector = this.Read3DVectF();
+				action.RelativeToCurrentSceneNode = this.Data.readBoolean();
+				action.SceneNodeRelativeTo = this.Data.readInt();
+				flag = this.Data.readInt();
+				if(flag & 1)
 				{
-					b.UseAnimatedMovement = true;
-					b.TimeNeededForMovementMs = this.Data.readInt()
+					action.UseAnimatedMovement = true;
+					action.TimeNeededForMovementMs = this.Data.readInt()
 				}
-				return b;
+				return action;
 			case 13:
-				a = new CL3D.ActionShoot;
-				a.ShootType = this.Data.readInt();
-				a.Damage = this.Data.readInt();
-				a.BulletSpeed = this.Data.readFloat();
-				a.SceneNodeToUseAsBullet = this.Data.readInt();
-				a.WeaponRange = this.Data.readFloat();
-				c = this.Data.readInt();
-				if(c & 1)
+				action = new CL3D.ActionShoot;
+				action.ShootType = this.Data.readInt();
+				action.Damage = this.Data.readInt();
+				action.BulletSpeed = this.Data.readFloat();
+				action.SceneNodeToUseAsBullet = this.Data.readInt();
+				action.WeaponRange = this.Data.readFloat();
+				flag = this.Data.readInt();
+				if(flag & 1)
 				{
-					a.SceneNodeToShootFrom = this.Data.readInt();
-					a.ShootToCameraTarget = this.Data.readBoolean();
-					a.AdditionalDirectionRotation = this.Read3DVectF()
+					action.SceneNodeToShootFrom = this.Data.readInt();
+					action.ShootToCameraTarget = this.Data.readBoolean();
+					action.AdditionalDirectionRotation = this.Read3DVectF()
 				}
-				if(c & 2) a.ActionHandlerOnImpact = this.ReadActionHandlerSection(b);
-				if(c & 4) a.ShootDisplacement = this.Read3DVectF();
-				return a;
+				if(flag & 2) action.ActionHandlerOnImpact = this.ReadActionHandlerSection(scene);
+				if(flag & 4) action.ShootDisplacement = this.Read3DVectF();
+				return action;
 			case 14:
+				/// TODO
+				// quit application
 				this.SkipToNextTag();
 				return null;
 			case 15:
-				c = new CL3D.ActionSetOverlayText;
+				action = new CL3D.ActionSetOverlayText;
 				this.Data.readInt();
-				c.SceneNodeToChange = this.Data.readInt();
-				c.ChangeCurrentSceneNode = this.Data.readBoolean();
-				c.Text = this.ReadString();
-				return c;
+				action.SceneNodeToChange = this.Data.readInt();
+				action.ChangeCurrentSceneNode = this.Data.readBoolean();
+				action.Text = this.ReadString();
+				return action;
 			case 16:
-				c = new CL3D.ActionSetOrChangeAVariable;
+				action = new CL3D.ActionSetOrChangeAVariable;
 				this.Data.readInt();
-				c.VariableName = this.ReadString();
-				c.Operation = this.Data.readInt();
-				c.ValueType = this.Data.readInt();
-				c.valueOf = this.ReadString();
-				return c;
+				action.VariableName = this.ReadString();
+				action.Operation = this.Data.readInt();
+				action.ValueType = this.Data.readInt();
+				action.Value = this.ReadString();
+				return action;
 			case 17:
-				a = new CL3D.ActionIfVariable;
-				c = this.Data.readInt();
-				a.VariableName = this.ReadString();
-				a.ComparisonType = this.Data.readInt();
-				a.ValueType = this.Data.readInt();
-				a.Value = this.ReadString();
-				a.TheActionHandler = this.ReadActionHandlerSection(b);
-				if(c & 1) a.TheElseActionHandler = this.ReadActionHandlerSection(b);
-				return a;
+				action = new CL3D.ActionIfVariable;
+				flag = this.Data.readInt();
+				action.VariableName = this.ReadString();
+				action.ComparisonType = this.Data.readInt();
+				action.ValueType = this.Data.readInt();
+				action.Value = this.ReadString();
+				action.TheActionHandler = this.ReadActionHandlerSection(scene);
+				if(flag & 1) action.TheElseActionHandler = this.ReadActionHandlerSection(scene);
+				return action;
 			case 18:
-				c = new CL3D.ActionRestartBehaviors;
-				c.SceneNodeToRestart = this.Data.readInt();
-				c.ChangeCurrentSceneNode = this.Data.readBoolean();
+				action = new CL3D.ActionRestartBehaviors;
+				action.SceneNodeToRestart = this.Data.readInt();
+				action.ChangeCurrentSceneNode = this.Data.readBoolean();
 				this.Data.readInt();
-				return c;
+				return action;
 			case 19:
-				c = new CL3D.ActionStoreLoadVariable;
+				action = new CL3D.ActionStoreLoadVariable;
 				this.Data.readInt();
-				c.VariableName = this.ReadString();
-				c.Load = this.Data.readBoolean();
-				return c;
+				action.VariableName = this.ReadString();
+				action.Load = this.Data.readBoolean();
+				return action;
 			case 20:
-				c = new CL3D.ActionRestartScene(this.CursorControl);
+				action = new CL3D.ActionRestartScene(this.CursorControl);
 				this.Data.readInt();
-				c.SceneName = this.ReadString();
+				action.SceneName = this.ReadString();
 				this.LoadedAReloadAction = true;
-				return c;
+				return action;
 			case 22:
-				c = new CL3D.ActionCloneSceneNode;
-				c.SceneNodeToClone = this.Data.readInt();
-				c.CloneCurrentSceneNode = this.Data.readBoolean();
+				action = new CL3D.ActionCloneSceneNode;
+				action.SceneNodeToClone = this.Data.readInt();
+				action.CloneCurrentSceneNode = this.Data.readBoolean();
 				this.Data.readInt();
-				c.TheActionHandler = this.ReadActionHandlerSection(b);
-				return c;
+				action.TheActionHandler = this.ReadActionHandlerSection(scene);
+				return action;
 			case 23:
-				c = new CL3D.ActionDeleteSceneNode;
-				c.SceneNodeToDelete = this.Data.readInt();
-				c.DeleteCurrentSceneNode = this.Data.readBoolean();
-				c.TimeAfterDelete = this.Data.readInt();
+				action = new CL3D.ActionDeleteSceneNode;
+				action.SceneNodeToDelete = this.Data.readInt();
+				action.DeleteCurrentSceneNode = this.Data.readBoolean();
+				action.TimeAfterDelete = this.Data.readInt();
 				this.Data.readInt();
-				return c;
+				return action;
 			case 24:
-				c = new CL3D.ActionExtensionScript;
-				c.JsClassName = this.ReadString();
+				action = new CL3D.ActionExtensionScript;
+				action.JsClassName = this.ReadString();
 				this.Data.readInt();
-				this.ReadExtensionScriptProperties(c.Properties, b);
-				return c;
+				this.ReadExtensionScriptProperties(action.Properties, scene);
+				return action;
 			case 25:
-				a = new CL3D.ActionPlayMovie(this.CursorControl);
-				c = this.Data.readInt();
-				a.PlayLooped = (c & 1) != 0;
-				a.Command = this.Data.readInt();
-				a.VideoFileName = this.ReadString();
+				action = new CL3D.ActionPlayMovie(this.CursorControl);
+				flag = this.Data.readInt();
+				action.PlayLooped = (flag & 1) != 0;
+				action.Command = this.Data.readInt();
+				action.VideoFileName = this.ReadString();
 				this.Data.readInt();
-				a.SceneNodeToPlayAt = this.Data.readInt();
-				a.PlayAtCurrentSceneNode = this.Data.readBoolean();
-				a.MaterialIndex = this.Data.readInt();
-				a.ActionHandlerFinished = this.ReadActionHandlerSection(b);
-				a.ActionHandlerFailed = this.ReadActionHandlerSection(b);
-				return a;
+				action.SceneNodeToPlayAt = this.Data.readInt();
+				action.PlayAtCurrentSceneNode = this.Data.readBoolean();
+				action.MaterialIndex = this.Data.readInt();
+				action.ActionHandlerFinished = this.ReadActionHandlerSection(scene);
+				action.ActionHandlerFailed = this.ReadActionHandlerSection(scene);
+				return action;
 			case 26:
-				c = new CL3D.ActionStopSpecificSound;
+				action = new CL3D.ActionStopSpecificSound;
 				this.Data.readInt();
-				c.TheSound = this.ReadSoundRef();
-				return c;
+				action.TheSound = this.ReadSoundRef();
+				return action;
 			default:
-				this.SkipToNextTag()
+				this.SkipToNextTag();
 		}
-		return null
+		return null;
 	}
 };

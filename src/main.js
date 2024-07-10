@@ -36,12 +36,12 @@ export { SceneNode } from "./scenenode.js";
 export * from "./scenenode/main.js";
 
 export { VideoStream } from "./videostream.js";
-export { BinaryStream } from "./binarystream.js";
+export { StringBinary } from "./stringbinary.js";
 
 export * from "./utils/jsinflate.js";
-export { base64DecodeChars, base64decode } from "./utils/base64.js";
+export { base64DecodeChars, base64decode } from "./utils/base64decode.js";
 
-export { gScriptingInterface, ScriptingInterface, AnimatorExtensionScript, ExtensionScriptProperty, ActionExtensionScript } from "./scriptinginterface.js";
+export { gScriptingInterface, ScriptingInterface, AnimatorExtensionScript, ExtensionScriptProperty, ActionExtensionScript, vector3d } from "./scriptinginterface.js";
 
 export { Global_PostEffectsDisabled, Scene } from "./flace/flacescene.js";
 export { CCDocument } from "./flace/flacedocument.js";

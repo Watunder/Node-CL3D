@@ -201,11 +201,6 @@ export class CopperLicht {
 
 		this.LastCameraDragTime = 0; // flag to disable AnimatorOnClick actions when an AnimatorCameraFPS is currently dragging the camera
 
-		//
-		this.LoadingDialog = null;
-		if (loadingScreenText != null)
-			this.createTextDialog(true, loadingScreenText, loadingScreenBackgroundColor);
-
 		if (noWebGLText == null)
 			this.NoWebGLText = "Error: This browser does not support WebGL (or it is disabled).<br/>See <a href=\"www.ambiera.com/copperlicht/browsersupport.html\">here</a> for details.";
 		else
@@ -214,6 +209,10 @@ export class CopperLicht {
 		this.fullpage = fullpage ? true : false;
 		if (this.fullpage)
 			this.initMakeWholePageSize();
+
+		this.LoadingDialog = null;
+		if (loadingScreenText != null)
+			this.createTextDialog(true, loadingScreenText, loadingScreenBackgroundColor);
 
 		this.updateCanvasTopLeftPosition();
 
@@ -392,7 +391,7 @@ export class CopperLicht {
 	*/
 	load(filetoload, importIntoExistingDocument, functionToCallWhenLoaded) {
 		if (this.MainElement) {
-			if (!this.createRenderer(1280, 720, { alpha: false }, this.MainElement)) {
+			if (!this.createRenderer(this.MainElement.width, this.MainElement.height, { alpha: false }, this.MainElement)) {
 				this.createTextDialog(false, this.NoWebGLText);
 				return false;
 			}
@@ -400,7 +399,7 @@ export class CopperLicht {
 
 		var me = this;
 		this.LoadingAFile = true;
-		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1, this.IsBrowser);
+		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1 || filetoload.indexOf('.ccp') != -1, this.IsBrowser);
 		l.load(async (p) => { await me.parseFile(p, filetoload, importIntoExistingDocument); if (functionToCallWhenLoaded) functionToCallWhenLoaded(); });
 
 		return true;
@@ -439,16 +438,39 @@ export class CopperLicht {
 	 * @private
 	 */
 	makeWholePageSize() {
-		var w = globalThis.innerWidth || globalThis.clientWidth;
-		var h = globalThis.innerHeight || globalThis.clientHeight;
+		if (this.tmpWidth != globalThis.innerWidth || this.tmpHeight != globalThis.innerHeight) {
+			this.tmpWidth = globalThis.innerWidth;
+			this.tmpHeight = globalThis.innerHeight;
+	
+			this.MainElement.style.width = this.tmpWidth + "px";
+			this.MainElement.style.height = this.tmpHeight + "px";
+	
+			this.DPR = getDevicePixelRatio();
+	
+			this.MainElement.setAttribute("width", Math.floor(this.tmpWidth * this.DPR));
+			this.MainElement.setAttribute("height", Math.floor(this.tmpHeight * this.DPR));
+		}
+	}
 
-		this.MainElement.style.width = w + "px";
-		this.MainElement.style.height = h + "px";
+	/**
+	 * @private
+	 */
+	makeWholeCanvasSize() {
+		if (this.MainElement && (this.tmpWidth != this.MainElement.width || this.tmpHeight != this.MainElement.height)) {
+			var w = this.MainElement.width;
+			var h = this.MainElement.height;
+	
+			this.MainElement.style.width = w + "px";
+			this.MainElement.style.height = h + "px";
+	
+			this.DPR = getDevicePixelRatio();
 
-		this.DPR = getDevicePixelRatio();
-
-		this.MainElement.setAttribute("width", w * this.DPR);
-		this.MainElement.setAttribute("height", h * this.DPR);
+			this.tmpWidth = Math.floor(w * this.DPR);
+			this.tmpHeight = Math.floor(h * this.DPR);
+	
+			this.MainElement.setAttribute("width", this.tmpWidth);
+			this.MainElement.setAttribute("height", this.tmpHeight);
+		}
 	}
 
 	/**
@@ -458,6 +480,8 @@ export class CopperLicht {
 		// resize
 		if (this.fullpage)
 			this.makeWholePageSize();
+		else
+			this.makeWholeCanvasSize();
 
 		// draw
 		this.draw3dScene(timeMs);
@@ -792,6 +816,7 @@ export class CopperLicht {
 
 			// create collision geometry
 			scene.CollisionWorld = scene.createCollisionGeometry(true);
+			CL3D.Extensions.setWorld(scene.CollisionWorld);
 			this.setCollisionWorldForAllSceneNodes(scene.getRootSceneNode(), scene.CollisionWorld);
 		}
 
@@ -1380,8 +1405,8 @@ export class CopperLicht {
 		if (this.MainElement == null)
 			return;
 
-		this.MainElement.setAttribute("width", globalThis.innerWidth || globalThis.clientWidth);
-		this.MainElement.setAttribute("height", globalThis.innerHeight || globalThis.clientHeight);
+		this.MainElement.setAttribute("width", globalThis.innerWidth);
+		this.MainElement.setAttribute("height", globalThis.innerHeight);
 
 		var dlg_div = document.createElement("div");
 		this.MainElement.parentNode.appendChild(dlg_div);

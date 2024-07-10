@@ -4,9 +4,9 @@
 import * as CL3D from "./main.js";
 
 /**
- * A scene node is a node in the hierarchical scene graph. Every scene node may have children, which are also scene 
- * nodes. Children move relative to their parent's position. If the parent of a node is not visible, its children 
- * won't be visible either. In this way, it is for example easily possible to attach a light to a moving car, 
+ * A scene node is a node in the hierarchical scene graph. Every scene node may have children, which are also scene
+ * nodes. Children move relative to their parent's position. If the parent of a node is not visible, its children
+ * won't be visible either. In this way, it is for example easily possible to attach a light to a moving car,
  * or to place a walking character on a moving platform on a moving ship.
  * <br/> <br/>
  * Concrete implementations are for example: {@link CL3D.CameraSceneNode}, {@link CL3D.BillboardSceneNode}, {@link CL3D.PathSceneNode}, {@link CL3D.MeshSceneNode}, {@link CL3D.SkyBoxSceneNode}.
@@ -18,7 +18,7 @@ export class SceneNode {
 	 * Position of the scene node, relative to its parent.
 	 * If you want the position in world coordinates, use {@link getAbsolutePosition}().
 	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately.
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 * @public
 	 */
 	Pos = null;
@@ -27,7 +27,7 @@ export class SceneNode {
 	 * Rotation of the scene node, relative to its parent, in degrees.
 	 * Note that this is the relative rotation of the node. If you want the absolute rotation, use {@link getAbsoluteTransformation}().getRotation()
 	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately.
-	 * @type Vect3d
+	 * @type {CL3D.Vect3d}
 	 * @public
 	 */
 	Rot = null;
@@ -35,14 +35,14 @@ export class SceneNode {
 	/**
 	 * Scale of the scene node, relative to its parent, in degrees. Default is (1,1,1)
 	 * This is the scale of this node relative to its parent. If you want the absolute scale, use {@link getAbsoluteTransformation}().getScale()
-	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately. 
-	 * @type Vect3d
+	 * If you change this value, be sure to call {@link updateAbsolutePosition}() afterwards to make the change be reflected immediately.
+	 * @type {CL3D.Vect3d}
 	 * @public
 	 */
 	Scale = null;
 
 	/**
-	 * Defines whether the node should be visible (if all of its parents are visible). 
+	 * Defines whether the node should be visible (if all of its parents are visible).
 	 * This is only an option set by the user, but has nothing to do with geometry culling.
 	 * @type Boolean
 	 * @public
@@ -65,7 +65,7 @@ export class SceneNode {
 
 	/**
 	 * An optional {@link TriangleSelector}, giving access to the collision geometry of this scene node.
-	 * @type TriangleSelector
+	 * @type {CL3D.TriangleSelector}
 	 * @public
 	 */
 	Selector = null;
@@ -85,8 +85,13 @@ export class SceneNode {
 		this.Culling = 0;
 		this.Id = -1;
 		this.Parent = null;
-
+		/**
+		 * @type {CL3D.SceneNode[]}
+		 */
 		this.Children = new Array();
+		/**
+		 * @type {CL3D.Animator[]}
+		 */
 		this.Animators = new Array();
 
 		this.AbsoluteTransformation = new CL3D.Matrix4();
@@ -119,7 +124,7 @@ export class SceneNode {
 	/**
 	 * Returns an array with all child scene nodes of this node
 	 * @public
-	 * @returns {Array}
+	 * @returns {CL3D.SceneNode}
 	 */
 	getChildren() {
 		return this.Children;
@@ -150,7 +155,7 @@ export class SceneNode {
 	/**
 	 * Returns an array of {@link Animator}s which are animating this scene node.
 	 * @public
-	 * @returns {Array} Bounding box of this scene node.
+	 * @returns {CL3D.Animator[]} Bounding box of this scene node.
 	 */
 	getAnimators() {
 		return this.Animators;

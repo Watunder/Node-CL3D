@@ -52,7 +52,7 @@ export class TriangleSelector {
 	 * @param {CL3D.Vect3d} start 3d point representing the start of the 3d line
 	 * @param {CL3D.Vect3d} end 3d point representing the end of the 3d line
 	 * @param {Boolean} bIgnoreBackFaces if set to true, this will ignore back faced polygons, making the query twice as fast
-	 * @param {Triangle3d} outTriangle if set to a triangle, this will contain the 3d triangle with which the line collided
+	 * @param {CL3D.Triangle3d} outTriangle if set to a triangle, this will contain the 3d triangle with which the line collided
 	 * @param {Boolean} ignoreInvisibleItems set to true to ignore invisible scene nodes for collision test
 	 * @returns {CL3D.Vect3d}  a 3d position as {@link CL3D.Vect3d} if a collision was found or null if no collision was found
 	 */
