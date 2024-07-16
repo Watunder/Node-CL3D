@@ -3402,6 +3402,37 @@ export class Renderer {
 		return t;
 	}
 	/**
+	 * Creates a {@link CL3D.Texture} from pixels
+	 * @public
+	 * @param {ArrayBufferView} pixels source data for the texture
+	 * @param {Number} width the width of the texture
+	 * @param {Number} height the height of the texture
+	 */
+	createTextureFromPixels(pixels, width, height) {
+		let texture = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_BYTE, pixels);
+
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+
+		gl.generateMipmap(gl.TEXTURE_2D);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+
+		let t = new CL3D.Texture();
+		t.Name = "";
+		t.Texture = texture;
+		t.Image = null;
+		t.Loaded = true;
+		t.CachedWidth = width;
+		t.CachedHeight = height;
+		t.OriginalWidth = width;
+		t.OriginalHeight = height;
+
+		return t;
+	}
+	/**
 	 * @private
 	 */
 	isPowerOfTwo(x) {
