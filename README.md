@@ -1,4 +1,5 @@
 # Node-CL3D
+![image](https://github.com/Watunder/Node-CL3D/blob/master/resources/logo/node-cl3d.png)
 
 ## Introduction
 CopperLicht in Node.js and browser
