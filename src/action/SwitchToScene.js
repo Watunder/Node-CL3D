@@ -5,7 +5,7 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
@@ -18,7 +18,7 @@ export class ActionSwitchToScene extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionSwitchToScene();
@@ -27,7 +27,7 @@ export class ActionSwitchToScene extends CL3D.Action {
 	}
     
 	/**
-	 * @private
+	 * @public
 	 */
 	execute(currentNode, sceneManager) {
 		if (this.Engine)

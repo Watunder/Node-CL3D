@@ -67,7 +67,7 @@ export class MeshSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		var mesh = this.OwnedMesh;
@@ -106,7 +106,7 @@ export class MeshSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		renderer.setWorld(this.AbsoluteTransformation);
@@ -131,7 +131,7 @@ export class MeshSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getMaterialCount() {
 		if (this.OwnedMesh)
@@ -141,7 +141,7 @@ export class MeshSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getMaterial(i) {
 		if (this.OwnedMesh != null) {

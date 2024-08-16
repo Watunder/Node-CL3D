@@ -62,7 +62,7 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorFlyStraight();
@@ -150,7 +150,7 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	doShootCollisionTest(bulletNode) {
 		if (!bulletNode)
@@ -184,7 +184,7 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	recalculateImidiateValues() {
 		this.Vector = this.End.substract(this.Start);

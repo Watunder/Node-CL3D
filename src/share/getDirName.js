@@ -18,6 +18,9 @@ else {
     }
 }
 
+/**
+ * @returns {string}
+ */
 export const getDirName = () => {
     return getDirNameImpl();
 }

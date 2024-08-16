@@ -78,22 +78,31 @@ export class FlaceLoader {
 		this.CursorControl = cursorControl;
 		this.TheTextureManager != null && CL3D.ScriptingInterface.getScriptingInterface().setTextureManager(this.TheTextureManager);
 
-		if(filecontent != null && this.Filename.indexOf(".ccbz") != -1 || this.Filename.indexOf(".ccp") != -1)
+		let loadedfile = null;
+		
+		if(typeof filecontent == 'string')
 		{
-			filecontent = this.ArrayBufferToString(filecontent);
+			loadedfile = filecontent;
 		}
-		if(filecontent == null || filecontent.length == 0 || filecontent.byteLength != null)
+		else if(filecontent instanceof ArrayBuffer)
+		{
+			if(this.Filename.indexOf(".ccbz") != -1 || this.Filename.indexOf(".ccp") != -1)
+			{
+				loadedfile = this.ArrayBufferToString(filecontent);
+			}
+		}
+		if(loadedfile == null || loadedfile.length == 0)
 		{
 			console.log("Error: Could not load file '" + this.Filename + "'");
 			return null;
 		}
-		if(this.Filename.indexOf(".ccbz") != -1) filecontent = JSInflate.inflate(filecontent);
-		else if(this.Filename.indexOf(".ccbjs") != -1) filecontent = CL3D.base64decode(filecontent);
+		if(this.Filename.indexOf(".ccbz") != -1) loadedfile = JSInflate.inflate(loadedfile);
+		else if(this.Filename.indexOf(".ccbjs") != -1) loadedfile = CL3D.base64decode(loadedfile);
 		this.Document = new CL3D.CCDocument;
 		this.setRootPath();
-		this.Data = new CL3D.StringBinary(filecontent);
+		this.Data = new CL3D.StringBinary(loadedfile);
 		if(!await this.parseFile()) return null;
-		this.StoredFileContent = filecontent;
+		this.StoredFileContent = loadedfile;
 		return this.Document;
 	}
 
@@ -277,6 +286,7 @@ export class FlaceLoader {
 							}
 						};
 
+						// @ts-ignore
 						this.readFreeScene2(flacescene);
 						break;
 					default:
@@ -297,8 +307,6 @@ export class FlaceLoader {
 	 * @param {CL3D.TextureManager} textureManager
 	 * @param {CL3D.MeshCache} meshCache
 	 * @param {CL3D.CopperLicht} cursorControl
-	 * @param {Boolean} copyRootNodeChildren
-	 * @param {CL3D.SceneNode} newRootNodeChildrenParent
 	 * @returns
 	 */
 	reloadScene(filecontent, scene, sceneindex, filename, textureManager, meshCache, cursorControl)
@@ -528,7 +536,7 @@ export class FlaceLoader {
 
 	JumpBackFromTagReading()
 	{
-		this.Data.position -= 10;
+		this.Data._offset -= 10;
 	}
 
 	/**
@@ -1289,7 +1297,7 @@ export class FlaceLoader {
 					animator.TimePerFrame = this.Data.readInt();
 					animator.TextureIndexToChange = this.Data.readInt();
 					animator.Loop = this.Data.readBoolean();
-					tanimcount = this.Data.readInt();
+					let tanimcount = this.Data.readInt();
 					animator.Textures = [];
 					for(let index = 0; index < tanimcount; ++index) animator.Textures.push(this.ReadTextureRef());
 					break;
@@ -1400,7 +1408,7 @@ export class FlaceLoader {
 
 	/**
 	 * @param {Array} props
-	 * @param {CL3D.Free3dScene} scene
+	 * @param {CL3D.Scene} scene
 	 */
 	ReadExtensionScriptProperties(props, scene)
 	{

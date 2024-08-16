@@ -10,48 +10,48 @@ export const DebugPostEffects = false;
 export const UseShadowCascade = true;
 export const Extensions = {
 	draw: () => { },
-	setWorld: () => { },
-	readAnimator: (loader, type, rootSceneNode, sceneManager) => { },
+	setWorld: (world) => { },
+	readAnimator: (loader, type, rootSceneNode, sceneManager) => { return null },
 }
 
 /** 
  * @const 
- * @private
+ * @public
  * The value PI
  */
 export const PI = 3.14159265359;
 
 /** 
  * @const 
- * @private
+ * @public
  * reciprocal PI value
  */
 export const RECIPROCAL_PI = 1.0 / 3.14159265359;
 
 /** 
  * @const 
- * @private
+ * @public
  * Half of PI
  */
 export const HALF_PI = 3.14159265359 / 2.0;
 
 /** 
  * @const 
- * @private
+ * @public
  * Hih precision PI value
  */
 export const PI64 = 3.1415926535897932384626433832795028841971693993751;
 
 /** 
  * @const 
- * @private
+ * @public
  * Value to convert degrees to grad. Use {@link degToRad} to do this.
  */
 export const DEGTORAD = 3.14159265359 / 180.0;
 
 /** 
  * @const 
- * @private
+ * @public
  */
 export const RADTODEG = 180.0 / 3.14159265359;
 
@@ -229,7 +229,7 @@ export const convertIntColor = function (c) {
 }
 
 /**
- * @private
+ * @public
  */
 export const getInterpolatedColor = function (clr1, clr2, f) {
 	var invf = 1.0 - f;
@@ -242,7 +242,7 @@ export const getInterpolatedColor = function (clr1, clr2, f) {
 }
 
 /**
- * @private
+ * @public
  */
 export const sgn = function (a) {
 	if (a > 0.0)

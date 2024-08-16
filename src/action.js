@@ -1,6 +1,6 @@
 /**
  * @constructor
- * @private
+ * @public
  */
 export class Action
 {
@@ -10,7 +10,7 @@ export class Action
     }
     
     /**
-     * @private
+     * @public
      */
     execute(node, mgr)
     {
@@ -18,7 +18,7 @@ export class Action
     }
 
     /**
-     * @private
+     * @public
      */
     createClone(oldNodeId, newNodeId)
     {

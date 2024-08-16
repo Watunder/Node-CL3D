@@ -48,7 +48,7 @@ export class AnimatorFlyCircle extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorFlyCircle();

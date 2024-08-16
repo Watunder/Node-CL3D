@@ -257,8 +257,8 @@ export class CopperLicht {
 	 * Initializes the renderer, you need to call this if you create the engine yourself without
 	 * using one of the startup functions like {@link startCopperLichtFromFile}.
 	 * @public
-	 * @param {Integer} width the width of the rendering surface in pixels.
-	 * @param {Integer} height the height of the rendering surface in pixels.
+	 * @param {Number} width the width of the rendering surface in pixels.
+	 * @param {Number} height the height of the rendering surface in pixels.
 	 * @param {WebGLContextAttributes} options
 	 * @param {HTMLCanvasElement=} canvas
 	 * @return returns true if successful and false if not (if the browser does not support webgl,
@@ -286,7 +286,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	registerEventHandlers() {
 		if (this.IsBrowser) {
@@ -367,7 +367,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getPinchDistance(evt) {
 		var t = evt.touches;
@@ -406,7 +406,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createRenderer(width, height, options, canvas) {
 		if (this.TheRenderer != null)
@@ -426,7 +426,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	initMakeWholePageSize() {
 		document.body.style.margin = "0";
@@ -435,7 +435,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	makeWholePageSize() {
 		if (this.tmpWidth != globalThis.innerWidth || this.tmpHeight != globalThis.innerHeight) {
@@ -453,7 +453,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	makeWholeCanvasSize() {
 		if (this.MainElement && (this.tmpWidth != this.MainElement.width || this.tmpHeight != this.MainElement.height)) {
@@ -474,7 +474,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	draw3DIntervalHandler(timeMs) {
 		// resize
@@ -488,7 +488,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	loadingUpdateIntervalHandler() {
 		if (this.LoadingDialog != null)
@@ -540,7 +540,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	async parseFile(filecontent, filename, importIntoExistingDocument, copyRootNodeChildren, newRootNodeChildrenParent) {
 		this.LoadingAFile = false;
@@ -586,7 +586,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	startFirstSceneAfterEverythingLoaded() {
 		// set active scene
@@ -656,14 +656,14 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	internalOnAfterRendering() {
 		this.setNextCameraActiveIfNeeded();
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	internalOnBeforeRendering() {
 		this.setNextCameraActiveIfNeeded();
@@ -724,7 +724,7 @@ export class CopperLicht {
 
 	/**
 	 * Switches the current scene to a new CL3D.Scene.
-	 * @param {CL3D.Scene} scene The new CL3D.Scene to be activated.
+	 * @param {CL3D.Free3dScene} scene The new CL3D.Scene to be activated.
 	 * @public
 	 */
 	gotoScene(scene) {
@@ -833,7 +833,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	setNextCameraActiveIfNeeded() {
 		if (this.NextCameraToSetActive == null)
@@ -902,7 +902,7 @@ export class CopperLicht {
 
 	/**
 	 * Causes a key event to stop propagating if it has been used inside an animator
-	 * @private
+	 * @public
 	 */
 	handleEventPropagation(evt, usedToDoAction) {
 		if (this.IsBrowser && usedToDoAction) {
@@ -920,7 +920,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	registerAnimatorForKeyUp(an) {
 		if (an != null)
@@ -928,7 +928,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	registerAnimatorForKeyDown(an) {
 		if (an != null)
@@ -936,7 +936,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	updateCanvasTopLeftPosition(e) {
 		var x = 0;
@@ -963,7 +963,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getMousePosXFromEvent(evt) {
 		if (this.isInPointerLockMode()) {
@@ -983,7 +983,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getMousePosYFromEvent(evt) {
 		if (this.isInPointerLockMode()) {
@@ -1111,7 +1111,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	setMouseDownWhereMouseIsNow() {
 		if (this.isInPointerLockMode()) {
@@ -1289,7 +1289,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	setActiveCameraNextFrame(cam) {
 		if (cam == null)
@@ -1308,7 +1308,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * @param n: Current scene node
 	 * @param {CL3D.TriangleSelector} world: TriangleSelector
 	 */
@@ -1344,7 +1344,7 @@ export class CopperLicht {
 
 	/**
 	 * Reloads a scene, triggered only by the CopperCube Action 'RestartScene'
-	 * @param {CL3D.Scene} scene The new CL3D.Scene to be reloaded.
+	 * @param {CL3D.Scene} sceneName The new CL3D.Scene to be reloaded.
 	 * @public
 	 */
 	reloadScene(sceneName) {
@@ -1387,7 +1387,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * Updates the loading dialog if it is existing
 	 */
 	updateLoadingDialog() {
@@ -1398,15 +1398,17 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * Creates a nicely looking loading dialog, with the specified loading text
 	 */
 	createTextDialog(forLoadingDlg, text, loadingScreenBackgroundColor) {
 		if (this.MainElement == null)
 			return;
 
-		this.MainElement.setAttribute("width", globalThis.innerWidth);
-		this.MainElement.setAttribute("height", globalThis.innerHeight);
+		if (this.fullpage) {
+			this.MainElement.setAttribute("width", globalThis.innerWidth);
+			this.MainElement.setAttribute("height", globalThis.innerHeight);
+		}
 
 		var dlg_div = document.createElement("div");
 		this.MainElement.parentNode.appendChild(dlg_div);
@@ -1466,7 +1468,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * Enables pointer lock after fullscreen change, if whished
 	 */
 	onFullscreenChanged() {
@@ -1477,7 +1479,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * Notifies the engine if a pointer lock was used
 	 */
 	requestPointerLock() {
@@ -1494,7 +1496,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * Notifies the engine if a pointer lock was used
 	 */
 	onPointerLockChanged() {
@@ -1515,7 +1517,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * Handlers for pointer lock and fullscreen change
 	 */
 	setupEventHandlersForFullscreenChange() {
@@ -1555,7 +1557,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * Internal video playback handler
 	 */
 	getOrCreateVideoStream(filename, createIfNotFound, handlerOnVideoEnded, handlerOnVideoFailed) {
@@ -1579,7 +1581,7 @@ export class CopperLicht {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * update all video streams
 	 */
 	updateAllVideoStreams() {

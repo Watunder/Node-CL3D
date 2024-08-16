@@ -16,7 +16,7 @@ else {
 /**
  * 
  * @param {string | URL | globalThis.Request} input This defines the resource that you wish to fetch.
- * @param {RequestInit} init An object containing any custom settings you want to apply to the request.
+ * @param {RequestInit=} init An object containing any custom settings you want to apply to the request.
  * @returns {Promise<Response>}
  */
 export const doFetch = (input, init) => {

@@ -22,6 +22,7 @@ import * as CL3D from "./main.js";
  */
 export class TriangleSelector {
 	constructor() {
+		this.Node = null;
 	}
 
 	/**
@@ -510,7 +511,7 @@ export class MetaTriangleSelector extends CL3D.TriangleSelector{
 // ------------------------------------------------------------------------------------------------------
 
 /**
- * @private
+ * @public
  */
 export class SOctTreeNode {
 	constructor() {
@@ -588,7 +589,7 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	constructTree(node) {
 		++this.DebugNodeCount;
@@ -688,7 +689,7 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getTrianglesFromOctTree(node, outArray, box, transform) {
 		if (!node.Box.intersectsWithBox(box))
@@ -744,7 +745,7 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createOcTreeNodeClone(toclone) {
 		var clone = new CL3D.SOctTreeNode();

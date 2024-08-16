@@ -6,7 +6,7 @@
 import * as CL3D from "../../main.js";
 
 /**
- * @private
+ * @public
  * Array containing instances of CL3D.CopperCubeVariable. A container for holding coppercube variables, which
  * can also be set and changed using the Actions in the editor.
  */
@@ -68,7 +68,7 @@ export class CopperCubeVariable {
     }
         
     /**
-     * @private
+     * @public
      * Creates a coppercube variable of the type "#player.health" with the correct expected content
      */
     static createTemporaryVariableIfPossible(varname, scene) {
@@ -122,7 +122,7 @@ export class CopperCubeVariable {
     }
         
     /**
-     * @private
+     * @public
      * Saves the content of a coppercube variable of the type "#player.health" back into the correct scene node
      */
     static saveContentOfPotentialTemporaryVariableIntoSource(thevar, scene) {
@@ -188,7 +188,7 @@ export class CopperCubeVariable {
     }
         
     /**
-     * @private
+     * @public
      * Parses the variable name of the type "#player.health" and returns attribute name and scene node in the scene
      */
     static getSceneNodeAndAttributeNameFromTemporaryVariableName(varname, scene) {
@@ -272,7 +272,7 @@ export class CopperCubeVariable {
     }
         
     /**
-     * @private
+     * @public
      */
     setAsCopy(copyFrom) {
         if (copyFrom == null)

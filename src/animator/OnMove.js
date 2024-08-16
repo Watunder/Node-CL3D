@@ -7,7 +7,7 @@ import * as CL3D from "../main.js";
  * Scene node animator which invokes an action when the mouse enters or leaves a 3d scene node. 
  * Private, only used to implement the coppercube editor animator.
  * @constructor
- * @private
+ * @public
  * @extends CL3D.AnimatorOnClick
  * @class  Scene node animator which invokes a callback function when the scene node has been clicked.
  * @param scene {CL3D.Scene} The scene of the animator.
@@ -38,7 +38,7 @@ export class AnimatorOnMove extends CL3D.AnimatorOnClick {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorOnMove(this.SMGr, this.engine);
@@ -93,7 +93,7 @@ export class AnimatorOnMove extends CL3D.AnimatorOnClick {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	findActionByType(type) {
 		var ret = null;

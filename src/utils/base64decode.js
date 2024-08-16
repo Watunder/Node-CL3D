@@ -13,7 +13,7 @@ import * as CL3D from "../main.js";
 
 /**
  * @const
- * @private
+ * @public
  */
 export const base64DecodeChars = new Array(
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -26,7 +26,7 @@ export const base64DecodeChars = new Array(
     41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1);
 
 /**
- * @private
+ * @public
  */
 export const base64decode = function(str) {
     var c1, c2, c3, c4;

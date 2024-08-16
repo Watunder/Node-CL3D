@@ -5,7 +5,7 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
@@ -17,7 +17,7 @@ export class ActionStopSound extends CL3D.Action {
     }
     
     /**
-     * @private
+     * @public
      */
     createClone(oldNodeId, newNodeId) {
         var a = new CL3D.ActionStopSound();
@@ -27,7 +27,7 @@ export class ActionStopSound extends CL3D.Action {
     }
 
     /**
-     * @private
+     * @public
      */
     execute(currentNode, sceneManager) {
         CL3D.gSoundManager.stopAll();

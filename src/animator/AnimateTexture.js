@@ -45,7 +45,7 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorAnimateTexture();
@@ -119,7 +119,7 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	reset() {
 		this.MyStartTime = CL3D.CLTimer.getTime();

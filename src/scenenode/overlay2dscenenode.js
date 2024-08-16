@@ -91,9 +91,9 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 
 		this.AnimateOnHover = false; //:Boolean;
 		this.OnHoverSetFontColor = false; //:Boolean;
-		this.HoverFontColor = false; //:int;
+		this.HoverFontColor = 0; //:int;
 		this.OnHoverSetBackgroundColor = false; //:Boolean;
-		this.HoverBackgroundColor = false; //:int;
+		this.HoverBackgroundColor = 0; //:int;
 		this.OnHoverDrawTexture = false; //:Boolean;
 
 
@@ -110,7 +110,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	blocksCameraInput() {
 		return false;
@@ -192,7 +192,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible) {
@@ -202,7 +202,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		// TODO: ScreenShot
@@ -309,7 +309,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	destroyTextTextures(renderer) {
 		renderer.deleteTexture(this.TextTexture);
@@ -319,7 +319,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createNewTextTexturesIfNecessary(renderer, forcedwidth) {
 		var needsDifferentHoverTexture = false;
@@ -413,7 +413,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		this.CreatedTextTextureFontName = this.FontName;
 	}
 	/**
-	 * @private
+	 * @public
 	 * Breaks the text into multiple lines for text rendering
 	 */
 	breakText(BrokenText, rectWidth, text, ctx) {
@@ -504,14 +504,14 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getMaterialCount() {
 		return 0;
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * Calculates 2d screen position from a 3d position, including displacement from view ports drawn in editors
 	 * Returns rectangle object with x, y, w, and h
 	 */
@@ -544,7 +544,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.Overlay2DSceneNode();
@@ -587,7 +587,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	parseCopperCubeFontString(fontStr) {
 		// we only need to return something like

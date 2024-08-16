@@ -32,7 +32,7 @@ export class Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		return false;
@@ -86,13 +86,13 @@ export class Animator {
 
 	/**
 	 * Resets the animator, if supported
-	 * @private
+	 * @public
 	 */
 	reset(event) {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	findActionByType(type) {
 		return null;

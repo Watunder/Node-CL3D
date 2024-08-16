@@ -71,7 +71,7 @@ export class SceneNode {
 	Selector = null;
 
 	/**
-	 * @private
+	 * @public
 	 */
 	Parent = null;
 
@@ -124,7 +124,7 @@ export class SceneNode {
 	/**
 	 * Returns an array with all child scene nodes of this node
 	 * @public
-	 * @returns {CL3D.SceneNode}
+	 * @returns {CL3D.SceneNode[]}
 	 */
 	getChildren() {
 		return this.Children;
@@ -180,7 +180,7 @@ export class SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	findActionOfType(type) {
 		for (var i = 0; i < this.Animators.length; ++i) {
@@ -205,7 +205,7 @@ export class SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	cloneMembers(b, newparent, oldNodeId, newNodeId) {
 		b.Name = new String(this.Name);
@@ -350,7 +350,7 @@ export class SceneNode {
 	 * depending on what they are. Also, OnAnimate() should be called for all child scene nodes here.
 	 * This method will be called once per frame, independent of whether the scene node is visible or not.
 	 * @param {CL3D.Scene} scene the current scene
-	 * @param {Number} current time in milliseconds
+	 * @param {Number} timeMs current time in milliseconds
 	 * @public
 	 */
 	OnAnimate(scene, timeMs) {
@@ -494,7 +494,7 @@ export class SceneNode {
 
 	/**
 	 * Called after the deserialization process. Internal method used so that linked nodes link them with the deserialized other nodes.
-	 * @private
+	 * @public
 	 */
 	onDeserializedWithChildren() {
 		// to be implemented in a specific node if at all.
@@ -502,7 +502,7 @@ export class SceneNode {
 
 	/**
 	 * replaces all referenced ids of referenced nodes when the referenced node was a child and was cloned
-	 * @private
+	 * @public
 	 */
 	replaceAllReferencedNodes(nodeChildOld, nodeChildNew) {
 		// to be implemented in a specific node if at all.
@@ -510,7 +510,7 @@ export class SceneNode {
 
 	/**
 	 * replaces all referenced ids of referenced nodes when the referenced node was a child and was cloned
-	 * @private
+	 * @public
 	 */
 	isParentActiveFPSCameraToRenderChildrenWithoutZBuffer() {
 		if (!this.scene)

@@ -232,7 +232,7 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseWheel(delta) {
 		this.TargetZoomValue += delta * this.ZoomSpeed;

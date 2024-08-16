@@ -60,7 +60,7 @@ export class AnimatorOnProximity extends CL3D.Animator {
 		return 'oncollide';
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorOnProximity(this.sceneManager);
@@ -138,7 +138,7 @@ export class AnimatorOnProximity extends CL3D.Animator {
 		return actionInvoked;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	invokeAction(node, n) {
 		if (this.FunctionToCall)
@@ -148,7 +148,7 @@ export class AnimatorOnProximity extends CL3D.Animator {
 			this.TheActionHandler.execute(node);
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	findActionByType(type) {
 		if (this.TheActionHandler)

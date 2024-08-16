@@ -449,7 +449,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseDown(event) {
 		//super.onMouseDown(event);
@@ -460,7 +460,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseWheel(delta) {
 		/*this.targetZoomValue += delta * this.zoomSpeed;
@@ -473,7 +473,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseUp(event) {
 		//super.onMouseUp(event);
@@ -481,7 +481,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseMove(event) {
 		//super.onMouseMove(event);
@@ -489,7 +489,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	setKeyBool(down, code) {
 		if (code)
@@ -536,21 +536,21 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onKeyDown(event) {
 		return this.setKeyBool(true, event.key);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onKeyUp(event) {
 		return this.setKeyBool(false, event.key);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * for adding force to look up or down
 	 */
 	getAdditionalXLookDiff() {
@@ -558,7 +558,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * for adding force to look up or down
 	 */
 	getAdditionalYLookDiff() {
@@ -566,7 +566,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * for adding force to look left or right
 	 */
 	getAdditionalZoomDiff() {

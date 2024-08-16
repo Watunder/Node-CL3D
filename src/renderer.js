@@ -1193,8 +1193,13 @@ export class Renderer {
 	 */
 	constructor(textureManager) {
 		this.TheTextureManager = textureManager;
-
+		/**
+		 * @type {HTMLCanvasElement}
+		 */
 		this.canvas = null;
+		/**
+		 * @type {WebGLRenderingContext|WebGL2RenderingContext}
+		 */
 		this.gl = null;
 		this.width = 0;
 		this.height = 0;
@@ -1289,7 +1294,7 @@ export class Renderer {
 		return this.width;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getAndResetTextureWasLoadedFlag() {
 		let b = this.textureWasLoadedFlag;
@@ -1311,7 +1316,7 @@ export class Renderer {
 		return this.height;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	registerFrame() {
 		// TODO: fps counter here
@@ -1506,7 +1511,7 @@ export class Renderer {
 	}
 	/**
 	 * Creates a mesh buffer native render array
-	 * @private
+	 * @public
 	 */
 	updateRendererNativeArray(buf) {
 		if (buf.Vertices.length == 0 || buf.Indices.length == 0)
@@ -1548,7 +1553,7 @@ export class Renderer {
 			// this is used for particle systems. The indices only update when size of the array changes
 			if (buf.RendererNativeArray.indexCount < buf.Indices.length) {
 				let indexCount = buf.Indices.length;
-				let indexArray = new WebGLUnsignedShortArray(indexCount);
+				let indexArray = new Uint16Array(indexCount);
 
 				for (let j = 0; j < indexCount; j += 3) {
 					indexArray[j + 0] = buf.Indices[j + 0];
@@ -1569,7 +1574,7 @@ export class Renderer {
 	}
 	/**
 	 * Creates a mesh buffer native render array
-	 * @private
+	 * @public
 	 */
 	updatePositionsInRendererNativeArray(buf) {
 		if (buf.RendererNativeArray != null) {
@@ -1592,7 +1597,7 @@ export class Renderer {
 	}
 	/**
 	 * Creates a mesh buffer native render array
-	 * @private
+	 * @public
 	 */
 	createRendererNativeArray(buf) {
 		if (buf.RendererNativeArray == null) {
@@ -1600,18 +1605,18 @@ export class Renderer {
 			let obj = new Object();
 			let len = buf.Vertices.length;
 
-			let positionsArray = new WebGLFloatArray(len * 3);
-			let normalsArray = new WebGLFloatArray(len * 3);
-			let tcoordsArray = new WebGLFloatArray(len * 2);
-			let tcoordsArray2 = new WebGLFloatArray(len * 2);
-			let colorArray = new WebGLFloatArray(len * 4);
+			let positionsArray = new Float32Array(len * 3);
+			let normalsArray = new Float32Array(len * 3);
+			let tcoordsArray = new Float32Array(len * 2);
+			let tcoordsArray2 = new Float32Array(len * 2);
+			let colorArray = new Float32Array(len * 4);
 
 			let tangentsArray = null;
 			let binormalsArray = null;
 			if (buf.Tangents)
-				tangentsArray = new WebGLFloatArray(len * 3);
+				tangentsArray = new Float32Array(len * 3);
 			if (buf.Binormals)
-				binormalsArray = new WebGLFloatArray(len * 3);
+				binormalsArray = new Float32Array(len * 3);
 
 			for (let i = 0; i < len; ++i) {
 				let v = buf.Vertices[i];
@@ -1653,7 +1658,7 @@ export class Renderer {
 			}
 
 			let indexCount = buf.Indices.length;
-			let indexArray = new WebGLUnsignedShortArray(indexCount);
+			let indexArray = new Uint16Array(indexCount);
 
 			for (let j = 0; j < indexCount; j += 3) {
 				indexArray[j + 0] = buf.Indices[j + 0];
@@ -1715,7 +1720,7 @@ export class Renderer {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	drawWebGlStaticGeometry(b, indexCountToUse) {
 		//console.log("drawElementsBegin with " + b.indexCount + " indices " + b.positionBuffer + " " + b.texcoordsBuffer + " " + b.normalBuffer);
@@ -1842,7 +1847,7 @@ export class Renderer {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	setShadowMapDataIntoConstants(program) {
 		let gl = this.gl;
@@ -1906,16 +1911,16 @@ export class Renderer {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	setDynamicLightsIntoConstants(program, useWorldSpacePositionsForLights, useOldNormalMappingAttenuationCalculation) {
 		// we use two contants per light, where we pack Position, Color and Attenuation into, like this:
 		// (px, py, pz, att) and (cr, cg, cb, 1)
 		let buf1 = new ArrayBuffer(4 * 4 * Float32Array.BYTES_PER_ELEMENT);
-		let positionArray = new WebGLFloatArray(buf1);
+		let positionArray = new Float32Array(buf1);
 
 		let buf2 = new ArrayBuffer(5 * 4 * Float32Array.BYTES_PER_ELEMENT);
-		let colorArray = new WebGLFloatArray(buf2);
+		let colorArray = new Float32Array(buf2);
 
 		// calculate matrix to transform light position into object space (unless useWorldSpacePositionsForLights is true)
 		let mat = new CL3D.Matrix4(true);
@@ -1993,7 +1998,7 @@ export class Renderer {
 			mat.rotateVect(dir);
 			dir.normalize();
 
-			this.gl.uniform3f(program.locDirectionalLight, dir.X, dir.Y, dir.Z, 1.0);
+			this.gl.uniform3f(program.locDirectionalLight, dir.X, dir.Y, dir.Z);
 
 			if (dirlight)
 				this.gl.uniform4f(program.locDirectionalLightColor, dirlight.Color.R, dirlight.Color.G, dirlight.Color.B, 1.0);
@@ -2003,7 +2008,7 @@ export class Renderer {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 * Draws a 3d line with the current material
 	 */
 	draw3DLine(vect3dFrom, vect3dTo) {
@@ -2047,7 +2052,7 @@ export class Renderer {
 		height *= yFact;
 
 		// positions
-		let positionsArray = new WebGLFloatArray(4 * 3);
+		let positionsArray = new Float32Array(4 * 3);
 
 		positionsArray[0] = x;
 		positionsArray[1] = y;
@@ -2067,7 +2072,7 @@ export class Renderer {
 
 		// indices
 		let indexCount = 6;
-		let indexArray = new WebGLUnsignedShortArray(indexCount);
+		let indexArray = new Uint16Array(indexCount);
 		indexArray[0] = 0;
 		indexArray[1] = 2;
 		indexArray[2] = 1;
@@ -2160,7 +2165,7 @@ export class Renderer {
 		height *= yFact;
 
 		// positions
-		let positionsArray = new WebGLFloatArray(4 * 3);
+		let positionsArray = new Float32Array(4 * 3);
 
 		positionsArray[0] = x;
 		positionsArray[1] = y;
@@ -2179,7 +2184,7 @@ export class Renderer {
 		positionsArray[11] = 0;
 
 		// texture coordinates
-		let tcoordsArray = new WebGLFloatArray(4 * 2);
+		let tcoordsArray = new Float32Array(4 * 2);
 
 		tcoordsArray[0] = 0;
 		tcoordsArray[1] = 0;
@@ -2195,7 +2200,7 @@ export class Renderer {
 
 		// indices
 		let indexCount = 6;
-		let indexArray = new WebGLUnsignedShortArray(indexCount);
+		let indexArray = new Uint16Array(indexCount);
 		indexArray[0] = 0;
 		indexArray[1] = 2;
 		indexArray[2] = 1;
@@ -2281,7 +2286,7 @@ export class Renderer {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 * internal drawing function for drawing 2d overlay fonts
 	 */
 	draw2DFontImage(x, y, width, height, tex, color) {
@@ -2356,7 +2361,8 @@ export class Renderer {
 		let gl = this.gl;
 
 		//gl.flush();
-		if (gl.swap)
+		if (process.env.SDL_ENV)
+			// @ts-ignore
 			gl.swap();
 
 		if (process.env.RAUB_ENV)
@@ -2391,7 +2397,7 @@ export class Renderer {
 		this.DirectionalLight = l;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	ensuresizeok(width, height) {
 		if (this.gl == null)
@@ -2418,7 +2424,7 @@ export class Renderer {
 		//console.log("adjusted size: " + this.width + " " + this.height);
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	init(width, height, options, canvas) {
 		this.width = width;
@@ -2457,73 +2463,12 @@ export class Renderer {
 		return true;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	removeCompatibilityProblems() {
-		// WebKit and Chrome:
-		// 20. Aug 2010: WebGLFloatArray has been renamed to Float32Array and
-		// WebGLUnsignedShortArray to Uint16Array
-		if (typeof WebGLFloatArray == 'undefined' &&
-			typeof Float32Array != 'undefined') {
-			try {
-				globalThis.WebGLFloatArray = Float32Array;
-				globalThis.WebGLUnsignedShortArray = Uint16Array;
-			}
-			catch (e) {
-				console.log("Error: Float32 array types for webgl not found.");
-			}
-		}
-
-		/*
-		if ( typeof WebGLIntArray == 'undefined' &&
-			 typeof Int32Array != 'undefined' )
-		{
-			try
-			{
-				WebGLIntArray = Int32Array;
-			}
-			catch (e)
-			{
-				console.log("Error: Int32 array types for webgl not found.");
-			}
-		}
-		*/
-		// Firefox:
-		// The WebGL*Array where named Canvas*Array in the past.
-		// However, this will only affect old nightly builds. The current nightly does already
-		// support the new names. (13 Dec 2009).
-		if (typeof WebGLFloatArray == 'undefined' &&
-			typeof CanvasFloatArray != 'undefined') {
-			try {
-				WebGLFloatArray = CanvasFloatArray;
-				WebGLUnsignedShortArray = CanvasUnsignedShortArray;
-
-				// others, not used by copperlicht
-				//WebGLArrayBuffer = CanvasArrayBuffer;
-				//WebGLByteArray = CanvasByteArray;
-				//WebGLUnsignedByteArray = CanvasUnsignedByteArray;
-				//WebGLShortArray = CanvasShortArray;
-				//WebGLIntArray = CanvasIntArray;
-				//WebGLUnsignedIntArray = CanvasUnsignedIntArray;
-			}
-			catch (e) {
-				console.log("Error: canvas array types for webgl not found.");
-			}
-		}
-
-		let gl = this.gl;
-
-		// Google Chrome compatibility code
-		// Since a JavaScript function may have multiple return types, functions
-		// 'getProgrami' and 'getShaderi' where renamed. However, Chrome does still
-		// use the old names.  (30 Nov 2009)
-		if (!gl['getProgramParameter'])
-			gl['getProgramParameter'] = gl['getProgrami'];
-		if (!gl['getShaderParameter'])
-			gl['getShaderParameter'] = gl['getShaderi'];
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	loadShader(shaderType, shaderSource) {
 		let gl = this.gl;
@@ -2547,7 +2492,7 @@ export class Renderer {
 		return shader;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	createShaderProgram(vertexShaderSource, fragmentShaderSource, useBinormalsAndTangents) {
 		// create shader
@@ -2701,7 +2646,7 @@ export class Renderer {
 	 * Returns the webgl shader program from a material type. This is useful when you are using {@link createMaterialType} to create your
 	 * own shaders and need to set material constants using for example uniform1i.
 	 * @public
-	 * @param mattype {int} The material type, like for example {@link Material.EMT_SOLID}, or your own material type returned by {@link createMaterialType}.
+	 * @param {Number} mattype The material type, like for example {@link Material.EMT_SOLID}, or your own material type returned by {@link createMaterialType}.
 	 * @returns {program} Returns the WebGL shader program or null if not found.
 	 */
 	getGLProgramFromMaterialType(mattype) {
@@ -2714,7 +2659,7 @@ export class Renderer {
 		return program;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	createMaterialTypeInternal(vsshader, fsshader, blendenabled, blendsfactor, blenddfactor, useBinormalsAndTangents) {
 		if (useBinormalsAndTangents == null)
@@ -2759,7 +2704,7 @@ export class Renderer {
 		return program;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	initWebGL() {
 		let gl = this.gl;
@@ -3014,13 +2959,13 @@ export class Renderer {
 			m.copyTo(this.World);
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getMatrixAsWebGLFloatArray(mat) {
-		return new WebGLFloatArray(mat.asArray());
+		return new Float32Array(mat.asArray());
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	findTexture(name) {
 		return this.TheTextureManager.getTextureFromName(name);
@@ -3124,6 +3069,7 @@ export class Renderer {
 
 		else if (createFloatingPointTexture) {
 			if (this.UsesWebGL2)
+				// @ts-ignore
 				gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA32F, sx, sy);
 
 			else
@@ -3193,7 +3139,7 @@ export class Renderer {
 	/**
 	 * Sets the current render target
 	 * @public
-	 * @param {@link Texture} texture Texture or null, which will become the new render target
+	 * @param {CL3D.Texture?} texture Texture or null, which will become the new render target
 	 * @param clearBackBuffer To clear the buffer or not
 	 * @param clearZBuffer To clear the zbuffer or not
 	 * @param bgcolor Background color to set if clearBackBuffer is true
@@ -3269,7 +3215,7 @@ export class Renderer {
 	 * Replaces the content of a placeholder texture with the content of a new texture.
 	 * The new texture shouldn't be used anymore after this.
 	 * Useful for creating placeholder textures for videos, for example.
-	 * @private
+	 * @public
 	 */
 	replacePlaceholderTextureWithNewTextureContent(placeholderTexture, newtexture) {
 		placeholderTexture.Texture = newtexture.Texture;
@@ -3281,7 +3227,7 @@ export class Renderer {
 	/**
 	 * Fills an existing {@link CL3D.Texture} with the content of a from a 2d canvas
 	 * @public
-	 * @param {Canvas} canvas a 2d canvas to be converted into a texture
+	 * @param {HTMLCanvasElement} canvas a 2d canvas to be converted into a texture
 	 * @param {boolean} nonscaling optional parameter, if set to true, and the texture don't have a power-of-two size, the texture will not be scaled up, but copied without scaling.
 	 *        This is useful for font or 2D textures, for example, to make them less blurry.
 	 */
@@ -3337,7 +3283,7 @@ export class Renderer {
 	/**
 	 * Creates a {@link CL3D.Texture} from a 2d canvas
 	 * @public
-	 * @param {Canvas} canvas a 2d canvas to be converted into a texture
+	 * @param {HTMLCanvasElement} canvas a 2d canvas to be converted into a texture
 	 * @param {boolean} nonscaling optional parameter, if set to true, and the texture don't have a power-of-two size, the texture will not be scaled up, but copied without scaling.
 	 *        This is useful for font or 2D textures, for example, to make them less blurry.
 	 */
@@ -3350,10 +3296,12 @@ export class Renderer {
 		let origwidth = canvas.width;
 		let origheight = canvas.height;
 
-		if (canvas.videoWidth)
-			origwidth = canvas.videoWidth;
-		if (canvas.videoHeight)
-			origheight = canvas.videoHeight;
+		if (globalThis.HTMLVideoElement && canvas instanceof HTMLVideoElement) {
+			if (canvas.videoWidth)
+				origwidth = canvas.videoWidth;
+			if (canvas.videoHeight)
+				origheight = canvas.videoHeight;
+		}
 
 		let scaledUpWidth = origwidth;
 		let scaledUpHeight = origheight;
@@ -3402,13 +3350,46 @@ export class Renderer {
 		return t;
 	}
 	/**
-	 * @private
+	 * Creates a {@link CL3D.Texture} from pixels
+	 * @public
+	 * @param {ArrayBufferView} pixels source data for the texture
+	 * @param {Number} width the width of the texture
+	 * @param {Number} height the height of the texture
+	 */
+	createTextureFromPixels(pixels, width, height) {
+		let gl = this.gl;
+
+		let texture = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_BYTE, pixels);
+
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+
+		gl.generateMipmap(gl.TEXTURE_2D);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+
+		let t = new CL3D.Texture();
+		t.Name = "";
+		t.Texture = texture;
+		t.Image = null;
+		t.Loaded = true;
+		t.CachedWidth = width;
+		t.CachedHeight = height;
+		t.OriginalWidth = width;
+		t.OriginalHeight = height;
+
+		return t;
+	}
+	/**
+	 * @public
 	 */
 	isPowerOfTwo(x) {
 		return (x & (x - 1)) == 0;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	nextHighestPowerOfTwo(x) {
 		--x;
@@ -3418,7 +3399,7 @@ export class Renderer {
 		return x + 1;
 	}
 	/**
-	 * @private
+	 * @public
 	 * domobj is an image or a canvas element
 	 */
 	fillTextureFromDOMObject(wgltex, domobj) {
@@ -3445,21 +3426,12 @@ export class Renderer {
 				this.domainTextureLoadErrorPrinted = true;
 				return;
 			}
-
 			//console.log(browserVersion + "Could not texImage2D texture: " + e);
-			try {
-				// old version
-				gl.texImage2D(gl.TEXTURE_2D, 0, domobj);
-			}
-			catch (e2) {
-				// something is pretty wrong here
-				//console.log("Could not texImage2D texture (2nd try):" + e2);
-			}
 		}
 
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	finalizeLoadedImageTexture(t) {
 		let gl = this.gl;
@@ -3509,7 +3481,7 @@ export class Renderer {
 		t.Texture = texture;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getStaticBillboardMeshBuffer() {
 		if (this.StaticBillboardMeshBuffer == null)
@@ -3518,7 +3490,7 @@ export class Renderer {
 		return this.StaticBillboardMeshBuffer;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	createStaticBillboardMeshBuffer() {
 		if (this.StaticBillboardMeshBuffer != null)

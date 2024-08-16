@@ -53,7 +53,7 @@ export class Vect3d {
 	/**
 	 * Creates a copy of this vector and returns it
 	 * @public
-	 * @type {CL3D.Vect3d}
+	 * @returns {CL3D.Vect3d}
 	 */
 	clone() {
 		return new CL3D.Vect3d(this.X, this.Y, this.Z);
@@ -107,7 +107,7 @@ export class Vect3d {
 		this.Z += other.Z;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	addToThisReturnMe(other) {
 		this.X += other.X;
@@ -256,7 +256,7 @@ export class Vect3d {
 		this.Z *= v;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	multiplyThisWithScalReturnMe(v) {
 		this.X *= v;

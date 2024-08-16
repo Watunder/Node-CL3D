@@ -121,7 +121,7 @@ export class LightSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.LightSceneNode();
@@ -134,7 +134,7 @@ export class LightSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible)
@@ -158,7 +158,7 @@ export class LightSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		if (this.LightData.IsDirectional)

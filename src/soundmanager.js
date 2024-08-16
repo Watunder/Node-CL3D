@@ -5,7 +5,7 @@ import * as CL3D from "./main.js";
 
 /**
  * @constructor
- * @private
+ * @public
  */
 export class SoundManager {
 	constructor() {
@@ -15,7 +15,7 @@ export class SoundManager {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getSoundFromName(name) {
 		for (var i = 0; i < this.Sounds.length; ++i) {
@@ -28,7 +28,7 @@ export class SoundManager {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	addSound(t) {
 		if (t != null) {
@@ -40,7 +40,7 @@ export class SoundManager {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * name is the url
 	 */
 	getSoundFromSoundName(name, createIfNotFound) {
@@ -62,7 +62,7 @@ export class SoundManager {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 * s can either be the URL or the SoundSource object
 	 */
 	play2D(s, looped, volume) {
@@ -125,7 +125,7 @@ export class SoundManager {
 				if (!pl.hasStopped) {
 					try { this.currentTime = 0; }
 					catch (err) { }
-					this.play();
+					this.play2D();
 					//CL3D.Debug.print('foobar');
 				}
 			};
@@ -139,7 +139,7 @@ export class SoundManager {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	stop(playingSnd) {
 		if (!playingSnd)
@@ -151,14 +151,14 @@ export class SoundManager {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getGlobalVolume() {
 		return this.GlobalVolume;
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	setGlobalVolume(v) {
 		this.GlobalVolume = v;
@@ -176,7 +176,7 @@ export class SoundManager {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	setVolume(playingSnd, v) {
 		if (!playingSnd)
@@ -189,7 +189,7 @@ export class SoundManager {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	stopAll() {
 		for (var i = 0; i < this.PlayingSounds.length; ++i) {
@@ -202,7 +202,7 @@ export class SoundManager {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	clearFinishedPlayingSounds() {
 		for (var i = 0; i < this.PlayingSounds.length;)
@@ -214,7 +214,7 @@ export class SoundManager {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	stopSpecificPlayingSound(name) {
 		for (var i = 0; i < this.PlayingSounds.length; ++i) {
@@ -238,7 +238,7 @@ export const gSoundManager = new CL3D.SoundManager();
 
 /**
  * @constructor
- * @private
+ * @public
  */
 export class SoundSource {
 	constructor(name) {
@@ -273,7 +273,7 @@ export class SoundSource {
 
 /**
  * @constructor
- * @private
+ * @public
  */
 export class PlayingSound {
 	constructor(source) {

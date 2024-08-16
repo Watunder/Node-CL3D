@@ -66,7 +66,7 @@ export class PathSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.PathSceneNode();
@@ -88,7 +88,7 @@ export class PathSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getPathNodeCount() {
 		return this.Nodes.length;
@@ -115,7 +115,7 @@ export class PathSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	clampPathIndex(idx, size) {
 		if (this.IsClosedCircle)

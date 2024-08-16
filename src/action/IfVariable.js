@@ -5,7 +5,7 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
@@ -23,7 +23,7 @@ export class ActionIfVariable extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionIfVariable();
@@ -37,7 +37,7 @@ export class ActionIfVariable extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)

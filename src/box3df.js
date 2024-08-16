@@ -94,7 +94,7 @@ export class Box3d {
 		return this.intersectsWithLineImpl(middle, vect, len * 0.5);
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	intersectsWithLineImpl(linemiddle, linevect, halflength) {
 		let e = this.getExtent().multiplyWithScal(0.5);

@@ -6,7 +6,7 @@ import * as CL3D from "../main.js";
 import { openWebpage } from "../share/openWebpage.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
@@ -18,7 +18,7 @@ export class ActionOpenWebpage extends CL3D.Action{
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionOpenWebpage();
@@ -28,7 +28,7 @@ export class ActionOpenWebpage extends CL3D.Action{
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	execute(currentNode, sceneManager) {
 		//console.log("opening" + this.Webpage + " with:" + this.Target);

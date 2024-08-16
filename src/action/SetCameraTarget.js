@@ -5,7 +5,7 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
@@ -19,7 +19,7 @@ export class ActionSetCameraTarget extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionSetCameraTarget();
@@ -35,7 +35,7 @@ export class ActionSetCameraTarget extends CL3D.Action {
 	}
     
 	/**
-	 * @private
+	 * @public
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)

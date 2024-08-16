@@ -23,20 +23,20 @@ export { AnimatorCameraFPS } from "./CameraFPS.js";
 
 /// private
 // contains several animators which only make sense in combination with the Coppercube editor, and are not pulic.
-export { CopperCubeVariable, CopperCubeVariables } from "./CoppercubePrivate/CopperCubeVariable.js";
+export { CopperCubeVariable, CopperCubeVariables } from "./CopperCubePrivate/CopperCubeVariable.js";
 
 // input
-export { AnimatorKeyboardControlled } from "./CoppercubePrivate/KeyboardControlled.js";
-export { AnimatorMobileInput } from "./CoppercubePrivate/MobileInput.js";
-export { AnimatorOnKeyPress } from "./CoppercubePrivate/OnKeyPress.js";
+export { AnimatorKeyboardControlled } from "./CopperCubePrivate/KeyboardControlled.js";
+export { AnimatorMobileInput } from "./CopperCubePrivate/MobileInput.js";
+export { AnimatorOnKeyPress } from "./CopperCubePrivate/OnKeyPress.js";
 
 // camera
-export { Animator3rdPersonCamera } from "./CoppercubePrivate/3rdPersonCamera.js";
+export { Animator3rdPersonCamera } from "./CopperCubePrivate/3rdPersonCamera.js";
 
 // game ai
-export { AnimatorGameAI } from "./CoppercubePrivate/GameAI.js";
+export { AnimatorGameAI } from "./CopperCubePrivate/GameAI.js";
 
 // utils
-export { AnimatorOnFirstFrame } from "./CoppercubePrivate/OnFirstFrame.js";
+export { AnimatorOnFirstFrame } from "./CopperCubePrivate/OnFirstFrame.js";
 
-export { AnimatorTimer } from "./CoppercubePrivate/Timer.js";
+export { AnimatorTimer } from "./CopperCubePrivate/Timer.js";

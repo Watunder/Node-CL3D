@@ -73,7 +73,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorFollowPath();
@@ -251,7 +251,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	}
 
 	/**
-	* @private
+	* @public
 	*/
 	setNode(n) {
 		this.LastObject = n;
@@ -260,7 +260,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	}
 
 	/**
-	* @private
+	* @public
 	*/
 	linkWithPath() {
 		if (this.PathNodeToFollow)
@@ -291,7 +291,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	switchToNextCamera() {
 		if (!this.Manager)
@@ -310,7 +310,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	findActionByType(type) {
 		if (this.TheActionHandler)

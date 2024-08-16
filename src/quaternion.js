@@ -88,7 +88,7 @@ export class Quaternion {
 
 	/**
 	 * Multiplication operator, multiplies with a float (scalar).
-	 * @private
+	 * @public
 	 */
 	multiplyThisWith(s) {
 		this.X = this.X * s;
@@ -173,7 +173,7 @@ export class Quaternion {
 
 	/**
 	 * Creates a matrix from this quaternion
-	 * @private
+	 * @public
 	 */
 	getMatrix_transposed(dest) {
 		var X = this.X;
@@ -227,7 +227,9 @@ export class Quaternion {
 
 	/**
 	 * Sets the quaternion from euler coordinates
-	 * @param {CL3D.Vect3d} dest 3d vector to be filled with the euler coordinates
+	 * @param {Number} x 
+	 * @param {Number} y 
+	 * @param {Number} z 
 	 * @public
 	 */
 	setFromEuler(x, y, z) {
@@ -268,7 +270,7 @@ export class Quaternion {
 
 	/**
 	 * Creates a matrix from this quaternion
-	 * @private
+	 * @public
 	 */
 	toString() {
 		return "(x: " + this.X + " y:" + this.Y + " z:" + this.Z + " w:" + this.W + ")";

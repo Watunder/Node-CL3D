@@ -76,7 +76,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorCollisionResponse();
@@ -286,7 +286,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getCollisionResultPosition(selector, //:TriangleSelector,
 		position, //:Vect3d, 
@@ -358,7 +358,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	collideWithWorld(recursionDepth, //:int,
 		colData, //:CollisionData, 
@@ -444,7 +444,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	testTriangleIntersection(colData, triangle) {
 		var trianglePlane = triangle.getPlane();
@@ -674,7 +674,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getLowestRoot(a, b, c, maxR, outRoot) {
 		// check if solution exists
@@ -714,7 +714,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	jump(jumpspeed) {
 		if (this.JumpForce == 0)

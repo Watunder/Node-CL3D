@@ -6,7 +6,7 @@ import * as CL3D from "../main.js";
 /**
  * @constructor
  * @extends CL3D.Scene
- * @private
+ * @public
  */
 export class Free3dScene extends CL3D.Scene {
 	constructor() {

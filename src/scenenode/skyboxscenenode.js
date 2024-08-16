@@ -90,7 +90,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createVertex(x, y, z, nx, ny, nz, s, t) {
 		var vtx = new CL3D.Vertex3D(true);
@@ -103,7 +103,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible) {
@@ -113,7 +113,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		//renderer.setWorld(this.AbsoluteTransformation);
@@ -136,7 +136,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.SkyBoxSceneNode();

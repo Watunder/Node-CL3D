@@ -6,7 +6,7 @@ import * as CL3D from "../main.js";
 
 /**
  * @constructor
- * @private
+ * @public
  * @class
  */
 export class ActionHandler {
@@ -17,7 +17,7 @@ export class ActionHandler {
     }
 
     /**
-     * @private
+     * @public
      */
     execute(node, mgr, isCache) {
         for (var i = 0; i < this.Actions.length; ++i) {
@@ -26,7 +26,7 @@ export class ActionHandler {
     }
 
     /**
-     * @private
+     * @public
      */
     addAction(a) {
         if (a == null)
@@ -36,7 +36,7 @@ export class ActionHandler {
     }
 
     /**
-     * @private
+     * @public
      */
     findAction(type) {
         for (var i = 0; i < this.Actions.length; ++i) {
@@ -48,7 +48,7 @@ export class ActionHandler {
         return null;
     }
     /**
-     * @private
+     * @public
      */
     createClone(oldNodeId, newNodeId) {
         var c = new CL3D.ActionHandler(this.SMGr);

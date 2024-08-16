@@ -192,34 +192,34 @@ export class Scene {
 	static EPOSTEFFECT_COUNT = 9;
 
 	/**
-	 * @private
+	 * @public
 	 */
 	TriedShadowInit = false;
 
 	/**
-	 * @private
+	 * @public
 	 * Render target texture for creating shadow maps
 	 */
 	ShadowBuffer = null;
 
 	/**
-	 * @private
+	 * @public
 	 * Second eender target texture for creating shadow maps, but only used in case CL3D.UseShadowCascade is true
 	 */
 	ShadowBuffer2 = null;
 
 	/**
-	 * @private
+	 * @public
 	 */
 	ShadowDrawMaterialSolid = null;
 
 	/**
-	 * @private
+	 * @public
 	 */
 	ShadowDrawMaterialAlphaRef = null;
 
 	/**
-	 * @private
+	 * @public
 	 */
 	ShadowMapLightMatrix = null;
 
@@ -409,7 +409,7 @@ export class Scene {
 
 	/**
 	 * Initializes the scene node, can be called by scene nodes derived from this class.
-	 * @private
+	 * @public
 	 */
 	init() {
 		this.RootNode = new CL3D.SceneNode();
@@ -432,10 +432,12 @@ export class Scene {
 		this.WindSpeed = 1.0;
 		this.WindStrength = 4.0;
 
+		/**
+		 * @type {Array.<{Active: boolean}>}
+		 */
 		this.PostEffectData = new Array();
 		for (var ip = 0; ip < 6; ++ip) {
-			var peo = new Object();
-			peo.Active = false;
+			var peo = { Active: false };
 			this.PostEffectData.push(peo);
 		}
 
@@ -473,6 +475,9 @@ export class Scene {
 
 		// runtime
 		this.WasAlreadyActivatedOnce = false;
+		/**
+		 * @type {Array.<{node: CL3D.SceneNode, timeAfterToDelete: Number}>}
+		 */
 		this.DeletionList = new Array();
 		this.LastBulletImpactPosition = new CL3D.Vect3d; // hack for IRR_SCENE_MANAGER_LAST_BULLET_IMPACT_POSITION parameter
 
@@ -488,7 +493,7 @@ export class Scene {
 
 	/**
 	  * Returns the type string of the current scene.
-	  * @private
+	  * @public
 	*/
 	getCurrentCameraFrustrum() {
 		return this.CurrentCameraFrustrum;
@@ -504,7 +509,7 @@ export class Scene {
 
 	/**
 	  * returns true if rendering needs to be done at all
-	  * @private
+	  * @public
 	*/
 	doAnimate(renderer) {
 		this.LastUsedRenderer = renderer;
@@ -1127,7 +1132,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	HasViewChangedSinceLastRedraw() {
 		if (!this.ActiveCamera)
@@ -1141,7 +1146,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	StoreViewMatrixForRedrawCheck() {
 		if (!this.ActiveCamera)
@@ -1152,7 +1157,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getLastUsedRenderer() {
 		return this.LastUsedRenderer;
@@ -1242,7 +1247,7 @@ export class Scene {
 	 * this method to register itself for rendering if it decides that it wants to be rendered.
 	 * In this way, scene nodes can be rendered in the optimal order.
 	 * @param {CL3D.SceneNode} s Node which registers itself for rendering
-	 * @param {Integer} mode render mode the scene node wishes to register itself. Usually, use {@link CL3D.Scene.RENDER_MODE_DEFAULT}. For
+	 * @param {Number} mode render mode the scene node wishes to register itself. Usually, use {@link CL3D.Scene.RENDER_MODE_DEFAULT}. For
 	 * transparent nodes, {@link CL3D.Scene.RENDER_MODE_TRANSPARENT} is ideal.
 	 * @public
 	 */
@@ -1297,7 +1302,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getAllSceneNodesOfTypeImpl(n, c, a) {
 		if (n.getType() == c)
@@ -1311,7 +1316,7 @@ export class Scene {
 
 	/**
 	 * Returns all scene nodes in this scene with the specified animator type {@link SceneNode}s.
-	 * @private
+	 * @public
 	 * @param type {String} type name of the animator
 	 * @returns {Array} array with all scene nodes found with this type.
 	 */
@@ -1325,7 +1330,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getAllSceneNodesWithAnimatorImpl(n, t, a) {
 		if (n.getAnimatorOfType(t) != null)
@@ -1351,7 +1356,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getSceneNodeFromNameImpl(n, name) {
 		if (n.Name == name)
@@ -1381,7 +1386,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getSceneNodeFromIdImpl(n, id) {
 		if (n.Id == id)
@@ -1407,7 +1412,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	registerSceneNodeAnimatorForEvents(a) {
 		if (a == null)
@@ -1423,7 +1428,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	unregisterSceneNodeAnimatorForEvents(a) {
 		if (a == null)
@@ -1439,7 +1444,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	postMouseWheelToAnimators(delta) {
 		for (var i = 0; i < this.RegisteredSceneNodeAnimatorsForEventsList.length; ++i) {
@@ -1449,7 +1454,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	postMouseDownToAnimators(event) {
 		for (var i = 0; i < this.RegisteredSceneNodeAnimatorsForEventsList.length; ++i) {
@@ -1459,7 +1464,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	postMouseUpToAnimators(event) {
 		for (var i = 0; i < this.RegisteredSceneNodeAnimatorsForEventsList.length; ++i) {
@@ -1469,7 +1474,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	postMouseMoveToAnimators(event) {
 		for (var i = 0; i < this.RegisteredSceneNodeAnimatorsForEventsList.length; ++i) {
@@ -1488,7 +1493,7 @@ export class Scene {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * @param storeInNodes: Boolean, if set to true the selector for each node is stored in the scene nodes
 	 * @param selectorToReuse: Metatriangle selector, can be null. If not null, will be cleared and used to be filled with geometry
 	 * @returns Returns a meta triangle selector with the collision geomertry
@@ -1568,18 +1573,21 @@ export class Scene {
 	}
 
 	/**
-	 @private
-	*/
+	 * @public
+	 * @param {CL3D.SceneNode} node 
+	 * @param {Number} afterTimeMs 
+	 */
 	addToDeletionQueue(node, afterTimeMs) {
-		var e = new Object();
-		e.node = node;
-		e.timeAfterToDelete = afterTimeMs + CL3D.CLTimer.getTime();
+		var e = {
+			node: node,
+			timeAfterToDelete: afterTimeMs + CL3D.CLTimer.getTime()
+		};
 
 		this.DeletionList.push(e);
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	clearDeletionList(deleteAll) {
 		if (this.DeletionList.length == 0)
@@ -1609,7 +1617,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	isCoordOver2DOverlayNode(x, y, onlyThoseWhoBlockCameraInput) {
 		if (this.RootNode == null || this.LastUsedRenderer == null)
@@ -1619,7 +1627,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	isCoordOver2DOverlayNodeImpl(n, x, y, onlyThoseWhoBlockCameraInput) {
 		if (n && n.Visible && (n.getType() == '2doverlay' || n.getType() == 'mobile2dinput')) {
@@ -1644,7 +1652,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	getUnusedSceneNodeId() {
 		for (var tries = 0; tries < 1000; ++tries) {
@@ -1658,7 +1666,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	replaceAllReferencedNodes(nold, nnew) {
 		if (!nold || !nnew)
@@ -1696,7 +1704,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	isAnyPostEffectActive() {
 		if (Global_PostEffectsDisabled)
@@ -1709,7 +1717,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	isAnyPostEffectEnabledByUser() {
 		for (var ip = 0; ip < this.PostEffectData.length; ++ip) {
@@ -1721,7 +1729,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	initPostProcessingQuad() {
 		var currentResolution = this.LastUsedRenderer.getRenderTargetSize();
@@ -1742,27 +1750,23 @@ export class Scene {
 
 		this.PostProcessingVerticesQuadBuffer.Vertices[0] = CL3D.createVertex(
 			-1.0, -1.0, 0.0, 0.0, 0.0, -1.0, clr,
-			shiftX, shiftY,
 			shiftX, shiftY);
 
 		this.PostProcessingVerticesQuadBuffer.Vertices[1] = CL3D.createVertex(
 			1.0, -1.0, 0.0, 0.0, 0.0, -1.0, clr,
-			1.0 + shiftX, shiftY,
 			1.0 + shiftX, shiftY);
 
 		this.PostProcessingVerticesQuadBuffer.Vertices[2] = CL3D.createVertex(
 			-1.0, 1.0, 0.0, 0.0, 0.0, -1.0, clr,
-			shiftX, 1 + shiftY,
-			shiftX, 1 + shiftY);
+			shiftX, 1.0 + shiftY);
 
 		this.PostProcessingVerticesQuadBuffer.Vertices[3] = CL3D.createVertex(
 			1.0, 1.0, 0.0, 0.0, 0.0, -1.0, clr,
-			1.0 + shiftX, 1 + shiftY,
-			1.0 + shiftX, 1 + shiftY);
+			1.0 + shiftX, 1.0 + shiftY);
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	getNextPowerOfTwo(aSize) {
 		return Math.pow(2, Math.ceil(Math.log(aSize) / Math.log(2)));
@@ -1772,7 +1776,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	createOrGetPostEffectRTT(nCopyNumber, bCreateIfNotExisting, sizeFactor) {
 		if (sizeFactor == null)
@@ -1809,7 +1813,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	processPostEffects() {
 		if (!this.PostEffectsInitialized)
@@ -1843,7 +1847,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	runPostProcessEffect(type, rttSizeFactor) {
 		var renderer = this.LastUsedRenderer;
@@ -1930,7 +1934,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	initPostProcessingEffects() {
 		if (this.PostEffectsInitialized)
@@ -2041,7 +2045,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	drawPostprocessingQuad() {
 		var renderer = this.LastUsedRenderer;
@@ -2051,7 +2055,7 @@ export class Scene {
 	}
 
 	/**
-	 @private
+	 @public
 	*/
 	copyPostProcessingTexture(source, target) {
 		var renderer = this.LastUsedRenderer;

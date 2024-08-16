@@ -13,6 +13,11 @@ else {
     }
 }
 
+/**
+ * @param {Number=} width 
+ * @param {Number=} height 
+ * @returns {HTMLCanvasElement}
+ */
 export const createCanvas = (width, height) => {
     return createCanvasImpl(width, height);
 }

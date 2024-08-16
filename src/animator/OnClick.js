@@ -51,7 +51,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorOnClick(this.SMGr, this.engine);
@@ -76,7 +76,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseDown(event) {
 		var n = this.TheObject;
@@ -125,7 +125,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseUp(event) {
 		var n = this.TheObject;
@@ -173,7 +173,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	invokeAction(node) {
 		if (this.TheActionHandler)
@@ -181,7 +181,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	isOverNode(node, positionX, positionY) {
 		if (node == null)
@@ -217,7 +217,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	static_getDistanceToNearestCollisionPointWithWorld(smgr, begin, end, world, ignoreInvisibleItems) {
 		var maxdist = 999999999999.0;
@@ -234,14 +234,14 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getDistanceToNearestCollisionPointWithWorld(begin, end) {
 		return this.static_getDistanceToNearestCollisionPointWithWorld(this.SMGr, begin, end, this.World, true);
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 * returns true if collides (and no wall between), false if not
 	 */
 	static_getCollisionDistanceWithNode(smgr, node, ray, bBoundingBoxTestOnly, collidesWithWorld,
@@ -359,7 +359,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	findActionByType(type) {
 		if (this.TheActionHandler)

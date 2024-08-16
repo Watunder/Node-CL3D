@@ -7,7 +7,7 @@ import * as CL3D from "../../main.js";
 /**
  * @constructor
  * @class
- * @private
+ * @public
  * @extends CL3D.Animator
  */
 export class AnimatorOnKeyPress extends CL3D.Animator{
@@ -30,14 +30,14 @@ export class AnimatorOnKeyPress extends CL3D.Animator{
     /**
      * Returns the type of the animator.
      * For the AnimatorOnKeyPress, this will return 'keypress'.
-     * @private
+     * @public
      */
     getType() {
         return 'keypress';
     }
     
     /**
-     * @private
+     * @public
      */
     createClone(node, newManager, oldNodeId, newNodeId) {
         var a = new CL3D.AnimatorOnKeyPress(this.SMGr, this.Engine);
@@ -50,7 +50,7 @@ export class AnimatorOnKeyPress extends CL3D.Animator{
     
     /**
      * Animates the scene node it is attached to and returns true if scene node was modified.
-     * @private
+     * @public
      * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
      * @param {Integer} timeMs The time in milliseconds since the start of the scene.
      */
@@ -62,7 +62,7 @@ export class AnimatorOnKeyPress extends CL3D.Animator{
     }
     
     /**
-     * @private
+     * @public
      */
     onKeyDown(evt) {
         if (this.KeyPressType == 0 && evt.keyCode == this.KeyCode) {
@@ -74,7 +74,7 @@ export class AnimatorOnKeyPress extends CL3D.Animator{
     }
     
     /**
-     * @private
+     * @public
      */
     onKeyUp(evt) {
         if (this.KeyPressType == 1 && evt.keyCode == this.KeyCode) {
@@ -86,7 +86,7 @@ export class AnimatorOnKeyPress extends CL3D.Animator{
     }
     
     /**
-     * @private
+     * @public
      */
     onMouseUp(evt) {
         if (this.KeyPressType == 1) {
@@ -99,7 +99,7 @@ export class AnimatorOnKeyPress extends CL3D.Animator{
     }
     
     /**
-     * @private
+     * @public
      */
     onMouseDown(evt) {
         if (this.KeyPressType == 0) {
@@ -112,7 +112,7 @@ export class AnimatorOnKeyPress extends CL3D.Animator{
     }
     
     /**
-     * @private
+     * @public
      */
     findActionByType(type) {
         if (this.TheActionHandler)
@@ -122,7 +122,7 @@ export class AnimatorOnKeyPress extends CL3D.Animator{
     }
     
     /**
-     * @private
+     * @public
      */
     directlyRunKeypressEvent(type) {
         if (this.Object &&

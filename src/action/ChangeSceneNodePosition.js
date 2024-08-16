@@ -5,7 +5,7 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
@@ -14,12 +14,12 @@ export class ActionChangeSceneNodePosition extends CL3D.Action {
         super();
 
 		this.UseAnimatedMovement = false;
-		this.TimeNeededForMovementMs = false;
+		this.TimeNeededForMovementMs = 0;
 		this.Type = 'ChangeSceneNodePosition';
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionChangeSceneNodePosition();
@@ -42,7 +42,7 @@ export class ActionChangeSceneNodePosition extends CL3D.Action {
 	}
     
 	/**
-	 * @private
+	 * @public
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)

@@ -36,7 +36,7 @@ export class AnimatorRotation extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorRotation(this.SMGr, this.engine);
@@ -102,7 +102,7 @@ export class AnimatorRotation extends CL3D.Animator {
 
 	/**
 	 * Makes the animator rotate the scene node to a specific target and then stop there
-	 * @private
+	 * @public
 	 */
 	setRotateToTargetAndStop(targetRot, beginRot, timeForMovement) {
 		this.RotateToTargetAndStop = true;

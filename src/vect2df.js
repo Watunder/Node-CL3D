@@ -38,7 +38,7 @@ export class Vect2d {
 	}
 	/**
 	 * Sets all 2 coordinates to new values
-	 * @private
+	 * @public
 	 */
 	set(x, y) {
 		this.X = x;
@@ -47,7 +47,7 @@ export class Vect2d {
 	/**
 	 * Creates a copy of this vector and returns it
 	 * @public
-	 * @type Vect2d
+	 * @returns {Vect2d}
 	 */
 	clone() {
 		return new CL3D.Vect2d(this.X, this.Y);

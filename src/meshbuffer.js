@@ -91,7 +91,7 @@ export class MeshBuffer {
 	}
 	/**
 	 * Clears the native render array and frees up memory
-	 * @private
+	 * @public
 	 */
 	freeNativeArray() {
 		let obj = this.RendererNativeArray;
