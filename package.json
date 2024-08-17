@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "cl3d",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "CopperLicht in Node.js and browser ",
   "keywords": [
     "nodejs",
@@ -39,8 +39,7 @@
     "@kmamal/sdl": "*",
     "canvas": "*",
     "file-fetch": "*",
-    "nc-screen": "*",
-    "localforage": "*"
+    "nc-screen": "*"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "*",
