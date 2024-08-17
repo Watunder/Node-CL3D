@@ -69,7 +69,7 @@ export class Triangle3d {
 	 * @returns Triangle3d
 	 */
 	getPlane() {
-		var p = new CL3D.Plane3d(false);
+		var p = new CL3D.Plane3d();
 		p.setPlaneFrom3Points(this.pointA, this.pointB, this.pointC);
 		return p;
 	}
@@ -115,7 +115,7 @@ export class Triangle3d {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	isOnSameSide(p1, p2, a, b) {
 		var bminusa = b.substract(a);

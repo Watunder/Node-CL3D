@@ -15,13 +15,15 @@ import * as CL3D from "../main.js";
  * @public
  * @extends CL3D.Animator
  * @class  Scene node animator which invokes a callback function when the scene node gets near another scene node.
- * @param scene {CL3D.Scene} the current scene
- * @param radius {Number} the proximity radius to use
- * @param idOfSceneNode {Number} The unique id (see {@link CL3D.SceneNode.id} of the scene node which will trigger this
- * @param functionToCall {function} a function which should be called when the scene node has been clicked. The function will be given two parameters: The node this is attached to and the node colliding.
- * @param triggerOnLeave {Boolean} set to false to let this trigger when the radius is entered, to true if when the radius is left
  */
 export class AnimatorOnProximity extends CL3D.Animator {
+	/**
+	 * @param {CL3D.Scene} scene the current scene
+	 * @param {Number=} radius the proximity radius to use
+	 * @param {Number=} idOfSceneNode The unique id (see {@link SceneNode.id} of the scene node which will trigger this
+	 * @param {Function=} functionToCall a function which should be called when the scene node has been clicked. The function will be given two parameters: The node this is attached to and the node colliding.
+	 * @param {Boolean=} triggerOnLeave set to false to let this trigger when the radius is entered, to true if when the radius is left
+	 */
 	constructor(scene, radius, idOfSceneNode, functionToCall, triggerOnLeave) {
 		super();
 
@@ -60,7 +62,10 @@ export class AnimatorOnProximity extends CL3D.Animator {
 		return 'oncollide';
 	}
 	/**
-	 * @private
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorOnProximity(this.sceneManager);
@@ -75,7 +80,7 @@ export class AnimatorOnProximity extends CL3D.Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		if (n == null || this.sceneManager == null)
@@ -138,7 +143,7 @@ export class AnimatorOnProximity extends CL3D.Animator {
 		return actionInvoked;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	invokeAction(node, n) {
 		if (this.FunctionToCall)
@@ -148,7 +153,7 @@ export class AnimatorOnProximity extends CL3D.Animator {
 			this.TheActionHandler.execute(node);
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	findActionByType(type) {
 		if (this.TheActionHandler)

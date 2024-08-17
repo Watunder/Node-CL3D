@@ -5,20 +5,34 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
 export class ActionDeleteSceneNode extends CL3D.Action {
+    /**
+     * @type {Number}
+     */
+    SceneNodeToDelete;
+    /**
+     * @type {boolean}
+     */
+    DeleteCurrentSceneNode;
+    /**
+     * @type {Number}
+     */
+    TimeAfterDelete;
+    
     constructor() {
         super();
 
         this.Type = 'DeleteSceneNode';
     }
 
-    /**
-     * @private
-     */
+	/**
+	 * @param {Number} oldNodeId 
+	 * @param {Number} newNodeId 
+	 */
     createClone(oldNodeId, newNodeId) {
         var a = new CL3D.ActionDeleteSceneNode();
         a.SceneNodeToDelete = this.SceneNodeToDelete;
@@ -31,9 +45,10 @@ export class ActionDeleteSceneNode extends CL3D.Action {
         return a;
     }
 
-    /**
-     * @private
-     */
+	/**
+	 * @param {CL3D.SceneNode} currentNode 
+	 * @param {CL3D.Scene} sceneManager 
+	 */
     execute(currentNode, sceneManager) {
         if (!currentNode || !sceneManager)
             return;

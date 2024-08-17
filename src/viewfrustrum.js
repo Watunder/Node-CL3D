@@ -6,7 +6,7 @@ import * as CL3D from "./main.js";
 /**
  * A view frustrum defining the area of view
  * @constructor
- * @private
+ * @public
  * @class A view frustrum defining the area of view
  */
 export class ViewFrustrum {
@@ -14,49 +14,49 @@ export class ViewFrustrum {
 
 	/**
 	 * Far plane of the frustum. That is the plane farest away from the eye.
-	 * @private
+	 * @public
 	 * @static
 	 */
 	static VF_FAR_PLANE = 0;
 	
 	/**
 	 * Near plane of the frustum. That is the plane nearest to the eye.
-	 * @private
+	 * @public
 	 * @static
 	 */
 	static VF_NEAR_PLANE = 1;
 	
 	/**
 	 * Left plane of the frustum.
-	 * @private
+	 * @public
 	 * @static
 	 */
 	static VF_LEFT_PLANE = 2;
 	
 	/**
 	 * Right plane of the frustum.
-	 * @private
+	 * @public
 	 * @static
 	 */
 	static VF_RIGHT_PLANE = 3;
 	
 	/**
 	 * Bottom plane of the frustum.
-	 * @private
+	 * @public
 	 * @static
 	 */
 	static VF_BOTTOM_PLANE = 4;
 	
 	/**
 	 * Top plane of the frustum.
-	 * @private
+	 * @public
 	 * @static
 	 */
 	static VF_TOP_PLANE = 5;
 	
 	/**
 	 * Amount of planes enclosing the view frustum. Should be 6.
-	 * @private
+	 * @public
 	 * @static
 	 */
 	static VF_PLANE_COUNT = 6;
@@ -67,7 +67,7 @@ export class ViewFrustrum {
 			this.planes.push(new CL3D.Plane3d());
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	setFrom(mat) {
 		// left clipping plane
@@ -124,7 +124,7 @@ export class ViewFrustrum {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getFarLeftUp() {
 		var p = new CL3D.Vect3d();
@@ -135,7 +135,7 @@ export class ViewFrustrum {
 		return p;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getFarRightUp() {
 		var p = new CL3D.Vect3d();
@@ -146,7 +146,7 @@ export class ViewFrustrum {
 		return p;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getFarRightDown() {
 		var p = new CL3D.Vect3d();
@@ -157,7 +157,7 @@ export class ViewFrustrum {
 		return p;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getFarLeftDown() {
 		var p = new CL3D.Vect3d();
@@ -168,7 +168,7 @@ export class ViewFrustrum {
 		return p;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getBoundingBox(campos) {
 		var b = new CL3D.Box3d();
@@ -182,7 +182,7 @@ export class ViewFrustrum {
 		return b;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	isBoxInside(box) {
 		var edges = box.getEdges();

@@ -81,6 +81,13 @@ else {
     }
 }
 
+/**
+ * @param {Number} width 
+ * @param {Number} height 
+ * @param {WebGLContextAttributes} options 
+ * @param {HTMLCanvasElement} canvas 
+ * @returns {WebGLRenderingContext|WebGL2RenderingContext|import('3d-core-raub').TCore3D}
+ */
 export const createContext = (width, height, options, canvas) => {
     return createContextImpl(width, height, options, canvas);
 }

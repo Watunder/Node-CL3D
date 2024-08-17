@@ -42,14 +42,14 @@ export class Mobile2DInputSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	blocksCameraInput() {
 		return true;
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		var rctTarget = this.getScreenCoordinatesRect(true, renderer);

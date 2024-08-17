@@ -42,7 +42,7 @@ export class Line3d {
     /**
      * Returns the length of the line
      * @public
-     * @returns {CL3D.Vect3d} center
+     * @returns {Number} center
      */
     getLength() {
         return this.getVector().getLength();

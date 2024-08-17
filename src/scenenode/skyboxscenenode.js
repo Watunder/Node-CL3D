@@ -5,7 +5,7 @@ import * as CL3D from "../main.js";
 
 /**
  * A class rendering a sky box around the whole scene. It is a cube with 6 faces and six textures, which
- * can be accessed using {@link CL3D.SceneNode}.getMaterial().
+ * can be accessed using {@link SceneNode}.getMaterial().
  * @constructor
  * @extends CL3D.MeshSceneNode 
  * @class A class rendering a sky box around the whole scene. 
@@ -90,7 +90,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createVertex(x, y, z, nx, ny, nz, s, t) {
 		var vtx = new CL3D.Vertex3D(true);
@@ -103,7 +103,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible) {
@@ -113,7 +113,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		//renderer.setWorld(this.AbsoluteTransformation);
@@ -136,7 +136,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.SkyBoxSceneNode();

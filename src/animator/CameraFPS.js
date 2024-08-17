@@ -5,15 +5,13 @@ import * as CL3D from "../main.js";
 
 /**
  * Special scene node animator for first person shooter cameras.
- * This scene node animator can be attached to a {@link CL3D.CameraSceneNode} to make it act like a first person shooter.
+ * This scene node animator can be attached to a {@link CameraSceneNode} to make it act like a first person shooter.
  * By pressing the cursor keys or WASD, the camera will move and by having the mouse button pressed while moving, the camera
  * will look around.
  * @constructor
  * @public
  * @extends CL3D.Animator
  * @class Special scene node animator for first person shooter cameras.
- * @param {CL3D.CameraSceneNode} cam an instance of a {@link CL3D.CameraSceneNode} this animator will be attached to. Can be null if the camera is not yet known.
- * @param {CL3D.CopperLicht} engine An instance of the {@link CopperLicht} 3d engine, for receiving the mouse and keyboard input.
  */
 export class AnimatorCameraFPS extends CL3D.Animator {
 	/**
@@ -73,6 +71,10 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 */
 	MayZoom = true;
 
+	/**
+	 * @param {CL3D.CameraSceneNode} cam an instance of a {@link CameraSceneNode} this animator will be attached to. Can be null if the camera is not yet known.
+ 	 * @param {CL3D.CopperLicht} engine An instance of the {@link CopperLicht} 3d engine, for receiving the mouse and keyboard input.
+	 */
 	constructor(cam, engine) {
 		super();
 
@@ -130,7 +132,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	/**
 	 * Sets if the animator may move the camera
 	 * @public
-	 * @type Boolean
+	 * @param {Boolean} b
 	 * @default true
 	 */
 	setMayMove(b) {
@@ -140,7 +142,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	/**
 	 * Sets if the camera look direction is moved by the cursor when the mouse is down or not
 	 * @public
-	 * @type Boolean
+	 * @param {Boolean} b
 	 * @default true
 	 */
 	setLookByMouseDown(b) {
@@ -170,7 +172,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		if (this.Camera == null)
@@ -431,7 +433,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 			if (this.jumpKeyDown) {
 				if (this.LastTimeJumpKeyWasUp) {
 					var a = n.getAnimatorOfType('collisionresponse');
-					if (a && !a.isFalling()) {
+					if (a && a instanceof CL3D.AnimatorCollisionResponse && !a.isFalling()) {
 						this.LastTimeJumpKeyWasUp = false;
 						a.jump(this.JumpSpeed);
 					}
@@ -449,7 +451,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseDown(event) {
 		//super.onMouseDown(event);
@@ -460,7 +462,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseWheel(delta) {
 		/*this.targetZoomValue += delta * this.zoomSpeed;
@@ -473,7 +475,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseUp(event) {
 		//super.onMouseUp(event);
@@ -481,7 +483,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseMove(event) {
 		//super.onMouseMove(event);
@@ -489,7 +491,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	setKeyBool(down, code) {
 		if (code)
@@ -536,21 +538,21 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onKeyDown(event) {
 		return this.setKeyBool(true, event.key);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onKeyUp(event) {
 		return this.setKeyBool(false, event.key);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * for adding force to look up or down
 	 */
 	getAdditionalXLookDiff() {
@@ -558,7 +560,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * for adding force to look up or down
 	 */
 	getAdditionalYLookDiff() {
@@ -566,7 +568,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * for adding force to look left or right
 	 */
 	getAdditionalZoomDiff() {

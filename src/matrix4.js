@@ -83,7 +83,7 @@ export class Matrix4 {
 			CL3D.isone(this.m15));
 	}
 	/**
-	 * Returns if this matrix equals another matrix, uses {@link CL3D.equals} as comparison operator.
+	 * Returns if this matrix equals another matrix, uses {@link equals} as comparison operator.
 	 * @public
 	 */
 	equals(mat) {

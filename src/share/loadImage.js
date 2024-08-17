@@ -25,6 +25,12 @@ else {
     }
 }
 
+/**
+ * 
+ * @param {string|Buffer} src 
+ * @param {any} options 
+ * @returns {Promise<Image>}
+ */
 export const loadImage = (src, options) => {
     return loadImageImpl(src, options);
 }

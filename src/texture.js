@@ -28,7 +28,7 @@ export class Texture {
 	/**
 	 * returns the image of the texture
 	 * @public
-	 * @type {Image}
+	 * @returns {Image}
 	 */
 	getImage() {
 		return this.Image;
@@ -36,7 +36,7 @@ export class Texture {
 	/**
 	 * returns the webGL texture object of the texture, only available if the texture has been loaded already.
 	 * @public
-	 * @type {CL3D.Texture}
+	 * @returns {CL3D.Texture}
 	 */
 	getWebGLTexture() {
 		return this.Texture;
@@ -44,7 +44,7 @@ export class Texture {
 	/**
 	 * returns the width of this texture, or null if not loaded yet
 	 * @public
-	 * @type {int}
+	 * @returns {Number}
 	 */
 	getWidth() {
 		if (this.Image)
@@ -58,7 +58,7 @@ export class Texture {
 	/**
 	 * returns the height of this texture, or null if not loaded yet
 	 * @public
-	 * @type {int}
+	 * @returns {Number}
 	 */
 	getHeight() {
 		if (this.Image)
@@ -72,7 +72,7 @@ export class Texture {
 	/**
 	 * returns the URL of this texture
 	 * @public
-	 * @type {String}
+	 * @returns {String}
 	 */
 	getURL() {
 		return this.Name;
@@ -80,7 +80,7 @@ export class Texture {
 	/**
 	 * returns if the texture has been sucessfully loaded
 	 * @public
-	 * @type {Boolean}
+	 * @returns {Boolean}
 	 */
 	isLoaded() {
 		return this.Loaded;

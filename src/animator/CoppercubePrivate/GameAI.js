@@ -7,7 +7,7 @@ import * as CL3D from "../../main.js";
 /**
  * @constructor
  * @class
- * @private
+ * @public
  * @extends CL3D.Animator
  */
 export class AnimatorGameAI extends CL3D.Animator {
@@ -58,7 +58,7 @@ export class AnimatorGameAI extends CL3D.Animator {
         this.CurrentCommandStartTime = 0;
         this.CurrentCommandTicksDone = 0;
         this.CurrentCommandExpectedTickCount = 0;
-        this.BeginPositionWhenStartingCurrentCommand = 0;
+        this.BeginPositionWhenStartingCurrentCommand = null;
         this.HandleCurrentCommandTargetNode = null;
         this.AttackCommandExecuted = false;
         this.Activated = false;
@@ -80,14 +80,14 @@ export class AnimatorGameAI extends CL3D.Animator {
     /**
      * Returns the type of the animator.
      * For the AnimatorGameAI, this will return 'gameai'.
-     * @private
+     * @public
      */
     getType() {
         return 'gameai';
     }
 
     /**
-     * @private
+     * @public
      */
     createClone(node, newManager, oldNodeId, newNodeId) {
         var a = new CL3D.AnimatorGameAI(this.TheSceneManager);
@@ -118,9 +118,9 @@ export class AnimatorGameAI extends CL3D.Animator {
 
     /**
      * Animates the scene node it is attached to and returns true if scene node was modified.
-     * @private
-     * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-     * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+     * @public
+     * @param {CL3D.SceneNode} node The Scene node which needs to be animated this frame.
+     * @param {Number} timeMs The time in milliseconds since the start of the scene.
      */
     animateNode(node, timeMs) {
         if (node == null || this.TheSceneManager == null)
@@ -320,7 +320,7 @@ export class AnimatorGameAI extends CL3D.Animator {
 
     /**
      * returns if rotation changed, returns true/false
-     * @private
+     * @public
      */
     animateRotation(node, timeSinceStartRotation,
         lookvector, rotationSpeedMs) {
@@ -370,7 +370,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     moveToTarget(node, target, currentPos, now) {
         this.CurrentCommand = 1; //EMT_REACH_POSITION;
@@ -383,7 +383,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     attackTarget(node, targetnode, target, currentPos, now) {
         this.CurrentCommand = 2; //EMT_ATTACK_ITEM;
@@ -403,7 +403,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     aiCommandCancel(node) {
         this.CurrentCommand = 0; //EMT_DO_NOTHING;
@@ -411,7 +411,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     die(node, currentPos, now) {
         this.CurrentCommand = 3; //EMT_DIE_AND_STOP;
@@ -424,7 +424,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     isNodeVisibleFromNode(node1, node2) {
         if (!node1 || !node2)
@@ -451,7 +451,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     isPositionVisibleFromPosition(pos1, pos2) {
         if (!this.World || !this.TheSceneManager)
@@ -465,7 +465,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     getNearestSceneNodeFromAIAnimatorAndDistance(node,
         currentpos,
@@ -502,7 +502,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     scanForAttackTargetIfNeeded(timems, currentpos) {
         if (this.ActivationRadius <= 0 || !this.TheObject || this.AttacksAIWithTags.length == 0 || !this.TheSceneManager)
@@ -524,7 +524,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     getAttackDistanceFromWeapon() {
         var ret = 1000;
@@ -539,7 +539,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     getCharacterWidth(node) {
         if (node != null)
@@ -551,7 +551,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     getAnimationNameFromType(t) {
         switch (t) {
@@ -565,7 +565,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     setAnimation(node, animationType) {
         if (!node || node.getType() != 'animatedmesh')
@@ -601,28 +601,28 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     isCurrentlyShooting() {
         return this.CurrentlyShooting;
     }
 
     /**
-     * @private
+     * @public
      */
     getCurrentlyShootingLine() {
         return this.CurrentlyShootingLine;
     }
 
     /**
-     * @private
+     * @public
      */
     isAlive() {
         return this.Health > 0;
     }
 
     /**
-     * @private
+     * @public
      */
     OnHit(damage, node) {
         if (!node)
@@ -649,7 +649,7 @@ export class AnimatorGameAI extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     findActionByType(type) {
         var ret = null;

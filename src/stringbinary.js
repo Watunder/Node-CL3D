@@ -1,7 +1,7 @@
 /**
  * data is the .responseText of a GET operation
  * @constructor
- * @private
+ * @public
  */
 export class StringBinary {
 	constructor(data) {
@@ -15,7 +15,7 @@ export class StringBinary {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	bytesAvailable() {
 		return this._length - this._offset;

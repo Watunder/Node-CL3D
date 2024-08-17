@@ -6,7 +6,7 @@
 import * as CL3D from "../../main.js";
 
 /**
- * @private
+ * @public
  * Array containing instances of CL3D.CopperCubeVariable. A container for holding coppercube variables, which
  * can also be set and changed using the Actions in the editor.
  */
@@ -32,9 +32,9 @@ export class CopperCubeVariable {
     /**
      * Static function, returns the instance of an existing CopperCube variable or creates one if not existing.
      * @public
-     * @param n {String} Name of the variable
-     * @param createIfNotExisting {Boolean} if the variable is not found, it will be created if this is set to true.
-     * @param scene {CL3D.Scene} The current scene. This parameter is optional, this can be 0. It is used for getting runtime variables such as #player1.health
+     * @param {String} n Name of the variable
+     * @param {Boolean} createIfNotExisting if the variable is not found, it will be created if this is set to true.
+     * @param {CL3D.Scene} scene The current scene. This parameter is optional, this can be 0. It is used for getting runtime variables such as #player1.health
      * @returns {CL3D.CopperCubeVariable} Returns instance of the variable or null if not found
      */
     static getVariable(n, createIfNotExisting, scene) {
@@ -68,7 +68,7 @@ export class CopperCubeVariable {
     }
         
     /**
-     * @private
+     * @public
      * Creates a coppercube variable of the type "#player.health" with the correct expected content
      */
     static createTemporaryVariableIfPossible(varname, scene) {
@@ -122,7 +122,7 @@ export class CopperCubeVariable {
     }
         
     /**
-     * @private
+     * @public
      * Saves the content of a coppercube variable of the type "#player.health" back into the correct scene node
      */
     static saveContentOfPotentialTemporaryVariableIntoSource(thevar, scene) {
@@ -188,7 +188,7 @@ export class CopperCubeVariable {
     }
         
     /**
-     * @private
+     * @public
      * Parses the variable name of the type "#player.health" and returns attribute name and scene node in the scene
      */
     static getSceneNodeAndAttributeNameFromTemporaryVariableName(varname, scene) {
@@ -224,7 +224,7 @@ export class CopperCubeVariable {
         }
 
         // return
-        var retobj = new Object(); // used for passing scene node and attribute name back if available
+        var retobj = {}; // used for passing scene node and attribute name back if available
         retobj.node = node;
         retobj.attrname = attrname;
         return retobj;
@@ -272,7 +272,7 @@ export class CopperCubeVariable {
     }
         
     /**
-     * @private
+     * @public
      */
     setAsCopy(copyFrom) {
         if (copyFrom == null)
@@ -311,7 +311,7 @@ export class CopperCubeVariable {
     getValueAsInt() {
         switch (this.ActiveValueType) {
             case 0: // string
-                return Math.floor(this.StringValue);
+                return Math.floor(Number(this.StringValue));
             case 1: // int
                 return this.IntValue;
             case 2: // float

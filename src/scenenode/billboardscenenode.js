@@ -80,7 +80,7 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible) {
@@ -95,7 +95,7 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		var cam = this.scene.getActiveCamera();
@@ -188,21 +188,21 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getMaterialCount() {
 		return 1;
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getMaterial(i) {
 		return this.MeshBuffer.Mat;
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.BillboardSceneNode();

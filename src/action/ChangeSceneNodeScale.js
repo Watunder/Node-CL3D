@@ -5,11 +5,28 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
 export class ActionChangeSceneNodeScale extends CL3D.Action {
+	/**
+	 * @type {Number}
+	 */
+	ScaleChangeType;
+	/**
+	 * @type {Number}
+	 */
+	SceneNodeToChangeScale;
+	/**
+	 * @type {boolean}
+	 */
+	ChangeCurrentSceneNode;
+	/**
+	 * @type {CL3D.Vect3d}
+	 */
+	Vector;
+	
 	constructor() {
         super();
 
@@ -17,7 +34,8 @@ export class ActionChangeSceneNodeScale extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @param {Number} oldNodeId 
+	 * @param {Number} newNodeId 
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionChangeSceneNodeScale();
@@ -33,7 +51,8 @@ export class ActionChangeSceneNodeScale extends CL3D.Action {
 	}
     
 	/**
-	 * @private
+	 * @param {CL3D.SceneNode} currentNode 
+	 * @param {CL3D.Scene} sceneManager 
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)

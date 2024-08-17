@@ -5,7 +5,7 @@ import * as CL3D from "../main.js";
 
 /**
  * @constructor
- * @private
+ * @public
  */
 export class CCDocument {
 	constructor() {

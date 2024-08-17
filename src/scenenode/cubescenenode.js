@@ -108,7 +108,7 @@ export class CubeSceneNode extends CL3D.MeshSceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createVertex(x, y, z, nx, ny, nz, clr, s, t) {
 		var vtx = new CL3D.Vertex3D(true);
@@ -124,7 +124,7 @@ export class CubeSceneNode extends CL3D.MeshSceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.CubeSceneNode();

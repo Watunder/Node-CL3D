@@ -5,11 +5,28 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
 export class ActionSetOrChangeAVariable extends CL3D.Action {
+	/**
+	 * @type {String}
+	 */
+	VariableName;
+	/**
+	 * @type {Number}
+	 */
+	Operation;
+	/**
+	 * @type {Number}
+	 */
+	ValueType;
+	/**
+	 * @type {String}
+	 */
+	Value;
+
 	constructor() {
         super();
 
@@ -22,7 +39,8 @@ export class ActionSetOrChangeAVariable extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionSetOrChangeAVariable();
@@ -33,8 +51,9 @@ export class ActionSetOrChangeAVariable extends CL3D.Action {
 		return a;
 	}
     
-	/**
-	 * @private
+	/** 
+	 * @param {CL3D.SceneNode} currentNode
+	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)

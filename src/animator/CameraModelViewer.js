@@ -5,14 +5,12 @@ import * as CL3D from "../main.js";
 
 /**
  * Special scene node animator making cameras user controlled model viewrs around a pivot point on a fixed radius.
- * This scene node animator can be attached to a {@link CL3D.CameraSceneNode} to make it act like a user controlled model viewer.
+ * This scene node animator can be attached to a {@link CameraSceneNode} to make it act like a user controlled model viewer.
  * Simply set the target of the camera to the pivot point and attach this animator to make it work.
  * @constructor
  * @public
  * @extends CL3D.Animator
  * @class Special scene node animator for model viewer cameras. 
- * @param {CL3D.CameraSceneNode} cam an instance of a {@link CL3D.CameraSceneNode} this animator will be attached to. Can be null if the camera is not yet known.
- * @param {CL3D.CopperLicht} engine An instance of the {@link CL3D.CopperLicht} 3d engine, for receiving the mouse and keyboard input.
  */
 export class AnimatorCameraModelViewer extends CL3D.Animator {
 	/**
@@ -39,6 +37,10 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 	 */
 	NoVerticalMovement = false;
 
+	/**
+ 	 * @param {CL3D.CameraSceneNode} cam an instance of a {@link CameraSceneNode} this animator will be attached to. Can be null if the camera is not yet known.
+ 	 * @param {CL3D.CopperLicht} engine An instance of the {@link CopperLicht} 3d engine, for receiving the mouse and keyboard input.
+	 */
 	constructor(cam, engine) {
 		super();
 
@@ -82,7 +84,7 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		if (this.Camera == null)
@@ -232,7 +234,7 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseWheel(delta) {
 		this.TargetZoomValue += delta * this.ZoomSpeed;

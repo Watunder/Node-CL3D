@@ -11,7 +11,7 @@ import * as CL3D from "../main.js";
  * @extends CL3D.SceneNode
  */
 export class HotspotSceneNode extends CL3D.SceneNode {
-	constructor() {
+	constructor(engine, scene) {
 		super();
 
 		this.Box = new CL3D.Box3d();
@@ -26,7 +26,7 @@ export class HotspotSceneNode extends CL3D.SceneNode {
 /**
  * @constructor
  * @extends CL3D.SceneNode
- * @private
+ * @public
  */
 export class DummyTransformationSceneNode extends CL3D.SceneNode {
 	constructor() {
@@ -39,7 +39,7 @@ export class DummyTransformationSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.DummyTransformationSceneNode();
@@ -55,14 +55,14 @@ export class DummyTransformationSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getRelativeTransformation() {
 		return this.RelativeTransformationMatrix;
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {

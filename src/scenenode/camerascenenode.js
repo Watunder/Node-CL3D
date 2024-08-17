@@ -4,8 +4,8 @@
 import * as CL3D from "../main.js";
 
 /**
- * The scene is usually rendered from the currently active camera. Some cameras have an {@link CL3D.Animator} attached to
- * them which controlls the position and look target of the camera, for example a {@link CL3D.AnimatorCameraFPS}. You can 
+ * The scene is usually rendered from the currently active camera. Some cameras have an {@link Animator} attached to
+ * them which controlls the position and look target of the camera, for example a {@link AnimatorCameraFPS}. You can 
  * get access to this animator using camera.getAnimatorOfType('camerafps');. 
  * @class Scene Node which is a (controlable) camera.
  * @constructor
@@ -39,7 +39,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		//this.recalculateViewArea();
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	recalculateProjectionMatrix() {
 		this.Projection.buildProjectionMatrixPerspectiveFovLH(this.Fovy, this.Aspect, this.ZNear, this.ZFar);
@@ -173,13 +173,13 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	recalculateViewArea() {
 		// TODO: implement
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	OnAnimate(mgr, timeMs) {
 		// old, simple version:
@@ -197,7 +197,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		return ret;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	calculateViewMatrix() {
 		var pos = this.getAbsolutePosition();
@@ -209,7 +209,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		this.recalculateViewArea();
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (mgr.getActiveCamera() === this) {
@@ -218,7 +218,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		// we need to rebuild the camera lookat matrix again because the user might have changed 
@@ -238,7 +238,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		renderer.setView(this.ViewMatrix);
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseDown(event) {
 		for (var i = 0; i < this.Animators.length; ++i) {
@@ -246,7 +246,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseWheel(delta) {
 		for (var i = 0; i < this.Animators.length; ++i) {
@@ -254,7 +254,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseUp(event) {
 		for (var i = 0; i < this.Animators.length; ++i) {
@@ -262,7 +262,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseMove(event) {
 		for (var i = 0; i < this.Animators.length; ++i) {
@@ -270,7 +270,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	onKeyDown(event) {
 		var ret = false;
@@ -283,7 +283,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		return ret;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	onKeyUp(event) {
 		var ret = false;
@@ -327,7 +327,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		return c;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	setAutoAspectIfNoFixedSet(viewPortWidth, viewPortHeight) {
 		if (viewPortWidth == 0 || viewPortHeight == 0)

@@ -52,3 +52,5 @@ export { FlaceLoader } from "./flace/flaceloader.js";
 export { gDocument, CopperLicht, startCopperLichtFromFile } from "./flace/flace.js";
 
 export * from "./trunk/ccbCommand.js";
+
+export * from "./utils/moduleLog.js";

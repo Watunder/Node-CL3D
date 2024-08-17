@@ -5,17 +5,29 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
-export class ActionStoreLoadVariable extends CL3D.Action{
+export class ActionStoreLoadVariable extends CL3D.Action {
+    /**
+     * @type {boolean}
+     */
+    Load;
+    /**
+     * @type {String}
+     */
+    VariableName;
+
     constructor() {
+        super();
+
         this.Type = 'StoreLoadVariable';
     }
 
     /**
-     * @private
+     * @param {Number} oldNodeId
+     * @param {Number} newNodeId
      */
     createClone(oldNodeId, newNodeId) {
         var a = new CL3D.ActionStoreLoadVariable();
@@ -24,13 +36,21 @@ export class ActionStoreLoadVariable extends CL3D.Action{
         return a;
     }
 
+    /**
+     * @param {String} cookieName
+     * @param {String} value
+     * @param {Number} expdays
+     */
     setCookie(cookieName, value, expdays) {
         var expdate = new Date();
         expdate.setDate(expdate.getDate() + expdays);
-        var cvalue = escape(value) + ("; expires=" + expdate.toUTCString());
+        var cvalue = encodeURIComponent(value) + ("; expires=" + expdate.toUTCString());
         document.cookie = cookieName + "=" + cvalue;
     }
 
+    /**
+     * @param {String} cookieName
+     */
     getCookie(cookieName) {
         var ARRcookies = document.cookie.split(";");
         for (var i = 0; i < ARRcookies.length; ++i) {
@@ -48,7 +68,8 @@ export class ActionStoreLoadVariable extends CL3D.Action{
     }
 
     /**
-     * @private
+     * @param {CL3D.SceneNode} currentNode
+     * @param {CL3D.Scene} sceneManager
      */
     execute(currentNode, sceneManager) {
         if (this.VariableName == null || this.VariableName == "")

@@ -98,7 +98,7 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		return 'water';
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible) {
@@ -168,7 +168,7 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		return true; // water is animated, so force redraw
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		var cam = this.scene.getActiveCamera();
@@ -314,7 +314,7 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.WaterSurfaceSceneNode();
@@ -332,7 +332,7 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		return c;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	prepareForRendering(renderer) {
 		if (this.PreparedForRendering)
@@ -357,7 +357,7 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		return true;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	setShaderConstants(renderer) {
 		var gl = renderer.getWebGL();
@@ -387,7 +387,7 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		gl.uniform1f(locmWaveHeight, this.WaveHeight);
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	initRTT(renderer) {
 		if (renderer == null)
@@ -422,7 +422,7 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		this.RTTexture = renderer.addRenderTargetTexture(rttX, rttY);
 	}
 	/*
-	 * @private
+	 * @public
 	 */
 	OnAfterDrawSkyboxes(renderer) {
 		renderer.setProjection(this.FrustumCullingProjection);

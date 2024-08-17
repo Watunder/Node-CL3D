@@ -15,12 +15,14 @@ import * as CL3D from "../main.js";
  * @public
  * @extends CL3D.Animator
  * @class  Scene node animator which invokes a callback function when the scene node has been clicked.
- * @param scene {CL3D.Scene} The scene of the animator.
- * @param engine {CL3D.CopperLicht} an instance of the 3d engine
- * @param functionToCall {function} a function which should be called when the scene node has been clicked
- * @param register {Boolean} (optional) set to true to prevent registering at the scene using registerSceneNodeAnimatorForEvents
  */
 export class AnimatorOnClick extends CL3D.Animator {
+	/**
+ 	 * @param {CL3D.Scene} scene The scene of the animator.
+ 	 * @param {CL3D.CopperLicht} engine an instance of the 3d engine
+ 	 * @param {Function=} functionToCall a function which should be called when the scene node has been clicked
+ 	 * @param {Boolean=} donotregister (optional) set to true to prevent registering at the scene using registerSceneNodeAnimatorForEvents
+	 */
 	constructor(scene, engine, functionToCall, donotregister) {
 		super();
 
@@ -51,7 +53,10 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorOnClick(this.SMGr, this.engine);
@@ -66,7 +71,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		this.TheObject = n;
@@ -76,7 +81,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseDown(event) {
 		var n = this.TheObject;
@@ -125,7 +130,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseUp(event) {
 		var n = this.TheObject;
@@ -173,7 +178,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	invokeAction(node) {
 		if (this.TheActionHandler)
@@ -181,7 +186,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	isOverNode(node, positionX, positionY) {
 		if (node == null)
@@ -217,7 +222,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	static_getDistanceToNearestCollisionPointWithWorld(smgr, begin, end, world, ignoreInvisibleItems) {
 		var maxdist = 999999999999.0;
@@ -234,14 +239,14 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getDistanceToNearestCollisionPointWithWorld(begin, end) {
 		return this.static_getDistanceToNearestCollisionPointWithWorld(this.SMGr, begin, end, this.World, true);
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 * returns true if collides (and no wall between), false if not
 	 */
 	static_getCollisionDistanceWithNode(smgr, node, ray, bBoundingBoxTestOnly, collidesWithWorld,
@@ -359,7 +364,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	findActionByType(type) {
 		if (this.TheActionHandler)

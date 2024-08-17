@@ -7,7 +7,7 @@ import * as CL3D from "../../main.js";
 /**
  * @constructor
  * @class
- * @private
+ * @public
  * @extends CL3D.Animator
  */
 export class AnimatorKeyboardControlled extends CL3D.Animator {
@@ -62,14 +62,17 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
     /**
      * Returns the type of the animator.
      * For the AnimatorTimer, this will return 'keyboardcontrolled'.
-     * @private
+     * @public
      */
     getType() {
         return 'keyboardcontrolled';
     }
 
     /**
-     * @private
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
      */
     createClone(node, newManager, oldNodeId, newNodeId) {
         var a = new CL3D.AnimatorKeyboardControlled(this.SMGr, this.Engine);
@@ -92,7 +95,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     setKeyBool(down, code) {
         if (code)
@@ -139,7 +142,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     onKeyDown(event) {
         this.ShiftIsDown = (event.shiftKey == 1);
@@ -147,7 +150,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     onKeyUp(event) {
         this.ShiftIsDown = (event.shiftKey == 1);
@@ -156,9 +159,9 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
 
     /**
      * Animates the scene node it is attached to and returns true if scene node was modified.
-     * @private
-     * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-     * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+     * @public
+     * @param {CL3D.SceneNode} node The Scene node which needs to be animated this frame.
+     * @param {Number} timeMs The time in milliseconds since the start of the scene.
      */
     animateNode(node, timeMs) {
         var timeDiff = timeMs - this.lastAnimTime;
@@ -280,7 +283,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
             var bFalling = false;
 
             var a = node.getAnimatorOfType('collisionresponse');
-            if (a)
+            if (a && a instanceof CL3D.AnimatorCollisionResponse)
                 bFalling = a.isFalling();
 
             if (!bFalling && (this.hasAnimationType(node, 1) || this.hasAnimationType(node, 3) || this.hasAnimationType(node, 2)))
@@ -292,7 +295,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
         // and if it's not falling, we tell it to jump.
         if (this.jumpKeyDown) {
             var b = node.getAnimatorOfType('collisionresponse');
-            if (b && !b.isFalling()) {
+            if (b && b instanceof CL3D.AnimatorCollisionResponse && !b.isFalling()) {
                 var minJumpTime = 0;
                 if (this.SMGr && this.SMGr.Gravity != 0)
                     minJumpTime = Math.floor((this.JumpSpeed * (1.0 / this.SMGr.Gravity)) * 2000);
@@ -313,7 +316,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     getAnimationNameFromType(n) {
         switch (n) {
@@ -327,14 +330,14 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     hasAnimationType(node, animationType) {
         return this.setAnimation(node, animationType, false, true);
     }
 
     /**
-     * @private
+     * @public
      */
     setAnimation(node, animationType, breverse, testIfIsSetOnly) {
         if (!node || node.getType() != 'animatedmesh')

@@ -56,7 +56,7 @@ export class Plane3d {
 	 * @public
 	 */
 	clone() {
-		var pl = new CL3D.Plane3d(false);
+		var pl = new CL3D.Plane3d();
 		pl.Normal = this.Normal.clone();
 		pl.D = this.D;
 		return pl;

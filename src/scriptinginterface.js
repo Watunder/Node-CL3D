@@ -20,26 +20,26 @@ import * as CL3D from "./main.js";
 export let gScriptingInterface = null;
 
 /**
- * @private
+ * @public
  */
 export class vector3d {
 	/**
 	 * X coordinate of the vector
-	 * @private
+	 * @public
 	 * @type Number
 	 */
 	x = 0;
 
 	/**
 	 * Y coordinate of the vector
-	 * @private
+	 * @public
 	 * @type Number
 	 */
 	y = 0;
 
 	/**
 	 * Z coordinate of the vector
-	 * @private
+	 * @public
 	 * @type Number
 	 */
 	z = 0;
@@ -59,28 +59,28 @@ export class vector3d {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	add(other) {
 		return new vector3d(this.x + other.x, this.y + other.y, this.z + other.z);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	substract(other) {
 		return new vector3d(this.x - other.x, this.y - other.y, this.z - other.z);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getLength() {
 		return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	normalize() {
 		var l = this.getLength();
@@ -93,7 +93,7 @@ export class vector3d {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	toString() {
 		return "(" + this.x + ", " + this.y + ", " + this.z + ")";
@@ -105,7 +105,7 @@ export class vector3d {
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
@@ -132,7 +132,7 @@ export class ScriptingInterface {
 		//this.registerScriptingFunctions();
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	static getScriptingInterface() {
 		if (gScriptingInterface == null)
@@ -141,43 +141,43 @@ export class ScriptingInterface {
 		return gScriptingInterface;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	static getScriptingInterfaceReadOnly() {
 		return gScriptingInterface;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	setTextureManager(t) {
 		this.TheTextureManager = t;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	setEngine(t) {
 		this.Engine = t;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	needsRedraw() {
 		return this.ccbRegisteredFunctionArray.length != 0;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	setCurrentlyRunningExtensionScriptAnimator(s) {
 		this.CurrentlyRunningExtensionScriptAnimator = s;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	setActiveScene(s) {
 		this.CurrentlyActiveScene = s;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	executeCode(code) {
 		try {
@@ -188,7 +188,7 @@ export class ScriptingInterface {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	async importCode(code) {
 		try {
@@ -203,14 +203,14 @@ export class ScriptingInterface {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getUniqueCounterID() {
 		++this.nUniqueCounterID;
 		return this.nUniqueCounterID;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	registerExtensionScriptActionHandler(handler) {
 		for (var i = 0; i < this.StoredExtensionScriptActionHandlers.length; ++i) {
@@ -231,7 +231,7 @@ export class ScriptingInterface {
 		return actionid;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	runDrawCallbacks(theRenderer, timeMs) {
 		this.IsInDrawCallback = true;
@@ -248,7 +248,7 @@ export class ScriptingInterface {
 		this.IsInDrawCallback = false;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	setSceneNodePropertyFromOverlay(overlaynode, propName, arg0, argsAsColor) {
 		switch (propName) {
@@ -295,7 +295,7 @@ export class ScriptingInterface {
 		}
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getSceneNodePropertyFromOverlay(overlaynode, propName) {
 		switch (propName) {
@@ -344,7 +344,7 @@ export class ScriptingInterface {
 // --------------------------------------------------------------
 
 /**
- * @private
+ * @public
  */
 export class AnimatorExtensionScript extends CL3D.Animator {
 	constructor(scenemanager) {
@@ -360,7 +360,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	setAcceptsEvents(bForMouse, bForKeyboard) {
 		this.bAcceptsMouseEvents = bForMouse;
@@ -378,14 +378,14 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getType() {
 		return 'extensionscript';
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorExtensionScript(newManager);
@@ -406,7 +406,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	animateNode(n, timeMs) {
 		if (n == null)
@@ -440,7 +440,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	initScript(n, engine) {
 		if (engine.executeCode(`typeof ${this.JsClassName} == 'undefined'`))
@@ -498,7 +498,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	sendMouseEvent(mouseEvtId, wheelDelta) {
 		if (this.bAcceptsMouseEvents)
@@ -509,7 +509,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	sendKeyEvent(keycode, pressed) {
 		if (this.bAcceptsKeyboardEvents)
@@ -520,7 +520,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseUp(event) {
 		var wasRightButton = false;
@@ -531,14 +531,14 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseWheel(delta) {
 		this.sendMouseEvent(1, delta);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseDown(event) {
 		var wasRightButton = false;
@@ -549,24 +549,26 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onMouseMove(event) {
 		this.sendMouseEvent(0, 0);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onKeyDown(evt) {
 		this.sendKeyEvent(evt.keyCode, true);
+		return false;
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	onKeyUp(evt) {
 		this.sendKeyEvent(evt.keyCode, false);
+		return false;
 	}
 };
 
@@ -575,7 +577,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 // --------------------------------------------------------------
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
@@ -593,14 +595,14 @@ export class ExtensionScriptProperty {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	static stringReplace(source, find, replacement) {
 		return source.split(find).join(replacement);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	static generateInitJavaScriptCode(objPrefix, properties) {
 		let code = "";
@@ -650,7 +652,7 @@ export class ExtensionScriptProperty {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var c = new CL3D.ExtensionScriptProperty();
@@ -677,7 +679,7 @@ export class ExtensionScriptProperty {
 // --------------------------------------------------------------
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
@@ -691,7 +693,7 @@ export class ActionExtensionScript extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionExtensionScript();
@@ -712,7 +714,7 @@ export class ActionExtensionScript extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	execute(currentNode, sceneManager) {
 		if (this.JsClassName == null || this.JsClassName.length == 0 || currentNode == null)

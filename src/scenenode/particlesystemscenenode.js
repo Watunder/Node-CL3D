@@ -317,7 +317,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible) {
@@ -327,7 +327,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode = function(mgr) {
 		if (this.Visible) {				
@@ -338,21 +338,21 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getMaterialCount() {
 		return 1;
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	getMaterial(i) {
 		return this.Buffer.Mat;
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	OnAnimate(mgr, timeMs) {
 		var framechanged = false;
@@ -364,7 +364,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		var cam = this.scene.getActiveCamera();
@@ -445,7 +445,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	doParticleSystem(time) {
 		if (this.LastEmitTime == 0) {
@@ -514,7 +514,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	emit(time, diff) {
 		var pps = (this.MaxParticlesPerSecond - this.MinParticlesPerSecond);
@@ -614,7 +614,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	affect(now, diff) {
 		if (!this.FadeOutAffector && !this.GravityAffector && !this.ScaleAffector)
@@ -667,7 +667,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	reallocateBuffers() {
 		if (this.Particles.length * 4 > this.Buffer.Vertices.length ||
@@ -722,7 +722,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
  * A 3d particle, internally used in {@link ParticleSystemSceneNode}
  * @constructor
  * @class A 3d particle, internally used in {@link ParticleSystemSceneNode}
- * @private
+ * @public
  */
 export class Particle {
 	constructor (init) {

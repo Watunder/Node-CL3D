@@ -64,7 +64,7 @@ export class TextureManager {
 		return this.Textures.length;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	onTextureLoaded(t) {
 		//console.log("http loaded texture: " + t.Name);
@@ -90,7 +90,7 @@ export class TextureManager {
 		return ret;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	getTextureFromName(name) {
 		for (let i = 0; i < this.Textures.length; ++i) {
@@ -102,7 +102,7 @@ export class TextureManager {
 		return null;
 	}
 	/**
-	 * @private
+	 * @public
 	 */
 	addTexture(t) {
 		if (t != null) {
@@ -115,7 +115,7 @@ export class TextureManager {
 	}
 	/**
 	 * use renderer.deleteTexture instead, this is just for removing it from the list of registered textures
-	 * @private
+	 * @public
 	 */
 	removeTexture(tex) {
 		for (let i = 0; i < this.Textures.length; ++i) {

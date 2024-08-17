@@ -5,7 +5,7 @@ import { doFetch } from "../share/doFetch.js";
 
 /**
  * @constructor
- * @private
+ * @public
  */
 export class CCFileLoader {
 	constructor(filetoload, useArrayBufferReturn, isBrowser) {
@@ -27,7 +27,7 @@ export class CCFileLoader {
 			}
 			
 			doFetch(me.FileToLoad, { signal })
-				.then((response) => {
+				.then(async (response) => {
 					if (!response.ok) {
 						let reportedError = false;
 
@@ -41,9 +41,9 @@ export class CCFileLoader {
 						}
 					}
 					if (me.useArrayBufferReturn)
-						return response.arrayBuffer();
+						return await response.arrayBuffer();
 					else
-						return response.text();
+						return await response.text();
 				})
 				.then((data) => {
 					if (functionCallBack)
@@ -64,7 +64,7 @@ export class CCFileLoader {
 			this.Controller.abort();
 		}
 		catch (e) {
-			console.log("Could not abort " + me.FileToLoad);
+			console.log("Could not abort " + this.FileToLoad);
 		}
 	}
 };

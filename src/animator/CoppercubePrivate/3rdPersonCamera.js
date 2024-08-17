@@ -7,15 +7,14 @@ import * as CL3D from "../../main.js";
 /**
  * @constructor
  * @class
- * @private
+ * @public
  * @extends CL3D.Animator
  */
 export class Animator3rdPersonCamera extends CL3D.Animator {
-    constructor(scene) {
+    constructor() {
         super();
 
         this.lastAnimTime = 0;
-        this.SMGr = scene;
 
         this.SceneNodeIDToFollow = -1;
         this.FollowSmoothingSpeed = 15;
@@ -23,7 +22,7 @@ export class Animator3rdPersonCamera extends CL3D.Animator {
         this.FollowMode = 0;
         this.TargetHeight = 0;
         this.CollidesWithWorld = false;
-        this.World = 0;
+        this.World = null;
 
         // runtime variables
         this.LastAnimationTime = 0.0;
@@ -38,17 +37,20 @@ export class Animator3rdPersonCamera extends CL3D.Animator {
     /**
      * Returns the type of the animator.
      * For the AnimatorTimer, this will return '3rdpersoncamera'.
-     * @private
+     * @public
      */
     getType() {
         return '3rdpersoncamera';
     }
 
     /**
-     * @private
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
      */
     createClone(node, newManager, oldNodeId, newNodeId) {
-        var a = new CL3D.Animator3rdPersonCamera(this.SMGr);
+        var a = new CL3D.Animator3rdPersonCamera();
         a.SceneNodeIDToFollow = this.SceneNodeIDToFollow;
         a.FollowSmoothingSpeed = this.FollowSmoothingSpeed;
         a.AdditionalRotationForLooking = this.AdditionalRotationForLooking.clone();
@@ -62,9 +64,9 @@ export class Animator3rdPersonCamera extends CL3D.Animator {
 
     /**
      * Animates the scene node it is attached to and returns true if scene node was modified.
-     * @private
-     * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-     * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+     * @public
+     * @param {CL3D.CameraSceneNode} node The Scene node which needs to be animated this frame.
+     * @param {Number} timeMs The time in milliseconds since the start of the scene.
      */
     animateNode(node, timeMs) {
         var timeDiff = timeMs - this.lastAnimTime;
@@ -225,7 +227,7 @@ export class Animator3rdPersonCamera extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     linkWithNode(smgr) {
         if (this.TriedToLinkWithNode)

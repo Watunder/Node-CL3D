@@ -5,11 +5,48 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
 export class ActionPlaySound extends CL3D.Action {
+	/**
+	 * @type {Number}
+	 */
+	SceneNodeToPlayAt;
+	/**
+	 * @type {boolean}
+	 */
+	PlayAtCurrentSceneNode;
+	/**
+	 * @type {CL3D.Vect3d}
+	 */
+	Position3D;
+	/**
+	 * @type {Number}
+	 */
+	MinDistance;
+	/**
+	 * @type {Number}
+	 */
+	MaxDistance;
+	/**
+	 * @type {boolean}
+	 */
+	PlayLooped;
+	/**
+	 * @type {Number}
+	 */
+	Volume;
+	/**
+	 * @type {boolean}
+	 */
+	PlayAs2D;
+	/**
+	 * @type {null}
+	 */
+	TheSound;
+
 	constructor() {
 		super();
 
@@ -17,7 +54,8 @@ export class ActionPlaySound extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionPlaySound();
@@ -38,7 +76,8 @@ export class ActionPlaySound extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @param {CL3D.SceneNode} currentNode
+	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
 		if (sceneManager == null || this.TheSound == null)

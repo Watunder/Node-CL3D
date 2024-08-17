@@ -39,7 +39,7 @@ export class SoundSceneNode extends CL3D.SceneNode {
 	 * If you need to find the smallest amount to turn a gun or head or whatever
 	 * to a certain angle, or find the smallest amount to turn to go a certain direction,
 	 * you shouldn't have to go more than 180 degrees in either direction.
-	 * @private
+	 * @public
 	 */
 	static normalizeRelativeAngle(angleInGrad) {
 		return ((angleInGrad + 7 * 180.0) % (360.0)) - 1800.0;
@@ -68,7 +68,7 @@ export class SoundSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible) {
@@ -79,7 +79,7 @@ export class SoundSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	get2DAngle(X, Y) {
 		if (Y == 0)
@@ -107,14 +107,14 @@ export class SoundSceneNode extends CL3D.SceneNode {
 
 	/**
 	 * normalizes an angle, returns the same angle clamped into (0;360)
-	 * @private
+	 * @public
 	 */
 	normalizeAngle(angleInGrad) {
 		return ((angleInGrad % 360.0) + 360.0) % 360.0;
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	updateSoundFor3DSound(playingSnd, Position, mgr) {
 		// unfortunately, HTML5 audio currently is very primitive, so we can only set the volume for this right now
@@ -231,7 +231,7 @@ export class SoundSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	startSound(loop) {
 		if (!this.PlayingSound && this.TheSound) {
@@ -246,7 +246,7 @@ export class SoundSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	OnAnimate(scene, timeMs) {
 		try {
@@ -317,7 +317,7 @@ export class SoundSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.SoundSceneNode();

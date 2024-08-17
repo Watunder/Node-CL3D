@@ -5,7 +5,7 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
@@ -13,26 +13,32 @@ export class ActionRestartBehaviors extends CL3D.Action {
 	constructor() {
         super();
 
+		/**
+		 * @type {Number}
+		 */
 		this.SceneNodeToRestart = null;
 		this.ChangeCurrentSceneNode = false;
 		this.Type = 'RestartBehaviors';
 	}
 
 	/**
-	 * @private
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
+	 * @param {boolean} bChangeCurrentSceneNode
 	 */
-	createClone(oldNodeId, newNodeId) {
+	createClone(oldNodeId, newNodeId, bChangeCurrentSceneNode = false) {
 		var a = new CL3D.ActionRestartBehaviors();
 		a.SceneNodeToRestart = this.SceneNodeToRestart;
 		a.ChangeCurrentSceneNode = this.ChangeCurrentSceneNode;
 
-		if (a.ChangeCurrentSceneNode == oldNodeId)
-			a.ChangeCurrentSceneNode = newNodeId;
+		if (a.ChangeCurrentSceneNode != bChangeCurrentSceneNode)
+			a.ChangeCurrentSceneNode = bChangeCurrentSceneNode;
 		return a;
 	}
 
 	/**
-	 * @private
+	 * @param {CL3D.SceneNode} currentNode
+	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)

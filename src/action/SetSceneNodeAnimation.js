@@ -5,11 +5,28 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
 export class ActionSetSceneNodeAnimation extends CL3D.Action {
+	/**
+	 * @type {Number}
+	 */
+	SceneNodeToChangeAnim;
+	/**
+	 * @type {boolean}
+	 */
+	ChangeCurrentSceneNode;
+	/**
+	 * @type {boolean}
+	 */
+	Loop;
+	/**
+	 * @type {String}
+	 */
+	AnimName;
+
 	constructor() {
         super();
 
@@ -17,7 +34,8 @@ export class ActionSetSceneNodeAnimation extends CL3D.Action {
 	}
     
 	/**
-	 * @private
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionSetSceneNodeAnimation();
@@ -33,7 +51,8 @@ export class ActionSetSceneNodeAnimation extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @param {CL3D.SceneNode} currentNode
+	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)
@@ -49,10 +68,9 @@ export class ActionSetSceneNodeAnimation extends CL3D.Action {
 		if (nodeToHandle) {
 			// set animation
 			var animatedMesh = nodeToHandle;
-			if (animatedMesh.getType() != 'animatedmesh')
-				return;
-
-			animatedMesh.setAnimationByEditorName(this.AnimName, this.Loop);
+			if (animatedMesh instanceof CL3D.AnimatedMeshSceneNode && animatedMesh.getType() == 'animatedmesh') {
+				animatedMesh.setAnimationByEditorName(this.AnimName, this.Loop);
+			}
 		}
 	}
 };

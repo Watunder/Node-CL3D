@@ -10,11 +10,16 @@ import * as CL3D from "../main.js";
 export let gCurrentJScriptNode = null;
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
 export class ActionExecuteJavaScript extends CL3D.Action {
+	/**
+	 * @type {String}
+	 */
+	JScript;
+
 	constructor() {
         super();
 
@@ -22,7 +27,8 @@ export class ActionExecuteJavaScript extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @param {Number} oldNodeId 
+	 * @param {Number} newNodeId 
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionExecuteJavaScript();
@@ -31,7 +37,8 @@ export class ActionExecuteJavaScript extends CL3D.Action {
 	}
 
 	/**
-	 * @private
+	 * @param {CL3D.SceneNode} currentNode 
+	 * @param {CL3D.Scene} sceneManager 
 	 */
 	execute(currentNode, sceneManager) {
 		gCurrentJScriptNode = currentNode;

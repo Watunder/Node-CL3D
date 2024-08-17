@@ -14,35 +14,35 @@ export class Vertex3D {
 	/** 
 	 * 3D Position of the vertex
 	 * @public
-	 * @type Vertex3d
+	 * @type {CL3D.Vect3d}
 	 */
 	Pos = null;
 
 	/** 
 	 * Normal of the vertex
 	 * @public
-	 * @type Vertex3d
+	 * @type {CL3D.Vect3d}
 	 */
 	Normal = null;
 
 	/** 
 	 * Color of the vertex
 	 * @public
-	 * @type int
+	 * @type {Number}
 	 */
 	Color = 0;
 
 	/** 
 	 * Texture coordinate 1 of the vertex
 	 * @public
-	 * @type Vertex3d
+	 * @type {CL3D.Vect2d}
 	 */
 	TCoords = null;
 
 	/** 
 	 * Texture coordinate 2 of the vertex
 	 * @public
-	 * @type Vertex3d
+	 * @type {CL3D.Vect2d}
 	 */
 	TCoords2 = null;
 
@@ -68,7 +68,7 @@ export const cloneVertex3D = function (c) {
 }
 
 /**
- * @private
+ * @public
  */
 export const createVertex = function (x, y, z, nx, ny, nz, clr, s, t) {
 	let vtx = new CL3D.Vertex3D(true);
@@ -87,7 +87,7 @@ export const createVertex = function (x, y, z, nx, ny, nz, clr, s, t) {
 }
 
 /**
- * @private
+ * @public
  */
 export const createSimpleVertex = function (x, y, z, s, t) {
 	let vtx = new CL3D.Vertex3D(true);

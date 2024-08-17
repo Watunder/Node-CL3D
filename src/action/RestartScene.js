@@ -6,11 +6,19 @@
 import * as CL3D from "../main.js";
 
 /**
- * @private
+ * @public
  * @constructor
  * @class
  */
 export class ActionRestartScene extends CL3D.Action {
+    /**
+     * @type {String}
+     */
+    SceneName;
+
+    /**
+     * @param {CL3D.CopperLicht} [engine]
+     */
     constructor(engine) {
         super();
 
@@ -19,7 +27,8 @@ export class ActionRestartScene extends CL3D.Action {
     }
 
     /**
-     * @private
+     * @param {Number} oldNodeId
+     * @param {Number} newNodeId
      */
     createClone(oldNodeId, newNodeId) {
         var a = new CL3D.ActionRestartScene();
@@ -28,7 +37,8 @@ export class ActionRestartScene extends CL3D.Action {
     }
 
     /**
-     * @private
+     * @param {CL3D.SceneNode} currentNode
+     * @param {CL3D.Scene} sceneManager
      */
     execute(currentNode, sceneManager) {
         if (this.Engine)

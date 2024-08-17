@@ -1,16 +1,20 @@
+import * as CL3D from "./main.js";
+
 /**
  * @constructor
- * @private
+ * @public
  */
 export class Action
 {
     constructor()
     {
-
+        this.Type = '';
     }
     
     /**
-     * @private
+     * @public
+     * @param {CL3D.SceneNode} node 
+     * @param {CL3D.Scene=} mgr 
      */
     execute(node, mgr)
     {
@@ -18,7 +22,9 @@ export class Action
     }
 
     /**
-     * @private
+     * @public
+     * @param {Number} oldNodeId 
+     * @param {Number} newNodeId 
      */
     createClone(oldNodeId, newNodeId)
     {

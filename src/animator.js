@@ -32,7 +32,7 @@ export class Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		return false;
@@ -40,28 +40,32 @@ export class Animator {
 
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input
-	 * @public
+	 * 
+	 * @param {any} event
 	 */
 	onMouseDown(event) {
 	}
 	
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input
-	 * @public
+	 * 
+	 * @param {any} delta
 	 */
 	onMouseWheel(delta) {
 	}
 
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input
-	 * @public
+	 * 
+	 * @param {any} event
 	 */
 	onMouseUp(event) {
 	}
 
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input
-	 * @public
+	 * 
+	 * @param {any} event
 	 */
 	onMouseMove(event) {
 	}
@@ -69,7 +73,8 @@ export class Animator {
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input.
 	 * Returns false if the event has not been processed.
-	 * @public
+	 * 
+	 * @param {any} event
 	 */
 	onKeyDown(event) {
 		return false;
@@ -78,7 +83,8 @@ export class Animator {
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input
 	 * Returns false if the event has not been processed.
-	 * @public
+	 * 
+	 * @param {any} event
 	 */
 	onKeyUp(event) {
 		return false;
@@ -86,13 +92,14 @@ export class Animator {
 
 	/**
 	 * Resets the animator, if supported
-	 * @private
+	 * 
+	 * @param {undefined} [event]
 	 */
 	reset(event) {
 	}
 
 	/**
-	 * @private
+	 * @param {String} type
 	 */
 	findActionByType(type) {
 		return null;
@@ -100,9 +107,12 @@ export class Animator {
 
 	/**
 	 * Creates an exact, deep copy of this animator
-	 * @public
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
-	createClone(node, scene, oldNodeId, newNodeId) {
+	createClone(node, newManager, oldNodeId, newNodeId) {
 		return null;
 	}
 };

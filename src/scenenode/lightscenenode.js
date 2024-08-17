@@ -4,7 +4,7 @@
 import * as CL3D from "../main.js";
 
 /**
- * A class holding the data of a point light. This is used by the {@link CL3D.LightSceneNode} to send data to the renderer.
+ * A class holding the data of a point light. This is used by the {@link LightSceneNode} to send data to the renderer.
  * @public
  * @constructor
  * @class A class holding the data of a point light.
@@ -121,7 +121,7 @@ export class LightSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	createClone(newparent, oldNodeId, newNodeId) {
 		var c = new CL3D.LightSceneNode();
@@ -134,7 +134,7 @@ export class LightSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible)
@@ -158,7 +158,7 @@ export class LightSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		if (this.LightData.IsDirectional)

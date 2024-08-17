@@ -9,7 +9,7 @@ import * as CL3D from "../../main.js";
 * @constructor
 * @extends CL3D.Animator
 * @class  Scene node animator which animated a mobile input 2d node
-* @private
+* @public
 */
 export class AnimatorMobileInput extends CL3D.Animator {
     constructor(engine, scene, obj) {
@@ -35,14 +35,14 @@ export class AnimatorMobileInput extends CL3D.Animator {
     /**
      * Returns the type of the animator.
      * For the AnimatorOnClick, this will return 'mobileinput'.
-     * @private
+     * @public
      */
     getType() {
         return 'mobileinput';
     }
 
     /**
-     * @private
+     * @public
      */
     animateNode(n, timeMs) {
         var ret = false;
@@ -85,7 +85,7 @@ export class AnimatorMobileInput extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     postKey(down, key) {
         if (this.KeyDown[key] == down)
@@ -93,8 +93,7 @@ export class AnimatorMobileInput extends CL3D.Animator {
 
         this.KeyDown[key] = down;
 
-        var e = new Object();
-        e.keyCode = key;
+        var e = { keyCode: key};
 
         if (down)
             this.engine.handleKeyDown(e);
@@ -104,21 +103,21 @@ export class AnimatorMobileInput extends CL3D.Animator {
     }
 
     /**
-     * @private
+     * @public
      */
     onMouseUp(event) {
         this.MouseDown = false;
     }
 
     /**
-     * @private
+     * @public
      */
     onMouseDown(event) {
         this.MouseDown = true;
     }
     
     /**
-     * @private
+     * @public
      */
     onMouseMove(event) {
         if (this.MouseDown && this.Obj.MouseOverButton &&

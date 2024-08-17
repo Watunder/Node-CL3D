@@ -58,7 +58,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	/**
 	 * Returns the amount of named animations in the animated mesh.
 	 * @public
-	 * @returns {Integer} Amount of named animations.
+	 * @returns {Number} Amount of named animations.
 	 */
 	getNamedAnimationCount() {
 		if (this.Mesh && this.Mesh.NamedAnimationRanges)
@@ -69,7 +69,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	/**
 	 * Returns information about a named animation in the animated mesh by index
 	 * @public
-	 * @param {Integer} idx index of the animation. Must be a value >=0 and <getNamedAnimationCount().
+	 * @param {Number} idx index of the animation. Must be a value >=0 and <getNamedAnimationCount().
 	 * @returns {Object} returns an object with info about the animation or null if there is no such animation. The object
 	 * will have the members .Name for the animation name, .Begin for the begin frame, .End for the end frame and
 	 * .FPS for the frames per second.
@@ -115,7 +115,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	
 	/**
 	 * Sets the animation to a new one by name, also includes 'none' and 'all' as parameters
-	 * @private
+	 * @public
 	 * @returns {Boolean} True if successful, false if not
 	 */
 	setAnimationByEditorName(name, loop) {
@@ -155,7 +155,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	setMesh(m) {
 		if (!m)
@@ -180,7 +180,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible && this.Mesh) {
@@ -219,7 +219,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	getMaterialCount() {
 		if (this.Materials != null)
@@ -232,7 +232,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	getMaterial(i) {
 		if (this.Materials) {
@@ -325,8 +325,8 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	/**
 	 * Sets the begin and end frame for a looped animation
 	 * @public
-	 * @param {Integer} begin start frame of the loop
-	 * @param {Integer} end end frame of the loop
+	 * @param {Number} begin start frame of the loop
+	 * @param {Number} end end frame of the loop
 	 */
 	setFrameLoop(begin, end) {
 		if (!this.Mesh)
@@ -368,7 +368,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	buildFrameNr(timeMs) {
 		var deltaFrame = 0; //:Number;
@@ -446,7 +446,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	hasDynamicLightedMaterials() {
 		for (var i = 0; i < this.Materials.length; ++i)
@@ -457,7 +457,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	calculateMeshForCurrentFrame() {
 		// As multiple scene nodes may be sharing the same skinned mesh, we have to
@@ -497,7 +497,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	OnAnimate(mgr, timeMs) {
 		var framechanged = false;
@@ -521,7 +521,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	render(renderer) {
 		// skip if the mesh isn't visible in the frustum
@@ -594,7 +594,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	ensureJointCopyArrayHasCorrectSize(joints) {
 		var sz1 = joints.length;
@@ -610,7 +610,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	startAnimationBlending(frameNumberBeforeAnimationChange) {
 		if (!this.WasAnimatedBefore)
@@ -641,7 +641,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	}
 	
 	/**
-	 * @private
+	 * @public
 	 */
 	animateJointsWithCurrentBlendingSettings(framenumber) {
 		var skinnedMesh = this.Mesh; // as SkinnedMesh;
@@ -678,7 +678,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	
 	/**
 	 * Called after the deserialization process. Internal method used so that linked nodes link them with the deserialized other nodes.
-	 * @private
+	 * @public
 	 */
 	onDeserializedWithChildren() {
 		if (this.scene == null)
@@ -703,7 +703,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	
 	/**
 	 * Called after the deserialization process. Internal method used so that linked nodes link them with the deserialized other nodes.
-	 * @private
+	 * @public
 	 */
 	updatePositionsOfAttachedNodes() {
 		var skinnedMesh = this.Mesh; // as SkinnedMesh;
@@ -729,7 +729,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	
 	/**
 	 * replaces all referenced ids of referenced nodes when the referenced node was a child and was cloned
-	 * @private
+	 * @public
 	 */
 	replaceAllReferencedNodes(nodeChildOld, nodeChildNew) {
 		for (var i = 0; i < this.AnimatedDummySceneNodes.length; ++i) {
@@ -746,7 +746,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 
 /**
  * Structure storing data about scene nodes attached to a joint of this item
- * @private
+ * @public
  */
 export class SAnimatedDummySceneNodeChild {
 	constructor() {

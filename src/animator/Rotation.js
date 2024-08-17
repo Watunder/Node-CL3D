@@ -4,14 +4,17 @@
 import * as CL3D from "../main.js";
 
 /**
- * Scene node animator making {@link CL3D.SceneNode}s rotate
+ * Scene node animator making {@link SceneNode}s rotate
  * @constructor
  * @public
  * @extends CL3D.Animator
- * @class  Scene node animator making {@link CL3D.SceneNode}s rotate
- * @param speed {CL3D.Vect3d} vector defining the RotationSpeed in each direction
+ * @class  Scene node animator making {@link SceneNode}s rotate
  */
 export class AnimatorRotation extends CL3D.Animator {
+	/**
+	 * 
+	 * @param {CL3D.Vect3d=} speed vector defining the RotationSpeed in each direction
+	 */
 	constructor(speed) {
 		super();
 
@@ -36,10 +39,13 @@ export class AnimatorRotation extends CL3D.Animator {
 	}
 
 	/**
-	 * @private
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
-		var a = new CL3D.AnimatorRotation(this.SMGr, this.engine);
+		var a = new CL3D.AnimatorRotation();
 		a.Rotation = this.Rotation.clone();
 		a.StartTime = this.StartTime;
 		return a;
@@ -102,7 +108,7 @@ export class AnimatorRotation extends CL3D.Animator {
 
 	/**
 	 * Makes the animator rotate the scene node to a specific target and then stop there
-	 * @private
+	 * @public
 	 */
 	setRotateToTargetAndStop(targetRot, beginRot, timeForMovement) {
 		this.RotateToTargetAndStop = true;

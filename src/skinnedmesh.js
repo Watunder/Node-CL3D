@@ -9,7 +9,7 @@ import * as CL3D from "./main.js";
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @private
+ * @public
  */
 export class MeshCache {
 	constructor() {
@@ -17,7 +17,7 @@ export class MeshCache {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getMeshFromName(name) {
 		for (var i = 0; i < this.Meshes.length; ++i) {
@@ -30,7 +30,7 @@ export class MeshCache {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	addMesh(t) {
 		if (t != null) {
@@ -48,7 +48,7 @@ export class MeshCache {
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @private
+ * @public
  */
 export class SkinnedMeshJoint {
 	constructor() {
@@ -84,7 +84,7 @@ export class SkinnedMeshJoint {
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @private
+ * @public
  */
 export class SkinnedMeshWeight {
 	constructor() {
@@ -103,7 +103,7 @@ export class SkinnedMeshWeight {
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @private
+ * @public
  */
 export class SkinnedMeshScaleKey {
 	constructor() {
@@ -118,7 +118,7 @@ export class SkinnedMeshScaleKey {
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @private
+ * @public
  */
 export class SkinnedMeshPositionKey {	
 	constructor() {
@@ -132,7 +132,7 @@ export class SkinnedMeshPositionKey {
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @private
+ * @public
  */
 export class SkinnedMeshRotationKey {	
 	constructor() {
@@ -146,7 +146,7 @@ export class SkinnedMeshRotationKey {
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @private
+ * @public
  */
 export class NamedAnimationRange {
 	Name = '';
@@ -167,7 +167,7 @@ export class NamedAnimationRange {
 // ------------------------------------------------------------------------------------------------
 
 /**
- * @private
+ * @public
  */
 export class SkinnedMesh {
 	constructor() {
@@ -199,28 +199,28 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	AddMeshBuffer(buf) {
 		this.LocalBuffers.push(buf);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getFrameCount() {
 		return Math.floor(this.AnimationFrames);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getBoundingBox() {
 		return this.BoundingBox;
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	finalize() {
 		this.LastAnimatedFrame = -1;
@@ -305,7 +305,7 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	checkForAnimation() {
 		this.HasAnimation = false;
@@ -377,7 +377,7 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	CalculateGlobalMatrices(joint, parentJoint) {
 		if (joint == null && parentJoint != null)
@@ -421,7 +421,7 @@ export class SkinnedMesh {
 	 * Animates this mesh's joints based on frame input
 	 * blend: {0-old position, 1-New position}
 	 * returns if animation has changed
-	 * @private
+	 * @public
 	 */
 	animateMesh(frame, blend) {
 		if (!this.HasAnimation ||
@@ -485,7 +485,7 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getFrameData(frame, joint,
 		position, positionHint,
@@ -692,7 +692,7 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	buildAll_LocalAnimatedMatrices() {
 		for (var i = 0; i < this.AllJoints.length; ++i) {
@@ -765,7 +765,7 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	updateBoundingBox() {
 		this.BoundingBox.MinEdge.set(0, 0, 0);
@@ -799,7 +799,7 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	buildAll_GlobalAnimatedMatrices(joint, parentJoint) {
 		if (joint == null) {
@@ -825,7 +825,7 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	skinMesh(animateNormals) {
 		if (!this.HasAnimation)
@@ -864,7 +864,7 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	skinJoint(joint, parentJoint, animateNormals) {
 		if (joint.Weights.length) {
@@ -916,7 +916,7 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	getNamedAnimationRangeByName(thename) {
 		if (!thename)
@@ -935,14 +935,14 @@ export class SkinnedMesh {
 	}
 
 	/**
-	 * @private
+	 * @public
 	 */
 	addNamedAnimationRange(n) {
 		this.NamedAnimationRanges.push(n);
 	}
 
 	/**
-	 * @private
+	 * @public
 	 * Used to see by the loader if this model already has been loaded before
 	 */
 	containsData(buf) {
