@@ -4,7 +4,7 @@
 import * as CL3D from "../main.js";
 
 /**
- * A class holding the data of a point light. This is used by the {@link CL3D.LightSceneNode} to send data to the renderer.
+ * A class holding the data of a point light. This is used by the {@link LightSceneNode} to send data to the renderer.
  * @public
  * @constructor
  * @class A class holding the data of a point light.

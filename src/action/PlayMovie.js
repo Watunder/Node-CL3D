@@ -10,6 +10,42 @@ import * as CL3D from "../main.js";
  * @class
  */
 export class ActionPlayMovie extends CL3D.Action {
+    /**
+     * @type {boolean}
+     */
+    PlayLooped;
+    /**
+     * @type {Number}
+     */
+    Command;
+    /**
+     * @type {String}
+     */
+    VideoFileName;
+    /**
+     * @type {Number}
+     */
+    SceneNodeToPlayAt;
+    /**
+     * @type {boolean}
+     */
+    PlayAtCurrentSceneNode;
+    /**
+     * @type {Number}
+     */
+    MaterialIndex;
+    /**
+     * @type {CL3D.ActionHandler}
+     */
+    ActionHandlerFinished;
+    /**
+     * @type {CL3D.ActionHandler}
+     */
+    ActionHandlerFailed;
+
+    /**
+     * @param {CL3D.CopperLicht} [engine]
+     */
     constructor(engine) {
         super();
 
@@ -17,9 +53,10 @@ export class ActionPlayMovie extends CL3D.Action {
         this.Engine = engine;
     }
 
-    /**
-     * @public
-     */
+	/**
+	 * @param {Number} oldNodeId 
+	 * @param {Number} newNodeId 
+	 */
     createClone(oldNodeId, newNodeId) {
         var a = new CL3D.ActionPlayMovie();
         a.PlayLooped = this.PlayLooped;
@@ -37,9 +74,10 @@ export class ActionPlayMovie extends CL3D.Action {
         return a;
     }
 
-    /**
-     * @public
-     */
+	/**
+	 * @param {CL3D.SceneNode} currentNode 
+	 * @param {CL3D.Scene} sceneManager 
+	 */
     execute(currentNode, sceneManager) {
         if (!currentNode || !sceneManager)
             return;
@@ -65,7 +103,7 @@ export class ActionPlayMovie extends CL3D.Action {
 
                         // set texture
                         if (nodeToHandle) {
-                            if (nodeToHandle.getType() == '2doverlay')
+                            if (nodeToHandle instanceof CL3D.Overlay2DSceneNode && nodeToHandle.getType() == '2doverlay')
                                 nodeToHandle.setShowImage(stream.texture);
                             else {
                                 var mat = nodeToHandle.getMaterial(this.MaterialIndex);

@@ -9,11 +9,13 @@ import * as CL3D from "../main.js";
  * @public
  * @extends CL3D.Animator
  * @class  Scene node animator changing the texture of {@link SceneNode}s so that they appear animated.
- * @param {Array} textures array of {@link Texture}s to set
- * @param {Number} timeperframe time to switch to the next texture in the texture array, in milliseconds. For example 500 for half a second per  frame.
- * @param {Boolean} donotloop if set to true, the animation will only be played once
  */
 export class AnimatorAnimateTexture extends CL3D.Animator {
+	/**
+	 * @param {CL3D.Texture[]=} textures array of {@link Texture}s to set
+	 * @param {Number=} timeperframe time to switch to the next texture in the texture array, in milliseconds. For example 500 for half a second per  frame.
+	 * @param {Boolean=} donotloop if set to true, the animation will only be played once
+	 */
 	constructor(textures, timeperframe, donotloop) {
 		super();
 
@@ -45,7 +47,10 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 	}
 
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorAnimateTexture();
@@ -61,7 +66,7 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		if (n == null || this.Textures == null)

@@ -1212,7 +1212,7 @@ export class FlaceLoader {
 					animator.SlidingSpeed = this.Data.readFloat();
 					break;
 				case 104:
-					animator = new CL3D.AnimatorCameraFPS(node, this.CursorControl);
+					animator = new CL3D.AnimatorCameraFPS(node instanceof CL3D.CameraSceneNode && node, this.CursorControl);
 					animator.MaxVerticalAngle = this.Data.readFloat();
 					animator.MoveSpeed = this.Data.readFloat();
 					animator.RotateSpeed = this.Data.readFloat();
@@ -1231,15 +1231,15 @@ export class FlaceLoader {
 					}
 					if(flag & 2) animator.MoveSmoothing = this.Data.readInt();
 					if(flag & 4) animator.ChildrenDontUseZBuffer = true;
-					if(node.getType() == "camera")
+					if(node instanceof CL3D.CameraSceneNode && node.getType() == "camera")
 					{
-						animator.targetZoomValue = CL3D.radToDeg(node.Fovy);
-						animator.maxZoom = node.targetZoomValue + 10;
-						animator.zoomSpeed = (node.maxZoom - node.minZoom) / 50;
+						//animator.targetZoomValue = CL3D.radToDeg(node.Fovy);
+						//animator.maxZoom = node.targetZoomValue + 10;
+						//animator.zoomSpeed = (node.maxZoom - node.minZoom) / 50;
 					}
 					break;
 				case 105:
-					animator = new CL3D.AnimatorCameraModelViewer(node, this.CursorControl);
+					animator = new CL3D.AnimatorCameraModelViewer(node instanceof CL3D.CameraSceneNode && node, this.CursorControl);
 					animator.Radius = this.Data.readFloat();
 					animator.RotateSpeed = this.Data.readFloat();
 					animator.NoVerticalMovement = this.Data.readBoolean();

@@ -20,7 +20,8 @@ export class ActionMakeSceneNodeInvisible extends CL3D.Action {
 	}
 
 	/**
-	 * @public
+	 * @param {Number} oldNodeId 
+	 * @param {Number} newNodeId 
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionMakeSceneNodeInvisible();
@@ -35,7 +36,8 @@ export class ActionMakeSceneNodeInvisible extends CL3D.Action {
 	}
     
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} currentNode 
+	 * @param {CL3D.Scene} sceneManager 
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)

@@ -10,6 +10,27 @@ import * as CL3D from "../main.js";
  * @class
  */
 export class ActionChangeSceneNodeTexture extends CL3D.Action {
+	/**
+	 * @type {Number}
+	 */
+	TextureChangeType;
+	/**
+	 * @type {Number}
+	 */
+	SceneNodeToChange;
+	/**
+	 * @type {boolean}
+	 */
+	ChangeCurrentSceneNode;
+	/**
+	 * @type {CL3D.Texture}
+	 */
+	TheTexture;
+	/**
+	 * @type {Number}
+	 */
+	IndexToChange;
+	
 	constructor() {
         super();
 
@@ -17,7 +38,8 @@ export class ActionChangeSceneNodeTexture extends CL3D.Action {
 	}
 
 	/**
-	 * @public
+	 * @param {Number} oldNodeId 
+	 * @param {Number} newNodeId 
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionChangeSceneNodeTexture();
@@ -34,7 +56,8 @@ export class ActionChangeSceneNodeTexture extends CL3D.Action {
 	}
     
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} currentNode 
+	 * @param {CL3D.Scene} sceneManager 
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)
@@ -48,7 +71,7 @@ export class ActionChangeSceneNodeTexture extends CL3D.Action {
 			nodeToHandle = sceneManager.getSceneNodeFromId(this.SceneNodeToChange);
 
 		if (nodeToHandle) {
-			if (nodeToHandle.getType() == '2doverlay') {
+			if (nodeToHandle instanceof CL3D.Overlay2DSceneNode && nodeToHandle.getType() == '2doverlay') {
 				nodeToHandle.setShowImage(this.TheTexture);
 			}
 

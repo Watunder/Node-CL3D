@@ -4,8 +4,8 @@
 import * as CL3D from "../main.js";
 
 /**
- * A path scene node stores a 3d path which can be used for example by {@link CL3D.Animator}s to move {@link CL3D.SceneNode}s along it.
- * @class A path scene node stores a 3d path which can be used for example by {@link CL3D.Animator}s to move {@link CL3D.SceneNode}s along it.
+ * A path scene node stores a 3d path which can be used for example by {@link Animator}s to move {@link SceneNode}s along it.
+ * @class A path scene node stores a 3d path which can be used for example by {@link Animator}s to move {@link SceneNode}s along it.
  * @constructor
  * @extends CL3D.SceneNode
  */
@@ -128,8 +128,8 @@ export class PathSceneNode extends CL3D.SceneNode {
 	 * @public
 	 * Returns the position of a point on the path, based on a value between 0 and 1. Can be
 	 * Used to interpolate a position on the path.
-	 * @param posOnPath {Number} Value between 0 and 1, meaning 0 is the start of the path and 1 is the end of the path.
-	 * @param relative {Boolean} set to true to get the position relative to the position of the path scene node, set to
+	 * @param {Number} posOnPath Value between 0 and 1, meaning 0 is the start of the path and 1 is the end of the path.
+	 * @param {Boolean=} relative set to true to get the position relative to the position of the path scene node, set to
 	 * false to receive the position in absolute world space.
 	 * @returns {CL3D.Vect3d} returns the 3d vector of the position
 	 */

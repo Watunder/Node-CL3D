@@ -170,7 +170,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	/**
 	 * Sets if the overlay scene node should show a image
 	 * @public
-	 * @param {CL3D.Texture} tex a {@link CL3D.Texture} to show as image on the 2d overlay
+	 * @param {CL3D.Texture} tex a {@link Texture} to show as image on the 2d overlay
 	 */
 	setShowImage(tex) {
 		this.Texture = tex;

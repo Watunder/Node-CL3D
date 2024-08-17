@@ -4,17 +4,20 @@
 import * as CL3D from "../main.js";
 
 /**
- * Scene node animator making {@link CL3D.SceneNode}s move in a circle
+ * Scene node animator making {@link SceneNode}s move in a circle
  * @constructor
  * @public
  * @extends CL3D.Animator
- * @class Scene node animator making {@link CL3D.SceneNode}s move in a circle
- * @param {CL3D.Vect3d} center 3d position of the center of the circle
- * @param {Number} radius radius of the circle
- * @param {CL3D.Vect3d} direction direction of the circle. For example (0,1,0) for up.
- * @param {Number} speed movement speed, for example 0.01
+ * @class Scene node animator making {@link SceneNode}s move in a circle
  */
 export class AnimatorFlyCircle extends CL3D.Animator {
+	/**
+	 * 
+	 * @param {CL3D.Vect3d=} center 3d position of the center of the circle
+	 * @param {Number=} radius radius of the circle
+	 * @param {CL3D.Vect3d=} direction direction of the circle. For example (0,1,0) for up.
+	 * @param {Number=} speed movement speed, for example 0.01
+	 */
 	constructor(center, radius, direction, speed) {
 		super();
 
@@ -48,7 +51,10 @@ export class AnimatorFlyCircle extends CL3D.Animator {
 	}
 
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorFlyCircle();
@@ -65,7 +71,7 @@ export class AnimatorFlyCircle extends CL3D.Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		var diff = (timeMs - this.StartTime);

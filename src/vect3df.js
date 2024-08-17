@@ -168,7 +168,7 @@ export class Vect3d {
 		this.Z = other.Z;
 	}
 	/**
-	 * Returns true if this vector equals another vector. Doesn't use the comparison operator but the {@link CL3D.equals} function.
+	 * Returns true if this vector equals another vector. Doesn't use the comparison operator but the {@link equals} function.
 	 * @public
 	 * @param other {CL3D.Vect3d} other vector
 	 */
@@ -178,14 +178,14 @@ export class Vect3d {
 			CL3D.equals(this.Z, other.Z);
 	}
 	/**
-	 * Returns true if this vector equals zero. Doesn't use the comparison operator but the {@link CL3D.iszero} function.
+	 * Returns true if this vector equals zero. Doesn't use the comparison operator but the {@link iszero} function.
 	 * @public
 	 */
 	equalsZero() {
 		return CL3D.iszero(this.X) && CL3D.iszero(this.Y) && CL3D.iszero(this.Z);
 	}
 	/**
-	 * Returns true if this vector equals x, y, and z given as argument. Doesn't use the comparison operator but the {@link CL3D.equals} function.
+	 * Returns true if this vector equals x, y, and z given as argument. Doesn't use the comparison operator but the {@link equals} function.
 	 * @public
 	 */
 	equalsByNumbers(x, y, z) {

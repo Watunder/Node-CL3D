@@ -9,7 +9,7 @@ import * as CL3D from "./main.js";
  * won't be visible either. In this way, it is for example easily possible to attach a light to a moving car,
  * or to place a walking character on a moving platform on a moving ship.
  * <br/> <br/>
- * Concrete implementations are for example: {@link CL3D.CameraSceneNode}, {@link CL3D.BillboardSceneNode}, {@link CL3D.PathSceneNode}, {@link CL3D.MeshSceneNode}, {@link CL3D.SkyBoxSceneNode}.
+ * Concrete implementations are for example: {@link CameraSceneNode}, {@link BillboardSceneNode}, {@link PathSceneNode}, {@link MeshSceneNode}, {@link SkyBoxSceneNode}.
  * @constructor
  * @class The base class for scene nodes, a node in the hierarchical 3d scene rendering graph.
  */

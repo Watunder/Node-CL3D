@@ -4,8 +4,8 @@
 import * as CL3D from "../main.js";
 
 /**
- * The scene is usually rendered from the currently active camera. Some cameras have an {@link CL3D.Animator} attached to
- * them which controlls the position and look target of the camera, for example a {@link CL3D.AnimatorCameraFPS}. You can 
+ * The scene is usually rendered from the currently active camera. Some cameras have an {@link Animator} attached to
+ * them which controlls the position and look target of the camera, for example a {@link AnimatorCameraFPS}. You can 
  * get access to this animator using camera.getAnimatorOfType('camerafps');. 
  * @class Scene Node which is a (controlable) camera.
  * @constructor

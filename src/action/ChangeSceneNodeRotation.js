@@ -10,6 +10,32 @@ import * as CL3D from "../main.js";
  * @class
  */
 export class ActionChangeSceneNodeRotation extends CL3D.Action {
+	/**
+	 * @type {Number}
+	 */
+	RotationChangeType;
+	/**
+	 * @type {Number}
+	 */
+	SceneNodeToChangeRotation;
+	/**
+	 * @type {boolean}
+	 */
+	ChangeCurrentSceneNode;
+	/**
+	 * @type {CL3D.Vect3d}
+	 */
+	Vector;
+	/**
+	 * @type {boolean}
+	 */
+	RotateAnimated;
+	/**
+	 * @type {Number}
+	 */
+	TimeNeededForRotationMs;
+	
+
 	constructor() {
         super();
 
@@ -17,7 +43,8 @@ export class ActionChangeSceneNodeRotation extends CL3D.Action {
 	}
 
 	/**
-	 * @public
+	 * @param {Number} oldNodeId 
+	 * @param {Number} newNodeId 
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionChangeSceneNodeRotation();
@@ -34,7 +61,8 @@ export class ActionChangeSceneNodeRotation extends CL3D.Action {
 	}
     
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} currentNode 
+	 * @param {CL3D.Scene} sceneManager 
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)

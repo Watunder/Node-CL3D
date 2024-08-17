@@ -4,19 +4,21 @@
 import * as CL3D from "../main.js";
 
 /**
- * Scene node animator making {@link CL3D.SceneNode}s move along straight line between two points.
+ * Scene node animator making {@link SceneNode}s move along straight line between two points.
  * @constructor
  * @public
  * @extends CL3D.Animator
- * @class Scene node animator making {@link CL3D.SceneNode}s move along straight line between two points.
- * @param {CL3D.Vect3d} start Start 3d position of the line
- * @param {CL3D.Vect3d} end End 3d position of the line
- * @param {Number} timeForWay Time for moving along the whole line in milliseconds. For example 2000 for 2 seconds.
- * @param {Boolean} loop set to true for looping along the line, false for stopping movement when the end has been reached.
- * @param {Boolean} deleteMeAfterEndReached set to true if the animator should delete itself after the end has been reached.
- * @param {Boolean} animateCameraTargetInsteadOfPosition if the animated node is a camera, set to true to animate the camera target instead of the position of the camera.
+ * @class Scene node animator making {@link SceneNode}s move along straight line between two points.
  */
 export class AnimatorFlyStraight extends CL3D.Animator {
+	/**
+ 	 * @param {CL3D.Vect3d=} start Start 3d position of the line
+ 	 * @param {CL3D.Vect3d=} end End 3d position of the line
+ 	 * @param {Number=} timeforway Time for moving along the whole line in milliseconds. For example 2000 for 2 seconds.
+ 	 * @param {Boolean=} loop set to true for looping along the line, false for stopping movement when the end has been reached.
+ 	 * @param {Boolean=} deleteMeAfterEndReached set to true if the animator should delete itself after the end has been reached.
+ 	 * @param {Boolean=} animateCameraTargetInsteadOfPosition if the animated node is a camera, set to true to animate the camera target instead of the position of the camera.
+	 */
 	constructor(start, end, timeforway, loop, deleteMeAfterEndReached, animateCameraTargetInsteadOfPosition) {
 		super();
 
@@ -32,7 +34,10 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 		this.ShootCollisionNodeToIgnore = null;
 		this.ShootCollisionDamage = 0;
 		this.DeleteSceneNodeAfterEndReached = false;
-		this.ActionToExecuteOnEnd = false;
+		/**
+		 * @type {CL3D.Action}
+		 */
+		this.ActionToExecuteOnEnd = null;
 		this.ExecuteActionOnEndOnlyIfTimeSmallerThen = 0;
 
 		if (start)
@@ -84,7 +89,7 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		var t = (timeMs - this.StartTime);
@@ -103,11 +108,11 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 			}
 
 			if (this.AnimateCameraTargetInsteadOfPosition) {
-				if (n.getType() == 'camera') {
+				if (n instanceof CL3D.CameraSceneNode && n.getType() == 'camera') {
 					n.setTarget(pos);
 
 					var animfps = n.getAnimatorOfType('camerafps');
-					if (animfps != null)
+					if (animfps != null && animfps instanceof CL3D.AnimatorCameraFPS)
 						animfps.lookAt(pos);
 				}
 			}

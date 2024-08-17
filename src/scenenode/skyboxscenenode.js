@@ -5,7 +5,7 @@ import * as CL3D from "../main.js";
 
 /**
  * A class rendering a sky box around the whole scene. It is a cube with 6 faces and six textures, which
- * can be accessed using {@link CL3D.SceneNode}.getMaterial().
+ * can be accessed using {@link SceneNode}.getMaterial().
  * @constructor
  * @extends CL3D.MeshSceneNode 
  * @class A class rendering a sky box around the whole scene. 

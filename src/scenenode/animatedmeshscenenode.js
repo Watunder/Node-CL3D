@@ -58,7 +58,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	/**
 	 * Returns the amount of named animations in the animated mesh.
 	 * @public
-	 * @returns {Integer} Amount of named animations.
+	 * @returns {Number} Amount of named animations.
 	 */
 	getNamedAnimationCount() {
 		if (this.Mesh && this.Mesh.NamedAnimationRanges)
@@ -69,7 +69,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	/**
 	 * Returns information about a named animation in the animated mesh by index
 	 * @public
-	 * @param {Integer} idx index of the animation. Must be a value >=0 and <getNamedAnimationCount().
+	 * @param {Number} idx index of the animation. Must be a value >=0 and <getNamedAnimationCount().
 	 * @returns {Object} returns an object with info about the animation or null if there is no such animation. The object
 	 * will have the members .Name for the animation name, .Begin for the begin frame, .End for the end frame and
 	 * .FPS for the frames per second.
@@ -325,8 +325,8 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	/**
 	 * Sets the begin and end frame for a looped animation
 	 * @public
-	 * @param {Integer} begin start frame of the loop
-	 * @param {Integer} end end frame of the loop
+	 * @param {Number} begin start frame of the loop
+	 * @param {Number} end end frame of the loop
 	 */
 	setFrameLoop(begin, end) {
 		if (!this.Mesh)

@@ -55,7 +55,7 @@ export class TriangleSelector {
 	 * @param {Boolean} bIgnoreBackFaces if set to true, this will ignore back faced polygons, making the query twice as fast
 	 * @param {CL3D.Triangle3d} outTriangle if set to a triangle, this will contain the 3d triangle with which the line collided
 	 * @param {Boolean} ignoreInvisibleItems set to true to ignore invisible scene nodes for collision test
-	 * @returns {CL3D.Vect3d}  a 3d position as {@link CL3D.Vect3d} if a collision was found or null if no collision was found
+	 * @returns {CL3D.Vect3d}  a 3d position as {@link Vect3d} if a collision was found or null if no collision was found
 	 */
 	getCollisionPointWithLine(start, end, bIgnoreBackFaces, outTriangle, ignoreInvisibleItems) {
 		if (!start || !end)
@@ -165,18 +165,18 @@ export class TriangleSelector {
 
 /**
  * Implementation of TriangleSelector for meshes, useful for collision detection.<br/>
- * Note use {@link CL3D.OctTreeTriangleSelector} instead of this one if your mesh is huge, otherwise collision detection might be slow.
- * Every {@link CL3D.SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection: 
+ * Note use {@link OctTreeTriangleSelector} instead of this one if your mesh is huge, otherwise collision detection might be slow.
+ * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection: 
  * For example if you know that a collision may have happened in the area between (1,1,1) and (10,10,10), you can get all triangles of the scene
  * node in this area with the TriangleSelector easily and check every triangle if it collided.<br/>
  * @class Interface to return triangles with specific properties, useful for collision detection.
  * @public
  * @constructor
  * @extends CL3D.TriangleSelector
- * @param {CL3D.Mesh} Mesh the {@link CL3D.Mesh} representing the geometry
+ * @param {CL3D.Mesh} Mesh the {@link Mesh} representing the geometry
  * @param {Number} materialToIgnore (optional) material type to ignore for collision. Can be set to null.
  * @param {Number} materialToIgnore2 (optional) material type to ignore for collision. Can be set to null.
- * @param {CL3D.SceneNode} scenenode the {@link CL3D.SceneNode} representing the position of the geometry
+ * @param {CL3D.SceneNode} scenenode the {@link SceneNode} representing the position of the geometry
  */
 export class MeshTriangleSelector extends CL3D.TriangleSelector {
 	constructor(mesh, scenenode, materialToIgnore, materialToIgnore2) {
@@ -304,14 +304,14 @@ export class MeshTriangleSelector extends CL3D.TriangleSelector {
 
 /**
  * Implementation of TriangleSelector based on a simple, static bounding box, useful for collision detection.<br/>
- * Every {@link CL3D.SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection: 
+ * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection: 
  * For example if you know that a collision may have happened in the area between (1,1,1) and (10,10,10), you can get all triangles of the scene
  * node in this area with the TriangleSelector easily and check every triangle if it collided.<br/>
  * @class Interface to return triangles with specific properties, useful for collision detection.
  * @public
  * @constructor
  * @extends CL3D.MeshTriangleSelector
- * @param Box {@link CL3D.Box3d} representing the simpliefied collision object of the node
+ * @param Box {@link Box3d} representing the simpliefied collision object of the node
  */
 export class BoundingBoxTriangleSelector extends CL3D.MeshTriangleSelector {
 	constructor(box, scenenode) {
@@ -369,7 +369,7 @@ export class BoundingBoxTriangleSelector extends CL3D.MeshTriangleSelector {
  * Interface for making multiple triangle selectors work as one big selector. 
  * This is nothing more than a collection of one or more triangle selectors providing together the interface of one triangle selector.
  * In this way, collision tests can be done with different triangle soups in one pass.
- * See {@link CL3D.MeshTriangleSelector} for an implementation of a triangle selector for meshes.<br/>
+ * See {@link MeshTriangleSelector} for an implementation of a triangle selector for meshes.<br/>
  * @class Interface for making multiple triangle selectors work as one big selector. 
  * @public
  * @extends CL3D.TriangleSelector
@@ -427,7 +427,7 @@ export class MetaTriangleSelector extends CL3D.TriangleSelector{
 	/**
 	 * Adds a triangle selector to the collection of triangle selectors.
 	 * @public
-	 * @param {CL3D.TriangleSelector} t a {@link CL3D.TriangleSelector} to add
+	 * @param {CL3D.TriangleSelector} t a {@link TriangleSelector} to add
 	 */
 	addSelector(t) {
 		this.Selectors.push(t);
@@ -436,7 +436,7 @@ export class MetaTriangleSelector extends CL3D.TriangleSelector{
 	/**
 	 * Removes a triangle selector from the collection of triangle selectors.
 	 * @public
-	 * @param {CL3D.TriangleSelector} t a {@link CL3D.TriangleSelector} to remove
+	 * @param {CL3D.TriangleSelector} t a {@link TriangleSelector} to remove
 	 */
 	removeSelector(t) {
 		for (var i = 0; i < this.Selectors.length;) {
@@ -468,7 +468,7 @@ export class MetaTriangleSelector extends CL3D.TriangleSelector{
 	 * @param {Boolean} bIgnoreBackFaces if set to true, this will ignore back faced polygons, making the query twice as fast
 	 * @param {CL3D.Triangle3d} outTriangle if set to a triangle, this will contain the 3d triangle with which the line collided
 	 * @param {Boolean} ignoreInvisibleItems set to true to ignore invisible scene nodes for collision test
-	 * @returns {CL3D.Vect3d} a 3d position as {@link CL3D.Vect3d} if a collision was found or null if no collision was found
+	 * @returns {CL3D.Vect3d} a 3d position as {@link Vect3d} if a collision was found or null if no collision was found
 	 */
 	getCollisionPointWithLine(start, end, bIgnoreBackFaces, outTriangle, ignoreInvisibleItems) {
 		// we would not need to re-implement this function here, because it would also work from the base class, since it calls getAllTriangles().
@@ -524,15 +524,15 @@ export class SOctTreeNode {
 /**
  * Implementation of TriangleSelector for huge meshes, useful for collision detection.
  * The internal structure of this mesh is an occtree, speeding up queries using an axis aligne box ({@link getTrianglesInBox}).
- * Every {@link CL3D.SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection: 
+ * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection: 
  * For example if you know that a collision may have happened in the area between (1,1,1) and (10,10,10), you can get all triangles of the scene
  * node in this area with the TriangleSelector easily and check every triangle if it collided.<br/>
  * @class OctTree implementation of a triangle selector, useful for collision detection.
  * @public
  * @constructor
  * @extends CL3D.TriangleSelector
- * @param {CL3D.Mesh} Mesh the {@link CL3D.Mesh} representing the geometry
- * @param {CL3D.SceneNode} scenenode the {@link CL3D.SceneNode} representing the position of the geometry
+ * @param {CL3D.Mesh} Mesh the {@link Mesh} representing the geometry
+ * @param {CL3D.SceneNode} scenenode the {@link SceneNode} representing the position of the geometry
  * @param {Number} minimalPolysPerNode (optional) minmal polygons per oct tree node. Default is 64.
  * @param materialToIgnore {Number} (optional) material type to ignore for collision. Can be set to null.
  * @param materialToIgnore2 {Number} (optional) material type to ignore for collision. Can be set to null.

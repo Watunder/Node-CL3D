@@ -32,17 +32,17 @@ export class AnimatorOnFirstFrame extends CL3D.Animator {
     /**
      * Animates the scene node it is attached to and returns true if scene node was modified.
      * @public
-     * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-     * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+     * @param {CL3D.SceneNode} node The Scene node which needs to be animated this frame.
+     * @param {Number} timeMs The time in milliseconds since the start of the scene.
      */
-    animateNode(n, timeMs) {
+    animateNode(node, timeMs) {
         if (this.RunAlready)
             return false;
 
         this.RunAlready = true;
 
         if (this.TheActionHandler) {
-            this.TheActionHandler.execute(n);
+            this.TheActionHandler.execute(node);
             return true;
         }
 

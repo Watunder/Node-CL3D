@@ -11,6 +11,15 @@ import * as CL3D from "../../main.js";
  * @extends CL3D.Animator
  */
 export class AnimatorOnKeyPress extends CL3D.Animator{
+    /**
+     * @type {number}
+     */
+    KeyPressType;
+    /**
+     * @type {number}
+     */
+    KeyCode;
+
     constructor(scene, engine) {
         super();
 
@@ -37,7 +46,10 @@ export class AnimatorOnKeyPress extends CL3D.Animator{
     }
     
     /**
-     * @public
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
      */
     createClone(node, newManager, oldNodeId, newNodeId) {
         var a = new CL3D.AnimatorOnKeyPress(this.SMGr, this.Engine);
@@ -52,7 +64,7 @@ export class AnimatorOnKeyPress extends CL3D.Animator{
      * Animates the scene node it is attached to and returns true if scene node was modified.
      * @public
      * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-     * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+     * @param {Number} timeMs The time in milliseconds since the start of the scene.
      */
     animateNode(n, timeMs) {
         this.Object = n;

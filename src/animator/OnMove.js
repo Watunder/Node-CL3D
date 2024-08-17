@@ -10,11 +10,13 @@ import * as CL3D from "../main.js";
  * @public
  * @extends CL3D.AnimatorOnClick
  * @class  Scene node animator which invokes a callback function when the scene node has been clicked.
- * @param scene {CL3D.Scene} The scene of the animator.
- * @param engine {CL3D.CopperLicht} an instance of the 3d engine
- * @param functionToCall {function} a function which should be called when the scene node has been clicked
  */
 export class AnimatorOnMove extends CL3D.AnimatorOnClick {
+	/**
+ 	 * @param {CL3D.Scene} scene The scene of the animator.
+ 	 * @param {CL3D.CopperLicht} engine an instance of the 3d engine
+ 	 * @param {Function=} functionToCall a function which should be called when the scene node has been clicked
+	 */
 	constructor(scene, engine, functionToCall) {
 		super(null, null, null, true);
 		
@@ -25,7 +27,7 @@ export class AnimatorOnMove extends CL3D.AnimatorOnClick {
 		this.ActionHandlerOnEnter = null;
 		this.ActionHandlerOnLeave = null;
 		this.TimeLastChecked = 0;
-		this.bLastTimeWasInside = 0;
+		this.bLastTimeWasInside = false;
 	}
 
 	/**
@@ -38,7 +40,10 @@ export class AnimatorOnMove extends CL3D.AnimatorOnClick {
 	}
 
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorOnMove(this.SMGr, this.engine);
@@ -54,8 +59,8 @@ export class AnimatorOnMove extends CL3D.AnimatorOnClick {
 	/**
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
-	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {CL3D.SceneNode} node The Scene node which needs to be animated this frame.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(node, timeMs) {
 		var firstCheck = (this.TimeLastChecked == 0);

@@ -1105,7 +1105,7 @@ globalThis.ccbRegisterBehaviorEventReceiver = (bForMouse, bForKeyboard) => {
 
 /**
  * makes a GET network request via HTTP to any web server, and {@link ccbCancelHTTPRequest} can cancel this request while it is running.
- * @param {string} url  set it an URL to request, like {@link http://www.example.com} or similar.
+ * @param {String} url  set it an URL to request, like {@link http://www.example.com} or similar.
  * @param {function} fobj A callback function which will be called with the received data once the request is finished. This will also be called if the request ailed, with an empty string as parameter.
  * @returns {Number} The function returns an unique Id, for identifying this request.
  */

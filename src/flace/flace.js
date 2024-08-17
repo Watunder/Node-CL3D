@@ -13,7 +13,7 @@ export let gDocument = new CL3D.CCDocument();
  * Creates an instance of the CopperLicht 3D engine by loading the scene from a CopperCube file.
  * @param {String} filetoload a filename such as 'test.ccbjs' or 'test.ccbz' which will be loaded, displayed and animated by the 3d engine.
  * .ccbjs and .ccbz files can be created using {@link http://www.ambiera.com/coppercube/index.html | the CopperCube editor}.
- * @param {HTMLCanvasElement=} mainElement The id of the canvas in your html document.
+ * @param {HTMLCanvasElement} mainElement The id of the canvas in your html document.
  * @param {String=} loadingScreenText specifying a loadingScreen text. Setting this to a text like "Loading" will cause
  * a loading screen with this text to appear while the file is being loaded.
  * @param {String=} loadingScreenBackgroundColor  specifying a loadingScreen backfround color.
@@ -36,15 +36,6 @@ export const startCopperLichtFromFile = function (filetoload, mainElement, loadi
  * var engine = new CL3D.CopperLicht(document.getElementById('yourCanvasID'));
  * engine.load('somefile.ccbz');
  * @class The main class of the CopperLicht engine, representing the 3D engine itself.
- * @param elementIdOfCanvas id of the canvas element embedded in the html, used to draw 3d graphics.
- * @param showInfoTexts if set to true, this shows loading indicators and error texts. If set to false no text is shown and
- * you have to do this yourself.
- * @param showFPSCounter {Boolean} set to true to show a frames per second counter
- * @param loadingScreenText {String} optional parameter specifying a loadingScreen text. Setting this to a text like "Loading" will cause
- * a loading screen with this text to appear while the file is being loaded.
- * @param noWebGLText {String} optional parameter specifying a text to show when there is no webgl.
- * @param fullpage {Boolean} optional  parameter, set to true to expand canvas automatically to the full browser size.
- *
  * @constructor
  */
 export class CopperLicht {
@@ -160,7 +151,16 @@ export class CopperLicht {
 	 */
 	OnLoadingComplete = null;
 
-	constructor(mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullpage) {
+	/**
+	 * @param {HTMLCanvasElement} mainElement id of the canvas element embedded in the html, used to draw 3d graphics.
+	 * @param {String=} loadingScreenText optional parameter specifying a loadingScreen text. Setting this to a text like "Loading" will cause
+	 * a loading screen with this text to appear while the file is being loaded.
+	 * @param {String=} loadingScreenBackgroundColor
+	 * @param {String=} noWebGLText optional parameter specifying a text to show when there is no webgl.
+	 * @param {Boolean=} fullpage optional parameter, set to true to expand canvas automatically to the full browser size.
+	 * @param {Boolean=} pointerLockForFPSCameras optional parameter, set to true to automatically use pointer lock for FPS cameras
+	 */
+	constructor(mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullpage, pointerLockForFPSCameras) {
 		//
 		this.FPS = 60;
 		this.DPR = getDevicePixelRatio();
@@ -183,6 +183,7 @@ export class CopperLicht {
 		this.requestPointerLockAfterFullscreen = false;
 		this.pointerIsCurrentlyLocked = false;
 		this.playingVideoStreams = new Array();
+		this.pointerLockForFPSCameras = pointerLockForFPSCameras;
 
 		//
 		this.RegisteredAnimatorsForKeyUp = new Array();
@@ -447,8 +448,8 @@ export class CopperLicht {
 	
 			this.DPR = getDevicePixelRatio();
 	
-			this.MainElement.setAttribute("width", Math.floor(this.tmpWidth * this.DPR));
-			this.MainElement.setAttribute("height", Math.floor(this.tmpHeight * this.DPR));
+			this.MainElement.setAttribute("width", String(Math.floor(this.tmpWidth * this.DPR)));
+			this.MainElement.setAttribute("height", String(Math.floor(this.tmpHeight * this.DPR)));
 		}
 	}
 
@@ -468,8 +469,8 @@ export class CopperLicht {
 			this.tmpWidth = Math.floor(w * this.DPR);
 			this.tmpHeight = Math.floor(h * this.DPR);
 	
-			this.MainElement.setAttribute("width", this.tmpWidth);
-			this.MainElement.setAttribute("height", this.tmpHeight);
+			this.MainElement.setAttribute("width",  String(this.tmpWidth));
+			this.MainElement.setAttribute("height", String(this.tmpHeight));
 		}
 	}
 
@@ -947,6 +948,7 @@ export class CopperLicht {
 		while (obj != null) {
 			x += obj.offsetLeft;
 			y += obj.offsetTop;
+			// @ts-ignore
 			obj = obj.offsetParent;
 		}
 
@@ -1344,7 +1346,7 @@ export class CopperLicht {
 
 	/**
 	 * Reloads a scene, triggered only by the CopperCube Action 'RestartScene'
-	 * @param {CL3D.Scene} sceneName The new CL3D.Scene to be reloaded.
+	 * @param {String} sceneName The new CL3D.Scene to be reloaded.
 	 * @public
 	 */
 	reloadScene(sceneName) {
@@ -1406,8 +1408,8 @@ export class CopperLicht {
 			return;
 
 		if (this.fullpage) {
-			this.MainElement.setAttribute("width", globalThis.innerWidth);
-			this.MainElement.setAttribute("height", globalThis.innerHeight);
+			this.MainElement.setAttribute("width", String(globalThis.innerWidth));
+			this.MainElement.setAttribute("height", String(globalThis.innerHeight));
 		}
 
 		var dlg_div = document.createElement("div");

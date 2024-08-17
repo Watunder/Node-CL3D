@@ -11,7 +11,7 @@ import * as CL3D from "../main.js";
  */
 export class ActionShoot extends CL3D.Action {
 	constructor() {
-        super();
+		super();
 
 		this.ShootType = 0;
 		this.Damage = 0;
@@ -27,7 +27,8 @@ export class ActionShoot extends CL3D.Action {
 	}
 
 	/**
-	 * @public
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionShoot();
@@ -51,7 +52,8 @@ export class ActionShoot extends CL3D.Action {
 	}
 
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} currentNode
+	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)
@@ -118,7 +120,7 @@ export class ActionShoot extends CL3D.Action {
 			shooterNode = currentNode;
 
 			var shootingAI = currentNode.getAnimatorOfType('gameai');
-			if (shootingAI && shootingAI.isCurrentlyShooting()) {
+			if (shootingAI && shootingAI instanceof CL3D.AnimatorGameAI && shootingAI.isCurrentlyShooting()) {
 				ray = shootingAI.getCurrentlyShootingLine();
 				rayFound = true;
 			}
@@ -218,7 +220,11 @@ export class ActionShoot extends CL3D.Action {
 	}
 
 	/**
-	 * @public
+	 * 
+	 * @param {CL3D.Line3d} ray
+	 * @param {string | any[]} ainodes
+	 * @param {Number} maxLen
+	 * @param {any} sceneManager
 	 */
 	shortenRayToClosestCollisionPointWithWorld(ray, ainodes, maxLen, sceneManager) {
 		if (ainodes.length != 0) {
@@ -242,7 +248,12 @@ export class ActionShoot extends CL3D.Action {
 	}
 
 	/**
-	 * @public
+	 * 
+	 * @param {CL3D.Line3d} ray
+	 * @param {string | any[]} ainodes
+	 * @param {Number} maxLen
+	 * @param {any} toIgnore
+	 * @param {any} sceneManager
 	 */
 	shortenRayToClosestCollisionPointWithAIAnimator(ray, ainodes, maxLen, toIgnore, sceneManager) {
 		var bestDistance = maxLen;
@@ -257,8 +268,7 @@ export class ActionShoot extends CL3D.Action {
 			if (enemyAI && !enemyAI.isAlive()) // don't test collision against dead items
 				continue;
 
-			var collisionDistance = new Object();
-			collisionDistance.N = 0;
+			var collisionDistance = { N: 0 };
 			if (CL3D.AnimatorOnClick.prototype.static_getCollisionDistanceWithNode(sceneManager, ainodes[i], ray, false,
 				false, null, collisionDistance)) {
 				if (collisionDistance.N < bestDistance) {

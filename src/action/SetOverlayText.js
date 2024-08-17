@@ -20,7 +20,8 @@ export class ActionSetOverlayText extends CL3D.Action {
 	}
 
 	/**
-	 * @public
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionSetOverlayText();
@@ -35,7 +36,8 @@ export class ActionSetOverlayText extends CL3D.Action {
 	}
     
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} currentNode
+	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)
@@ -48,7 +50,7 @@ export class ActionSetOverlayText extends CL3D.Action {
 		else if (this.SceneNodeToChange != -1)
 			nodeToHandle = sceneManager.getSceneNodeFromId(this.SceneNodeToChange);
 
-		if (nodeToHandle && nodeToHandle.setText) {
+		if (nodeToHandle && nodeToHandle instanceof CL3D.Overlay2DSceneNode) {
 			var posVar = this.Text.indexOf('$');
 			if (posVar != -1) {
 				// text probably contains variables. Find and replace them with their values

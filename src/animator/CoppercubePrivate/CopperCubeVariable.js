@@ -32,9 +32,9 @@ export class CopperCubeVariable {
     /**
      * Static function, returns the instance of an existing CopperCube variable or creates one if not existing.
      * @public
-     * @param n {String} Name of the variable
-     * @param createIfNotExisting {Boolean} if the variable is not found, it will be created if this is set to true.
-     * @param scene {CL3D.Scene} The current scene. This parameter is optional, this can be 0. It is used for getting runtime variables such as #player1.health
+     * @param {String} n Name of the variable
+     * @param {Boolean} createIfNotExisting if the variable is not found, it will be created if this is set to true.
+     * @param {CL3D.Scene} scene The current scene. This parameter is optional, this can be 0. It is used for getting runtime variables such as #player1.health
      * @returns {CL3D.CopperCubeVariable} Returns instance of the variable or null if not found
      */
     static getVariable(n, createIfNotExisting, scene) {
@@ -224,7 +224,7 @@ export class CopperCubeVariable {
         }
 
         // return
-        var retobj = new Object(); // used for passing scene node and attribute name back if available
+        var retobj = {}; // used for passing scene node and attribute name back if available
         retobj.node = node;
         retobj.attrname = attrname;
         return retobj;
@@ -311,7 +311,7 @@ export class CopperCubeVariable {
     getValueAsInt() {
         switch (this.ActiveValueType) {
             case 0: // string
-                return Math.floor(this.StringValue);
+                return Math.floor(Number(this.StringValue));
             case 1: // int
                 return this.IntValue;
             case 2: // float

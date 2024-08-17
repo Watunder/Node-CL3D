@@ -58,7 +58,7 @@ export class AnimatorGameAI extends CL3D.Animator {
         this.CurrentCommandStartTime = 0;
         this.CurrentCommandTicksDone = 0;
         this.CurrentCommandExpectedTickCount = 0;
-        this.BeginPositionWhenStartingCurrentCommand = 0;
+        this.BeginPositionWhenStartingCurrentCommand = null;
         this.HandleCurrentCommandTargetNode = null;
         this.AttackCommandExecuted = false;
         this.Activated = false;
@@ -119,8 +119,8 @@ export class AnimatorGameAI extends CL3D.Animator {
     /**
      * Animates the scene node it is attached to and returns true if scene node was modified.
      * @public
-     * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-     * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+     * @param {CL3D.SceneNode} node The Scene node which needs to be animated this frame.
+     * @param {Number} timeMs The time in milliseconds since the start of the scene.
      */
     animateNode(node, timeMs) {
         if (node == null || this.TheSceneManager == null)

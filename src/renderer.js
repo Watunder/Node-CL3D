@@ -2317,7 +2317,7 @@ export class Renderer {
 	 * Starts the drawing process by clearing the whole scene. Is called by {@link CopperLicht.draw3dScene}(),
 	 * so it shouldn't be necessary to call this yourself.
 	 * @public
-	 * @param clearColor {Number} Color for the background. See {@link CL3D.createColor}.
+	 * @param clearColor {Number} Color for the background. See {@link createColor}.
 	 */
 	beginScene(clearColor) {
 		if (this.gl == null)
@@ -3225,7 +3225,7 @@ export class Renderer {
 		placeholderTexture.OriginalHeight = newtexture.OriginalHeight;
 	}
 	/**
-	 * Fills an existing {@link CL3D.Texture} with the content of a from a 2d canvas
+	 * Fills an existing {@link Texture} with the content of a from a 2d canvas
 	 * @public
 	 * @param {HTMLCanvasElement} canvas a 2d canvas to be converted into a texture
 	 * @param {boolean} nonscaling optional parameter, if set to true, and the texture don't have a power-of-two size, the texture will not be scaled up, but copied without scaling.
@@ -3281,7 +3281,7 @@ export class Renderer {
 		gl.bindTexture(gl.TEXTURE_2D, null);
 	}
 	/**
-	 * Creates a {@link CL3D.Texture} from a 2d canvas
+	 * Creates a {@link Texture} from a 2d canvas
 	 * @public
 	 * @param {HTMLCanvasElement} canvas a 2d canvas to be converted into a texture
 	 * @param {boolean} nonscaling optional parameter, if set to true, and the texture don't have a power-of-two size, the texture will not be scaled up, but copied without scaling.
@@ -3350,7 +3350,7 @@ export class Renderer {
 		return t;
 	}
 	/**
-	 * Creates a {@link CL3D.Texture} from pixels
+	 * Creates a {@link Texture} from pixels
 	 * @public
 	 * @param {ArrayBufferView} pixels source data for the texture
 	 * @param {Number} width the width of the texture

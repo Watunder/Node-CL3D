@@ -4,13 +4,12 @@
 import * as CL3D from "../main.js";
 
 /**
- * Scene node animator making {@link CL3D.SceneNode}s move along a path.
- * Uses {@link CL3D.PathSceneNode} to define the path.
+ * Scene node animator making {@link SceneNode}s move along a path.
+ * Uses {@link PathSceneNode} to define the path.
  * @constructor
  * @public
  * @extends CL3D.Animator
- * @class  Scene node animator making {@link CL3D.SceneNode}s move along a path, uses {@link CL3D.PathSceneNode} to define the path.
- * @param scene The scene the animator is in
+ * @class  Scene node animator making {@link SceneNode}s move along a path, uses {@link PathSceneNode} to define the path.
  */
 export class AnimatorFollowPath extends CL3D.Animator {
 	/** 
@@ -34,6 +33,14 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	 */
 	static EFPFEM_SWITCH_TO_CAMERA = 2;
 
+	/**
+	 * @type {CL3D.ActionHandler}
+	 */
+	TheActionHandler;
+
+	/**
+	 * @param {CL3D.Scene} scene The scene the animator is in
+	 */
 	constructor(scene) {
 		super();
 
@@ -73,10 +80,13 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	}
 
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
-		var a = new CL3D.AnimatorFollowPath();
+		var a = new CL3D.AnimatorFollowPath(newManager);
 		a.TimeNeeded = this.TimeNeeded;
 		a.LookIntoMovementDirection = this.LookIntoMovementDirection;
 		a.OnlyMoveWhenCameraActive = this.OnlyMoveWhenCameraActive;
@@ -93,7 +103,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	 * Sets the options for animating the node along the path
 	 * @public
 	 * @param endmode {Number} Mode specifying what should happen when the end of the path has been reached.
-	 * Can be {@link CL3D.AnimatorFollowPath.EFPFEM_START_AGAIN} or {@link CL3D.AnimatorFollowPath.EFPFEM_STOP}
+	 * Can be {@link AnimatorFollowPath.EFPFEM_START_AGAIN} or {@link AnimatorFollowPath.EFPFEM_STOP}
 	 * @param timeNeeded {Number} Time in milliseconds needed for following the whole path, for example 10000 for 10 seconds.
 	 * @param lookIntoMovementDirection {Boolean} true if the node should look into the movement direction or false
 	 * if not.
@@ -109,7 +119,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		if (n == null || !this.Manager || !this.TimeNeeded)
@@ -212,7 +222,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 				var lookvector = nextPos.substract(pos);
 				lookvector.setLength(100.0);
 
-				if (this.IsCamera) {
+				if (n instanceof CL3D.CameraSceneNode) {
 					cam = n;
 					var newTarget = pos.add(lookvector);
 					changed = changed || !newTarget.equals(cam.Target);
@@ -276,7 +286,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 			return;
 
 		var node = this.Manager.getSceneNodeFromName(this.PathToFollow);
-		if (node && node.getType() == 'path') {
+		if (node && node instanceof CL3D.PathSceneNode && node.getType() == 'path') {
 			this.setPathToFollow(node);
 		}
 	}
@@ -301,7 +311,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 			return;
 
 		var node = this.Manager.getSceneNodeFromName(this.CameraToSwitchTo);
-		if (node && node.getType() == 'camera') {
+		if (node && node instanceof CL3D.CameraSceneNode && node.getType() == 'camera') {
 			var renderer = this.Manager.getLastUsedRenderer();
 			if (renderer)
 				node.setAutoAspectIfNoFixedSet(renderer.getWidth(), renderer.getHeight());

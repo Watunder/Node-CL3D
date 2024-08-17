@@ -5,8 +5,8 @@ import * as CL3D from "./main.js";
 
 /**
  * Class which holds the geometry of an object.
- * A Mesh is nothing more than a collection of some {@link CL3D.MeshBuffer}s. 
- * A mesh is usually used in a {@link CL3D.MeshSceneNode} in order to be rendered.
+ * A Mesh is nothing more than a collection of some {@link MeshBuffer}s. 
+ * A mesh is usually used in a {@link MeshSceneNode} in order to be rendered.
  * @constructor
  * @public
  * @class Class which holds the geometry of an object

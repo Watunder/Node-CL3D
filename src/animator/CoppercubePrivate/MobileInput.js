@@ -93,8 +93,7 @@ export class AnimatorMobileInput extends CL3D.Animator {
 
         this.KeyDown[key] = down;
 
-        var e = new Object();
-        e.keyCode = key;
+        var e = { keyCode: key};
 
         if (down)
             this.engine.handleKeyDown(e);

@@ -28,17 +28,19 @@ import * as CL3D from "../main.js";
  * @constructor
  * @public
  * @extends CL3D.Animator
- * @class Scene node animator making {@link CL3D.SceneNode}s move using autoamtic collision detection and response
- * @param {CL3D.Vect3d} radius 3d vector describing the radius of the scene node as ellipsoid.	
- * @param {CL3D.Vect3d} translation Set translation of the collision ellipsoid. By default, the ellipsoid for collision 
- * detection is created around the center of the scene node, which means that the ellipsoid surrounds it completely. 
- * If this is not what you want, you may specify a translation for the ellipsoid.
- * @param {CL3D.TriangleSelector} world Representing the world, the collision geometry, represented by a {@link TriangleSelector}.
- * @param {Number} slidingspeed (optional) A very small value, set to 0.0005 for example. This affects how the ellipsoid is moved 
- * when colliding with a wall. Affects movement smoothness and friction. If set to a too big value, this will also may cause the 
- * ellipsoid to be stuck.
+ * @class Scene node animator making {@link SceneNode}s move using autoamtic collision detection and response
  */
 export class AnimatorCollisionResponse extends CL3D.Animator {
+	/**
+	 * @param {CL3D.Vect3d=} radius 3d vector describing the radius of the scene node as ellipsoid.	
+	 * @param {CL3D.Vect3d=} translation Set translation of the collision ellipsoid. By default, the ellipsoid for collision 
+	 * detection is created around the center of the scene node, which means that the ellipsoid surrounds it completely. 
+	 * If this is not what you want, you may specify a translation for the ellipsoid.
+	 * @param {CL3D.TriangleSelector=} world Representing the world, the collision geometry, represented by a {@link TriangleSelector}.
+	 * @param {Number=} slidingspeed (optional) A very small value, set to 0.0005 for example. This affects how the ellipsoid is moved 
+	 * when colliding with a wall. Affects movement smoothness and friction. If set to a too big value, this will also may cause the 
+	 * ellipsoid to be stuck.
+	 */
 	constructor(radius, translation, world, slidingspeed) {
 		super();
 
@@ -76,7 +78,10 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	}
 
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		var a = new CL3D.AnimatorCollisionResponse();
@@ -128,7 +133,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	 * Animates the scene node it is attached to and returns true if scene node was modified.
 	 * @public
 	 * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-	 * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
 		var difftime = (timeMs - this.LastAnimationTime);
@@ -186,7 +191,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 
 			//this.SlidingSpeed = force.getLength() * 0.0001;
 			var cam = null;
-			if (n && n.getType() == 'camera')
+			if (n && n instanceof CL3D.CameraSceneNode && n.getType() == 'camera')
 				cam = n;
 
 			var camvect;
@@ -194,8 +199,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 				camvect = cam.Target.substract(cam.Pos);
 
 			var triangle = new CL3D.Triangle3d();
-			var objFalling = new Object(); // used for passing the object falling value by reference
-			objFalling.N = 0;
+			var objFalling = { N: 0 } // used for passing the object falling value by reference
 
 			this.World.setNodeToIgnore(n);
 
@@ -300,7 +304,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 			return position;
 
 		// now collide ellipsoid with world
-		var colData = new Object(); //var colData:CollisionData = new CollisionData();
+		var colData = {}; //var colData:CollisionData = new CollisionData();
 		colData.R3Position = position.clone();
 		colData.R3Velocity = velocity.clone();
 		colData.eRadius = radius.clone();
@@ -534,8 +538,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 			var a = 0; //:Number;
 			var b = 0; //:Number;
 			var c = 0; //:Number;
-			var newTObj = new Object();
-			newTObj.N = 0;
+			var newTObj = { N: 0 };
 
 			// for each edge or vertex a quadratic equation has to be solved:
 			// a*t^2 + b*t + c = 0. We calculate a,b, and c for each test.
@@ -712,7 +715,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 
 		return false;
 	}
-	
+
 	/**
 	 * @public
 	 */

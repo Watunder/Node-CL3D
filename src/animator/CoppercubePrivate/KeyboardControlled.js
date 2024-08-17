@@ -69,7 +69,10 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
     }
 
     /**
-     * @public
+	 * @param {CL3D.SceneNode} node
+	 * @param {CL3D.Scene} newManager
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
      */
     createClone(node, newManager, oldNodeId, newNodeId) {
         var a = new CL3D.AnimatorKeyboardControlled(this.SMGr, this.Engine);
@@ -157,8 +160,8 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
     /**
      * Animates the scene node it is attached to and returns true if scene node was modified.
      * @public
-     * @param {CL3D.SceneNode} n The Scene node which needs to be animated this frame.
-     * @param {Integer} timeMs The time in milliseconds since the start of the scene.
+     * @param {CL3D.SceneNode} node The Scene node which needs to be animated this frame.
+     * @param {Number} timeMs The time in milliseconds since the start of the scene.
      */
     animateNode(node, timeMs) {
         var timeDiff = timeMs - this.lastAnimTime;
@@ -280,7 +283,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
             var bFalling = false;
 
             var a = node.getAnimatorOfType('collisionresponse');
-            if (a)
+            if (a && a instanceof CL3D.AnimatorCollisionResponse)
                 bFalling = a.isFalling();
 
             if (!bFalling && (this.hasAnimationType(node, 1) || this.hasAnimationType(node, 3) || this.hasAnimationType(node, 2)))
@@ -292,7 +295,7 @@ export class AnimatorKeyboardControlled extends CL3D.Animator {
         // and if it's not falling, we tell it to jump.
         if (this.jumpKeyDown) {
             var b = node.getAnimatorOfType('collisionresponse');
-            if (b && !b.isFalling()) {
+            if (b && b instanceof CL3D.AnimatorCollisionResponse && !b.isFalling()) {
                 var minJumpTime = 0;
                 if (this.SMGr && this.SMGr.Gravity != 0)
                     minJumpTime = Math.floor((this.JumpSpeed * (1.0 / this.SMGr.Gravity)) * 2000);

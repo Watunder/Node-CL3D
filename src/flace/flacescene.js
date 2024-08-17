@@ -23,8 +23,8 @@ const GLSL = String.raw;
 
 /**
  * @constructor
- * @class A 3d scene, containing all {@link CL3D.SceneNode}s.
- * The scene holds all {@link CL3D.SceneNode}s and is able to draw and animate them.
+ * @class A 3d scene, containing all {@link SceneNode}s.
+ * The scene holds all {@link SceneNode}s and is able to draw and animate them.
  */
 export class Scene {
 	/**
@@ -1165,7 +1165,7 @@ export class Scene {
 
 	/**
 	 * Sets the background color for the scene
-	 * @param clr {Number} New color. See {@link CL3D.createColor} on how to create such a color value.
+	 * @param clr {Number} New color. See {@link createColor} on how to create such a color value.
 	 * @public
 	 */
 	setBackgroundColor(clr) {
@@ -1174,7 +1174,7 @@ export class Scene {
 
 	/**
 	 * Gets the background color of the scene
-	 * @returns {Number} Background color. See {@link CL3D.createColor} on how to create such a color value.
+	 * @returns {Number} Background color. See {@link createColor} on how to create such a color value.
 	 * @public
 	 */
 	getBackgroundColor() {
@@ -1199,8 +1199,8 @@ export class Scene {
 
 	/**
 	 * Specifies when the scene should be redrawn.
-	 * @param mode Possible values are {@link CL3D.Scene.REDRAW_WHEN_CAM_MOVED},
-	 * {@link CL3D.Scene.REDRAW_WHEN_SCENE_CHANGED} and {@link CL3D.Scene.REDRAW_EVERY_FRAME}.
+	 * @param mode Possible values are {@link Scene.REDRAW_WHEN_CAM_MOVED},
+	 * {@link Scene.REDRAW_WHEN_SCENE_CHANGED} and {@link Scene.REDRAW_EVERY_FRAME}.
 	 * @public
 	 */
 	setRedrawMode(mode) {
@@ -1247,8 +1247,8 @@ export class Scene {
 	 * this method to register itself for rendering if it decides that it wants to be rendered.
 	 * In this way, scene nodes can be rendered in the optimal order.
 	 * @param {CL3D.SceneNode} s Node which registers itself for rendering
-	 * @param {Number} mode render mode the scene node wishes to register itself. Usually, use {@link CL3D.Scene.RENDER_MODE_DEFAULT}. For
-	 * transparent nodes, {@link CL3D.Scene.RENDER_MODE_TRANSPARENT} is ideal.
+	 * @param {Number} mode render mode the scene node wishes to register itself. Usually, use {@link Scene.RENDER_MODE_DEFAULT}. For
+	 * transparent nodes, {@link Scene.RENDER_MODE_TRANSPARENT} is ideal.
 	 * @public
 	 */
 	registerNodeForRendering(s, mode) {
@@ -1690,7 +1690,7 @@ export class Scene {
 	  * @example
 	  * scene.setFog(true, CL3D.createColor(1, 100, 100, 100), 0.1);
 	  * @param enabled {Boolean} (optional) set to true to enable fog and false not to enable
-	  * @param color {Number} Fog color. See {@link CL3D.createColor} on how to create such a color value.
+	  * @param color {Number} Fog color. See {@link createColor} on how to create such a color value.
 	  * @param density {Number} Density of the fog. A value like 0.001 is default.
 	*/
 	setFog(enabled, color, density) {

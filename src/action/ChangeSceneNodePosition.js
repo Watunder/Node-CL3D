@@ -10,8 +10,38 @@ import * as CL3D from "../main.js";
  * @class
  */
 export class ActionChangeSceneNodePosition extends CL3D.Action {
+	/**
+	 * @type {Number}
+	 */
+	PositionChangeType;
+	/**
+	 * @type {Number}
+	 */
+	SceneNodeToChangePosition;
+	/**
+	 * @type {boolean}
+	 */
+	ChangeCurrentSceneNode;
+	/**
+	 * @type {CL3D.Vect3d}
+	 */
+	Vector;
+	/**
+	 * @type {CL3D.Vect3d}
+	 */
+	Area3DEnd;
+	/**
+	 * @type {boolean}
+	 */
+	RelativeToCurrentSceneNode;
+	/**
+	 * @type {Number}
+	 */
+	SceneNodeRelativeTo;
+
+
 	constructor() {
-        super();
+		super();
 
 		this.UseAnimatedMovement = false;
 		this.TimeNeededForMovementMs = 0;
@@ -19,7 +49,8 @@ export class ActionChangeSceneNodePosition extends CL3D.Action {
 	}
 
 	/**
-	 * @public
+	 * @param {Number} oldNodeId 
+	 * @param {Number} newNodeId 
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionChangeSceneNodePosition();
@@ -40,9 +71,10 @@ export class ActionChangeSceneNodePosition extends CL3D.Action {
 
 		return a;
 	}
-    
+
 	/**
-	 * @public
+	 * @param {CL3D.SceneNode} currentNode 
+	 * @param {CL3D.Scene} sceneManager 
 	 */
 	execute(currentNode, sceneManager) {
 		if (!currentNode || !sceneManager)
@@ -86,7 +118,7 @@ export class ActionChangeSceneNodePosition extends CL3D.Action {
 						var moveVect = new CL3D.Vect3d(1, 0, 0);
 						matr.rotateVect(moveVect);
 
-						if (nodeToHandle.getType() == 'camera')
+						if (nodeToHandle instanceof CL3D.CameraSceneNode && nodeToHandle.getType() == 'camera')
 							moveVect = nodeToHandle.Target.substract(nodeToHandle.Pos);
 
 						moveVect.setLength(len);
