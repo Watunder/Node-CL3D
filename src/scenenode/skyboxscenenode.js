@@ -14,6 +14,8 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	constructor() {
 		super();
 
+		this.Type = 2037085030;
+
 		this.OwnedMesh = new CL3D.Mesh();
 
 		var baseindices = [0, 1, 2, 0, 2, 3];

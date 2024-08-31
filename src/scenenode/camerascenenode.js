@@ -18,6 +18,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 
 		this.init();
 
+		this.Type = 1835098982;
 		this.Box = new CL3D.Box3d();
 		this.DoesCollision = false;
 		this.Active = false;

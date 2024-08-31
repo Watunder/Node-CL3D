@@ -244,6 +244,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 
 		this.init();
 
+		this.Type = 1668575334;
 		this.Box = new CL3D.Box3d();
 		this.Buffer = new CL3D.MeshBuffer();
 

@@ -15,6 +15,7 @@ export class MeshSceneNode extends CL3D.SceneNode {
 
 		this.init();
 
+		this.Type = 1752395110;
 		this.Box = new CL3D.Box3d();
 		this.DoesCollision = false;
 		this.OwnedMesh = null;
