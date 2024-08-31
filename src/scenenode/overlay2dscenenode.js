@@ -50,6 +50,9 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		super();
 
 		this.init();
+
+		this.Type = 1868837478;
+
 		this.engine = engine;
 
 		/*private static const ETA_TOP_LEFT:int					= 0;

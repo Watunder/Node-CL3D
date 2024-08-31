@@ -16,6 +16,7 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 
 		this.init();
 
+		this.Type = 1819042406;
 		this.Box = new CL3D.Box3d();
 		this.SizeX = 10;
 		this.SizeY = 10;

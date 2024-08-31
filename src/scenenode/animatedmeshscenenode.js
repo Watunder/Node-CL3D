@@ -15,6 +15,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 
 		this.init();
 
+		this.Type = 1835950438;
 		this.Box = new CL3D.Box3d();
 		this.DoesCollision = false;
 		this.Mesh = null;

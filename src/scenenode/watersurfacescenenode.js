@@ -64,6 +64,8 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 	constructor() {
 		super();
 
+		this.Type = 1920235366;
+
 		// settings
 		this.Details = 0;
 		this.WaterFlowDirection = new CL3D.Vect2d(1.0, 1.0);

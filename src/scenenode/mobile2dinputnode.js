@@ -15,6 +15,7 @@ export class Mobile2DInputSceneNode extends CL3D.SceneNode {
 
 		CL3D.Overlay2DSceneNode.call(this, engine);
 
+		this.Type = 1835283046;
 		this.CursorTex = null;
 		this.CursorPosX = 0;
 		this.CursorPosY = 0;

@@ -14,6 +14,7 @@ export class HotspotSceneNode extends CL3D.SceneNode {
 	constructor(engine, scene) {
 		super();
 
+		this.Type = 1953526632;
 		this.Box = new CL3D.Box3d();
 		this.Width = 0;
 		this.Height = 0;
@@ -34,6 +35,7 @@ export class DummyTransformationSceneNode extends CL3D.SceneNode {
 
 		this.init();
 
+		this.Type = 1954112614;
 		this.Box = new CL3D.Box3d();
 		this.RelativeTransformationMatrix = new CL3D.Matrix4();
 	}

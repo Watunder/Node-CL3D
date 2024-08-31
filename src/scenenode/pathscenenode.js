@@ -37,6 +37,7 @@ export class PathSceneNode extends CL3D.SceneNode {
 
 		this.init();
 
+		this.Type = 1752461414;
 		this.Box = new CL3D.Box3d();
 		this.Tightness = 0; //;
 		this.IsClosedCircle = false; //:Boolean;

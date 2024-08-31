@@ -105,6 +105,7 @@ export class LightSceneNode extends CL3D.SceneNode {
 	constructor(size) {
 		super();
 
+		this.Type = 1751608422;
 		this.LightData = new CL3D.Light();
 		this.Box = new CL3D.Box3d();
 		this.init();
