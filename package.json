@@ -42,6 +42,7 @@
     "nc-screen": "*"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "*",
     "@rollup/plugin-replace": "*",
     "@rollup/plugin-terser": "*",
     "@typhonjs-build-test/esm-d-ts": "*",
@@ -51,6 +52,7 @@
     "rollup": "*"
   },
   "optionalDependencies": {
-    "3d-core-raub": "*"
+    "3d-core-raub": "*",
+    "@babylonjs/core": "*"
   }
 }

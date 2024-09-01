@@ -2,6 +2,9 @@
     "include": [
         "src"
     ],
+    "exclude": [
+        "src/trunk"
+    ],
     "compilerOptions": {
         "target": "ESNext",
         "module": "NodeNext",

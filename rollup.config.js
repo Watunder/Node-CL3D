@@ -54,12 +54,12 @@ export default [
         plugins: [
             generateDTS.plugin(),
             //terser(),
-            replace({
-                delimiters: ['\\b', '\\b(?!\\.)'],
-                'process.env.SDL_ENV': false,
-                'process.env.RAUB_ENV': false,
-                preventAssignment: true
-            })
+            // replace({
+            //     delimiters: ['\\b', '\\b(?!\\.)'],
+            //     'process.env.SDL_ENV': false,
+            //     'process.env.RAUB_ENV': false,
+            //     preventAssignment: true
+            // })
         ],
         output: {
             format: 'esm',
