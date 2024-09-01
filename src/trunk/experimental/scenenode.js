@@ -26,6 +26,7 @@ export class SceneNode extends CL3D.SceneNode {
 		if (sceneNode) {
             sceneNode._babylonNode.parent = this._babylonNode;
 			sceneNode.Parent = this;
+            sceneNode.scene = this.scene;
             
 			this.Children.push(sceneNode);
 		}
