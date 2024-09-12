@@ -15,6 +15,10 @@ export class CCDocument {
 		 * @type {CL3D.Free3dScene[]}
 		 */
 		this.Scenes = new Array();
+		/**
+		 * @type {String[]}
+		 */
+		this.Scripts = new Array();
 		//this.UpdateMode = CL3D.Scene.REDRAW_WHEN_SCENE_CHANGED;
 		this.UpdateMode = CL3D.Scene.REDRAW_EVERY_FRAME;
 		this.WaitUntilTexturesLoaded = false;
