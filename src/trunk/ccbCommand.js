@@ -8,6 +8,14 @@ import * as CL3D from "../main.js";
 import { vector3d } from "../scriptinginterface.js";
 import { getSdlInfo } from "../share/getSdlInfo.js";
 import { endProgram } from "../share/endProgram.js";
+import { getDevicePixelRatio } from "../share/getDevicePixelRatio.js";
+
+/**
+ * @returns {Number} the ratio of the resolution in physical pixels and in pixels for the current display device.
+ */
+globalThis.ccbGetDevicePixelRatio = () => {
+	return getDevicePixelRatio();
+}
 
 /**
  * @param {Number} id Searches the whole scene graph for a scene node with this 'id'.
