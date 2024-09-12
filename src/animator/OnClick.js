@@ -95,10 +95,10 @@ export class AnimatorOnClick extends CL3D.Animator {
 			return false;
 		}
 
-		var now = CL3D.CLTimer.getTime();
+		// var now = CL3D.CLTimer.getTime();
 
-		if (now - this.engine.LastCameraDragTime < 250)
-			return false;
+		// if (now - this.engine.LastCameraDragTime < 250)
+		// 	return false;
 
 		var x = this.engine.getMousePosXFromEvent(event);
 		var y = this.engine.getMousePosYFromEvent(event);
@@ -112,7 +112,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 		}
 
 		if (this.TheObject.Parent == null) {
-			// object seems to be deleted 
+			// object seems to be deleted
 			this.TheObject = null;
 			return false;
 		}
@@ -144,10 +144,10 @@ export class AnimatorOnClick extends CL3D.Animator {
 			return false;
 		}
 
-		var now = CL3D.CLTimer.getTime();
+		// var now = CL3D.CLTimer.getTime();
 
-		if (now - this.engine.LastCameraDragTime < 250)
-			return false;
+		// if (now - this.engine.LastCameraDragTime < 250)
+		// 	return false;
 
 		var x = this.engine.getMousePosXFromEvent(event);
 		var y = this.engine.getMousePosYFromEvent(event);
@@ -161,13 +161,13 @@ export class AnimatorOnClick extends CL3D.Animator {
 		}
 
 		if (this.TheObject.Parent == null) {
-			// object seems to be deleted 
+			// object seems to be deleted
 			this.TheObject = null;
 			return false;
 		}
 
-		if (n.isActuallyVisible() &&
-			this.isOverNode(n, x, y)) {
+		if (n.isActuallyVisible()/*&&
+			this.isOverNode(n, x, y)*/) {
 			this.LastTimeDoneSomething = true;
 
 			this.invokeAction(n);
@@ -244,7 +244,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	getDistanceToNearestCollisionPointWithWorld(begin, end) {
 		return this.static_getDistanceToNearestCollisionPointWithWorld(this.SMGr, begin, end, this.World, true);
 	}
-	
+
 	/**
 	 * @public
 	 * returns true if collides (and no wall between), false if not
@@ -257,7 +257,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 		var mat = new CL3D.Matrix4(false);
 		if (node.AbsoluteTransformation.getInverse(mat)) {
 			if (box.intersectsWithLine(mat.getTransformedVect(ray.Start), mat.getTransformedVect(ray.End))) {
-				// the click was inside the bounding box 
+				// the click was inside the bounding box
 				//Debug.print("Click was in BB!");
 				var meshSceneNode = null;
 				if (node.getMesh && node.OwnedMesh) meshSceneNode = node; // instead of checking for the type, we are checking for the method, that should be enough
@@ -289,7 +289,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 								var collisionDistance = collisionPoint.getDistanceTo(ray.Start);
 
 								if (distance + CL3D.TOLERANCE < collisionDistance) {
-									return false; // a wall was between us 
+									return false; // a wall was between us
 								}
 
 								else {
@@ -347,7 +347,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 						var raytestlen = rayworldtestend.getDistanceTo(rayworldteststart) - maxradius;
 
 						if (distance < raytestlen)
-							return false; // a wall was between us 
+							return false; // a wall was between us
 
 						else {
 							if (outDistance != null)
