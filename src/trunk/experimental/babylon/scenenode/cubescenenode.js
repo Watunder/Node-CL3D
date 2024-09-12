@@ -1,4 +1,4 @@
-import * as CL3D from "../../../main.js";
+import * as CL3D from "../../../../main.js";
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
 import { SceneNode } from "../scenenode.js";
 
