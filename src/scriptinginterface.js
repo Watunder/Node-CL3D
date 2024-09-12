@@ -627,7 +627,7 @@ export class ExtensionScriptProperty {
 					value = `new vector3d(${prop.VectorValue.X}, ${prop.VectorValue.Y}, ${prop.VectorValue.Z})`;
 					break;
 				case 7: //irr::scene::EESAT_TEXTURE:
-					value = "\"" + prop.TextureValue ? prop.TextureValue.Name : "" + "\"";
+					value = "\"" + (prop.TextureValue ? prop.TextureValue.Name : "") + "\"";
 					break;
 				case 8: //irr::scene::EESAT_SCENE_NODE_ID:
 					value = `ccbGetSceneNodeFromId(${prop.IntValue})`;
