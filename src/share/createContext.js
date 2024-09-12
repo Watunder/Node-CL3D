@@ -1,3 +1,7 @@
+import { doProcess } from './doProcess.js';
+
+const process = doProcess();
+
 let createContextImpl = () => { }
 
 if (typeof globalThis.WebGLRenderingContext == "undefined") {

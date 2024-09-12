@@ -5,8 +5,10 @@
 import * as CL3D from "./main.js";
 import { createContext } from "./share/createContext.js";
 import { createCanvas } from "./share/createCanvas.js";
+import { doProcess } from "./share/doProcess.js";
 
 const GLSL = String.raw;
+const process = doProcess();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Renderer

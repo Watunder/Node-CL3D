@@ -2,7 +2,10 @@
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
+import { doProcess } from "../share/doProcess.js";
 import { getDevicePixelRatio } from "../share/getDevicePixelRatio.js";
+
+const process = doProcess();
 
 /**
  * @type {CL3D.CCDocument}
@@ -442,12 +445,12 @@ export class CopperLicht {
 		if (this.tmpWidth != globalThis.innerWidth || this.tmpHeight != globalThis.innerHeight) {
 			this.tmpWidth = globalThis.innerWidth;
 			this.tmpHeight = globalThis.innerHeight;
-	
+
 			this.MainElement.style.width = this.tmpWidth + "px";
 			this.MainElement.style.height = this.tmpHeight + "px";
-	
+
 			this.DPR = getDevicePixelRatio();
-	
+
 			this.MainElement.setAttribute("width", String(Math.floor(this.tmpWidth * this.DPR)));
 			this.MainElement.setAttribute("height", String(Math.floor(this.tmpHeight * this.DPR)));
 		}
@@ -460,15 +463,15 @@ export class CopperLicht {
 		if (this.MainElement && (this.tmpWidth != this.MainElement.width || this.tmpHeight != this.MainElement.height)) {
 			var w = this.MainElement.width;
 			var h = this.MainElement.height;
-	
+
 			this.MainElement.style.width = w + "px";
 			this.MainElement.style.height = h + "px";
-	
+
 			this.DPR = getDevicePixelRatio();
 
 			this.tmpWidth = Math.floor(w * this.DPR);
 			this.tmpHeight = Math.floor(h * this.DPR);
-	
+
 			this.MainElement.setAttribute("width",  String(this.tmpWidth));
 			this.MainElement.setAttribute("height", String(this.tmpHeight));
 		}
