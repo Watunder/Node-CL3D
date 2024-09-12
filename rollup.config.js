@@ -53,13 +53,7 @@ export default [
         onwarn,
         plugins: [
             generateDTS.plugin(),
-            //terser(),
-            replace({
-                delimiters: ['\\b', '\\b(?!\\.)'],
-                'process.env.SDL_ENV': false,
-                'process.env.RAUB_ENV': false,
-                preventAssignment: true
-            })
+            //terser()
         ],
         output: {
             format: 'esm',
