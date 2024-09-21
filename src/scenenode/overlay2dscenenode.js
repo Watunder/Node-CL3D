@@ -208,7 +208,11 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	 * @public
 	 */
 	render(renderer) {
-		// TODO: ScreenShot
+		// screen shot
+		if (CL3D.Extensions.doScreenShot) {
+			CL3D.Extensions.doScreenShot(renderer.canvas);
+		}
+
 		var rctTarget = this.getScreenCoordinatesRect(true, renderer);
 		var rctDrawText = rctTarget;
 

@@ -12,6 +12,7 @@ export const Extensions = {
 	draw: () => { },
 	setWorld: (world) => { },
 	readAnimator: (loader, type, rootSceneNode, sceneManager) => { return null },
+	doScreenShot: (canvas) => { }
 }
 
 /** 
