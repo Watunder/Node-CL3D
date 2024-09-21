@@ -449,6 +449,24 @@ export class Renderer {
         gl_FragColor = texture2D(texture1, texCoord);
     }`;
 
+	fs_shader_maskedtexture = GLSL`
+	//#version 100
+	precision mediump float;
+
+	uniform sampler2D texture1;
+	uniform sampler2D texture2;
+
+	varying vec2 v_texCoord1;
+	varying vec2 v_texCoord2;
+
+	void main()
+	{
+		vec2 texCoord = vec2(v_texCoord1.s, v_texCoord1.t);
+		vec4 color = texture2D(texture1, texCoord);
+		vec4 mask = texture2D(texture2, texCoord);
+		gl_FragColor = color * mask;
+	}`;
+
 	fs_shader_onlyfirsttexture_gouraud = GLSL`
 	//#version 100
 	precision mediump float;
@@ -2133,9 +2151,13 @@ export class Renderer {
 	 * @param {Number} height height of the rectangle in pixels
 	 * @param {CL3D.Texture} tex texture to draw
 	 * @param {Boolean} blend (optional) set to true to enable alpha blending (using the alpha component of the color) and false not to blend
-	 * @param shaderToUse (optional) shader to be used or null if the default shader should be used. Set this to something returned by getGLProgramFromMaterialType() for example.
+	 * @param {WebGLProgram?} shaderToUse (optional) shader to be used or null if the default shader should be used. Set this to something returned by getGLProgramFromMaterialType() for example.
+	 * @param {number?} srcRightX
+	 * @param {number?} srcBottomY
+	 * @param {boolean?} sharp
+	 * @param {CL3D.Texture?} maskTex mask texture
 	 */
-	draw2DImage(x, y, width, height, tex, blend, shaderToUse, srcRightX, srcBottomY, sharp) {
+	draw2DImage(x, y, width, height, tex, blend, shaderToUse, srcRightX, srcBottomY, sharp, maskTex) {
 		if (tex == null || tex.isLoaded() == false || width <= 0 || height <= 0 || this.width == 0 || this.height == 0)
 			return;
 
@@ -2226,8 +2248,14 @@ export class Renderer {
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexArray, gl.STATIC_DRAW);
 
 		// set shader
-		if (shaderToUse == null)
-			this.currentGLProgram = this.Program2DDrawingTextureOnly;
+		if (shaderToUse == null) {
+			if (maskTex)
+				this.currentGLProgram = this.Program2DDrawingTextureWithMask;
+
+			else
+				this.currentGLProgram = this.Program2DDrawingTextureOnly;
+
+		}
 
 		else
 			this.currentGLProgram = shaderToUse;
@@ -2266,9 +2294,9 @@ export class Renderer {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-		// disable texture 2
+		// set texture 2
 		gl.activeTexture(gl.TEXTURE1);
-		gl.bindTexture(gl.TEXTURE_2D, null);
+		gl.bindTexture(gl.TEXTURE_2D, maskTex ? maskTex.getWebGLTexture() : null);
 
 		// draw
 		gl.drawElements(gl.TRIANGLES, indexCount, gl.UNSIGNED_SHORT, 0);
@@ -2733,6 +2761,7 @@ export class Renderer {
 
 		this.Program2DDrawingColorOnly = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_coloronly, this.fs_shader_simplecolor);
 		this.Program2DDrawingTextureOnly = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_texture, this.fs_shader_onlyfirsttexture);
+		this.Program2DDrawingTextureWithMask = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_texture, this.fs_shader_maskedtexture);
 		this.Program2DDrawingCanvasFontColor = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_texture, this.fs_shader_2ddrawing_canvasfont);
 
 		this.MaterialPrograms[CL3D.Material.EMT_SOLID] = programStandardMaterial;
@@ -3451,7 +3480,7 @@ export class Renderer {
 				tmpctx.drawImage(objToCopyFrom,
 					0, 0, objToCopyFrom.width, objToCopyFrom.height,
 					0, 0, tmpcanvas.width, tmpcanvas.height);
-	
+
 				if (process.env.RAUB_ENV)
 					objToCopyFrom = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
 				else
