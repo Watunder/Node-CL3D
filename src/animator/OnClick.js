@@ -41,6 +41,8 @@ export class AnimatorOnClick extends CL3D.Animator {
 
 		if (!(donotregister == true))
 			scene.registerSceneNodeAnimatorForEvents(this);
+
+		this.UseCustomEvent = false;
 	}
 
 	/**
@@ -166,8 +168,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 			return false;
 		}
 
-		if (n.isActuallyVisible()/*&&
-			this.isOverNode(n, x, y)*/) {
+		if (n.isActuallyVisible() && (this.isOverNode(n, x, y) || this.UseCustomEvent)) {
 			this.LastTimeDoneSomething = true;
 
 			this.invokeAction(n);
