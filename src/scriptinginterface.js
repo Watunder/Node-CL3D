@@ -443,7 +443,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	 * @public
 	 */
 	initScript(n, engine) {
-		if (engine.executeCode(`typeof ${this.JsClassName} == 'undefined'`))
+		if (typeof globalThis[this.JsClassName] == 'undefined')
 			return;
 
 		let code = "";
@@ -722,7 +722,7 @@ export class ActionExtensionScript extends CL3D.Action {
 
 		let engine = CL3D.ScriptingInterface.getScriptingInterface();
 
-		if (engine.executeCode(`typeof ${this.JsClassName} == 'undefined'`))
+		if (typeof globalThis[this.JsClassName] == 'undefined')
 			return;
 
 		let code = "";
