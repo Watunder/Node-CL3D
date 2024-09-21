@@ -239,6 +239,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		//renderer.draw2DRectangle(100,100,100,100, CL3D.createColor(100, 255, 0, 0), true); // TODO: remove
 		// draw texture
 		var tex = this.Texture;
+		var maskTex = this.TextureMask;
 		if (bHovering && this.TextureHover && this.OnHoverDrawTexture)
 			tex = this.TextureHover;
 
@@ -248,7 +249,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 
 			if (!this.RetainAspectRatio) {
 				// ignore aspect ratio
-				renderer.draw2DImage(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, tex, true, null, null, null, !this.BlurImage);
+				renderer.draw2DImage(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, tex, true, null, null, null, !this.BlurImage, maskTex);
 			}
 
 			else {
@@ -273,7 +274,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 
 					rctDrawText = rctTarget;
 
-					renderer.draw2DImage(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, tex, true, null, null, null, !this.BlurImage);
+					renderer.draw2DImage(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, tex, true, null, null, null, !this.BlurImage, maskTex);
 				}
 			}
 		}
