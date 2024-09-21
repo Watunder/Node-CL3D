@@ -543,6 +543,14 @@ export class CopperLicht {
 		return this.LoadingAFile || this.WaitingForTexturesToBeLoaded;
 	}
 
+	addScenesFromDocument(filetoload, newRootNodeChildrenParent, functionToCallWhenLoaded) {
+		var loader = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1 || filetoload.indexOf('.ccp') != -1, this.IsBrowser);
+		loader.load(async (filecontent) => {
+			await this.parseFile(filecontent, filetoload, true, true, newRootNodeChildrenParent);
+			if (functionToCallWhenLoaded) functionToCallWhenLoaded();
+		});
+	}
+
 	/**
 	 * @public
 	 */
