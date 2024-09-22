@@ -69,6 +69,24 @@ export class Renderer {
         gl_FragColor = vColor;
 	}`;
 
+	fs_shader_maskedcolor = GLSL`
+	//#version 100
+	precision mediump float;
+
+	uniform vec4 vColor;
+	uniform sampler2D texture1;
+	uniform sampler2D texture2;
+
+    varying vec2 v_texCoord1;
+	varying vec2 v_texCoord2;
+
+    void main()
+    {
+		vec2 texCoord = vec2(v_texCoord1.s, v_texCoord1.t);
+		vec4 mask = texture2D(texture1, texCoord);
+        gl_FragColor = vColor * mask;
+	}`;
+
 	// 2D fragment shader for drawing fonts: The font texture is white/gray on black. Draw the font using the white as alpha,
 	// multiplied by a color as parameter
 	fs_shader_2ddrawing_canvasfont = GLSL`
@@ -2045,7 +2063,7 @@ export class Renderer {
 	 * @param color {Number} color of the rectangle. See CL3D.createColor()
 	 * @param blend {Boolean} (optional) set to true to enable alpha blending (using the alpha component of the color) and false not to blend
 	 */
-	draw2DRectangle(x, y, width, height, color, blend) {
+	draw2DRectangle(x, y, width, height, color, blend, maskTex) {
 		if (width <= 0 || height <= 0 || this.width == 0 || this.height == 0)
 			return;
 
@@ -2056,7 +2074,7 @@ export class Renderer {
 		let gl = this.gl;
 
 		gl.enableVertexAttribArray(0);
-		gl.disableVertexAttribArray(1);
+		gl.enableVertexAttribArray(1);
 		gl.disableVertexAttribArray(2);
 		gl.disableVertexAttribArray(3);
 		gl.disableVertexAttribArray(4);
@@ -2090,6 +2108,21 @@ export class Renderer {
 		positionsArray[10] = y - height;
 		positionsArray[11] = 0;
 
+		// texture coordinates
+		let tcoordsArray = new Float32Array(4 * 2);
+
+		tcoordsArray[0] = 0;
+		tcoordsArray[1] = 0;
+
+		tcoordsArray[2] = 1.0;
+		tcoordsArray[3] = 0;
+
+		tcoordsArray[4] = 1.0;
+		tcoordsArray[5] = 1.0;
+
+		tcoordsArray[6] = 0;
+		tcoordsArray[7] = 1.0;
+
 		// indices
 		let indexCount = 6;
 		let indexArray = new Uint16Array(indexCount);
@@ -2106,12 +2139,17 @@ export class Renderer {
 		gl.bufferData(gl.ARRAY_BUFFER, positionsArray, gl.STATIC_DRAW);
 		gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
+		let tcoordsBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, tcoordsBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, tcoordsArray, gl.STATIC_DRAW);
+		gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
+
 		let indexBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexArray, gl.STATIC_DRAW);
 
 		// set shader
-		this.currentGLProgram = this.Program2DDrawingColorOnly;
+		this.currentGLProgram = maskTex ? this.Program2DDrawingColorWithMask : this.Program2DDrawingColorOnly;
 		gl.useProgram(this.currentGLProgram);
 
 		// set color
@@ -2135,11 +2173,16 @@ export class Renderer {
 			gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		}
 
+		// set texture
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, maskTex ? maskTex.getWebGLTexture() : null);
+
 		// draw
 		gl.drawElements(gl.TRIANGLES, indexCount, gl.UNSIGNED_SHORT, 0);
 
 		// clean up again
 		gl.deleteBuffer(positionBuffer);
+		gl.deleteBuffer(tcoordsBuffer);
 		gl.deleteBuffer(indexBuffer);
 	}
 	/**
@@ -2249,12 +2292,7 @@ export class Renderer {
 
 		// set shader
 		if (shaderToUse == null) {
-			if (maskTex)
-				this.currentGLProgram = this.Program2DDrawingTextureWithMask;
-
-			else
-				this.currentGLProgram = this.Program2DDrawingTextureOnly;
-
+			this.currentGLProgram = maskTex ? this.Program2DDrawingTextureWithMask : this.Program2DDrawingTextureOnly;
 		}
 
 		else
@@ -2760,6 +2798,7 @@ export class Renderer {
 		let programSolidVertexAlphaTwoTextureBlendMaterial = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_vertex_alpha_two_textureblend);
 
 		this.Program2DDrawingColorOnly = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_coloronly, this.fs_shader_simplecolor);
+		this.Program2DDrawingColorWithMask = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_texture, this.fs_shader_maskedcolor);
 		this.Program2DDrawingTextureOnly = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_texture, this.fs_shader_onlyfirsttexture);
 		this.Program2DDrawingTextureWithMask = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_texture, this.fs_shader_maskedtexture);
 		this.Program2DDrawingCanvasFontColor = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_texture, this.fs_shader_2ddrawing_canvasfont);
