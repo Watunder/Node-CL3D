@@ -229,17 +229,17 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 				rctTarget.y + rctTarget.h >= mposy);
 		}
 
+		var maskTex = this.TextureMask;
 		// draw background
 		if (bHovering && this.OnHoverSetBackgroundColor)
-			renderer.draw2DRectangle(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, this.HoverBackgroundColor, true);
+			renderer.draw2DRectangle(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, this.HoverBackgroundColor, true, this.TextureMask);
 
 		else if (this.ShowBackGround)
-			renderer.draw2DRectangle(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, this.BackGroundColor, true);
+			renderer.draw2DRectangle(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, this.BackGroundColor, true, this.TextureMask);
 
 		//renderer.draw2DRectangle(100,100,100,100, CL3D.createColor(100, 255, 0, 0), true); // TODO: remove
 		// draw texture
 		var tex = this.Texture;
-		var maskTex = this.TextureMask;
 		if (bHovering && this.TextureHover && this.OnHoverDrawTexture)
 			tex = this.TextureHover;
 
