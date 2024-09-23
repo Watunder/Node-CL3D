@@ -2016,14 +2016,37 @@ export class Renderer {
 		//gl.drawElements(gl.LINES, b.indexCount, gl.UNSIGNED_SHORT, 0);
 	}
 	/**
+	 * Start a stencil test
+	 * @param {Function} stencilCallback
+	 */
+	startStencil(stencilCallback, config) {
+		let gl = this.gl;
+
+		gl.enable(gl.STENCIL_TEST);
+
+		gl.stencilMask(0xff);
+
+		gl.stencilFunc(gl.ALWAYS, 1, 0xff);
+
+		gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+
+		if (typeof stencilCallback == 'function')
+			stencilCallback();
+
+		gl.stencilFunc(gl.EQUAL, 1, 0xff);
+
+		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
+	}
+	/**
 	 * Draws a 2d rectangle
 	 * @public
-	 * @param x {Number} x coordinate in pixels
-	 * @param y {Number} y coordinate in pixels
-	 * @param width {Number} width of the rectangle in pixels
-	 * @param height {Number} height of the rectangle in pixels
-	 * @param color {Number} color of the rectangle. See CL3D.createColor()
-	 * @param blend {Boolean} (optional) set to true to enable alpha blending (using the alpha component of the color) and false not to blend
+	 * @param {Number} x x coordinate in pixels
+	 * @param {Number} y y coordinate in pixels
+	 * @param {Number} width width of the rectangle in pixels
+	 * @param {Number} height height of the rectangle in pixels
+	 * @param {Number} color color of the rectangle. See CL3D.createColor()
+	 * @param {Boolean?} blend (optional) set to true to enable alpha blending (using the alpha component of the color) and false not to blend
+	 * @param {CL3D.Texture?} maskTex
 	 */
 	draw2DRectangle(x, y, width, height, color, blend) {
 		if (width <= 0 || height <= 0 || this.width == 0 || this.height == 0)
@@ -2100,7 +2123,6 @@ export class Renderer {
 			CL3D.getGreen(color) / 255,
 			CL3D.getBlue(color) / 255,
 			doblend ? (CL3D.getAlpha(color) / 255) : 1.0);
-
 
 		// set blend mode and other tests
 		gl.depthMask(false);
@@ -2332,12 +2354,13 @@ export class Renderer {
 
 		gl.clearDepth(this.InvertedDepthTest ? 0.0 : 1.0);
 		gl.depthMask(true);
+		gl.stencilMask(0x00);
 		gl.clearColor(CL3D.getRed(clearColor) / 255.0,
 			CL3D.getGreen(clearColor) / 255.0,
 			CL3D.getBlue(clearColor) / 255.0,
 			1); //CL3D.getAlpha(clearColor) / 255.0);
 
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 	}
 	/**
 	 * Clears the z buffer
@@ -2432,7 +2455,7 @@ export class Renderer {
 		this.canvas = canvas;
 
 		this.gl = null;
-		let obj = createContext(width, height, options, canvas);
+		let obj = createContext(width, height, { ...options, stencil: true }, canvas);
 		if (obj.gl) {
 			this.gl = obj.gl;
 			this.glfw = obj.glfw;
@@ -2900,9 +2923,12 @@ export class Renderer {
 
 		gl.clearColor(0, 0, 1, 1);
 		gl.clearDepth(1.0);
+		gl.clearStencil(1);
 
 		gl.depthMask(true);
 		gl.enable(gl.DEPTH_TEST);
+		gl.stencilMask(0x00);
+		gl.enable(gl.STENCIL_TEST);
 		gl.disable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		//gl.enable(gl.TEXTURE_2D); invalid in webgl
