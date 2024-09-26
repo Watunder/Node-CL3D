@@ -301,9 +301,18 @@ export class CopperLicht {
 
 			const canvas = this.MainElement;
 			if (canvas != null) {
-				canvas.onmousemove = (evt) => { me.handleMouseMove(evt); };
-				canvas.onmousedown = (evt) => { me.handleMouseDown(evt); };
-				canvas.onmouseup = (evt) => { me.handleMouseUp(evt); };
+				canvas.onmousemove = (evt) => {
+					if (me.handleMouseMove(evt))
+						me.handleEventPropagation(evt, true);
+				};
+				canvas.onmousedown = (evt) => {
+					if (me.handleMouseDown(evt))
+						me.handleEventPropagation(evt, true);
+				};
+				canvas.onmouseup = (evt) => {
+					if (me.handleMouseUp(evt))
+						me.handleEventPropagation(evt, true);
+				};
 
 				canvas.onmouseover = (evt) => { me.MouseIsInside = true; };
 				canvas.onmouseout = (evt) => { me.MouseIsInside = false; };
@@ -311,7 +320,10 @@ export class CopperLicht {
 				this.setupEventHandlersForFullscreenChange();
 
 				try {
-					const w = (evt) => { me.handleMouseWheel(evt); };
+					const w = (evt) => {
+						if (me.handleMouseWheel(evt))
+							me.handleEventPropagation(evt, true);
+					};
 					canvas.addEventListener('mousewheel', w, false);
 					canvas.addEventListener('DOMMouseScroll', w, false);
 				} catch (e) {
@@ -472,7 +484,7 @@ export class CopperLicht {
 			this.tmpWidth = Math.floor(w * this.DPR);
 			this.tmpHeight = Math.floor(h * this.DPR);
 
-			this.MainElement.setAttribute("width",  String(this.tmpWidth));
+			this.MainElement.setAttribute("width", String(this.tmpWidth));
 			this.MainElement.setAttribute("height", String(this.tmpHeight));
 		}
 	}
@@ -1052,7 +1064,7 @@ export class CopperLicht {
 			scene.postMouseDownToAnimators(evt);
 		}
 
-		return this.handleEventPropagation(evt, true);
+		return true;
 	}
 
 	/**
@@ -1169,7 +1181,7 @@ export class CopperLicht {
 			scene.postMouseUpToAnimators(evt);
 		}
 
-		return this.handleEventPropagation(evt, true);
+		return true;
 	}
 	sendMouseWheelEvent(delta) {
 		var scene = this.getScene();
@@ -1218,7 +1230,7 @@ export class CopperLicht {
 
 		scene.postMouseMoveToAnimators(evt);
 
-		return this.handleEventPropagation(evt, true);
+		return true;
 	}
 
 	/**
