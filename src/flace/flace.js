@@ -13,6 +13,7 @@ const process = doProcess();
 export let gDocument = new CL3D.CCDocument();
 
 /**
+ * @public
  * Creates an instance of the CopperLicht 3D engine by loading the scene from a CopperCube file.
  * @param {String} filetoload a filename such as 'test.ccbjs' or 'test.ccbz' which will be loaded, displayed and animated by the 3d engine.
  * .ccbjs and .ccbz files can be created using {@link http://www.ambiera.com/coppercube/index.html | the CopperCube editor}.
@@ -21,12 +22,12 @@ export let gDocument = new CL3D.CCDocument();
  * a loading screen with this text to appear while the file is being loaded.
  * @param {String=} loadingScreenBackgroundColor  specifying a loadingScreen backfround color.
  * @param {String=} noWebGLText specifying a text to show when there is no webgl.
- * @param {Boolean=} fullpage set to true to expand canvas automatically to the full browser size.
- * @public
+ * @param {Boolean=} fullPage set to true to expand canvas automatically to the full browser size.
+ * @param {Boolean=} aspectRatio set to true to expand the canvas with preserving aspect ratio.
  * @returns {CL3D.CopperLicht} the instance of the CopperLicht engine
  */
-export const startCopperLichtFromFile = function (filetoload, mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullpage) {
-	let engine = new CL3D.CopperLicht(mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullpage);
+export const startCopperLichtFromFile = function (filetoload, mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullPage, aspectRatio) {
+	let engine = new CL3D.CopperLicht(mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullPage, aspectRatio);
 	engine.load(filetoload);
 	return engine;
 }
@@ -160,12 +161,14 @@ export class CopperLicht {
 	 * a loading screen with this text to appear while the file is being loaded.
 	 * @param {String=} loadingScreenBackgroundColor
 	 * @param {String=} noWebGLText optional parameter specifying a text to show when there is no webgl.
-	 * @param {Boolean=} fullpage optional parameter, set to true to expand canvas automatically to the full browser size.
+	 * @param {Boolean=} fullPage optional parameter, set to true to expand canvas automatically to the full browser size.
+	 * @param {Boolean=} aspectRatio optional parameter, set to true to expand the canvas with preserving aspect ratio.
 	 * @param {Boolean=} pointerLockForFPSCameras optional parameter, set to true to automatically use pointer lock for FPS cameras
 	 */
-	constructor(mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullpage, pointerLockForFPSCameras) {
+	constructor(mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullPage, aspectRatio, pointerLockForFPSCameras) {
 		//
 		this.FPS = 60;
+		this.AspectRatio = 16 / 9;
 		this.DPR = getDevicePixelRatio();
 
 		//
@@ -210,9 +213,11 @@ export class CopperLicht {
 		else
 			this.NoWebGLText = noWebGLText;
 
-		this.fullpage = fullpage ? true : false;
-		if (this.fullpage)
+		this.fullPage = fullPage ? true : false;
+		if (this.fullPage)
 			this.initMakeWholePageSize();
+
+		this.aspectRatio = aspectRatio ? true : false;
 
 		this.LoadingDialog = null;
 		if (loadingScreenText != null)
@@ -452,19 +457,47 @@ export class CopperLicht {
 
 	/**
 	 * @public
+	 * @param {Boolean} aspectRatio 
 	 */
-	makeWholePageSize() {
+	makeWholePageSize(aspectRatio) {
 		if (this.tmpWidth != globalThis.innerWidth || this.tmpHeight != globalThis.innerHeight) {
 			this.tmpWidth = globalThis.innerWidth;
 			this.tmpHeight = globalThis.innerHeight;
 
-			this.MainElement.style.width = this.tmpWidth + "px";
-			this.MainElement.style.height = this.tmpHeight + "px";
+			if (aspectRatio) {
+				let ratio = this.tmpWidth / this.tmpHeight;
+				if (ratio >= this.AspectRatio) {
+					let height = this.tmpHeight;
+					let width = Math.floor(height * this.AspectRatio);
 
-			this.DPR = getDevicePixelRatio();
+					this.MainElement.style.width = width + "px";
+					this.MainElement.style.height = height + "px";
 
-			this.MainElement.setAttribute("width", String(Math.floor(this.tmpWidth * this.DPR)));
-			this.MainElement.setAttribute("height", String(Math.floor(this.tmpHeight * this.DPR)));
+					this.DPR = getDevicePixelRatio();
+
+					this.MainElement.setAttribute("width", String(Math.floor(width * this.DPR)));
+					this.MainElement.setAttribute("height", String(Math.floor(height * this.DPR)));
+				} else {
+					let width = this.tmpWidth;
+					let height = Math.floor(width / this.AspectRatio);
+
+					this.MainElement.style.width = width + "px";
+					this.MainElement.style.height = height + "px";
+
+					this.DPR = getDevicePixelRatio();
+
+					this.MainElement.setAttribute("width", String(Math.floor(width * this.DPR)));
+					this.MainElement.setAttribute("height", String(Math.floor(height * this.DPR)));
+				}
+			} else {
+				this.MainElement.style.width = this.tmpWidth + "px";
+				this.MainElement.style.height = this.tmpHeight + "px";
+
+				this.DPR = getDevicePixelRatio();
+
+				this.MainElement.setAttribute("width", String(Math.floor(this.tmpWidth * this.DPR)));
+				this.MainElement.setAttribute("height", String(Math.floor(this.tmpHeight * this.DPR)));
+			}
 		}
 	}
 
@@ -494,8 +527,8 @@ export class CopperLicht {
 	 */
 	draw3DIntervalHandler(timeMs) {
 		// resize
-		if (this.fullpage)
-			this.makeWholePageSize();
+		if (this.fullPage)
+			this.makeWholePageSize(this.aspectRatio);
 		else
 			this.makeWholeCanvasSize();
 
@@ -1430,7 +1463,7 @@ export class CopperLicht {
 		if (this.MainElement == null)
 			return;
 
-		if (this.fullpage) {
+		if (this.fullPage) {
 			this.MainElement.setAttribute("width", String(globalThis.innerWidth));
 			this.MainElement.setAttribute("height", String(globalThis.innerHeight));
 		}
