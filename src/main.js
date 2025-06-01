@@ -37,6 +37,7 @@ export * from "./scenenode/main.js";
 
 export { VideoStream } from "./videostream.js";
 export { StringBinary } from "./stringbinary.js";
+export { BinaryStream } from "./binarystream.js";
 
 export * from "./utils/jsinflate.js";
 export { base64DecodeChars, base64decode } from "./utils/base64decode.js";
@@ -48,6 +49,7 @@ export { CCDocument } from "./flace/flacedocument.js";
 export { Free3dScene } from "./flace/flacefree3dscene.js";
 export { CCFileLoader } from "./flace/ccfileloader.js";
 export { FlaceLoader } from "./flace/flaceloader.js";
+export { FlaceSaver } from "./flace/flacesaver.js";
 
 export { gDocument, CopperLicht, startCopperLichtFromFile } from "./flace/flace.js";
 
