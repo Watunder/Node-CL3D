@@ -1,5 +1,4 @@
 import path from 'path';
-import terser from '@rollup/plugin-terser';
 import replace from '@rollup/plugin-replace';
 import { generateDTS } from '@typhonjs-build-test/esm-d-ts';
 
@@ -24,7 +23,8 @@ const imports = [
         builtinModules: [
             'child_process',
             'module',
-            'path'
+            'path',
+            'fs'
         ],
         externalModules: [
             'canvas',
@@ -49,8 +49,7 @@ export default [
         input: './src/main.js',
         onwarn,
         plugins: [
-            generateDTS.plugin(),
-            //terser()
+            generateDTS.plugin()
         ],
         output: {
             format: 'esm',
