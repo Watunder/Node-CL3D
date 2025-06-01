@@ -238,11 +238,8 @@ export class CopperLicht {
 		const me = this;
 		const interval = 1000.0 / this.FPS;
 
-		if (typeof globalThis.requestAnimationFrame == 'undefined' || process.env.RAUB_ENV) {
+		if (typeof globalThis.requestAnimationFrame == 'undefined') {
 			setInterval(() => { me.draw3DIntervalHandler(interval); }, interval);
-			if (process.env.RAUB_ENV) {
-				setInterval(() => { this.TheRenderer.glfw.pollEvents(); }, 0);
-			}
 		}
 		else {
 			let lastUpdate = CL3D.CLTimer.getTime();

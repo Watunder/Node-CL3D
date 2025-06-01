@@ -1912,7 +1912,7 @@ export class Renderer {
 		if (program.locShadowMapBias2)
 			gl.uniform1f(program.locShadowMapBias2, this.ShadowMapBias2);
 
-		if (this.canvas || process.env.RAUB_ENV && program.locShadowMapBackFaceBias)
+		if (this.canvas && program.locShadowMapBackFaceBias)
 			gl.uniform1f(program.locShadowMapBackFaceBias, this.ShadowMapBackFaceBias);
 
 		if (program.locShadowMapOpacity)
@@ -2433,9 +2433,6 @@ export class Renderer {
 			// @ts-ignore
 			gl.swap();
 
-		if (process.env.RAUB_ENV)
-			this.window.swapBuffers();
-
 		//console.log("drawEnd");
 	}
 	/**
@@ -2499,21 +2496,7 @@ export class Renderer {
 		this.height = height;
 		this.canvas = canvas;
 
-		this.gl = null;
-		let obj = createContext(width, height, options, canvas);
-		if (obj.gl) {
-			this.gl = obj.gl;
-			this.glfw = obj.glfw;
-			this.window = obj.window;
-
-			this.window.on('resize', (event) => {
-				this.ensuresizeok(event.width, event.height);
-			});
-
-			this.UsesWebGL2 = true;
-		}
-		else
-			this.gl = obj;
+		this.gl = createContext(width, height, options, canvas);
 
 		if (canvas)
 			this.UsesWebGL2 = true;
@@ -3510,7 +3493,7 @@ export class Renderer {
 		let objToCopyFrom = t.Image;
 
 		// Scale up the texture to the next highest power of two dimensions.
-		if (process.env.RAUB_ENV || process.env.SDL_ENV || !this.isPowerOfTwo(objToCopyFrom.width) || !this.isPowerOfTwo(objToCopyFrom.height)) {
+		if (process.env.SDL_ENV || !this.isPowerOfTwo(objToCopyFrom.width) || !this.isPowerOfTwo(objToCopyFrom.height)) {
 			let tmpcanvas = createCanvas();
 			if (tmpcanvas != null) {
 				tmpcanvas.width = this.nextHighestPowerOfTwo(objToCopyFrom.width);
@@ -3520,10 +3503,7 @@ export class Renderer {
 					0, 0, objToCopyFrom.width, objToCopyFrom.height,
 					0, 0, tmpcanvas.width, tmpcanvas.height);
 
-				if (process.env.RAUB_ENV)
-					objToCopyFrom = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
-				else
-					objToCopyFrom = tmpcanvas;
+				objToCopyFrom = tmpcanvas;
 			}
 		}
 

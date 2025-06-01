@@ -33,10 +33,7 @@ const imports = [
             '@kmamal/sdl',
             'file-fetch'
         ],
-        optionalModules: [
-            '3d-core-raub',
-            'image-raub'
-        ]
+        optionalModules: []
     }
 ];
 
