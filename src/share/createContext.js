@@ -5,14 +5,7 @@ const process = doProcess();
 let createContextImpl = () => { }
 
 if (typeof globalThis.WebGLRenderingContext == "undefined") {
-    if (process.env.RAUB_ENV) {
-        await import('3d-core-raub').then(async (module) => {
-            createContextImpl = (width, height, options) => {
-                const { gl, window, glfw } = module.init({ isGles3: false });
-                return { gl, window, glfw };
-            }
-        });
-    } else if (process.env.SDL_ENV) {
+    if (process.env.SDL_ENV) {
         await import('@kmamal/gl').then(async (module) => {
             createContextImpl = (width, height, options) => {
                 return module.default(width, height, options);
@@ -90,7 +83,7 @@ else {
  * @param {Number} height 
  * @param {WebGLContextAttributes} options 
  * @param {HTMLCanvasElement} canvas 
- * @returns {WebGLRenderingContext|WebGL2RenderingContext|import('3d-core-raub').TCore3D}
+ * @returns {WebGLRenderingContext|WebGL2RenderingContext}
  */
 export const createContext = (width, height, options, canvas) => {
     return createContextImpl(width, height, options, canvas);

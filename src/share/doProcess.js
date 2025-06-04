@@ -4,8 +4,7 @@ if (typeof globalThis.process == "undefined") {
     doProcessImpl = () => {
         return {
             env: {
-                SDL_ENV: '',
-                RAUB_ENV: ''
+                SDL_ENV: ''
             }
         };
     }

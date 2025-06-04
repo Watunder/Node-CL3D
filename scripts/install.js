@@ -10,19 +10,20 @@ const downloadList = [
 ]
 
 downloadList.some(({ publicCDN }) => {
-    Object.keys(publicCDN).forEach(async (bundle) => {
-        const url = publicCDN[bundle];
+    Object.keys(publicCDN).forEach(async (file) => {
+        const url = publicCDN[file];
 
-        if (!fs.existsSync(`../dist/${bundle}`)) {
+        if (!fs.existsSync(`../dist/${file}`)) {
 
-            console.log('downloading', url);
-            const response = await fetch(url);
+            console.log('downloaded', url);
+            const response = await fetch(url, { method: 'GET', headers: { 'Content-Type': 'text/plain' } });
             const data = await response.text();
 
-            fs.writeFileSync(`../dist/${bundle}`, data, { encoding: 'utf-8' });
+            fs.writeFileSync(`../dist/${file}`, data, { encoding: 'utf-8' });
         }
     })
 });
 
-console.log('building...');
+execSync('node bpkg.js');
+
 execSync('cd ../ && npx rollup -c');
