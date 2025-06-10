@@ -1,9 +1,10 @@
 .dts/
 
-_coppercube/
 _develop/
 
-dist/
-geo_toolkits/
-neo_frameworks/
+dist/**
+!dist/bundle/
+dist/bundle/** */
+!dist/bundle/icudtl.dat
+
 node_modules/
