@@ -1181,7 +1181,7 @@ export class FlaceSaver {
                 flag += 2;
             }
         }
-        this.endFlag(pos, value);
+        this.endFlag(pos, flag);
     }
 
     /**

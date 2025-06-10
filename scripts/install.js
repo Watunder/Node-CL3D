@@ -1,5 +1,4 @@
 import fs from 'fs';
-import { execSync } from 'child_process';
 
 const downloadList = [
     {
@@ -23,7 +22,3 @@ downloadList.some(({ publicCDN }) => {
         }
     })
 });
-
-execSync('node bpkg.js');
-
-execSync('cd ../ && npx rollup -c');

@@ -1,13 +1,19 @@
-let saveFileImpl = () => { }
+import { isBrowser, isNode } from '../utils/environment.js';
 
-if (typeof globalThis.HTMLElement == "undefined") {
+/**
+ * @param {String} filepath 
+ * @param {any} data 
+ */
+let saveFileImpl = (filepath, data) => { return; }
+
+if (isNode) {
     await import('fs').then(async (module) => {
         saveFileImpl = (filepath, data) => {
             module.writeFileSync(filepath, data);
         }
     });
 }
-else {
+else if (isBrowser) {
     saveFileImpl = (filepath, data) => {
         let blob = new Blob([data]);
 

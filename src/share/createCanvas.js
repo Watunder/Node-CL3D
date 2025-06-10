@@ -1,9 +1,14 @@
-let createCanvasImpl = () => { }
+/**
+ * @param {Number} width 
+ * @param {Number} height 
+ * @returns {HTMLCanvasElement|import('@napi-rs/canvas').Canvas}
+ */
+let createCanvasImpl = (width, height) => { return; }
 
 if (typeof globalThis.HTMLCanvasElement == "undefined") {
-    await import('canvas').then(async (module) => {
+    await import('3d-core-raub').then(async (module) => {
         createCanvasImpl = (width, height) => {
-            return module.default.createCanvas(width, height);
+            return module.default.skia.createCanvas(width, height);
         }
     })
 }
@@ -13,11 +18,7 @@ else {
     }
 }
 
-/**
- * @param {Number=} width 
- * @param {Number=} height 
- * @returns {HTMLCanvasElement}
- */
+
 export const createCanvas = (width, height) => {
     return createCanvasImpl(width, height);
 }

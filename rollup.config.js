@@ -1,5 +1,6 @@
 import path from 'path';
 import replace from '@rollup/plugin-replace';
+import terser from '@rollup/plugin-terser';
 import { generateDTS } from '@typhonjs-build-test/esm-d-ts';
 
 const onwarn = (warning, rollupWarn) => {
@@ -23,15 +24,16 @@ const imports = [
         builtinModules: [
             'child_process',
             'module',
+            'events',
             'path',
             'fs'
         ],
         externalModules: [
             'canvas',
             'nc-screen',
-            '@kmamal/gl',
-            '@kmamal/sdl',
-            'file-fetch'
+            'file-fetch',
+            '3d-core-raub',
+            '@napi-rs/canvas'
         ],
         optionalModules: []
     }
@@ -68,7 +70,14 @@ export default [
                 delimiters: ['import\\(', '\\)'],
                 values: replacedImportings,
                 preventAssignment: true
-            })
+            }),
+            replace({
+                values: {
+                    GLSL: '',
+                },
+                preventAssignment: true
+            }),
+            terser()
         ],
         output: {
             format: 'esm',

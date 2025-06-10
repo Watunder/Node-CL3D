@@ -2,10 +2,8 @@
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
-import { doProcess } from "../share/doProcess.js";
 import { getDevicePixelRatio } from "../share/getDevicePixelRatio.js";
-
-const process = doProcess();
+import { isBrowser } from '../utils/environment.js';
 
 /**
  * @type {CL3D.CCDocument}
@@ -174,7 +172,6 @@ export class CopperLicht {
 		//
 		this.MainElement = mainElement;
 		this.TheRenderer = null;
-		this.IsBrowser = this.MainElement ? true : false;
 		this.IsPaused = false;
 		this.NextCameraToSetActive = null;
 		this.TheTextureManager = new CL3D.TextureManager();
@@ -242,18 +239,10 @@ export class CopperLicht {
 			setInterval(() => { me.draw3DIntervalHandler(interval); }, interval);
 		}
 		else {
-			let lastUpdate = CL3D.CLTimer.getTime();
 			const running = (now) => {
-				let elapsed = now - lastUpdate;
 				globalThis.requestAnimationFrame(running);
 
-				if (elapsed >= interval) {
-					me.draw3DIntervalHandler(now);
-
-					lastUpdate = now - (elapsed % interval);
-					// also adjusts for your interval not being
-					// a multiple of requestAnimationFrame's interval (usually 16.7ms)
-				}
+				me.draw3DIntervalHandler(now);
 			};
 			globalThis.requestAnimationFrame(running);
 		}
@@ -295,7 +284,7 @@ export class CopperLicht {
 	 * @public
 	 */
 	registerEventHandlers() {
-		if (this.IsBrowser) {
+		if (isBrowser) {
 			// key evt receiver
 			const me = this;
 			document.onkeydown = (evt) => { me.handleKeyDown(evt); };
@@ -417,7 +406,7 @@ export class CopperLicht {
 
 		var me = this;
 		this.LoadingAFile = true;
-		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1 || filetoload.indexOf('.ccp') != -1, this.IsBrowser);
+		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1 || filetoload.indexOf('.ccp') != -1);
 		l.load(async (p) => { await me.parseFile(p, filetoload, importIntoExistingDocument); if (functionToCallWhenLoaded) functionToCallWhenLoaded(); });
 
 		return true;
@@ -586,7 +575,7 @@ export class CopperLicht {
 	}
 
 	addScenesFromDocument(filetoload, newRootNodeChildrenParent, functionToCallWhenLoaded) {
-		var loader = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1 || filetoload.indexOf('.ccp') != -1, this.IsBrowser);
+		var loader = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1 || filetoload.indexOf('.ccp') != -1);
 		loader.load(async (filecontent) => {
 			await this.parseFile(filecontent, filetoload, true, true, newRootNodeChildrenParent);
 			if (functionToCallWhenLoaded) functionToCallWhenLoaded();
@@ -959,7 +948,7 @@ export class CopperLicht {
 	 * @public
 	 */
 	handleEventPropagation(evt, usedToDoAction) {
-		if (this.IsBrowser && usedToDoAction) {
+		if (isBrowser && usedToDoAction) {
 			try {
 				evt.preventDefault();
 			}
@@ -1026,7 +1015,7 @@ export class CopperLicht {
 			return (w / 2.0);
 		}
 
-		if (this.IsBrowser) {
+		if (isBrowser) {
 			if (evt.pageX)
 				return evt.pageX - this.CanvasTopLeftX;
 			else
@@ -1046,7 +1035,7 @@ export class CopperLicht {
 			return (h / 2.0);
 		}
 
-		if (this.IsBrowser) {
+		if (isBrowser) {
 			if (evt.pageY)
 				return evt.pageY - this.CanvasTopLeftY;
 			else
@@ -1127,7 +1116,7 @@ export class CopperLicht {
 	 * @public
 	 */
 	getMouseX() {
-		return this.MouseX;
+		return this.MouseX * this.DPR;
 	}
 
 	/**
@@ -1136,7 +1125,7 @@ export class CopperLicht {
 	 * @public
 	 */
 	getMouseY() {
-		return this.MouseY;
+		return this.MouseY * this.DPR;
 	}
 
 	/**

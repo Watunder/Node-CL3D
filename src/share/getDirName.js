@@ -1,16 +1,21 @@
-let getDirNameImpl = () => { }
+import { isBrowser, isNode } from '../utils/environment.js';
 
-if (typeof globalThis.location == "undefined") {
+/**
+ * @returns {String}
+ */
+let getDirNameImpl = () => { return; }
+
+if (isNode) {
     await import('path').then(async (module) => {
         getDirNameImpl = () => {
             const __filename = import.meta.url;
             const __dirname = module.dirname(__filename);
-    
+
             return __dirname;
         }
     });
 }
-else {
+else if (isBrowser) {
     getDirNameImpl = () => {
         const __filename = globalThis.location.href;
         const __dirname = __filename.slice(0, __filename.lastIndexOf("/"));
@@ -18,9 +23,6 @@ else {
     }
 }
 
-/**
- * @returns {String}
- */
 export const getDirName = () => {
     return getDirNameImpl();
 }

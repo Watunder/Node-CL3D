@@ -1,19 +1,32 @@
-import { doProcess } from './doProcess.js';
+import { isBrowser, isNode } from '../utils/environment.js';
 
-const process = doProcess();
+/**
+ * @param {Number} width 
+ * @param {Number} height 
+ * @param {WebGLContextAttributes&import('3d-core-raub').TInitOpts} options 
+ * @param {HTMLCanvasElement} canvas 
+ * @returns {WebGLRenderingContext|WebGL2RenderingContext|{gl:import('webgl-raub'), window:import('glfw-raub').Document}}
+ */
+let createContextImpl = (width, height, options, canvas) => { return; }
 
-let createContextImpl = () => { }
-
-if (typeof globalThis.WebGLRenderingContext == "undefined") {
-    if (process.env.SDL_ENV) {
-        await import('@kmamal/gl').then(async (module) => {
-            createContextImpl = (width, height, options) => {
-                return module.default(width, height, options);
-            }
-        });
-    }
+if (isNode) {
+    await import('3d-core-raub').then(async (module) => {
+        createContextImpl = (width, height, options) => {
+            const { gl, window } = module.default.init({
+                width: width,
+                height: height,
+                vsync: true,
+                msaa: 4,
+                mode: options.mode || 'windowed',
+                autoEsc: true,
+                autoFullscreen: true,
+                ...options
+            });
+            return { gl, window };
+        }
+    });
 }
-else {
+else if (isBrowser) {
     createContextImpl = (width, height, options, canvas) => {
         width = width | 0;
         height = height | 0;
@@ -78,13 +91,6 @@ else {
     }
 }
 
-/**
- * @param {Number} width 
- * @param {Number} height 
- * @param {WebGLContextAttributes} options 
- * @param {HTMLCanvasElement} canvas 
- * @returns {WebGLRenderingContext|WebGL2RenderingContext}
- */
 export const createContext = (width, height, options, canvas) => {
     return createContextImpl(width, height, options, canvas);
 }

@@ -3,12 +3,13 @@ const args = await import("minimist").then(async (module) => {
 	return module.default(process.argv.slice(2));
 });
 
-const example = args["example"] || `tutorial${randomInt(1, 9)}`;
+const example = args["example"] || (args["_"].length == 0 ? `tutorial${randomInt(1, 9)}` : false);
+
+const file = example || args["_"][0];
 
 // dependcy module
 import path from "path";
 import url from "url";
-import sdl from "@kmamal/sdl";
 import * as CL3D from "../src/main.js";
 import { randomInt } from "crypto";
 
@@ -16,64 +17,49 @@ import { randomInt } from "crypto";
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const __example = path.join(path.resolve(__dirname, "../"), "examples", example);
-const __exampledata = path.join(__example, "copperlichtdata");
-
-// init window
-const window = sdl.video.createWindow({
-	resizable: true,
-	opengl: true,
-	vsync: true,
-	width: 1280,
-	height: 720
-})
-
-const { pixelWidth: width, pixelHeight: height, native } = window;
-
-window.on("close", () => {
-	process.exit();
-})
+const __example = example && path.join(path.resolve(__dirname, "../"), "examples", example);
+const __tutorialdata = __example && path.join(__example, "copperlichtdata");
 
 // bind input
 const bindInput = (engine) => {
-	window.on("keyDown", ({ key: key, alt: alt, shift: shift }) => {
-		if (alt == true && key == "return") {
-			window.setFullscreen(!window.fullscreen);
+	/**
+	 * @type {import('3d-core-raub').Window}
+	 */
+	let window = engine.TheRenderer.window;
 
-			return true;
-		}
-
-		engine.handleKeyDown({ key: key, shiftKey: shift });
+	window.on('keydown', (event) => {
+		engine.handleKeyDown(event);
 	});
 
-	window.on("keyUp", ({ key: key, alt: alt, shift: shift }) => {
-		engine.handleKeyUp({ key: key, shiftKey: shift });
+	window.on('keyup', (event) => {
+		engine.handleKeyUp(event);
+	})
+
+	window.on("mousemove", (event) => {
+		engine.handleMouseMove(event);
 	});
 
-	window.on("mouseMove", ({ x: x, y: y }) => {
-		engine.handleMouseMove({ x: x, y: y });
+	window.on("mousedown", (event) => {
+		engine.handleMouseDown(event);
 	});
 
-	window.on("mouseButtonDown", ({ x: x, y: y, button: button }) => {
-		engine.handleMouseDown({ x: x, y: y, button: button });
+	window.on("mouseup", (event) => {
+		engine.handleMouseUp(event);
 	});
 
-	window.on("mouseButtonUp", ({ x: x, y: y, button: button }) => {
-		engine.handleMouseUp({ x: x, y: y, button: button });
-	});
-
-	window.on("hover", () => {
+	window.on("mouseenter", () => {
 		engine.MouseIsInside = true;
 	});
 
-	window.on("leave", () => {
+	window.on("mouseleave", () => {
 		engine.MouseIsInside = false;
 	});
 
-	window.on("resize", ({ width: w, height: h, pixelWidth: pw, pixelHeight: ph }) => {
-		engine.TheRenderer.ensuresizeok(w, h);
+	window.on("wheel", (event) => {
+		engine.handleMouseWheel(event);
 	});
 }
+
 
 // run cl3d
 switch (example) {
@@ -82,7 +68,7 @@ switch (example) {
 			// create the 3d engine
 			const engine = new CL3D.CopperLicht();
 
-			if (!engine.initRenderer(width, height, { window: native }))
+			if (!engine.initRenderer(1280, 720, {}))
 				throw new Error("this browser doesn't support WebGL");
 
 			// add a new 3d scene
@@ -117,8 +103,8 @@ switch (example) {
 
 	case "tutorial2":
 		{
-			const engine = CL3D.startCopperLichtFromFile(path.join(__exampledata, "index.ccbjs"));
-			engine.createRenderer(width, height, { window: native });
+			const engine = CL3D.startCopperLichtFromFile(path.join(__tutorialdata, "index.ccbjs"));
+			engine.createRenderer(1280, 720, {});
 
 			let cubeSceneNode = null;
 
@@ -139,13 +125,13 @@ switch (example) {
 				}
 			}
 
-			window.on("keyDown", ({ key: key }) => {
+			window.on("keydown", (event) => {
 				// when pressed "L", move the cube scene node a bit up
-				if (key == "f" && cubeSceneNode)
+				if (event.key == "f" && cubeSceneNode)
 					cubeSceneNode.Pos.Y += 5;
 
 				// when pressed "G", move the cube scene node a bit down
-				if (key == "g" && cubeSceneNode)
+				if (event.key == "g" && cubeSceneNode)
 					cubeSceneNode.Pos.Y -= 5;
 			});
 
@@ -193,7 +179,7 @@ switch (example) {
 			// create the 3d engine
 			const engine = new CL3D.CopperLicht();
 
-			if (!engine.initRenderer(width, height, { window: native }))
+			if (!engine.initRenderer(1280, 720, {}))
 				throw new Error("this browser doesn't support WebGL");
 
 			// add a new 3d scene
@@ -234,7 +220,7 @@ switch (example) {
 		{
 			const engine = new CL3D.CopperLicht();
 
-			if (!engine.initRenderer(width, height, { window: native }))
+			if (!engine.initRenderer(1280, 720, {}))
 				throw new Error("this browser doesn't support WebGL");
 
 			// add a new 3d scene
@@ -304,7 +290,7 @@ switch (example) {
 		{
 			const engine = new CL3D.CopperLicht();
 
-			if (!engine.initRenderer(width, height, { window: native }))
+			if (!engine.initRenderer(1280, 720, {}))
 				throw new Error("this browser doesn't support WebGL");
 
 			// add a new 3d scene
@@ -397,8 +383,8 @@ switch (example) {
 
 	case "tutorial6":
 		{
-			const engine = CL3D.startCopperLichtFromFile(path.join(__exampledata, "room.ccbjs"));
-			engine.createRenderer(width, height, { window: native });
+			const engine = CL3D.startCopperLichtFromFile(path.join(__tutorialdata, "room.ccbjs"));
+			engine.createRenderer(1280, 720, {});
 
 			let cubeCollisionPosition = null;
 			// this is called when loading the 3d scene has finished
@@ -446,12 +432,12 @@ switch (example) {
 			// every time the user presses space, we want to do a collision test with the wall
 			// and create a cube where we hit the wall
 
-			window.on("keyDown", ({ key: key }) => {
+			window.on("keydown", (event) => {
 				let scene = engine.getScene();
 				if (!scene)
 					return;
 
-				if (key == "space") // space has been pressed
+				if (event.key == " ") // space has been pressed
 				{
 					let cam = scene.getActiveCamera();
 
@@ -487,15 +473,15 @@ switch (example) {
 
 	case "tutorial7":
 		{
-			const engine = CL3D.startCopperLichtFromFile(path.join(__exampledata, "animation.ccbjs"));
-			engine.createRenderer(width, height, { window: native });
+			const engine = CL3D.startCopperLichtFromFile(path.join(__tutorialdata, "animation.ccbjs"));
+			engine.createRenderer(1280, 720, {});
 
 			// every time the user presses space, we want to do a collision test with the wall
 			// and create a cube where we hit the wall
 
 			let lastPlayedAnimation = 0;
 
-			window.on("keyDown", ({ key: key }) => {
+			window.on("keydown", (event) => {
 				let scene = engine.getScene();
 				if (!scene)
 					return;
@@ -504,7 +490,7 @@ switch (example) {
 				let soldier = scene.getSceneNodeFromName("soldier");
 
 				if (soldier) {
-					if (key == "space") // space has been pressed
+					if (event.key == " ") // space has been pressed
 					{
 						// switch to next animation
 						// select the next animation:
@@ -521,7 +507,7 @@ switch (example) {
 						soldier.setAnimation(nextAnimationName);
 					}
 					else
-						if (key == "c") // "c" has been pressed
+						if (event.key == "c") // "c" has been pressed
 						{
 							// clone soldier
 
@@ -541,7 +527,7 @@ switch (example) {
 			const engine = new CL3D.CopperLicht();
 			let scene = null;
 
-			if (engine.initRenderer(width, height, { window: native })) {
+			if (engine.initRenderer(1280, 720, {})) {
 				let setupShadowScene = () => {
 					scene = engine.getScene();
 
@@ -554,8 +540,21 @@ switch (example) {
 					scene.ShadowMapCameraViewDetailFactor = 0.1;
 
 				}
-				engine.load(path.join(__exampledata, "shadows.ccbz"), false, setupShadowScene);
+				engine.load(path.join(__tutorialdata, "shadows.ccbz"), false, setupShadowScene);
 			}
+
+			bindInput(engine);
+		}
+		break;
+
+	case false:
+		{
+			const engine = new CL3D.CopperLicht();
+
+			if (!engine.initRenderer(1280, 720, {}))
+				throw new Error("this browser doesn't support WebGL");
+
+			engine.load(file);
 
 			bindInput(engine);
 		}
@@ -563,6 +562,6 @@ switch (example) {
 
 	default:
 		{
-			console.log(`${example} does not exsit!`);
+			console.log(`${example || 'the file'} does not exsit!`);
 		}
 }

@@ -1,16 +1,18 @@
-let endProgramImpl = () => { }
+import { isBrowser, isNode } from '../utils/environment.js';
 
-if (typeof globalThis.open == "undefined") {
-    endProgramImpl = (url) => {
+let endProgramImpl = () => { return; }
+
+if (isNode) {
+    endProgramImpl = () => {
         process.exit();
     }
 }
-else {
-    endProgramImpl = (url) => {
+else if (isBrowser) {
+    endProgramImpl = () => {
         globalThis.close();
     }
 }
 
-export const endProgram = (url) => {
-    return endProgramImpl(url);
+export const endProgram = () => {
+    return endProgramImpl();
 }
