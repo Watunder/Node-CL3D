@@ -2504,13 +2504,14 @@ export class Renderer {
 				this.ensuresizeok(event.width, event.height);
 			});
 
-			obj.prevWindowMode = this.window.mode;
+			this.prevWindowMode = this.window.mode;
 			this.window.on('refresh', (event) => {
-				if (this.prevWindowMode != event.target._mode) {
+				if (this.prevWindowMode != event.target.mode) {
 					getEventEmitter().emit('windowModeChanged', this);
 				}
-				
-				this.prevWindowMode = event.target._mode;
+
+				this.prevWindowMode = event.target.mode;
+				this.ensuresizeok(event.target.width, event.target.height);
 			});
 
 			this.UsesWebGL2 = true;
