@@ -12,14 +12,14 @@
 //public static const REGISTER_MODE_2DOVERLAY:int = 4;
 
 import * as CL3D from "../main.js";
+import { GLSL, isNode } from "../utils/environment.js";
+import { getEventEmitter } from "../share/getEventEmitter.js";
 
 /**
  * @type {Boolean}
  * Global flag disabling post effects if hardware or browser is not capable of doing them.
  */
 export let Global_PostEffectsDisabled = false;
-
-const GLSL = String.raw;
 
 /**
  * @constructor
@@ -278,7 +278,7 @@ export class Scene {
 	ShadowMapResolution = 1024;
 
 	POSTPROCESS_SHADER_COLORIZE = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform vec4 PARAM_Colorize_Color;
@@ -292,7 +292,7 @@ export class Scene {
 	}`;
 
 	POSTPROCESS_SHADER_BLUR_HORIZONTAL = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -316,7 +316,7 @@ export class Scene {
 	}`;
 
 	POSTPROCESS_SHADER_BLUR_VERTICAL = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -340,7 +340,7 @@ export class Scene {
 	}`;
 
 	POSTPROCESS_SHADER_LIGHT_TRESHOLD = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -358,7 +358,7 @@ export class Scene {
 	}`;
 
 	POSTPROCESS_SHADER_BLACK_AND_WHITE = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -372,7 +372,7 @@ export class Scene {
 	}`;
 
 	POSTPROCESS_SHADER_VIGNETTE = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform float PARAM_Vignette_Intensity;
@@ -391,7 +391,7 @@ export class Scene {
 	}`;
 
 	POSTPROCESS_SHADER_INVERT = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -405,6 +405,13 @@ export class Scene {
 
 	constructor() {
 		this.init();
+
+		if (isNode) {
+			getEventEmitter().on("windowModeChanged", (renderer) => {
+				if (this.ShadowMappingEnabled)
+					this.initShadowMapRendering(renderer, true);
+			});
+		}
 	}
 
 	/**
@@ -557,16 +564,18 @@ export class Scene {
 		return this.CurrentRenderMode;
 	}
 
-	initShadowMapRendering(renderer) {
-		if (this.ShadowBuffer)
-			return true;
+	initShadowMapRendering(renderer, forceRecreate) {
+		if (!forceRecreate) {
+			if (this.ShadowBuffer)
+				return true;
 
-		if (this.TriedShadowInit)
-			return false;
+			if (this.TriedShadowInit)
+				return false;
+		}
 
 		this.TriedShadowInit = true;
 
-		if (!this.ShadowBuffer) {
+		if (!this.ShadowBuffer || forceRecreate) {
 			// create RTT
 			var bufferSize = this.ShadowMapResolution;
 			var useFloatingPointTexture = !renderer.ShadowMapUsesRGBPacking;

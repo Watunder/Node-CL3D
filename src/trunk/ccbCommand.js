@@ -6,7 +6,6 @@
 
 import * as CL3D from "../main.js";
 import { vector3d } from "../scriptinginterface.js";
-import { getSdlInfo } from "../share/getSdlInfo.js";
 import { endProgram } from "../share/endProgram.js";
 import { getDevicePixelRatio } from "../share/getDevicePixelRatio.js";
 
@@ -827,13 +826,6 @@ globalThis.ccbDoesLineCollideWithBoundingBoxOfSceneNode = (node, startX, startY,
 }
 
 /**
- * @returns {Sdl.Info}
- */
-globalThis.ccbGetSdlInfo = () => {
-	return getSdlInfo();
-}
-
-/**
  * Closes the window.
  */
 globalThis.ccbEndProgram = () => {
@@ -1117,11 +1109,11 @@ globalThis.ccbRegisterBehaviorEventReceiver = (bForMouse, bForKeyboard) => {
  * @param {function} fobj A callback function which will be called with the received data once the request is finished. This will also be called if the request ailed, with an empty string as parameter.
  * @returns {Number} The function returns an unique Id, for identifying this request.
  */
-globalThis.ccbDoHTTPRequest = (url, fobj, useArrayBufferReturn = false, isBrowser = true) => {
+globalThis.ccbDoHTTPRequest = (url, fobj, useArrayBufferReturn = false) => {
 	++CL3D.gScriptingInterface.LastHTTPRequestId;
 	var id = CL3D.gScriptingInterface.LastHTTPRequestId;
 
-	var loader = new CL3D.CCFileLoader(url, useArrayBufferReturn, isBrowser);
+	var loader = new CL3D.CCFileLoader(url, useArrayBufferReturn);
 
 	var itemarray = CL3D.gScriptingInterface.ccbRegisteredHTTPCallbackArray;
 	var f = new Object();

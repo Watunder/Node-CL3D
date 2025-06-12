@@ -3,12 +3,10 @@
 // This file is part of the CopperLicht engine, (c) by N.Gebhardt
 
 import * as CL3D from "./main.js";
-import { createContext } from "./share/createContext.js";
 import { createCanvas } from "./share/createCanvas.js";
-import { doProcess } from "./share/doProcess.js";
-
-const GLSL = String.raw;
-const process = doProcess();
+import { createContext } from "./share/createContext.js";
+import { GLSL, isNode } from "./utils/environment.js";
+import { getEventEmitter } from "./share/getEventEmitter.js";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Renderer
@@ -32,7 +30,7 @@ export class Renderer {
 
 	// drawing 2d rectangles with a color and a position only
 	vs_shader_2ddrawing_coloronly = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	attribute vec4 vPosition;
@@ -44,7 +42,7 @@ export class Renderer {
 
 	// drawing 2d rectangles with an image only
 	vs_shader_2ddrawing_texture = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	attribute vec4 vPosition;
@@ -59,7 +57,7 @@ export class Renderer {
 
 	// 2D Fragment shader: simply set the color from a shader parameter (used for 2d drawing rectangles)
 	fs_shader_simplecolor = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform vec4 vColor;
@@ -70,7 +68,7 @@ export class Renderer {
 	}`;
 
 	fs_shader_maskedcolor = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform vec4 vColor;
@@ -90,7 +88,7 @@ export class Renderer {
 	// 2D fragment shader for drawing fonts: The font texture is white/gray on black. Draw the font using the white as alpha,
 	// multiplied by a color as parameter
 	fs_shader_2ddrawing_canvasfont = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform vec4 vColor;
@@ -109,7 +107,7 @@ export class Renderer {
 
 	// simple normal 3d world 3d transformation shader
 	vs_shader_normaltransform = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform mat4 worldviewproj;
@@ -134,7 +132,7 @@ export class Renderer {
 
 	// just like vs_shader_normaltransform but moves the positions a bit, like grass by the wind
 	vs_shader_normaltransform_movegrass = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform mat4 worldviewproj;
@@ -202,7 +200,7 @@ export class Renderer {
 
 	// simple normal 3d world 3d transformation shader, which also calculates the light of up to 4 point light sources
 	vs_shader_normaltransform_with_light = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform mat4 worldviewproj;
@@ -237,7 +235,7 @@ export class Renderer {
 
 	// simple normal 3d world 3d transformation shader
 	vs_shader_normaltransform_gouraud = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform mat4 worldviewproj;
@@ -269,7 +267,7 @@ export class Renderer {
 	// Use the reflection vector, transformed to camera space, as input texture coordinates.
 	// The reflection vector is computed from the input vertex position and normal vector.
 	vs_shader_reflectiontransform = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform mat4 worldviewproj;
@@ -304,7 +302,7 @@ export class Renderer {
 
 	// same shader as before, but now with light
 	vs_shader_reflectiontransform_with_light = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform mat4 worldviewproj;
@@ -346,7 +344,7 @@ export class Renderer {
 
 	// same as vs_shader_normaltransform_with_light but alsow with grass movement
 	vs_shader_normaltransform_with_light_movegrass = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform mat4 worldviewproj;
@@ -387,7 +385,7 @@ export class Renderer {
 
 	// normal mapped material
 	vs_shader_normalmappedtransform = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform mat4 worldviewproj;
@@ -452,7 +450,7 @@ export class Renderer {
     }`;
 
 	fs_shader_onlyfirsttexture = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -468,7 +466,7 @@ export class Renderer {
     }`;
 
 	fs_shader_maskedtexture = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -486,7 +484,7 @@ export class Renderer {
 	}`;
 
 	fs_shader_onlyfirsttexture_gouraud = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -503,7 +501,7 @@ export class Renderer {
 	}`;
 
 	fs_shader_onlyfirsttexture_gouraud_alpharef = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -523,7 +521,7 @@ export class Renderer {
     }`;
 
 	fs_shader_lightmapcombine = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -542,7 +540,7 @@ export class Renderer {
     }`;
 
 	fs_shader_lightmapcombine_m4 = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -561,7 +559,7 @@ export class Renderer {
     }`;
 
 	fs_shader_lightmapcombine_gouraud = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -582,7 +580,7 @@ export class Renderer {
     }`;
 
 	fs_shader_normalmapped = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -624,7 +622,7 @@ export class Renderer {
     }`;
 
 	fs_shader_vertex_alpha_two_textureblend = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -654,7 +652,7 @@ export class Renderer {
 	// Exponantial squared fog:
 	//   fog = exp2(-gl_Fog.density * gl_Fog.density * gl_FogFragCoord * gl_FogFragCoord * LOG2E);
 	fs_shader_onlyfirsttexture_gouraud_fog = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -678,7 +676,7 @@ export class Renderer {
 
 	// see fs_shader_onlyfirsttexture_gouraud_fog for details
 	fs_shader_lightmapcombine_fog = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -703,7 +701,7 @@ export class Renderer {
     }`;
 
 	fs_shader_onlyfirsttexture_gouraud_alpharef_fog = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -726,7 +724,7 @@ export class Renderer {
     }`;
 
 	fs_shader_lightmapcombine_m4_fog = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -751,7 +749,7 @@ export class Renderer {
     }`;
 
 	fs_shader_vertex_alpha_two_textureblend_fog = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -777,7 +775,7 @@ export class Renderer {
     }`;
 
 	fs_shader_lightmapcombine_gouraud_fog = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -809,7 +807,7 @@ export class Renderer {
 
 	// normal 3d world 3d transformation shader for drawing depth into a shadow map texture
 	vs_shader_normaltransform_for_shadowmap = GLSL`
-	//#version 100
+	#version 100
 	precision highp float;
 
 	uniform mat4 worldviewproj;
@@ -821,7 +819,7 @@ export class Renderer {
     }`;
 
 	fs_shader_draw_depth_shadowmap_depth = GLSL`
-	//#version 100
+	#version 100
 	precision highp float;
 
     void main()
@@ -831,7 +829,7 @@ export class Renderer {
 
 	// like vs_shader_normaltransform_for_shadowmap but for alpha ref materials
 	vs_shader_normaltransform_alpharef_for_shadowmap = GLSL`
-	//#version 100
+	#version 100
 	precision highp float;
 
 	uniform mat4 worldviewproj;
@@ -848,7 +846,7 @@ export class Renderer {
 
 	// like vs_shader_normaltransform_alpharef_for_shadowmap but with moving grass
 	vs_shader_normaltransform_alpharef_moving_grass_for_shadowmap = GLSL`
-	//#version 100
+	#version 100
 	precision highp float;
 
 	uniform mat4 worldviewproj;
@@ -870,7 +868,7 @@ export class Renderer {
 
 	// like fs_shader_draw_depth_shadowmap_depth but for alpha ref materials
 	fs_shader_alpharef_draw_depth_shadowmap_depth = GLSL`
-	//#version 100
+	#version 100
 	precision highp float;
 
 	varying vec2 v_texCoord1;
@@ -887,7 +885,7 @@ export class Renderer {
 	// we only need to write gl_FragCoord.z for float rtt, but dont
 	// use those and pack this into rgba in case we have no floating point support:
 	fs_shader_draw_depth_shadowmap_rgbapack = GLSL`
-	//#version 100
+	#version 100
 	precision highp float;
 
     void main()
@@ -902,7 +900,7 @@ export class Renderer {
 	// normal transformation and lighting of an object (like vs_shader_normaltransform_with_light)
 	// with additional computation of the lookup coordinate in the rendered shadow map.
 	vs_shader_normaltransform_with_shadowmap_lookup = GLSL`
-	//#version 100
+	#version 100
 	precision highp float;
 
 	uniform mat4 worldviewproj;
@@ -943,7 +941,7 @@ export class Renderer {
 
 	// like fs_shader_onlyfirsttexture_gouraud_fog but also with shadow map
 	fs_shader_onlyfirsttexture_gouraud_fog_shadow_map_rgbpack = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -1049,7 +1047,7 @@ export class Renderer {
 
 	// Like fs_shader_onlyfirsttexture_gouraud_fog_shadow_map_rgbpack but with floating point tests
 	fs_shader_onlyfirsttexture_gouraud_fog_shadow_map = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -1081,7 +1079,7 @@ export class Renderer {
 
 	// like fs_shader_vertex_alpha_two_textureblend_fog but with shadow map support
 	fs_shader_vertex_alpha_two_textureblend_fog_shadow_map = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -1118,7 +1116,7 @@ export class Renderer {
 
 	// like fs_shader_onlyfirsttexture_gouraud_alpharef_fog but with shadow map support
 	fs_shader_onlyfirsttexture_gouraud_alpharef_fog_shadow_map = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform sampler2D texture1;
@@ -1151,7 +1149,7 @@ export class Renderer {
 
 	// same as vs_shader_normaltransform_with_light_movegrass but with shadow map loopup
 	vs_shader_normaltransform_with_light_movegrass_with_shadowmap_lookup = GLSL`
-	//#version 100
+	#version 100
 	precision mediump float;
 
 	uniform mat4 worldviewproj;
@@ -1236,7 +1234,7 @@ export class Renderer {
 		 */
 		this.canvas = null;
 		/**
-		 * @type {WebGLRenderingContext|WebGL2RenderingContext}
+		 * @type {WebGLRenderingContext|WebGL2RenderingContext|import('webgl-raub')}
 		 */
 		this.gl = null;
 		this.width = 0;
@@ -1912,7 +1910,7 @@ export class Renderer {
 		if (program.locShadowMapBias2)
 			gl.uniform1f(program.locShadowMapBias2, this.ShadowMapBias2);
 
-		if (this.canvas && program.locShadowMapBackFaceBias)
+		if (program.locShadowMapBackFaceBias)
 			gl.uniform1f(program.locShadowMapBackFaceBias, this.ShadowMapBackFaceBias);
 
 		if (program.locShadowMapOpacity)
@@ -2429,9 +2427,6 @@ export class Renderer {
 		let gl = this.gl;
 
 		//gl.flush();
-		if (process.env.SDL_ENV)
-			// @ts-ignore
-			gl.swap();
 
 		//console.log("drawEnd");
 	}
@@ -2476,6 +2471,10 @@ export class Renderer {
 			this.width = this.canvas.width;
 			this.height = this.canvas.height;
 		} else {
+			if (this.width == width &&
+				this.height == height)
+				return;
+
 			this.width = width;
 			this.height = height;
 		}
@@ -2496,7 +2495,28 @@ export class Renderer {
 		this.height = height;
 		this.canvas = canvas;
 
-		this.gl = createContext(width, height, options, canvas);
+		const obj = createContext(width, height, options, canvas);
+		if (isNode) {
+			this.gl = obj.gl;
+			this.window = obj.window;
+
+			this.window.on('resize', (event) => {
+				this.ensuresizeok(event.width, event.height);
+			});
+
+			obj.prevWindowMode = this.window.mode;
+			this.window.on('refresh', (event) => {
+				if (this.prevWindowMode != event.target._mode) {
+					getEventEmitter().emit('windowModeChanged', this);
+				}
+				
+				this.prevWindowMode = event.target._mode;
+			});
+
+			this.UsesWebGL2 = true;
+		}
+		else
+			this.gl = obj;
 
 		if (canvas)
 			this.UsesWebGL2 = true;
@@ -2553,7 +2573,7 @@ export class Renderer {
 		let finalFramentShader = fragmentShaderSource;
 
 		let head_append = GLSL`
-		//#version 100
+		#version 100
 		precision mediump float;
 		`;
 
@@ -3303,9 +3323,7 @@ export class Renderer {
 
 		if (!this.isPowerOfTwo(origwidth) || !this.isPowerOfTwo(origheight)) {
 			// Scale up the texture to the next highest power of two dimensions.
-			let tmpcanvas = createCanvas();
-			tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
-			tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
+			let tmpcanvas = createCanvas(this.nextHighestPowerOfTwo(origwidth), this.nextHighestPowerOfTwo(origheight));
 			let tmpctx = tmpcanvas.getContext("2d");
 
 			tmpctx.fillStyle = "rgba(0, 255, 255, 1)";
@@ -3317,12 +3335,17 @@ export class Renderer {
 			else
 				tmpctx.drawImage(canvas, 0, 0, origwidth, origheight, 0, 0, tmpcanvas.width, tmpcanvas.height);
 
-			canvas = tmpcanvas;
+			if (isNode)
+				canvas = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
+			else
+				canvas = tmpcanvas;
+
 			scaledUpWidth = tmpcanvas.width;
 			scaledUpHeight = tmpcanvas.height;
 		}
 
 		//console.log("createTextureFrom2DCanvas orig " + origwidth + "x" + origheight + " and scaled" + scaledUpWidth + "x" + scaledUpHeight);
+
 		this.fillTextureFromDOMObject(texture, canvas);
 
 		//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -3361,9 +3384,7 @@ export class Renderer {
 
 		if (!this.isPowerOfTwo(origwidth) || !this.isPowerOfTwo(origheight)) {
 			// Scale up the texture to the next highest power of two dimensions.
-			let tmpcanvas = createCanvas();
-			tmpcanvas.width = this.nextHighestPowerOfTwo(origwidth);
-			tmpcanvas.height = this.nextHighestPowerOfTwo(origheight);
+			let tmpcanvas = createCanvas(this.nextHighestPowerOfTwo(origwidth), this.nextHighestPowerOfTwo(origheight));
 			let tmpctx = tmpcanvas.getContext("2d");
 
 			//tmpctx.fillStyle = "rgba(0, 255, 255, 1)";
@@ -3374,7 +3395,11 @@ export class Renderer {
 			else
 				tmpctx.drawImage(canvas, 0, 0, origwidth, origheight, 0, 0, tmpcanvas.width, tmpcanvas.height);
 
-			canvas = tmpcanvas;
+			if (isNode)
+				canvas = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
+			else
+				canvas = tmpcanvas;
+
 			scaledUpWidth = tmpcanvas.width;
 			scaledUpHeight = tmpcanvas.height;
 		}
@@ -3493,17 +3518,18 @@ export class Renderer {
 		let objToCopyFrom = t.Image;
 
 		// Scale up the texture to the next highest power of two dimensions.
-		if (process.env.SDL_ENV || !this.isPowerOfTwo(objToCopyFrom.width) || !this.isPowerOfTwo(objToCopyFrom.height)) {
-			let tmpcanvas = createCanvas();
+		if (isNode || !this.isPowerOfTwo(objToCopyFrom.width) || !this.isPowerOfTwo(objToCopyFrom.height)) {
+			let tmpcanvas = createCanvas(this.nextHighestPowerOfTwo(objToCopyFrom.width), this.nextHighestPowerOfTwo(objToCopyFrom.height));
 			if (tmpcanvas != null) {
-				tmpcanvas.width = this.nextHighestPowerOfTwo(objToCopyFrom.width);
-				tmpcanvas.height = this.nextHighestPowerOfTwo(objToCopyFrom.height);
 				let tmpctx = tmpcanvas.getContext("2d");
 				tmpctx.drawImage(objToCopyFrom,
 					0, 0, objToCopyFrom.width, objToCopyFrom.height,
 					0, 0, tmpcanvas.width, tmpcanvas.height);
 
-				objToCopyFrom = tmpcanvas;
+				if (isNode)
+					objToCopyFrom = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
+				else
+					objToCopyFrom = tmpcanvas;
 			}
 		}
 

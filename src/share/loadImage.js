@@ -1,13 +1,20 @@
-let loadImageImpl = () => { }
+import { isBrowser, isNode } from '../utils/environment.js';
 
-if (typeof globalThis.Image == "undefined") {
-    await import('canvas').then(async (module) => {
+/**
+ * @param {string|Buffer} src 
+ * @param {any} options 
+ * @returns {Promise<Image|{width?:number, height?:number}>}
+ */
+let loadImageImpl = (src, options) => { return; }
+
+if (isNode) {
+    await import('3d-core-raub').then(async (module) => {
         loadImageImpl = (src, options) => {
-            return module.default.loadImage(src, options);
+            return module.default.skia.loadImage(src, options);
         }
     });
 }
-else {
+else if (isBrowser) {
     loadImageImpl = (src, options) => {
         return new Promise(function (resolve, reject) {
             const image = Object.assign(document.createElement('img'), options);
@@ -25,12 +32,6 @@ else {
     }
 }
 
-/**
- * 
- * @param {string|Buffer} src 
- * @param {any} options 
- * @returns {Promise<Image>}
- */
 export const loadImage = (src, options) => {
     return loadImageImpl(src, options);
 }

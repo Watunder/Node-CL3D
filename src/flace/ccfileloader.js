@@ -2,16 +2,16 @@
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import { doFetch } from "../share/doFetch.js";
+import { isNode } from '../utils/environment.js';
 
 /**
  * @constructor
  * @public
  */
 export class CCFileLoader {
-	constructor(filetoload, useArrayBufferReturn, isBrowser) {
+	constructor(filetoload, useArrayBufferReturn) {
 		this.FileToLoad = filetoload;
 		this.useArrayBufferReturn = useArrayBufferReturn;
-		this.isBrowser = isBrowser;
 	}
 
 	load(functionCallBack, functionCallBackOnError) {
@@ -21,11 +21,11 @@ export class CCFileLoader {
 		const signal = me.Controller.signal;
 
 		try {
-			if (!me.isBrowser) {
+			if (isNode) {
 				let path = me.FileToLoad.replaceAll('\\', '/');
 				me.FileToLoad = `file:///${path}`;
 			}
-			
+
 			doFetch(me.FileToLoad, { signal })
 				.then(async (response) => {
 					if (!response.ok) {

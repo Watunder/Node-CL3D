@@ -220,8 +220,8 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		var bHovering = false;
 
 		if (this.engine != null && this.AnimateOnHover) {
-			var mposx = this.engine.getMouseX() * this.engine.DPR;
-			var mposy = this.engine.getMouseY() * this.engine.DPR;
+			var mposx = this.engine.getMouseX();
+			var mposy = this.engine.getMouseY();
 
 			// is point inside rect
 			bHovering = (rctTarget.x <= mposx && rctTarget.y <= mposy &&
@@ -348,12 +348,9 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		this.destroyTextTextures(renderer);
 
 		// create new CL3D.Textures
-		var canvas = createCanvas();
+		var canvas = createCanvas(1, 1);
 		if (canvas == null)
 			return;
-
-		canvas.width = 1;
-		canvas.height = 1;
 
 		var ctx = null;
 
