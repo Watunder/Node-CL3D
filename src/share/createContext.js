@@ -5,14 +5,14 @@ import { isBrowser, isNode } from '../utils/environment.js';
  * @param {Number} height 
  * @param {WebGLContextAttributes&import('3d-core-raub').TInitOpts} options 
  * @param {HTMLCanvasElement} canvas 
- * @returns {WebGLRenderingContext|WebGL2RenderingContext|{gl:import('webgl-raub'), window:import('glfw-raub').Document}}
+ * @returns {WebGLRenderingContext|WebGL2RenderingContext|{gl:import('webgl-raub'), window:import('glfw-raub').Document, glfw:import('glfw-raub')}}
  */
 let createContextImpl = (width, height, options, canvas) => { return; }
 
 if (isNode) {
     await import('3d-core-raub').then(async (module) => {
         createContextImpl = (width, height, options) => {
-            const { gl, window } = module.default.init({
+            const { gl, window, glfw } = module.default.init({
                 width: width,
                 height: height,
                 vsync: true,
@@ -22,7 +22,7 @@ if (isNode) {
                 autoFullscreen: true,
                 ...options
             });
-            return { gl, window };
+            return { gl, window, glfw };
         }
     });
 }

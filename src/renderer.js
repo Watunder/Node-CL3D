@@ -2499,6 +2499,7 @@ export class Renderer {
 		if (isNode) {
 			this.gl = obj.gl;
 			this.window = obj.window;
+			this.glfw = obj.glfw;
 
 			this.window.on('resize', (event) => {
 				this.ensuresizeok(event.width, event.height);
