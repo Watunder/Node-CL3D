@@ -8,3 +8,4 @@ dist/bundle/** */
 !dist/bundle/icudtl.dat
 
 node_modules/
+package-lock.json
