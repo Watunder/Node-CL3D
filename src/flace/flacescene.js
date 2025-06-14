@@ -13,7 +13,6 @@
 
 import * as CL3D from "../main.js";
 import { GLSL, isNode } from "../utils/environment.js";
-import { getEventEmitter } from "../share/getEventEmitter.js";
 
 /**
  * @type {Boolean}
@@ -405,13 +404,6 @@ export class Scene {
 
 	constructor() {
 		this.init();
-
-		if (isNode) {
-			getEventEmitter().on("windowModeChanged", (renderer) => {
-				if (this.ShadowMappingEnabled)
-					this.initShadowMapRendering(renderer, true);
-			});
-		}
 	}
 
 	/**

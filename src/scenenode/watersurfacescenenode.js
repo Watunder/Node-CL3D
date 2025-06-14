@@ -3,7 +3,6 @@
 
 import * as CL3D from "../main.js";
 import { GLSL, isNode } from "../utils/environment.js";
-import { getEventEmitter } from "../share/getEventEmitter.js";
 
 /**
  * A class rendering a reflective water surface.
@@ -89,12 +88,6 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 
 		this.RTTexture = null;
 		this.FrustumCullingProjection = null;
-
-		if (isNode) {
-			getEventEmitter().on("windowModeChanged", (renderer) => {
-				this.prepareForRendering(renderer, true);
-			});
-		}
 	}
 	/**
 	 * Returns the type string of the scene node.

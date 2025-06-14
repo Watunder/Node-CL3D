@@ -6,7 +6,6 @@ import * as CL3D from "./main.js";
 import { createCanvas } from "./share/createCanvas.js";
 import { createContext } from "./share/createContext.js";
 import { GLSL, isNode } from "./utils/environment.js";
-import { getEventEmitter } from "./share/getEventEmitter.js";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Renderer
@@ -2505,13 +2504,7 @@ export class Renderer {
 				this.ensuresizeok(event.width, event.height);
 			});
 
-			this.prevWindowMode = this.window.mode;
 			this.window.on('refresh', (event) => {
-				if (this.prevWindowMode != event.target.mode) {
-					getEventEmitter().emit('windowModeChanged', this);
-				}
-
-				this.prevWindowMode = event.target.mode;
 				this.ensuresizeok(event.target.width, event.target.height);
 			});
 
