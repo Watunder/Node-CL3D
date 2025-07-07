@@ -1,3 +1,5 @@
+import { isBrowser, isNode } from '../utils/environment.js';
+
 /**
  * @param {Number} width 
  * @param {Number} height 
@@ -5,14 +7,14 @@
  */
 let createCanvasImpl = (width, height) => { return; }
 
-if (typeof globalThis.HTMLCanvasElement == "undefined") {
+if (isNode) {
     await import('3d-core-raub').then(async (module) => {
         createCanvasImpl = (width, height) => {
             return module.default.skia.createCanvas(width, height);
         }
     })
 }
-else {
+else if (isBrowser) {
     createCanvasImpl = (width, height) => {
         return Object.assign(document.createElement('canvas'), { width: width, height: height });
     }

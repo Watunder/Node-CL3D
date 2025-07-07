@@ -9,7 +9,7 @@ let saveFileImpl = (filepath, data) => { return; }
 if (isNode) {
     await import('fs').then(async (module) => {
         saveFileImpl = (filepath, data) => {
-            module.writeFileSync(filepath, data);
+            module.default.writeFileSync(filepath, data);
         }
     });
 }

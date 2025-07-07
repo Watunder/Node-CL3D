@@ -9,7 +9,7 @@ if (isNode) {
     await import('path').then(async (module) => {
         getDirNameImpl = () => {
             const __filename = import.meta.url;
-            const __dirname = module.dirname(__filename);
+            const __dirname = module.default.dirname(__filename);
 
             return __dirname;
         }
