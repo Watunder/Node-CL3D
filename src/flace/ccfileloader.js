@@ -23,7 +23,7 @@ export class CCFileLoader {
 		try {
 			if (isNode) {
 				let path = me.FileToLoad.replaceAll('\\', '/');
-				me.FileToLoad = `file:///${path}`;
+				me.FileToLoad = path.startsWith('file:') ? path : `file:///${path}`;
 			}
 
 			doFetch(me.FileToLoad, { signal })
@@ -32,12 +32,13 @@ export class CCFileLoader {
 						let reportedError = false;
 
 						if (response.status != 200 && response.status != 0 && response.status != null) {
+							const message = "Could not open file " + me.FileToLoad + " (status:" + response.status + ")";
 							if (functionCallBackOnError) {
-								functionCallBackOnError('');
+								functionCallBackOnError(message);
 								reportedError = true;
 							}
 							else
-								console.log("Could not open file " + me.FileToLoad + " (status:" + response.status + ")");
+								console.log(message);
 						}
 					}
 					if (me.useArrayBufferReturn)
