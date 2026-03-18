@@ -43,7 +43,6 @@
 		"@rollup/plugin-terser": "^0.4.4",
 		"@typhonjs-build-test/esm-d-ts": "^0.2.2",
 		"bpkg": "^0.9.2",
-		"minimist": "^1.2.8",
 		"rollup": "^4.42.0"
 	}
 }

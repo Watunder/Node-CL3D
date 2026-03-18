@@ -1,17 +1,32 @@
-// parse args
-const args = await import("minimist").then(async (module) => {
-	return module.default(process.argv.slice(2));
-});
-
-const example = args["example"] || (args["_"].length == 0 ? `tutorial${randomInt(1, 9)}` : false);
-
-const file = example || args["_"][0];
-
 // dependcy module
 import { randomInt } from "crypto";
 import path from "path";
 import url from "url";
 import * as CL3D from "../src/main.js";
+
+// parse args
+function parseArgs(argv) {
+	const args = { _: [] };
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+		if (arg.startsWith("--")) {
+			const [key, value] = arg.slice(2).split("=");
+			args[key] = value !== undefined ? value : true;
+		} else if (arg.startsWith("-")) {
+			const key = arg.slice(1);
+			args[key] = true;
+		} else {
+			args._.push(arg);
+		}
+	}
+	return args;
+}
+
+const args = parseArgs(process.argv.slice(2));
+
+const example = args["example"] || (args["_"].length == 0 ? `tutorial${randomInt(1, 9)}` : false);
+
+const file = example || args["_"][0];
 
 // local file path
 const __filename = url.fileURLToPath(import.meta.url);
