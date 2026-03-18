@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
@@ -100,28 +100,34 @@ export class Box3d {
 		let e = this.getExtent().multiplyWithScal(0.5);
 		let t = this.getCenter().substract(linemiddle);
 
-		if ((Math.abs(t.X) > e.X + halflength * Math.abs(linevect.X)) ||
-			(Math.abs(t.Y) > e.Y + halflength * Math.abs(linevect.Y)) ||
-			(Math.abs(t.Z) > e.Z + halflength * Math.abs(linevect.Z)))
+		if (
+			(Math.abs(t.X) > e.X + halflength * Math.abs(linevect.X))
+			|| (Math.abs(t.Y) > e.Y + halflength * Math.abs(linevect.Y))
+			|| (Math.abs(t.Z) > e.Z + halflength * Math.abs(linevect.Z))
+		) {
 			return false;
+		}
 
 		let r = e.Y * Math.abs(linevect.Z) + e.Z * Math.abs(linevect.Y);
-		if (Math.abs(t.Y * linevect.Z - t.Z * linevect.Y) > r)
+		if (Math.abs(t.Y * linevect.Z - t.Z * linevect.Y) > r) {
 			return false;
+		}
 
 		r = e.X * Math.abs(linevect.Z) + e.Z * Math.abs(linevect.X);
-		if (Math.abs(t.Z * linevect.X - t.X * linevect.Z) > r)
+		if (Math.abs(t.Z * linevect.X - t.X * linevect.Z) > r) {
 			return false;
+		}
 
 		r = e.X * Math.abs(linevect.Y) + e.Y * Math.abs(linevect.X);
-		if (Math.abs(t.X * linevect.Y - t.Y * linevect.X) > r)
+		if (Math.abs(t.X * linevect.Y - t.Y * linevect.X) > r) {
 			return false;
+		}
 
 		return true;
 	}
 	/**
 	 * Adds a point to the bounding box, increasing the box if the point is outside of the box
-	  * @public
+	 * @public
 	 */
 	addInternalPoint(x, y, z) {
 		if (x > this.MaxEdge.X) this.MaxEdge.X = x;
@@ -134,16 +140,16 @@ export class Box3d {
 	}
 	/**
 	 * Adds a point to the bounding box, increasing the box if the point is outside of the box
-	  * @public
-	  * @param v {CL3D.Vect3d} 3d vector representing the point
+	 * @public
+	 * @param v {CL3D.Vect3d} 3d vector representing the point
 	 */
 	addInternalPointByVector(v) {
 		this.addInternalPoint(v.X, v.Y, v.Z);
 	}
 	/**
 	 * Adds a box to the bounding box
-	  * @public
-	  * @param v {CL3D.Box3d} 3d bounding box to add
+	 * @public
+	 * @param v {CL3D.Box3d} 3d bounding box to add
 	 */
 	addInternalBox(box) {
 		this.addInternalPointByVector(box.MinEdge);
@@ -155,8 +161,8 @@ export class Box3d {
 	 * @public
 	 */
 	intersectsWithBox(box) {
-		return this.MinEdge.X <= box.MaxEdge.X && this.MinEdge.Y <= box.MaxEdge.Y && this.MinEdge.Z <= box.MaxEdge.Z &&
-			this.MaxEdge.X >= box.MinEdge.X && this.MaxEdge.Y >= box.MinEdge.Y && this.MaxEdge.Z >= box.MinEdge.Z;
+		return this.MinEdge.X <= box.MaxEdge.X && this.MinEdge.Y <= box.MaxEdge.Y && this.MinEdge.Z <= box.MaxEdge.Z
+			&& this.MaxEdge.X >= box.MinEdge.X && this.MaxEdge.Y >= box.MinEdge.Y && this.MaxEdge.Z >= box.MinEdge.Z;
 	}
 	/**
 	 * Returns if a point is inside this box
@@ -164,9 +170,9 @@ export class Box3d {
 	 * @public
 	 */
 	isPointInside(p) {
-		return p.X >= this.MinEdge.X && p.X <= this.MaxEdge.X &&
-			p.Y >= this.MinEdge.Y && p.Y <= this.MaxEdge.Y &&
-			p.Z >= this.MinEdge.Z && p.Z <= this.MaxEdge.Z;
+		return p.X >= this.MinEdge.X && p.X <= this.MaxEdge.X
+			&& p.Y >= this.MinEdge.Y && p.Y <= this.MaxEdge.Y
+			&& p.Z >= this.MinEdge.Z && p.Z <= this.MaxEdge.Z;
 	}
 	/**
 	 * Resets the bounding box

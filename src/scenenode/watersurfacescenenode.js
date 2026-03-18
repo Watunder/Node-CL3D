@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -7,7 +7,7 @@ import { GLSL, isNode } from "../utils/environment.js";
 /**
  * A class rendering a reflective water surface.
  * @constructor
- * @extends CL3D.MeshSceneNode 
+ * @extends CL3D.MeshSceneNode
  * @class A class rendering a reflective water surface.
  */
 export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
@@ -96,7 +96,7 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'water';
+		return "water";
 	}
 	/**
 	 * @public
@@ -113,10 +113,9 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 
 			var bNeedsRTTUpdate = false;
 
-			if (!this.LastRTTUpdateTime)
+			if (!this.LastRTTUpdateTime) {
 				bNeedsRTTUpdate = true;
-
-			else {
+			} else {
 				var updateEveryMs = 100;
 
 				if (cam) {
@@ -126,15 +125,18 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 					var pos = this.getAbsolutePosition();
 					var centerDistanceFromCamera = pos.getDistanceTo(camWorldPos);
 
-					if (centerDistanceFromCamera > waterSize)
-						updateEveryMs *= (centerDistanceFromCamera / waterSize);
+					if (centerDistanceFromCamera > waterSize) {
+						updateEveryMs *= centerDistanceFromCamera / waterSize;
+					}
 
-					if (updateEveryMs > 1000)
+					if (updateEveryMs > 1000) {
 						updateEveryMs = 1000;
+					}
 
-					// also, update if camera position / rotation changed a lot 
-					if (!cam.ViewMatrix.equals(this.LastRTTUpdateViewMatrix))
+					// also, update if camera position / rotation changed a lot
+					if (!cam.ViewMatrix.equals(this.LastRTTUpdateViewMatrix)) {
 						updateEveryMs = 10;
+					}
 
 					this.LastRTTUpdateViewMatrix = cam.ViewMatrix.clone();
 				}
@@ -148,16 +150,17 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 			}
 
 			// register for water color if camera is below water surface
-			if (this.DrawDebugTexture)
+			if (this.DrawDebugTexture) {
 				mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_2DOVERLAY);
-
-			else if (cam) {
+			} else if (cam) {
 				var camPos = cam.getAbsolutePosition();
 				var waterPos = this.getAbsolutePosition();
 				if (camPos.Y < waterPos.Y) {
 					var box = this.getTransformedBoundingBox();
-					if (camPos.X >= box.MinEdge.X && camPos.X <= box.MaxEdge.X &&
-						camPos.Z >= box.MinEdge.Z && camPos.Z <= box.MaxEdge.Z) {
+					if (
+						camPos.X >= box.MinEdge.X && camPos.X <= box.MaxEdge.X
+						&& camPos.Z >= box.MinEdge.Z && camPos.Z <= box.MaxEdge.Z
+					) {
 						mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_2DOVERLAY);
 					}
 				}
@@ -173,35 +176,39 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 	 */
 	render(renderer) {
 		var cam = this.scene.getActiveCamera();
-		if (!cam || !this.OwnedMesh)
+		if (!cam || !this.OwnedMesh) {
 			return;
+		}
 
 		// skip if the mesh isn't visible in the frustum
 		var frustrum = this.scene.getCurrentCameraFrustrum();
-		if (frustrum && this.scene.CurrentRenderMode != CL3D.Scene.RENDER_MODE_2DOVERLAY) // always render underwater stuff
-		{
-			if (!frustrum.isBoxInside(this.getTransformedBoundingBox()))
+		if (frustrum && this.scene.CurrentRenderMode != CL3D.Scene.RENDER_MODE_2DOVERLAY) { // always render underwater stuff
+			if (!frustrum.isBoxInside(this.getTransformedBoundingBox())) {
 				return;
+			}
 		}
 
 		// draw
 		if (this.scene.CurrentRenderMode == CL3D.Scene.RENDER_MODE_TRANSPARENT) {
-			if (this.Mat.Type == -1 || this.RTTexture == null)
+			if (this.Mat.Type == -1 || this.RTTexture == null) {
 				return;
+			}
 
 			// render normally
 			if (!this.CurrentlyRenderingIntoRTT) {
 				renderer.setWorld(this.AbsoluteTransformation);
 
 				var mesh = this.OwnedMesh;
-				if (!mesh)
+				if (!mesh) {
 					return;
+				}
 
 				this.Box = mesh.Box;
 				this.Mat.Tex1 = this.RTTexture;
 
-				if (mesh && mesh.MeshBuffers && mesh.MeshBuffers.length > 0)
+				if (mesh && mesh.MeshBuffers && mesh.MeshBuffers.length > 0) {
 					this.Mat.Tex2 = mesh.MeshBuffers[0].Mat.Tex1;
+				}
 
 				for (var i = 0; i < mesh.MeshBuffers.length; ++i) {
 					var mb = mesh.MeshBuffers[i];
@@ -211,12 +218,11 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 					}
 				}
 			}
-		}
-
-		else if (this.scene.CurrentRenderMode == CL3D.Scene.RENDER_MODE_RTT_SCENE) {
+		} else if (this.scene.CurrentRenderMode == CL3D.Scene.RENDER_MODE_RTT_SCENE) {
 			// render scene into our RTT
-			if (!this.prepareForRendering(renderer))
+			if (!this.prepareForRendering(renderer)) {
 				return;
+			}
 
 			var oldRenderTarget = renderer.getRenderTarget();
 
@@ -243,7 +249,7 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 				var reflTarget = origTarget.clone();
 				var reflPosition = origPosition.clone();
 
-				reflPosition.Y = -origPosition.Y + 2 * planeY; //position of the water
+				reflPosition.Y = -origPosition.Y + 2 * planeY; // position of the water
 				cam.Pos = reflPosition;
 
 				reflTarget.Y = -origTarget.Y + 2 * planeY;
@@ -252,7 +258,6 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 				var viewMatrixRefl = new CL3D.Matrix4();
 				viewMatrixRefl.buildCameraLookAtMatrixLH(reflPosition, reflTarget, new CL3D.Vect3d(0.0, 1.0, 0.0));
 				cam.ViewMatrix = viewMatrixRefl;
-
 
 				// cull by plane
 				var reflectionPlane = new CL3D.Plane3d();
@@ -271,10 +276,10 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 					var z = -1.0;
 					var w = (1.0 + m.m10) / m.m14;
 
-					var dotproduct = -2.0 / (x * reflectionPlaneInCameraSpace.Normal.X +
-						y * reflectionPlaneInCameraSpace.Normal.Y +
-						z * reflectionPlaneInCameraSpace.Normal.Z +
-						w * reflectionPlaneInCameraSpace.D);
+					var dotproduct = -2.0 / (x * reflectionPlaneInCameraSpace.Normal.X
+						+ y * reflectionPlaneInCameraSpace.Normal.Y
+						+ z * reflectionPlaneInCameraSpace.Normal.Z
+						+ w * reflectionPlaneInCameraSpace.D);
 
 					m.m02 = reflectionPlaneInCameraSpace.Normal.X * dotproduct;
 					m.m06 = reflectionPlaneInCameraSpace.Normal.Y * dotproduct;
@@ -283,7 +288,6 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 				}
 
 				this.FrustumCullingProjection = culledProjection;
-
 
 				// draw everything
 				this.scene.drawRegistered3DNodes(renderer, this);
@@ -304,14 +308,14 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 			}
 
 			renderer.setInvertedDepthTest(false); // set back
-		}
-
-		else if (this.scene.CurrentRenderMode == CL3D.Scene.RENDER_MODE_2DOVERLAY && !this.CurrentlyRenderingIntoRTT) {
-			if (this.ColorWhenUnderwater && !this.DrawDebugTexture)
+		} else if (this.scene.CurrentRenderMode == CL3D.Scene.RENDER_MODE_2DOVERLAY && !this.CurrentlyRenderingIntoRTT) {
+			if (this.ColorWhenUnderwater && !this.DrawDebugTexture) {
 				renderer.draw2DRectangle(0, 0, renderer.getWidth(), renderer.getHeight(), this.UnderWaterColor, true);
+			}
 
-			if (this.DrawDebugTexture)
+			if (this.DrawDebugTexture) {
 				renderer.draw2DImage(10, 10, 250, 200, this.RTTexture, false);
+			}
 		}
 	}
 	/**
@@ -321,14 +325,16 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		var c = new CL3D.WaterSurfaceSceneNode();
 		this.cloneMembers(c, newparent, oldNodeId, newNodeId);
 
-		if (this.OwnedMesh)
+		if (this.OwnedMesh) {
 			c.OwnedMesh = this.OwnedMesh.clone();
+		}
 
 		c.ReadonlyMaterials = this.ReadonlyMaterials;
 		c.DoesCollision = this.DoesCollision;
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
 		return c;
 	}
@@ -336,15 +342,17 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 	 * @public
 	 */
 	prepareForRendering(renderer, forceRecreate) {
-		if (!forceRecreate && this.PreparedForRendering)
+		if (!forceRecreate && this.PreparedForRendering) {
 			return this.RTTexture != null;
+		}
 
 		this.PreparedForRendering = true;
 
 		this.initRTT(renderer);
 
-		if (!this.RTTexture)
+		if (!this.RTTexture) {
 			return false;
+		}
 
 		var me = this;
 		var gl = renderer.getWebGL();
@@ -352,8 +360,13 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		this.Mat.Type = renderer.createMaterialType(
 			this.vs_shader_water,
 			this.fs_shader_water,
-			true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA,
-			function () { me.setShaderConstants(renderer); });
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+			function() {
+				me.setShaderConstants(renderer);
+			},
+		);
 
 		return true;
 	}
@@ -364,22 +377,23 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 		var gl = renderer.getWebGL();
 
 		var program = renderer.getGLProgramFromMaterialType(this.Mat.Type);
-		if (!program)
+		if (!program) {
 			return;
+		}
 
 		var locWaterColor = gl.getUniformLocation(program, "mWaterColor");
-		gl.uniform4f(locWaterColor,
+		gl.uniform4f(
+			locWaterColor,
 			CL3D.getRed(this.WaterColor) / 255.0,
 			CL3D.getGreen(this.WaterColor) / 255.0,
 			CL3D.getBlue(this.WaterColor) / 255.0,
-			CL3D.getAlpha(this.WaterColor) / 255.0);
+			CL3D.getAlpha(this.WaterColor) / 255.0,
+		);
 
 		var currentTime = (CL3D.CLTimer.getTime() / 1000.0) % 1000.0;
 
 		var locmWaveMovement = gl.getUniformLocation(program, "mWaveMovement");
-		gl.uniform2f(locmWaveMovement,
-			this.WaterFlowDirection.X * currentTime,
-			this.WaterFlowDirection.Y * currentTime);
+		gl.uniform2f(locmWaveMovement, this.WaterFlowDirection.X * currentTime, this.WaterFlowDirection.Y * currentTime);
 
 		var locmWaveLength = gl.getUniformLocation(program, "mWaveLength");
 		gl.uniform1f(locmWaveLength, this.WaveLength * 100.0);
@@ -391,8 +405,9 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 	 * @public
 	 */
 	initRTT(renderer) {
-		if (renderer == null)
+		if (renderer == null) {
 			return;
+		}
 
 		var sx = renderer.getWidth();
 		var sy = renderer.getHeight();
@@ -401,15 +416,18 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 
 		switch (this.Details) {
 			case 0: // high
-				rttX = sx / 2; rttY = sy / 2;
+				rttX = sx / 2;
+				rttY = sy / 2;
 				break;
 			case 1: // middle
-				rttX = sx / 3; rttY = sy / 3;
+				rttX = sx / 3;
+				rttY = sy / 3;
 				break;
 			case 2: // low
-				rttX = sx / 4; rttY = sy / 4;
+				rttX = sx / 4;
+				rttY = sy / 4;
 				break;
-		};
+		}
 
 		rttX = renderer.nextHighestPowerOfTwo(rttX);
 		rttY = renderer.nextHighestPowerOfTwo(rttY);
@@ -428,4 +446,4 @@ export class WaterSurfaceSceneNode extends CL3D.MeshSceneNode {
 	OnAfterDrawSkyboxes(renderer) {
 		renderer.setProjection(this.FrustumCullingProjection);
 	}
-};
+}

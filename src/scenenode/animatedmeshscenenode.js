@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -43,7 +43,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 
 		this.AnimatedDummySceneNodes = new Array(); // list of items of type SAnimatedDummySceneNodeChild to be attached to an animated joint.
 	}
-	
+
 	/**
 	 * Get the axis aligned, not transformed bounding box of this node.
 	 * This means that if this node is an animated 3d character, moving in a room, the bounding box will
@@ -55,18 +55,19 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	getBoundingBox() {
 		return this.Box;
 	}
-	
+
 	/**
 	 * Returns the amount of named animations in the animated mesh.
 	 * @public
 	 * @returns {Number} Amount of named animations.
 	 */
 	getNamedAnimationCount() {
-		if (this.Mesh && this.Mesh.NamedAnimationRanges)
+		if (this.Mesh && this.Mesh.NamedAnimationRanges) {
 			return this.Mesh.NamedAnimationRanges.length;
+		}
 		return 0;
 	}
-	
+
 	/**
 	 * Returns information about a named animation in the animated mesh by index
 	 * @public
@@ -78,30 +79,33 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	getNamedAnimationInfo(idx) {
 		var len = this.getNamedAnimationCount();
 
-		if (idx >= 0 && idx < len)
+		if (idx >= 0 && idx < len) {
 			return this.Mesh.NamedAnimationRanges[idx];
+		}
 
 		return null;
 	}
-	
+
 	/**
 	 * Sets the animation to a new one by name.
 	 * @public
 	 * @returns {Boolean} True if successful, false if not
 	 */
 	setAnimation(name) {
-		if (!this.Mesh)
+		if (!this.Mesh) {
 			return false;
+		}
 
 		var animinfo = this.Mesh.getNamedAnimationRangeByName(name);
-		if (!animinfo)
+		if (!animinfo) {
 			return false;
+		}
 
 		this.setFrameLoop(animinfo.Begin, animinfo.End);
 		this.setAnimationSpeed(animinfo.FPS);
 		return true;
 	}
-	
+
 	/**
 	 * Enables or disables animation blending.
 	 * When playing new animations, they are automatically blended when this is enabled (it is by default).
@@ -113,40 +117,40 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		this.BlendTimeMs = blendtime == null ? 250 : blendtime;
 		this.AnimationBlendingEnabled = enable;
 	}
-	
+
 	/**
 	 * Sets the animation to a new one by name, also includes 'none' and 'all' as parameters
 	 * @public
 	 * @returns {Boolean} True if successful, false if not
 	 */
 	setAnimationByEditorName(name, loop) {
-		if (!this.Mesh)
+		if (!this.Mesh) {
 			return false;
+		}
 
 		var smesh = this.Mesh; // as SkinnedMesh;
-		if (!smesh)
+		if (!smesh) {
 			return false;
+		}
 
 		var range = smesh.getNamedAnimationRangeByName(name);
 
 		if (range) {
 			this.setFrameLoop(range.Begin, range.End);
-			if (range.FPS != 0)
+			if (range.FPS != 0) {
 				this.setAnimationSpeed(range.FPS);
+			}
 			this.setLoopMode(loop);
-		}
-
-		else if (name) {
+		} else if (name) {
 			// set 'all' or 'none' animation
 			var lwrAnimName = name.toLowerCase();
 			if (lwrAnimName == "all") {
 				this.setFrameLoop(0, smesh.getFrameCount());
-				if (smesh.DefaultFPS != 0)
+				if (smesh.DefaultFPS != 0) {
 					this.setAnimationSpeed(smesh.DefaultFPS);
+				}
 				this.setLoopMode(loop);
-			}
-
-			else if (lwrAnimName == "none") {
+			} else if (lwrAnimName == "none") {
 				this.setFrameLoop(0, 0);
 				this.setLoopMode(loop);
 			}
@@ -154,13 +158,14 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 
 		return true;
 	}
-	
+
 	/**
 	 * @public
 	 */
 	setMesh(m) {
-		if (!m)
+		if (!m) {
 			return;
+		}
 
 		this.Mesh = m;
 
@@ -169,7 +174,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		// copy materials here. HERE: ignored, animated meshes don't store materials here
 		this.setFrameLoop(0, m.getFrameCount());
 	}
-	
+
 	/**
 	 * Returns the type string of the scene node.
 	 * Returns 'animatedmesh' for the mesh scene node.
@@ -177,9 +182,9 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'animatedmesh';
+		return "animatedmesh";
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -191,47 +196,49 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 			var hasSolidMaterials = false;
 			if (mats != null) {
 				for (var i = 0; i < mats.length; ++i) {
-					if (mats[i].isTransparent())
+					if (mats[i].isTransparent()) {
 						hasTransparentMaterials = true;
-
-					else
+					} else {
 						hasSolidMaterials = true;
+					}
 				}
 			}
 
 			if (hasTransparentMaterials) {
-				if (this.isParentActiveFPSCameraToRenderChildrenWithoutZBuffer())
+				if (this.isParentActiveFPSCameraToRenderChildrenWithoutZBuffer()) {
 					mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_TRANSPARENT_AFTER_ZBUFFER_CLEAR);
-
-				else
+				} else {
 					mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_TRANSPARENT);
+				}
 			}
 
 			if (hasSolidMaterials) {
-				if (this.isParentActiveFPSCameraToRenderChildrenWithoutZBuffer())
+				if (this.isParentActiveFPSCameraToRenderChildrenWithoutZBuffer()) {
 					mgr.registerNodeForRendering(this, CL3D.Scene.TRANSPARENT_SOLID_AFTER_ZBUFFER_CLEAR);
-
-				else
+				} else {
 					mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_DEFAULT);
+				}
 			}
 
 			CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr);
 		}
 	}
-	
+
 	/**
 	 * @public
 	 */
 	getMaterialCount() {
-		if (this.Materials != null)
+		if (this.Materials != null) {
 			return this.Materials.length;
+		}
 
-		if (this.OwnedMesh)
+		if (this.OwnedMesh) {
 			return this.OwnedMesh.MeshBuffers.length;
+		}
 
 		return 0;
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -239,11 +246,11 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		if (this.Materials) {
 			if (i >= 0 && i < this.Materials.length) {
 				return this.Materials[i];
-			}
-
-			else {
-				if (this.Mesh && this.Mesh.AnimatedMeshesToLink &&
-					(i >= 0) && (this.Materials.length == i) && (i < 256)) {
+			} else {
+				if (
+					this.Mesh && this.Mesh.AnimatedMeshesToLink
+					&& (i >= 0) && (this.Materials.length == i) && (i < 256)
+				) {
 					// the mesh has not yet been loaded, add this as a new CL3D.Material and return it.
 					// we assume this material is in there
 					var newMat = new CL3D.Material();
@@ -254,7 +261,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -264,8 +271,9 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 
 		c.Mesh = this.Mesh;
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
 		c.DoesCollision = this.DoesCollision;
 		c.Selector = this.Selector;
@@ -273,8 +281,9 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		c.LastLODSkinnedAnimationTime = this.LastLODSkinnedAnimationTime;
 		c.Materials = new Array();
 
-		for (var i = 0; i < this.Materials.length; ++i)
+		for (var i = 0; i < this.Materials.length; ++i) {
 			c.Materials.push(this.Materials[i].clone());
+		}
 
 		c.FramesPerSecond = this.FramesPerSecond;
 		c.BeginFrameTime = this.BeginFrameTime;
@@ -313,7 +322,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	setAnimationSpeed(speed) {
 		this.FramesPerSecond = speed;
 	}
-	
+
 	/**
 	 * Sets if the animation should be playbed back looped
 	 * @public
@@ -330,8 +339,9 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	 * @param {Number} end end frame of the loop
 	 */
 	setFrameLoop(begin, end) {
-		if (!this.Mesh)
+		if (!this.Mesh) {
 			return false;
+		}
 
 		var maxFrameCount = this.Mesh.getFrameCount() - 1;
 		var oldStart = this.StartFrame;
@@ -340,15 +350,14 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		if (end < begin) {
 			this.StartFrame = CL3D.clamp(end, 0, maxFrameCount);
 			this.EndFrame = CL3D.clamp(begin, this.StartFrame, maxFrameCount);
-		}
-
-		else {
+		} else {
 			this.StartFrame = CL3D.clamp(begin, 0, maxFrameCount);
 			this.EndFrame = CL3D.clamp(end, this.StartFrame, maxFrameCount);
 		}
 
-		if (oldStart != this.StartFrame || oldEnd != this.EndFrame)
+		if (oldStart != this.StartFrame || oldEnd != this.EndFrame) {
 			this.setCurrentFrame(this.StartFrame);
+		}
 
 		return true;
 	}
@@ -364,21 +373,24 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		this.CurrentFrameNr = CL3D.clamp(frame, this.StartFrame, this.EndFrame);
 		this.BeginFrameTime = CL3D.CLTimer.getTime() - Math.floor((this.CurrentFrameNr - this.StartFrame) / this.FramesPerSecond);
 
-		if (this.AnimationBlendingEnabled && this.BlendTimeMs)
+		if (this.AnimationBlendingEnabled && this.BlendTimeMs) {
 			this.startAnimationBlending(oldFrameNumber);
+		}
 	}
 
 	/**
 	 * @public
 	 */
 	buildFrameNr(timeMs) {
-		var deltaFrame = 0; //:Number;
+		var deltaFrame = 0; // :Number;
 
-		if (this.StartFrame == this.EndFrame)
-			return this.StartFrame; //Support for non animated meshes
+		if (this.StartFrame == this.EndFrame) {
+			return this.StartFrame; // Support for non animated meshes
+		}
 
-		if (this.FramesPerSecond == 0.0)
+		if (this.FramesPerSecond == 0.0) {
 			return this.StartFrame;
+		}
 
 		var valueToReturn = 0;
 
@@ -387,27 +399,23 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 			var restartedLoop = false;
 
 			var lenInMs = Math.abs(Math.floor((this.EndFrame - this.StartFrame) / this.FramesPerSecond));
-			if (this.FramesPerSecond > 0.0) // forwards
-			{
+			if (this.FramesPerSecond > 0.0) { // forwards
 				valueToReturn = this.StartFrame + ((timeMs - this.BeginFrameTime) % lenInMs) * this.FramesPerSecond;
 
 				restartedLoop = valueToReturn < this.CurrentFrameNr;
-			}
-			else // backwards
-			{
+			} // backwards
+			else {
 				valueToReturn = this.EndFrame - ((timeMs - this.BeginFrameTime) % lenInMs) * -this.FramesPerSecond;
 
 				restartedLoop = valueToReturn > this.CurrentFrameNr;
 			}
 
-			if (restartedLoop && this.AnimationBlendingEnabled) // blend animations on loop end
+			if (restartedLoop && this.AnimationBlendingEnabled) { // blend animations on loop end
 				this.startAnimationBlending(this.CurrentFrameNr);
-		}
-
-		else {
+			}
+		} else {
 			// play animation non looped
-			if (this.FramesPerSecond > 0.0) // forwards
-			{
+			if (this.FramesPerSecond > 0.0) { // forwards
 				deltaFrame = (timeMs - this.BeginFrameTime) * this.FramesPerSecond;
 
 				valueToReturn = this.StartFrame + deltaFrame;
@@ -415,12 +423,11 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 				if (valueToReturn > this.EndFrame) {
 					valueToReturn = this.EndFrame;
 
-					//if (LoopCallBack)
-					//	LoopCallBack.OnAnimationEnd(this);
+					// if (LoopCallBack)
+					// 	LoopCallBack.OnAnimationEnd(this);
 				}
-			}
-			else // backwards
-			{
+			} // backwards
+			else {
 				deltaFrame = (timeMs - this.BeginFrameTime) * (-this.FramesPerSecond);
 
 				valueToReturn = this.EndFrame - deltaFrame;
@@ -428,16 +435,15 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 				if (valueToReturn < this.StartFrame) {
 					valueToReturn = this.StartFrame;
 
-					//if (LoopCallBack)
-					//	LoopCallBack.OnAnimationEnd(this);
+					// if (LoopCallBack)
+					// 	LoopCallBack.OnAnimationEnd(this);
 				}
-
 			}
 		}
 
 		return valueToReturn;
 	}
-	
+
 	/**
 	 * Returns the currently displayed frame number.
 	 * @public
@@ -445,18 +451,20 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	getFrameNr() {
 		return this.CurrentFrameNr;
 	}
-	
+
 	/**
 	 * @public
 	 */
 	hasDynamicLightedMaterials() {
-		for (var i = 0; i < this.Materials.length; ++i)
-			if (this.Materials[i].Lighting)
+		for (var i = 0; i < this.Materials.length; ++i) {
+			if (this.Materials[i].Lighting) {
 				return true;
+			}
+		}
 
 		return false;
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -464,8 +472,9 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		// As multiple scene nodes may be sharing the same skinned mesh, we have to
 		// re-animated it every frame to ensure that this node gets the mesh that it needs.
 		var skinnedMesh = this.Mesh; // as SkinnedMesh;
-		if (!skinnedMesh)
+		if (!skinnedMesh) {
 			return;
+		}
 
 		var animationChanged = false;
 
@@ -479,14 +488,14 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 
 			// update all changed buffers
 			for (var i = 0; i < skinnedMesh.LocalBuffers.length; ++i) {
-				var buf = skinnedMesh.LocalBuffers[i]; // as MeshBuffer;	
+				var buf = skinnedMesh.LocalBuffers[i]; // as MeshBuffer;
 				buf.update(true);
 			}
 		}
 
 		this.FrameWhenCurrentMeshWasGenerated = this.CurrentFrameNr;
 	}
-	
+
 	/**
 	 * Sets the minimal update delay. The animated mesh is only updated every few milliseconds, in order to increase
 	 * performance. The default value is 60 milli seconds (= 16 frames per second). Set it to 0 to enable instant updates.
@@ -496,7 +505,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	setMinimalUpdateDelay(delayMs) {
 		this.MinimalUpdateDelay = delayMs;
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -504,23 +513,26 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		var framechanged = false;
 		var now = CL3D.CLTimer.getTime();
 
-		if (this.LastLODSkinnedAnimationTime == 0 ||
-			now - this.LastLODSkinnedAnimationTime > this.MinimalUpdateDelay) {
+		if (
+			this.LastLODSkinnedAnimationTime == 0
+			|| now - this.LastLODSkinnedAnimationTime > this.MinimalUpdateDelay
+		) {
 			var newFrameNr = this.buildFrameNr(timeMs);
 			framechanged = this.CurrentFrameNr != newFrameNr;
 			this.CurrentFrameNr = newFrameNr;
 			this.LastLODSkinnedAnimationTime = now;
 		}
 
-		//return super.OnAnimate(mgr, timeMs) || framechanged;
+		// return super.OnAnimate(mgr, timeMs) || framechanged;
 		var changed = CL3D.SceneNode.prototype.OnAnimate.call(this, mgr, timeMs);
 
-		if (this.AnimatedDummySceneNodes.length != 0)
+		if (this.AnimatedDummySceneNodes.length != 0) {
 			this.updatePositionsOfAttachedNodes();
+		}
 
 		return changed;
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -528,19 +540,21 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		// skip if the mesh isn't visible in the frustum
 		var frustrum = this.scene.getCurrentCameraFrustrum();
 		if (frustrum) {
-			if (!frustrum.isBoxInside(this.getTransformedBoundingBox()))
+			if (!frustrum.isBoxInside(this.getTransformedBoundingBox())) {
 				return;
+			}
 		}
 
-		//this.scene.SkinnedMeshesRenderedLastTime += 1;
+		// this.scene.SkinnedMeshesRenderedLastTime += 1;
 		// go drawing
 		var skinnedMesh = this.Mesh; // as SkinnedMesh;
 		if (skinnedMesh) {
 			renderer.setWorld(this.AbsoluteTransformation);
 
 			// calculate skin
-			if (!skinnedMesh.isStatic())
+			if (!skinnedMesh.isStatic()) {
 				this.calculateMeshForCurrentFrame();
+			}
 
 			this.WasAnimatedBefore = true;
 
@@ -550,50 +564,52 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 
 			// draw all buffers of the skinned mesh
 			for (var i = 0; i < skinnedMesh.LocalBuffers.length; ++i) {
-				var buf = skinnedMesh.LocalBuffers[i]; // as MeshBuffer;			
-				if (i < this.Materials.length)
+				var buf = skinnedMesh.LocalBuffers[i]; // as MeshBuffer;
+				if (i < this.Materials.length) {
 					buf.Mat = this.Materials[i];
+				}
 
-				if (isForShadowBuffer ||
-					buf.Mat.isTransparent() == (this.scene.getCurrentRenderMode() == CL3D.Scene.RENDER_MODE_TRANSPARENT)) {
-					if (buf.Transformation != null)
+				if (
+					isForShadowBuffer
+					|| buf.Mat.isTransparent() == (this.scene.getCurrentRenderMode() == CL3D.Scene.RENDER_MODE_TRANSPARENT)
+				) {
+					if (buf.Transformation != null) {
 						renderer.setWorld(this.AbsoluteTransformation.multiply(buf.Transformation)); // rigid transformation of the whole buffer
-
-					if (!isForShadowBuffer) {
-						if (!buf.Mat.Lighting && bShadowMapEnabled)
-							renderer.quicklyEnableShadowMap(false);
-
-						renderer.setMaterial(buf.Mat);
 					}
 
-					else {
+					if (!isForShadowBuffer) {
+						if (!buf.Mat.Lighting && bShadowMapEnabled) {
+							renderer.quicklyEnableShadowMap(false);
+						}
+
+						renderer.setMaterial(buf.Mat);
+					} else {
 						var matType = buf.Mat.Type;
 						if (matType == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS) {
 							this.scene.ShadowDrawMaterialAlphaRefMovingGrass.Tex1 = buf.Mat.Tex1;
 							renderer.setMaterial(this.scene.ShadowDrawMaterialAlphaRefMovingGrass);
-						}
-
-						else if (matType == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF) {
+						} else if (matType == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF) {
 							this.scene.ShadowDrawMaterialAlphaRef.Tex1 = buf.Mat.Tex1;
 							renderer.setMaterial(this.scene.ShadowDrawMaterialAlphaRef);
-						}
-
-						else
+						} else {
 							renderer.setMaterial(this.scene.ShadowDrawMaterialSolid);
+						}
 					}
 
 					renderer.drawMeshBuffer(buf);
 
-					if (buf.Transformation != null)
+					if (buf.Transformation != null) {
 						renderer.setWorld(this.AbsoluteTransformation); // set back old transformation
+					}
 				}
 			}
 
-			if (bShadowMapEnabled)
+			if (bShadowMapEnabled) {
 				renderer.quicklyEnableShadowMap(true);
+			}
 		}
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -609,17 +625,19 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 			}
 		}
 	}
-	
+
 	/**
 	 * @public
 	 */
 	startAnimationBlending(frameNumberBeforeAnimationChange) {
-		if (!this.WasAnimatedBefore)
+		if (!this.WasAnimatedBefore) {
 			return;
+		}
 
 		var skinnedMesh = this.Mesh; // as SkinnedMesh;
-		if (!skinnedMesh)
+		if (!skinnedMesh) {
 			return;
+		}
 
 		// be sure joints have animations stored before animation was switched
 		this.animateJointsWithCurrentBlendingSettings(frameNumberBeforeAnimationChange);
@@ -640,23 +658,23 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 			rState.Animatedrotation = j.Animatedrotation.clone();
 		}
 	}
-	
+
 	/**
 	 * @public
 	 */
 	animateJointsWithCurrentBlendingSettings(framenumber) {
 		var skinnedMesh = this.Mesh; // as SkinnedMesh;
-		if (!skinnedMesh)
+		if (!skinnedMesh) {
 			return;
+		}
 
 		var blendFactor = 1.0;
 
 		if (this.CurrentlyBlendingAnimation) {
 			var now = CL3D.CLTimer.getTime();
-			if ((now - this.BeginBlendTime) > this.BlendTimeMs)
+			if ((now - this.BeginBlendTime) > this.BlendTimeMs) {
 				this.CurrentlyBlendingAnimation = false;
-
-			else {
+			} else {
 				blendFactor = (now - this.BeginBlendTime) / this.BlendTimeMs;
 
 				// copy our saved joint positions so the skinned mesh can interpolate between them
@@ -676,40 +694,42 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 		// animate with the current frame number
 		return skinnedMesh.animateMesh(framenumber, blendFactor);
 	}
-	
+
 	/**
 	 * Called after the deserialization process. Internal method used so that linked nodes link them with the deserialized other nodes.
 	 * @public
 	 */
 	onDeserializedWithChildren() {
-		if (this.scene == null)
+		if (this.scene == null) {
 			return;
+		}
 
 		for (var i = 0; i < this.AnimatedDummySceneNodes.length;) {
 			var node = 0;
 			var id = this.AnimatedDummySceneNodes[i].NodeIDToLink;
 
-			if (id != -1)
+			if (id != -1) {
 				node = this.scene.getSceneNodeFromIdImpl(this, id);
-
-			if (node && node.getType() == 'dummytrans') {
-				this.AnimatedDummySceneNodes[i].Node = node;
-				++i;
 			}
 
-			else
+			if (node && node.getType() == "dummytrans") {
+				this.AnimatedDummySceneNodes[i].Node = node;
+				++i;
+			} else {
 				this.AnimatedDummySceneNodes.splice(i, 1);
+			}
 		}
 	}
-	
+
 	/**
 	 * Called after the deserialization process. Internal method used so that linked nodes link them with the deserialized other nodes.
 	 * @public
 	 */
 	updatePositionsOfAttachedNodes() {
 		var skinnedMesh = this.Mesh; // as SkinnedMesh;
-		if (!skinnedMesh || skinnedMesh.isStatic())
+		if (!skinnedMesh || skinnedMesh.isStatic()) {
 			return;
+		}
 
 		this.animateJointsWithCurrentBlendingSettings(this.getFrameNr());
 		skinnedMesh.buildAll_GlobalAnimatedMatrices(null, null);
@@ -727,7 +747,7 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 			}
 		}
 	}
-	
+
 	/**
 	 * replaces all referenced ids of referenced nodes when the referenced node was a child and was cloned
 	 * @public
@@ -735,15 +755,15 @@ export class AnimatedMeshSceneNode extends CL3D.SceneNode {
 	replaceAllReferencedNodes(nodeChildOld, nodeChildNew) {
 		for (var i = 0; i < this.AnimatedDummySceneNodes.length; ++i) {
 			if (this.AnimatedDummySceneNodes[i].Node == nodeChildOld) {
-				if (nodeChildNew && nodeChildNew.getType() == 'dummytrans')
+				if (nodeChildNew && nodeChildNew.getType() == "dummytrans") {
 					this.AnimatedDummySceneNodes[i].Node = nodeChildNew;
-
-				else
+				} else {
 					this.AnimatedDummySceneNodes[i].Node = null;
+				}
 			}
 		}
 	}
-};
+}
 
 /**
  * Structure storing data about scene nodes attached to a joint of this item
@@ -755,4 +775,4 @@ export class SAnimatedDummySceneNodeChild {
 		this.JointIdx = -1; // index of the joint to be used
 		this.NodeIDToLink = -1; // only used for linking the children after the serialization process
 	}
-};
+}

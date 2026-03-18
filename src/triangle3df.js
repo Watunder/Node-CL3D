@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
@@ -35,23 +35,23 @@ export class Triangle3d {
 	pointC = null;
 
 	constructor(a, b, c) {
-		if (a)
+		if (a) {
 			this.pointA = a;
-
-		else
+		} else {
 			this.pointA = new CL3D.Vect3d();
+		}
 
-		if (b)
+		if (b) {
 			this.pointB = b;
-
-		else
+		} else {
 			this.pointB = new CL3D.Vect3d();
+		}
 
-		if (c)
+		if (c) {
 			this.pointC = c;
-
-		else
+		} else {
 			this.pointC = new CL3D.Vect3d();
+		}
 	}
 
 	/**
@@ -98,7 +98,7 @@ export class Triangle3d {
 		var z = x + y - ac_bb;
 
 		// return sign(z) && !(sign(x)||sign(y))
-		//return (( (IR(z)) & ~((IR(x))|(IR(y))) ) & 0x80000000)!=0;
+		// return (( (IR(z)) & ~((IR(x))|(IR(y))) ) & 0x80000000)!=0;
 		return (z < 0) && !((x < 0) || (y < 0));
 	}
 
@@ -109,9 +109,9 @@ export class Triangle3d {
 	 * @returns {Boolean} true if inside, false if not
 	 */
 	isPointInside(p) {
-		return (this.isOnSameSide(p, this.pointA, this.pointB, this.pointC) &&
-			this.isOnSameSide(p, this.pointB, this.pointA, this.pointC) &&
-			this.isOnSameSide(p, this.pointC, this.pointA, this.pointB));
+		return (this.isOnSameSide(p, this.pointA, this.pointB, this.pointC)
+			&& this.isOnSameSide(p, this.pointB, this.pointA, this.pointC)
+			&& this.isOnSameSide(p, this.pointC, this.pointA, this.pointB));
 	}
 
 	/**
@@ -145,8 +145,9 @@ export class Triangle3d {
 		normal.normalize();
 		var t2 = normal.dotProduct(lineVect);
 
-		if (CL3D.iszero(t2))
+		if (CL3D.iszero(t2)) {
 			return null;
+		}
 
 		var d = this.pointA.dotProduct(normal);
 		var t = -(normal.dotProduct(linePoint) - d) / t2;
@@ -162,11 +163,13 @@ export class Triangle3d {
 	 */
 	getIntersectionWithLine(linePoint, lineVect) {
 		var ret = this.getIntersectionOfPlaneWithLine(linePoint, lineVect);
-		if (ret == null)
+		if (ret == null) {
 			return null;
+		}
 
-		if (this.isPointInside(ret))
+		if (this.isPointInside(ret)) {
 			return ret;
+		}
 
 		return null;
 	}
@@ -177,9 +180,9 @@ export class Triangle3d {
 	 * @param {CL3D.Box3d} box
 	 */
 	isTotalInsideBox(box) {
-		return box.isPointInside(this.pointA) &&
-			box.isPointInside(this.pointB) &&
-			box.isPointInside(this.pointC);
+		return box.isPointInside(this.pointA)
+			&& box.isPointInside(this.pointB)
+			&& box.isPointInside(this.pointC);
 	}
 
 	/**
@@ -192,4 +195,4 @@ export class Triangle3d {
 		this.pointB.copyTo(tgt.pointB);
 		this.pointC.copyTo(tgt.pointC);
 	}
-};
+}

@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -7,7 +7,7 @@ import * as CL3D from "../main.js";
  * A class rendering a simple 3d cube, used for testing purposes.
  * Example showing how to add this to the current scene:
  * @constructor
- * @extends CL3D.MeshSceneNode 
+ * @extends CL3D.MeshSceneNode
  * @class A class rendering a simple cube of default size 10 with one material.
  * @param size Size of the cube, default this is 10.
  * @example
@@ -16,27 +16,29 @@ import * as CL3D from "../main.js";
  * scene.getRootSceneNode().addChild(cubenode);
  *
  * // set material texture of the cube:
- * cubenode.getMaterial(0).Tex1 = 
+ * cubenode.getMaterial(0).Tex1 =
  *    engine.getTextureManager().getTexture("crate_wood.jpg", true);
  */
 export class CubeSceneNode extends CL3D.MeshSceneNode {
 	constructor(sizex, sizey, sizez) {
 		super();
 
-		if (sizex == null)
+		if (sizex == null) {
 			sizex = 10;
+		}
 
-		if (sizey == null)
+		if (sizey == null) {
 			sizey = sizex;
+		}
 
-		if (sizez == null)
+		if (sizez == null) {
 			sizez = sizey;
+		}
 
 		this.OwnedMesh = new CL3D.Mesh();
 		var buf = new CL3D.MeshBuffer();
 
-		var indices = [0, 2, 1, 0, 3, 2, 1, 5, 4, 1, 2, 5, 4, 6, 7, 4, 5, 6,
-			7, 3, 0, 7, 6, 3, 9, 5, 2, 9, 8, 5, 0, 11, 10, 0, 10, 7];
+		var indices = [0, 2, 1, 0, 3, 2, 1, 5, 4, 1, 2, 5, 4, 6, 7, 4, 5, 6, 7, 3, 0, 7, 6, 3, 9, 5, 2, 9, 8, 5, 0, 11, 10, 0, 10, 7];
 		// front side
 		this.OwnedMesh.AddMeshBuffer(buf);
 
@@ -93,9 +95,7 @@ export class CubeSceneNode extends CL3D.MeshSceneNode {
 				buf.Indices.push(i + 1);
 				buf.Indices.push(i + 2);
 			}
-		}
-
-		else {
+		} else {
 			buf.Indices = indices;
 			buf.Vertices = vertices;
 		}
@@ -135,9 +135,10 @@ export class CubeSceneNode extends CL3D.MeshSceneNode {
 		c.ReadonlyMaterials = this.ReadonlyMaterials;
 		c.DoesCollision = this.DoesCollision;
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
 		return c;
 	}
-};
+}

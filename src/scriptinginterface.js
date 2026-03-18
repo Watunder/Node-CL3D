@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 // ------------------------------------------------------------------------------------------------
@@ -49,9 +49,7 @@ export class vector3d {
 			this.x = _x;
 			this.y = _y;
 			this.z = _z;
-		}
-
-		else {
+		} else {
 			this.x = 0;
 			this.y = 0;
 			this.z = 0;
@@ -98,7 +96,7 @@ export class vector3d {
 	toString() {
 		return "(" + this.x + ", " + this.y + ", " + this.z + ")";
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------
 // ScriptingInterface class
@@ -129,14 +127,15 @@ export class ScriptingInterface {
 		this.ShaderCallbacks = new Object();
 		this.CurrentShaderMaterialType = 0;
 
-		//this.registerScriptingFunctions();
+		// this.registerScriptingFunctions();
 	}
 	/**
 	 * @public
 	 */
 	static getScriptingInterface() {
-		if (gScriptingInterface == null)
+		if (gScriptingInterface == null) {
 			gScriptingInterface = new CL3D.ScriptingInterface();
+		}
 
 		return gScriptingInterface;
 	}
@@ -182,8 +181,7 @@ export class ScriptingInterface {
 	executeCode(code) {
 		try {
 			return (new Function(code))();
-		}
-		catch (err) {
+		} catch (err) {
 			console.log(err);
 		}
 	}
@@ -197,8 +195,7 @@ export class ScriptingInterface {
 					globalThis[module.default.name] = module.default;
 				}
 			});
-		}
-		catch (err) {
+		} catch (err) {
 			console.log(err);
 		}
 	}
@@ -215,15 +212,15 @@ export class ScriptingInterface {
 	registerExtensionScriptActionHandler(handler) {
 		for (var i = 0; i < this.StoredExtensionScriptActionHandlers.length; ++i) {
 			var a = this.StoredExtensionScriptActionHandlers[i];
-			if (a === handler)
+			if (a === handler) {
 				return i;
+			}
 		}
 
 		this.StoredExtensionScriptActionHandlers.push(handler);
 
 		var actionid = this.StoredExtensionScriptActionHandlers.length - 1;
-		if (this.StoredExtensionScriptActionHandlers[actionid])
-		{
+		if (this.StoredExtensionScriptActionHandlers[actionid]) {
 			var node = gScriptingInterface.CurrentlyActiveScene.getRootSceneNode();
 			this.StoredExtensionScriptActionHandlers[actionid].execute(node, null);
 		}
@@ -239,8 +236,9 @@ export class ScriptingInterface {
 		if (this.ccbRegisteredFunctionArray.length != null) {
 			this.TheRenderer = theRenderer;
 
-			for (var i = 0; i < this.ccbRegisteredFunctionArray.length; ++i)
+			for (var i = 0; i < this.ccbRegisteredFunctionArray.length; ++i) {
 				this.ccbRegisteredFunctionArray[i](timeMs);
+			}
 
 			this.TheRenderer = null;
 		}
@@ -252,44 +250,52 @@ export class ScriptingInterface {
 	 */
 	setSceneNodePropertyFromOverlay(overlaynode, propName, arg0, argsAsColor) {
 		switch (propName) {
-			case 'Position Mode': //    <- relative (percent) | absolute (pixels)
-				overlaynode.SizeModeIsAbsolute = (arg0 == 'absolute (pixels)');
+			case "Position Mode": //    <- relative (percent) | absolute (pixels)
+				overlaynode.SizeModeIsAbsolute = arg0 == "absolute (pixels)";
 				break;
-			case 'Pos X (percent)':
-				overlaynode.PosRelativeX = arg0 / 100.0; break;
-			case 'Pos Y (percent)':
-				overlaynode.PosRelativeY = arg0 / 100.0; break;
-			case 'Width (percent)':
-				overlaynode.SizeRelativeWidth = arg0 / 100.0; break;
-			case 'Height (percent)':
-				overlaynode.SizeRelativeHeight = arg0 / 100.0; break;
-			case 'Pos X (pixels)':
-				overlaynode.PosAbsoluteX = arg0; break;
-			case 'Pos Y (pixels)':
-				overlaynode.PosAbsoluteY = arg0; break;
-			case 'Width (pixels)':
-				overlaynode.SizeAbsoluteWidth = arg0; break;
-			case 'Height (pixels)':
-				overlaynode.SizeAbsoluteHeight = arg0; break;
-			case 'Alpha':
+			case "Pos X (percent)":
+				overlaynode.PosRelativeX = arg0 / 100.0;
+				break;
+			case "Pos Y (percent)":
+				overlaynode.PosRelativeY = arg0 / 100.0;
+				break;
+			case "Width (percent)":
+				overlaynode.SizeRelativeWidth = arg0 / 100.0;
+				break;
+			case "Height (percent)":
+				overlaynode.SizeRelativeHeight = arg0 / 100.0;
+				break;
+			case "Pos X (pixels)":
+				overlaynode.PosAbsoluteX = arg0;
+				break;
+			case "Pos Y (pixels)":
+				overlaynode.PosAbsoluteY = arg0;
+				break;
+			case "Width (pixels)":
+				overlaynode.SizeAbsoluteWidth = arg0;
+				break;
+			case "Height (pixels)":
+				overlaynode.SizeAbsoluteHeight = arg0;
+				break;
+			case "Alpha":
 				overlaynode.BackGroundColor = ((arg0 & 0xff) << 24) | (overlaynode.BackGroundColor & 0x00ffffff);
 				break;
-			case 'Image':
+			case "Image":
 				{
 					var tex = this.TheTextureManager.getTextureFromName(arg0);
 					overlaynode.Texture = tex;
 				}
 				break;
-			case 'Background Color':
+			case "Background Color":
 				overlaynode.BackGroundColor = argsAsColor;
 				break;
-			case 'Draw Text': // (true/false)
+			case "Draw Text": // (true/false)
 				overlaynode.DrawText = arg0 ? true : false;
 				break;
-			case 'TextColor':
+			case "TextColor":
 				overlaynode.TextColor = argsAsColor;
 				break;
-			case 'Text':
+			case "Text":
 				overlaynode.Text = arg0;
 				break;
 		}
@@ -299,39 +305,39 @@ export class ScriptingInterface {
 	 */
 	getSceneNodePropertyFromOverlay(overlaynode, propName) {
 		switch (propName) {
-			case 'Position Mode': //    <- relative (percent) | absolute (pixels)
+			case "Position Mode": //    <- relative (percent) | absolute (pixels)
 				return overlaynode.SizeModeIsAbsolute;
-			case 'Pos X (percent)':
+			case "Pos X (percent)":
 				return overlaynode.PosRelativeX * 100.0;
-			case 'Pos Y (percent)':
+			case "Pos Y (percent)":
 				return overlaynode.PosRelativeY * 100.0;
-			case 'Width (percent)':
+			case "Width (percent)":
 				return overlaynode.SizeRelativeWidth * 100.0;
-			case 'Height (percent)':
+			case "Height (percent)":
 				return overlaynode.SizeRelativeHeight * 100.0;
-			case 'Pos X (pixels)':
+			case "Pos X (pixels)":
 				return overlaynode.PosAbsoluteX;
-			case 'Pos Y (pixels)':
+			case "Pos Y (pixels)":
 				return overlaynode.PosAbsoluteY;
-			case 'Width (pixels)':
+			case "Width (pixels)":
 				return overlaynode.SizeAbsoluteWidth;
-			case 'Height (pixels)':
+			case "Height (pixels)":
 				return overlaynode.SizeAbsoluteHeight;
-			case 'Alpha':
+			case "Alpha":
 				return CL3D.getAlpha(overlaynode.BackGroundColor);
-			case 'Image':
+			case "Image":
 				return overlaynode.Texture ? overlaynode.Texture.Name : null;
-			case 'Background Color':
+			case "Background Color":
 				return overlaynode.BackGroundColor;
-			case 'Draw Text': // (true/false)
+			case "Draw Text": // (true/false)
 				return overlaynode.DrawText;
-			case 'TextColor':
+			case "TextColor":
 				return overlaynode.TextColor;
-			case 'Text':
+			case "Text":
 				return overlaynode.Text;
-			case 'Texture Width (percent)':
+			case "Texture Width (percent)":
 				return overlaynode.TextureWidth * 100.0;
-			case 'Texture Height (percent)':
+			case "Texture Height (percent)":
 				return overlaynode.TextureHeight * 100.0;
 		}
 
@@ -381,7 +387,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'extensionscript';
+		return "extensionscript";
 	}
 
 	/**
@@ -395,11 +401,11 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 		for (var i = 0; i < this.Properties.length; ++i) {
 			var prop = this.Properties[i];
 
-			if (prop != null)
+			if (prop != null) {
 				a.Properties.push(prop.createClone(oldNodeId, newNodeId));
-
-			else
+			} else {
 				a.Properties.push(null);
+			}
 		}
 
 		return a;
@@ -409,27 +415,29 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	 * @public
 	 */
 	animateNode(n, timeMs) {
-		if (n == null)
+		if (n == null) {
 			return false;
+		}
 
-		if (this.JsClassName == null || this.JsClassName.length == 0)
+		if (this.JsClassName == null || this.JsClassName.length == 0) {
 			return false;
+		}
 
 		var engine = CL3D.ScriptingInterface.getScriptingInterface();
 
 		engine.setCurrentlyRunningExtensionScriptAnimator(this);
 
-		if (this.ScriptIndex == -1)
+		if (this.ScriptIndex == -1) {
 			this.initScript(n, engine);
+		}
 
 		if (this.ScriptIndex != -1) {
 			// run script like this:
 			// _ccbScriptCache[0].onAnimate(ccbGetSceneNodeFromId(thescenenodeid), timeMs);
 			try {
 				// _ccbScriptCache[this.ScriptIndex].onAnimate( n, timeMs );
-				_ccbScriptCache[this.ScriptIndex]['onAnimate'](n, timeMs); // <-- closure working function call (won't get obfuscated)
-			}
-			catch (e) {
+				_ccbScriptCache[this.ScriptIndex]["onAnimate"](n, timeMs); // <-- closure working function call (won't get obfuscated)
+			} catch (e) {
 				console.log(this.JsClassName + ": " + e);
 			}
 		}
@@ -443,8 +451,9 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	 * @public
 	 */
 	initScript(n, engine) {
-		if (typeof globalThis[this.JsClassName] == 'undefined')
+		if (typeof globalThis[this.JsClassName] == "undefined") {
 			return;
+		}
 
 		let code = "";
 
@@ -489,7 +498,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 		let bNodeIsCamera = false;
 
 		let fcam = null;
-		if (n.getType() == 'camera') {
+		if (n.getType() == "camera") {
 			fcam = n;
 			bNodeIsCamera = true;
 		}
@@ -501,22 +510,24 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	 * @public
 	 */
 	sendMouseEvent(mouseEvtId, wheelDelta) {
-		if (this.bAcceptsMouseEvents)
+		if (this.bAcceptsMouseEvents) {
 			// the following line would work, but not with the closure compiler
-			//_ccbScriptCache[this.ScriptIndex].onMouseEvent(mouseEvtId);
-			//CL3D.ScriptingInterface.getScriptingInterface().executeCode('_ccbScriptCache[' + this.ScriptIndex + '].onMouseEvent(' + mouseEvtId + ');');
-			_ccbScriptCache[this.ScriptIndex]['onMouseEvent'](mouseEvtId, wheelDelta); // <-- closure working function call (won't get obfuscated)
+			// _ccbScriptCache[this.ScriptIndex].onMouseEvent(mouseEvtId);
+			// CL3D.ScriptingInterface.getScriptingInterface().executeCode('_ccbScriptCache[' + this.ScriptIndex + '].onMouseEvent(' + mouseEvtId + ');');
+			_ccbScriptCache[this.ScriptIndex]["onMouseEvent"](mouseEvtId, wheelDelta); // <-- closure working function call (won't get obfuscated)
+		}
 	}
 
 	/**
 	 * @public
 	 */
 	sendKeyEvent(keycode, pressed) {
-		if (this.bAcceptsKeyboardEvents)
+		if (this.bAcceptsKeyboardEvents) {
 			// the following line would work, but not with the closure compiler
-			//_ccbScriptCache[this.ScriptIndex].onKeyEvent(keycode, pressed);
-			//CL3D.ScriptingInterface.getScriptingInterface().executeCode('_ccbScriptCache[' + this.ScriptIndex + '].onKeyEvent(' + keycode + ',' + pressed + ');');
-			_ccbScriptCache[this.ScriptIndex]['onKeyEvent'](keycode, pressed); // <-- closure working function call (won't get obfuscated)
+			// _ccbScriptCache[this.ScriptIndex].onKeyEvent(keycode, pressed);
+			// CL3D.ScriptingInterface.getScriptingInterface().executeCode('_ccbScriptCache[' + this.ScriptIndex + '].onKeyEvent(' + keycode + ',' + pressed + ');');
+			_ccbScriptCache[this.ScriptIndex]["onKeyEvent"](keycode, pressed); // <-- closure working function call (won't get obfuscated)
+		}
 	}
 
 	/**
@@ -524,8 +535,9 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	 */
 	onMouseUp(event) {
 		var wasRightButton = false;
-		if (event && event.button == 2) //2: Secondary button pressed, usually the right button
+		if (event && event.button == 2) { // 2: Secondary button pressed, usually the right button
 			wasRightButton = true;
+		}
 
 		this.sendMouseEvent(wasRightButton ? 4 : 2, 0);
 	}
@@ -542,8 +554,9 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 	 */
 	onMouseDown(event) {
 		var wasRightButton = false;
-		if (event && event.button == 2) //2: Secondary button pressed, usually the right button
+		if (event && event.button == 2) { // 2: Secondary button pressed, usually the right button
 			wasRightButton = true;
+		}
 
 		this.sendMouseEvent(wasRightButton ? 5 : 3, 0);
 	}
@@ -570,7 +583,7 @@ export class AnimatorExtensionScript extends CL3D.Animator {
 		this.sendKeyEvent(evt.keyCode, false);
 		return false;
 	}
-};
+}
 
 // --------------------------------------------------------------
 // ExtensionScriptProperty
@@ -609,35 +622,36 @@ export class ExtensionScriptProperty {
 
 		for (let i = 0; i < properties.length; ++i) {
 			let prop = properties[i];
-			if (prop == null)
+			if (prop == null) {
 				continue;
+			}
 
 			let value = null;
 			switch (prop.Type) {
-				case 1: //irr::scene::EESAT_FLOAT:
+				case 1: // irr::scene::EESAT_FLOAT:
 					value = prop.FloatValue;
 					break;
-				case 2: //irr::scene::EESAT_STRING:
+				case 2: // irr::scene::EESAT_STRING:
 					value = "\"" + CL3D.ExtensionScriptProperty.stringReplace(prop.StringValue, "\"", "\\\"") + "\"";
 					break;
-				case 3: //irr::scene::EESAT_BOOL:
+				case 3: // irr::scene::EESAT_BOOL:
 					value = prop.IntValue ? "true" : "false";
 					break;
-				case 6: //irr::scene::EESAT_VECTOR3D:
+				case 6: // irr::scene::EESAT_VECTOR3D:
 					value = `new vector3d(${prop.VectorValue.X}, ${prop.VectorValue.Y}, ${prop.VectorValue.Z})`;
 					break;
-				case 7: //irr::scene::EESAT_TEXTURE:
+				case 7: // irr::scene::EESAT_TEXTURE:
 					value = "\"" + (prop.TextureValue ? prop.TextureValue.Name : "") + "\"";
 					break;
-				case 8: //irr::scene::EESAT_SCENE_NODE_ID:
+				case 8: // irr::scene::EESAT_SCENE_NODE_ID:
 					value = `ccbGetSceneNodeFromId(${prop.IntValue})`;
 					break;
-				case 9: //irr::scene::EESAT_ACTION_REFERENCE:
+				case 9: // irr::scene::EESAT_ACTION_REFERENCE:
 					value = CL3D.ScriptingInterface.getScriptingInterface().registerExtensionScriptActionHandler(prop.ActionHandlerValue);
 					break;
-				case 0: //irr::scene::EESAT_INT:
-				case 5: //irr::scene::EESAT_COLOR:
-				case 4: //irr::scene::EESAT_ENUM:
+				case 0: // irr::scene::EESAT_INT:
+				case 5: // irr::scene::EESAT_COLOR:
+				case 4: // irr::scene::EESAT_ENUM:
 				default:
 					value = prop.IntValue;
 					break;
@@ -665,8 +679,9 @@ export class ExtensionScriptProperty {
 		c.FloatValue = this.FloatValue;
 		c.IntValue = this.IntValue;
 
-		if (this.ActionHandlerValue)
+		if (this.ActionHandlerValue) {
 			c.ActionHandlerValue = this.ActionHandlerValue.createClone(oldNodeId, newNodeId);
+		}
 
 		c.TextureValue = this.TextureValue;
 
@@ -687,7 +702,7 @@ export class ActionExtensionScript extends CL3D.Action {
 	constructor() {
 		super();
 
-		this.Type = 'ExtensionScript';
+		this.Type = "ExtensionScript";
 		this.Properties = new Array();
 		this.JsClassName = null;
 	}
@@ -703,11 +718,11 @@ export class ActionExtensionScript extends CL3D.Action {
 		for (var i = 0; i < this.Properties.length; ++i) {
 			var prop = this.Properties[i];
 
-			if (prop != null)
+			if (prop != null) {
 				a.Properties.push(prop.createClone(oldNodeId, newNodeId));
-
-			else
+			} else {
 				a.Properties.push(null);
+			}
 		}
 
 		return a;
@@ -717,13 +732,15 @@ export class ActionExtensionScript extends CL3D.Action {
 	 * @public
 	 */
 	execute(currentNode, sceneManager) {
-		if (this.JsClassName == null || this.JsClassName.length == 0 || currentNode == null)
+		if (this.JsClassName == null || this.JsClassName.length == 0 || currentNode == null) {
 			return;
+		}
 
 		let engine = CL3D.ScriptingInterface.getScriptingInterface();
 
-		if (typeof globalThis[this.JsClassName] == 'undefined')
+		if (typeof globalThis[this.JsClassName] == "undefined") {
 			return;
+		}
 
 		let code = "";
 
@@ -763,4 +780,4 @@ export class ActionExtensionScript extends CL3D.Action {
 
 		engine.executeCode(code);
 	}
-};
+}

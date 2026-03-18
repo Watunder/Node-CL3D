@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
@@ -54,7 +54,7 @@ export class SceneNode {
 	 * @type String
 	 * @public
 	 */
-	Name = '';
+	Name = "";
 
 	/**
 	 * Defines the id of the scene node, completely freely usable by the user.
@@ -81,7 +81,7 @@ export class SceneNode {
 		this.Rot = new CL3D.Vect3d();
 		this.Scale = new CL3D.Vect3d(1, 1, 1);
 		this.Visible = true;
-		this.Name = '';
+		this.Name = "";
 		this.Culling = 0;
 		this.Id = -1;
 		this.Parent = null;
@@ -137,7 +137,7 @@ export class SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'none';
+		return "none";
 	}
 
 	/**
@@ -186,8 +186,9 @@ export class SceneNode {
 		for (var i = 0; i < this.Animators.length; ++i) {
 			var oa = this.Animators[i];
 			var ac = oa.findActionByType(type);
-			if (ac != null)
+			if (ac != null) {
 				return ac;
+			}
 		}
 
 		return null;
@@ -217,15 +218,17 @@ export class SceneNode {
 		b.Type = this.Type;
 		b.scene = this.scene;
 
-		if (newparent)
+		if (newparent) {
 			newparent.addChild(b);
+		}
 
 		for (var i = 0; i < this.Children.length; ++i) {
 			var c = this.Children[i];
 			if (c) {
 				var newId = -1;
-				if (newparent && newparent.scene)
+				if (newparent && newparent.scene) {
 					newId = newparent.scene.getUnusedSceneNodeId();
+				}
 
 				var nc = c.createClone(b, c.Id, newId);
 				if (nc != null) {
@@ -235,14 +238,15 @@ export class SceneNode {
 			}
 		}
 
-		//try {
+		// try {
 		for (var i = 0; i < this.Animators.length; ++i) {
 			var oa = this.Animators[i];
 			b.addAnimator(oa.createClone(this, this.scene, oldNodeId, newNodeId));
 		}
-		//} catch(e) {};
-		if (this.AbsoluteTransformation)
+		// } catch(e) {};
+		if (this.AbsoluteTransformation) {
 			b.AbsoluteTransformation = this.AbsoluteTransformation.clone();
+		}
 	}
 
 	/**
@@ -261,8 +265,9 @@ export class SceneNode {
 	 * @public
 	 */
 	addAnimator(a) {
-		if (a != null)
+		if (a != null) {
 			this.Animators.push(a);
+		}
 	}
 
 	/**
@@ -271,8 +276,9 @@ export class SceneNode {
 	 * @param {CL3D.Animator} a the new CL3D.Animator to remove.
 	 */
 	removeAnimator(a) {
-		if (a == null)
+		if (a == null) {
 			return;
+		}
 
 		var i;
 
@@ -295,8 +301,9 @@ export class SceneNode {
 		if (n) {
 			n.scene = this.scene;
 
-			if (n.Parent)
+			if (n.Parent) {
 				n.Parent.removeChild(n);
+			}
 			n.Parent = this;
 			this.Children.push(n);
 		}
@@ -330,7 +337,7 @@ export class SceneNode {
 	 *  scene.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_DEFAULT);
 	 *
 	 *  // call base class to register childs (if needed)
-	 *	CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, scene);
+	 * 	CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, scene);
 	 * }
 	 * @param {CL3D.Scene} scene the current scene
 	 * @public
@@ -366,8 +373,9 @@ export class SceneNode {
 				// if the animator deleted itself, don't move forward
 				var oldanimcount = animcount;
 				animcount = this.Animators.length;
-				if (oldanimcount >= animcount)
+				if (oldanimcount >= animcount) {
 					++i;
+				}
 			}
 
 			this.updateAbsolutePosition();
@@ -408,15 +416,13 @@ export class SceneNode {
 	 * Note: This does not recursively update the parents absolute positions, so if you have a deeper hierarchy you might
 	 * want to update the parents first.
 	 * @public
-	*/
+	 */
 	updateAbsolutePosition() {
 		if (this.Parent != null) {
-			this.AbsoluteTransformation =
-				this.Parent.AbsoluteTransformation.multiply(this.getRelativeTransformation());
-		}
-
-		else
+			this.AbsoluteTransformation = this.Parent.AbsoluteTransformation.multiply(this.getRelativeTransformation());
+		} else {
 			this.AbsoluteTransformation = this.getRelativeTransformation();
+		}
 	}
 
 	/**
@@ -483,8 +489,9 @@ export class SceneNode {
 		var node = this;
 
 		while (node) {
-			if (!node.Visible)
+			if (!node.Visible) {
 				return false;
+			}
 
 			node = node.Parent;
 		}
@@ -513,16 +520,19 @@ export class SceneNode {
 	 * @public
 	 */
 	isParentActiveFPSCameraToRenderChildrenWithoutZBuffer() {
-		if (!this.scene)
+		if (!this.scene) {
 			return false;
+		}
 
-		if (!(this.scene.ActiveCamera === this.Parent))
+		if (!(this.scene.ActiveCamera === this.Parent)) {
 			return false;
+		}
 
-		var an = this.Parent.getAnimatorOfType('camerafps');
-		if (an == null)
+		var an = this.Parent.getAnimatorOfType("camerafps");
+		if (an == null) {
 			return false;
+		}
 
 		return an.ChildrenDontUseZBuffer;
 	}
-};
+}

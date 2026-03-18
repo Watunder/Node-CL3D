@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
@@ -10,7 +10,7 @@ import * as CL3D from "./main.js";
  * @class A view frustrum defining the area of view
  */
 export class ViewFrustrum {
-	planes = null; //:Array; // Plane3d
+	planes = null; // :Array; // Plane3d
 
 	/**
 	 * Far plane of the frustum. That is the plane farest away from the eye.
@@ -18,42 +18,42 @@ export class ViewFrustrum {
 	 * @static
 	 */
 	static VF_FAR_PLANE = 0;
-	
+
 	/**
 	 * Near plane of the frustum. That is the plane nearest to the eye.
 	 * @public
 	 * @static
 	 */
 	static VF_NEAR_PLANE = 1;
-	
+
 	/**
 	 * Left plane of the frustum.
 	 * @public
 	 * @static
 	 */
 	static VF_LEFT_PLANE = 2;
-	
+
 	/**
 	 * Right plane of the frustum.
 	 * @public
 	 * @static
 	 */
 	static VF_RIGHT_PLANE = 3;
-	
+
 	/**
 	 * Bottom plane of the frustum.
 	 * @public
 	 * @static
 	 */
 	static VF_BOTTOM_PLANE = 4;
-	
+
 	/**
 	 * Top plane of the frustum.
 	 * @public
 	 * @static
 	 */
 	static VF_TOP_PLANE = 5;
-	
+
 	/**
 	 * Amount of planes enclosing the view frustum. Should be 6.
 	 * @public
@@ -63,8 +63,9 @@ export class ViewFrustrum {
 
 	constructor() {
 		this.planes = new Array();
-		for (var i = 0; i < CL3D.ViewFrustrum.VF_PLANE_COUNT; ++i)
+		for (var i = 0; i < CL3D.ViewFrustrum.VF_PLANE_COUNT; ++i) {
 			this.planes.push(new CL3D.Plane3d());
+		}
 	}
 	/**
 	 * @public
@@ -130,7 +131,10 @@ export class ViewFrustrum {
 		var p = new CL3D.Vect3d();
 
 		this.planes[CL3D.ViewFrustrum.VF_FAR_PLANE].getIntersectionWithPlanes(
-			this.planes[CL3D.ViewFrustrum.VF_TOP_PLANE], this.planes[CL3D.ViewFrustrum.VF_LEFT_PLANE], p);
+			this.planes[CL3D.ViewFrustrum.VF_TOP_PLANE],
+			this.planes[CL3D.ViewFrustrum.VF_LEFT_PLANE],
+			p,
+		);
 
 		return p;
 	}
@@ -141,7 +145,10 @@ export class ViewFrustrum {
 		var p = new CL3D.Vect3d();
 
 		this.planes[CL3D.ViewFrustrum.VF_FAR_PLANE].getIntersectionWithPlanes(
-			this.planes[CL3D.ViewFrustrum.VF_TOP_PLANE], this.planes[CL3D.ViewFrustrum.VF_RIGHT_PLANE], p);
+			this.planes[CL3D.ViewFrustrum.VF_TOP_PLANE],
+			this.planes[CL3D.ViewFrustrum.VF_RIGHT_PLANE],
+			p,
+		);
 
 		return p;
 	}
@@ -152,7 +159,10 @@ export class ViewFrustrum {
 		var p = new CL3D.Vect3d();
 
 		this.planes[CL3D.ViewFrustrum.VF_FAR_PLANE].getIntersectionWithPlanes(
-			this.planes[CL3D.ViewFrustrum.VF_BOTTOM_PLANE], this.planes[CL3D.ViewFrustrum.VF_RIGHT_PLANE], p);
+			this.planes[CL3D.ViewFrustrum.VF_BOTTOM_PLANE],
+			this.planes[CL3D.ViewFrustrum.VF_RIGHT_PLANE],
+			p,
+		);
 
 		return p;
 	}
@@ -163,7 +173,10 @@ export class ViewFrustrum {
 		var p = new CL3D.Vect3d();
 
 		this.planes[CL3D.ViewFrustrum.VF_FAR_PLANE].getIntersectionWithPlanes(
-			this.planes[CL3D.ViewFrustrum.VF_BOTTOM_PLANE], this.planes[CL3D.ViewFrustrum.VF_LEFT_PLANE], p);
+			this.planes[CL3D.ViewFrustrum.VF_BOTTOM_PLANE],
+			this.planes[CL3D.ViewFrustrum.VF_LEFT_PLANE],
+			p,
+		);
 
 		return p;
 	}
@@ -197,10 +210,11 @@ export class ViewFrustrum {
 				}
 			}
 
-			if (!boxInFrustum)
+			if (!boxInFrustum) {
 				return false;
+			}
 		}
 
 		return true;
 	}
-};
+}

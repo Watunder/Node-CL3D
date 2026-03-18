@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -39,8 +39,8 @@ export class PathSceneNode extends CL3D.SceneNode {
 
 		this.Type = 1752461414;
 		this.Box = new CL3D.Box3d();
-		this.Tightness = 0; //;
-		this.IsClosedCircle = false; //:Boolean;
+		this.Tightness = 0; // ;
+		this.IsClosedCircle = false; // :Boolean;
 		this.Nodes = new Array(); // Vect3d
 	}
 
@@ -63,7 +63,7 @@ export class PathSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'path';
+		return "path";
 	}
 
 	/**
@@ -73,11 +73,12 @@ export class PathSceneNode extends CL3D.SceneNode {
 		var c = new CL3D.PathSceneNode();
 		this.cloneMembers(c, newparent, oldNodeId, newNodeId);
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
-		c.Tightness = this.Tightness; //;
-		c.IsClosedCircle = this.IsClosedCircle; //:Boolean;
+		c.Tightness = this.Tightness; // ;
+		c.IsClosedCircle = this.IsClosedCircle; // :Boolean;
 		c.Nodes = new Array(); // Vect3d
 
 		for (var i = 0; i < this.Nodes.length; ++i) {
@@ -102,11 +103,13 @@ export class PathSceneNode extends CL3D.SceneNode {
 	 * @returns {CL3D.Vect3d} returns the 3d vector of the position of the specified path node
 	 */
 	getPathNodePosition(idx) {
-		if (idx < 0 || idx >= this.Nodes.length)
+		if (idx < 0 || idx >= this.Nodes.length) {
 			return new CL3D.Vect3d(0, 0, 0);
+		}
 
-		if (!this.AbsoluteTransformation)
+		if (!this.AbsoluteTransformation) {
 			this.updateAbsolutePosition();
+		}
 
 		var pos = this.Nodes[idx];
 		pos = pos.clone();
@@ -119,8 +122,9 @@ export class PathSceneNode extends CL3D.SceneNode {
 	 * @public
 	 */
 	clampPathIndex(idx, size) {
-		if (this.IsClosedCircle)
+		if (this.IsClosedCircle) {
 			return (idx < 0 ? (size + idx) : ((idx >= size) ? (idx - size) : idx));
+		}
 
 		return ((idx < 0) ? 0 : ((idx >= size) ? (size - 1) : idx));
 	}
@@ -137,21 +141,22 @@ export class PathSceneNode extends CL3D.SceneNode {
 	getPointOnPath(posOnPath, relative) {
 		var pSize = this.Nodes.length;
 
-		if (this.IsClosedCircle)
+		if (this.IsClosedCircle) {
 			posOnPath *= pSize;
-
-		else {
+		} else {
 			posOnPath = CL3D.clamp(posOnPath, 0.0, 1.0);
 			posOnPath *= pSize - 1;
 		}
 
 		var finalPos = new CL3D.Vect3d();
 
-		if (pSize == 0)
+		if (pSize == 0) {
 			return finalPos;
+		}
 
-		if (pSize == 1)
+		if (pSize == 1) {
 			return finalPos;
+		}
 
 		var dt = posOnPath;
 		var u = CL3D.fract(dt);
@@ -181,12 +186,13 @@ export class PathSceneNode extends CL3D.SceneNode {
 		finalPos.addToThis(t2.multiplyWithScal(h4));
 
 		if (!relative) {
-			if (!this.AbsoluteTransformation)
+			if (!this.AbsoluteTransformation) {
 				this.updateAbsolutePosition();
+			}
 
 			this.AbsoluteTransformation.transformVect(finalPos);
 		}
 
 		return finalPos;
 	}
-};
+}

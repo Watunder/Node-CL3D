@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -7,20 +7,20 @@ import * as CL3D from "../main.js";
  * Special scene node animator for doing automatic collision detection and response.<br/>
  * <br/>
  * This {@link SceneNode} animator can be attached to any single {@link SceneNode} and will then prevent it from moving
- * through specified collision geometry (e.g. walls and floors of the) world, as well as having it fall under 
- * gravity. This animator provides a simple implementation of first person shooter cameras. Attach it to a camera, 
- * and the camera will behave as the player control in a first person shooter game: The camera stops and slides at 
+ * through specified collision geometry (e.g. walls and floors of the) world, as well as having it fall under
+ * gravity. This animator provides a simple implementation of first person shooter cameras. Attach it to a camera,
+ * and the camera will behave as the player control in a first person shooter game: The camera stops and slides at
  * walls, walks up stairs, falls down if there is no floor under it, and so on.<br/>
  * <br/>
  * The animator will treat any change in the position of its target scene node as movement, including changing the .Pos attribute,
- * as movement. If you want to teleport the target scene node manually to a location without it being effected by 
+ * as movement. If you want to teleport the target scene node manually to a location without it being effected by
  * collision geometry, then call reset() after changing the position of the node.<br/>
  * <br/>
  * The algorithm used here is a very fast but simple one. Sometimes, it is possible to get stuck in the geometry when moving.
  * To prevent this, always place the object at a position so that the yellow ellipsoid isn't colliding with a wall in the beginning,
  * so that it is not stuck. <br/>
- * If the object gets stuck during movement, then the problem might be the 3d collision mesh: One needs to be a bit careful 
- * when modelling the static geometry the object collides against. The geometry should be closed, and there should not be any 
+ * If the object gets stuck during movement, then the problem might be the 3d collision mesh: One needs to be a bit careful
+ * when modelling the static geometry the object collides against. The geometry should be closed, and there should not be any
  * one sided polygons sticking out anywhere, those are usually the places where one gets stuck. <br/>
  * Also, if the points of vertices which should be together are not exactly at the same point could cause problems.
  * If the used 3d modelling software supports a feature like 'Merge Points' to make neighbour vertices be exactly at the same place, it is
@@ -32,13 +32,13 @@ import * as CL3D from "../main.js";
  */
 export class AnimatorCollisionResponse extends CL3D.Animator {
 	/**
-	 * @param {CL3D.Vect3d=} radius 3d vector describing the radius of the scene node as ellipsoid.	
-	 * @param {CL3D.Vect3d=} translation Set translation of the collision ellipsoid. By default, the ellipsoid for collision 
-	 * detection is created around the center of the scene node, which means that the ellipsoid surrounds it completely. 
+	 * @param {CL3D.Vect3d=} radius 3d vector describing the radius of the scene node as ellipsoid.
+	 * @param {CL3D.Vect3d=} translation Set translation of the collision ellipsoid. By default, the ellipsoid for collision
+	 * detection is created around the center of the scene node, which means that the ellipsoid surrounds it completely.
 	 * If this is not what you want, you may specify a translation for the ellipsoid.
 	 * @param {CL3D.TriangleSelector=} world Representing the world, the collision geometry, represented by a {@link TriangleSelector}.
-	 * @param {Number=} slidingspeed (optional) A very small value, set to 0.0005 for example. This affects how the ellipsoid is moved 
-	 * when colliding with a wall. Affects movement smoothness and friction. If set to a too big value, this will also may cause the 
+	 * @param {Number=} slidingspeed (optional) A very small value, set to 0.0005 for example. This affects how the ellipsoid is moved
+	 * when colliding with a wall. Affects movement smoothness and friction. If set to a too big value, this will also may cause the
 	 * ellipsoid to be stuck.
 	 */
 	constructor(radius, translation, world, slidingspeed) {
@@ -58,12 +58,15 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 		this.JumpForce = 0;
 		this.UseInclination = false;
 
-		if (this.Radius == null)
+		if (this.Radius == null) {
 			this.Radius = new CL3D.Vect3d(30, 50, 30);
-		if (this.Translation == null)
+		}
+		if (this.Translation == null) {
 			this.Translation = new CL3D.Vect3d(0, 0, 0);
-		if (this.SlidingSpeed == null)
+		}
+		if (this.SlidingSpeed == null) {
 			this.SlidingSpeed = 0.0005;
+		}
 
 		this.reset();
 	}
@@ -74,7 +77,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'collisionresponse';
+		return "collisionresponse";
 	}
 
 	/**
@@ -136,14 +139,16 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
-		var difftime = (timeMs - this.LastAnimationTime);
+		var difftime = timeMs - this.LastAnimationTime;
 
-		if (!this.World)
+		if (!this.World) {
 			return false;
+		}
 
 		if (difftime > 150) difftime = 150;
-		if (difftime == 0)
+		if (difftime == 0) {
 			return false;
+		}
 
 		this.LastAnimationTime = timeMs;
 
@@ -157,25 +162,24 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 		var vel = n.Pos.substract(this.LastPosition);
 
 		var gravity = new CL3D.Vect3d(0.0, -0.1 * n.scene.Gravity, 0.0);
-		if (!this.AffectedByGravity)
+		if (!this.AffectedByGravity) {
 			gravity.Y = 0.0;
+		}
 
 		var gravityPerFrame = gravity.multiplyWithScal(difftime);
 
 		// calculate acceleration of gravity when falling
 		if (!this.Falling) {
 			gravityPerFrame.multiplyThisWithScal(0.001); // disable acceleration of gravity
-		}
-
-		else {
-			var fact = ((timeMs - this.FallStartTime) / 1000.0);
+		} else {
+			var fact = (timeMs - this.FallStartTime) / 1000.0;
 			if (fact > 5) fact = 5;
 			gravityPerFrame.multiplyThisWithScal(fact);
 		}
 
 		// jump
 		if (this.JumpForce > 0) {
-			vel.Y += (this.JumpForce * 0.001 * difftime);
+			vel.Y += this.JumpForce * 0.001 * difftime;
 
 			this.JumpForce -= difftime;
 			if (this.JumpForce < 0) this.JumpForce = 0;
@@ -185,27 +189,36 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 		var force = vel.add(gravityPerFrame);
 
 		if (!force.equalsZero()) {
-			if (!this.UseFixedSlidingSpeed)
-				this.SlidingSpeed = this.Radius.getLength() * 0.001; //0.000001;
+			if (!this.UseFixedSlidingSpeed) {
+				this.SlidingSpeed = this.Radius.getLength() * 0.001; // 0.000001;
+			}
 
-
-			//this.SlidingSpeed = force.getLength() * 0.0001;
+			// this.SlidingSpeed = force.getLength() * 0.0001;
 			var cam = null;
-			if (n && n instanceof CL3D.CameraSceneNode && n.getType() == 'camera')
+			if (n && n instanceof CL3D.CameraSceneNode && n.getType() == "camera") {
 				cam = n;
+			}
 
 			var camvect;
-			if (cam)
+			if (cam) {
 				camvect = cam.Target.substract(cam.Pos);
+			}
 
 			var triangle = new CL3D.Triangle3d();
-			var objFalling = { N: 0 } // used for passing the object falling value by reference
+			var objFalling = { N: 0 }; // used for passing the object falling value by reference
 
 			this.World.setNodeToIgnore(n);
 
 			pos = this.getCollisionResultPosition(
-				this.World, this.LastPosition.substract(this.Translation), this.Radius, vel,
-				triangle, objFalling, this.SlidingSpeed, gravityPerFrame);
+				this.World,
+				this.LastPosition.substract(this.Translation),
+				this.Radius,
+				vel,
+				triangle,
+				objFalling,
+				this.SlidingSpeed,
+				gravityPerFrame,
+			);
 
 			this.World.setNodeToIgnore(null);
 
@@ -213,11 +226,10 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 
 			if (objFalling.N < 0.5) {
 				this.Falling = false;
-			}
-
-			else {
-				if (!this.Falling)
+			} else {
+				if (!this.Falling) {
 					this.FallStartTime = timeMs;
+				}
 
 				this.Falling = true;
 			}
@@ -233,7 +245,7 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 			if (this.UseInclination) {
 				if (!this.Falling) {
 					if (!(triangle.pointA.equalsZero() && triangle.pointB.equalsZero() && triangle.pointC.equalsZero())) {
-						// rotate triangle with rotation of car 
+						// rotate triangle with rotation of car
 						var rot = n.Rot.Y;
 						var center = triangle.pointA.add(triangle.pointB).add(triangle.pointC);
 						center.multiplyThisWithScal(1.0 / 3.0);
@@ -273,14 +285,15 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 				var bAnimateTarget = true;
 				for (var i = 0; i < n.Animators.length; ++i) {
 					var a = n.Animators[i];
-					if (a && a.getType() == 'cameramodelviewer') {
+					if (a && a.getType() == "cameramodelviewer") {
 						bAnimateTarget = false;
 						break;
 					}
 				}
 
-				if (bAnimateTarget)
+				if (bAnimateTarget) {
 					cam.Target = n.Pos.add(camvect);
+				}
 			}
 		}
 
@@ -292,23 +305,26 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	/**
 	 * @public
 	 */
-	getCollisionResultPosition(selector, //:TriangleSelector,
-		position, //:Vect3d, 
-		radius, //:Vect3d, 
-		velocity, //:Vect3d, 
-		triout, //:Triangle3d, 
-		outFalling, //:FloatRef, 
-		slidingSpeed, //:Number,
-		gravity) {
-		if (!selector || radius.X == 0 || radius.Y == 0 || radius.Z == 0)
+	getCollisionResultPosition(
+		selector, // :TriangleSelector,
+		position, // :Vect3d,
+		radius, // :Vect3d,
+		velocity, // :Vect3d,
+		triout, // :Triangle3d,
+		outFalling, // :FloatRef,
+		slidingSpeed, // :Number,
+		gravity,
+	) {
+		if (!selector || radius.X == 0 || radius.Y == 0 || radius.Z == 0) {
 			return position;
+		}
 
 		// now collide ellipsoid with world
-		var colData = {}; //var colData:CollisionData = new CollisionData();
+		var colData = {}; // var colData:CollisionData = new CollisionData();
 		colData.R3Position = position.clone();
 		colData.R3Velocity = velocity.clone();
 		colData.eRadius = radius.clone();
-		colData.nearestDistance = 99999999.9; //FLT_MAX;
+		colData.nearestDistance = 99999999.9; // FLT_MAX;
 		colData.selector = selector;
 		colData.slidingSpeed = slidingSpeed;
 		colData.triangleHits = 0;
@@ -338,8 +354,10 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 				// now test if that poly has its normal vector up, so this is right.
 				var normal = colData.intersectionTriangle.getNormal();
 				normal.normalize();
-				if (!(Math.abs(normal.Y) > Math.abs(normal.X) &&
-					Math.abs(normal.Y) > Math.abs(normal.Z))) {
+				if (
+					!(Math.abs(normal.Y) > Math.abs(normal.X)
+						&& Math.abs(normal.Y) > Math.abs(normal.Z))
+				) {
 					outFalling.N = 1.0;
 				}
 			}
@@ -364,16 +382,18 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	/**
 	 * @public
 	 */
-	collideWithWorld(recursionDepth, //:int,
-		colData, //:CollisionData, 
-		pos, //:Vect3d, 
-		vel) {
+	collideWithWorld(
+		recursionDepth, // :int,
+		colData, // :CollisionData,
+		pos, // :Vect3d,
+		vel,
+	) {
 		var veryCloseDistance = colData.slidingSpeed;
 
 		// original collision detection code. will sometimes cause objects to get stuck.
-		//if (recursionDepth > 5)
-		//	return pos.clone();
-		// new, sloppy collision detection, preventing getting stuck.		
+		// if (recursionDepth > 5)
+		// 	return pos.clone();
+		// new, sloppy collision detection, preventing getting stuck.
 		if (recursionDepth > 5) {
 			var velshort = vel.clone();
 			velshort.setLength(veryCloseDistance);
@@ -385,12 +405,9 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 		colData.normalizedVelocity.normalize();
 		colData.basePoint = pos.clone();
 		colData.foundCollision = false;
-		colData.nearestDistance = 99999999.9; //FLT_MAX;
+		colData.nearestDistance = 99999999.9; // FLT_MAX;
 
-
-
-
-		//------------------ collide with world
+		// ------------------ collide with world
 		// get all triangles with which we might collide
 		var box = new CL3D.Box3d();
 		colData.R3Position.copyTo(box.MinEdge);
@@ -406,12 +423,14 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 
 		colData.selector.getTrianglesInBox(box, scaleMatrix, triangles);
 
-		for (var i = 0; i < triangles.length; ++i)
+		for (var i = 0; i < triangles.length; ++i) {
 			this.testTriangleIntersection(colData, triangles[i]);
+		}
 
-		//---------------- end collide with world
-		if (!colData.foundCollision)
+		// ---------------- end collide with world
+		if (!colData.foundCollision) {
 			return pos.add(vel);
+		}
 
 		// original destination point
 		var destinationPoint = pos.add(vel);
@@ -441,8 +460,9 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 		// generate slide vector
 		var newVelocityVector = newDestinationPoint.substract(colData.intersectionPoint);
 
-		if (newVelocityVector.getLength() < veryCloseDistance)
+		if (newVelocityVector.getLength() < veryCloseDistance) {
 			return newBasePoint;
+		}
 
 		return this.collideWithWorld(recursionDepth + 1, colData, newBasePoint, newVelocityVector);
 	}
@@ -454,15 +474,15 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 		var trianglePlane = triangle.getPlane();
 
 		// only check front facing polygons
-		if (!trianglePlane.isFrontFacing(colData.normalizedVelocity))
+		if (!trianglePlane.isFrontFacing(colData.normalizedVelocity)) {
 			return;
+		}
 
 		// get interval of plane intersection
-		var t1 = 0; //:Number;
-		var t0 = 0; //:Number;
+		var t1 = 0; // :Number;
+		var t0 = 0; // :Number;
 		var embeddedInPlane = false;
-		var f = 0; //:Number;
-
+		var f = 0; // :Number;
 
 		// calculate signed distance from sphere position to triangle plane
 		var signedDistToTrianglePlane = trianglePlane.getDistanceTo(colData.basePoint);
@@ -471,18 +491,15 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 
 		if (CL3D.iszero(normalDotVelocity)) {
 			// sphere is traveling parallel to plane
-			if (Math.abs(signedDistToTrianglePlane) >= 1.0)
+			if (Math.abs(signedDistToTrianglePlane) >= 1.0) {
 				return; // no collision possible
-
-			else {
+			} else {
 				// sphere is embedded in plane
 				embeddedInPlane = true;
 				t0 = 0.0;
 				t1 = 1.0;
 			}
-		}
-
-		else {
+		} else {
 			normalDotVelocity = 1.0 / normalDotVelocity;
 
 			// N.D is not 0. Calculate intersection interval
@@ -497,9 +514,9 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 			}
 
 			// check if at least one value is within the range
-			if (t0 > 1.0 || t1 < 0.0)
+			if (t0 > 1.0 || t1 < 0.0) {
 				return; // both t values are outside 1 and 0, no collision possible
-
+			}
 
 			// clamp to 0 and 1
 			t0 = CL3D.clamp(t0, 0.0, 1.0);
@@ -535,9 +552,9 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 			var base = colData.basePoint.clone();
 
 			var velocitySqaredLength = velocity.getLengthSQ();
-			var a = 0; //:Number;
-			var b = 0; //:Number;
-			var c = 0; //:Number;
+			var a = 0; // :Number;
+			var b = 0; // :Number;
+			var c = 0; // :Number;
 			var newTObj = { N: 0 };
 
 			// for each edge or vertex a quadratic equation has to be solved:
@@ -585,12 +602,12 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 			var edgeDotBaseToVertex = edge.dotProduct(baseToVertex);
 
 			// calculate parameters for equation
-			a = edgeSqaredLength * -velocitySqaredLength +
-				edgeDotVelocity * edgeDotVelocity;
-			b = edgeSqaredLength * (2.0 * velocity.dotProduct(baseToVertex)) -
-				2.0 * edgeDotVelocity * edgeDotBaseToVertex;
-			c = edgeSqaredLength * (1.0 - baseToVertex.getLengthSQ()) +
-				edgeDotBaseToVertex * edgeDotBaseToVertex;
+			a = edgeSqaredLength * -velocitySqaredLength
+				+ edgeDotVelocity * edgeDotVelocity;
+			b = edgeSqaredLength * (2.0 * velocity.dotProduct(baseToVertex))
+				- 2.0 * edgeDotVelocity * edgeDotBaseToVertex;
+			c = edgeSqaredLength * (1.0 - baseToVertex.getLengthSQ())
+				+ edgeDotBaseToVertex * edgeDotBaseToVertex;
 
 			// does the swept sphere collide against infinite edge?
 			if (this.getLowestRoot(a, b, c, t, newTObj)) {
@@ -611,12 +628,12 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 			edgeDotBaseToVertex = edge.dotProduct(baseToVertex);
 
 			// calculate parameters for equation
-			a = edgeSqaredLength * -velocitySqaredLength +
-				edgeDotVelocity * edgeDotVelocity;
-			b = edgeSqaredLength * (2.0 * velocity.dotProduct(baseToVertex)) -
-				2.0 * edgeDotVelocity * edgeDotBaseToVertex;
-			c = edgeSqaredLength * (1.0 - baseToVertex.getLengthSQ()) +
-				edgeDotBaseToVertex * edgeDotBaseToVertex;
+			a = edgeSqaredLength * -velocitySqaredLength
+				+ edgeDotVelocity * edgeDotVelocity;
+			b = edgeSqaredLength * (2.0 * velocity.dotProduct(baseToVertex))
+				- 2.0 * edgeDotVelocity * edgeDotBaseToVertex;
+			c = edgeSqaredLength * (1.0 - baseToVertex.getLengthSQ())
+				+ edgeDotBaseToVertex * edgeDotBaseToVertex;
 
 			// does the swept sphere collide against infinite edge?
 			if (this.getLowestRoot(a, b, c, t, newTObj)) {
@@ -629,7 +646,6 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 				}
 			}
 
-
 			// p3 --- p1
 			edge = triangle.pointA.substract(triangle.pointC);
 			baseToVertex = triangle.pointC.substract(base);
@@ -638,12 +654,12 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 			edgeDotBaseToVertex = edge.dotProduct(baseToVertex);
 
 			// calculate parameters for equation
-			a = edgeSqaredLength * -velocitySqaredLength +
-				edgeDotVelocity * edgeDotVelocity;
-			b = edgeSqaredLength * (2.0 * velocity.dotProduct(baseToVertex)) -
-				2.0 * edgeDotVelocity * edgeDotBaseToVertex;
-			c = edgeSqaredLength * (1.0 - baseToVertex.getLengthSQ()) +
-				edgeDotBaseToVertex * edgeDotBaseToVertex;
+			a = edgeSqaredLength * -velocitySqaredLength
+				+ edgeDotVelocity * edgeDotVelocity;
+			b = edgeSqaredLength * (2.0 * velocity.dotProduct(baseToVertex))
+				- 2.0 * edgeDotVelocity * edgeDotBaseToVertex;
+			c = edgeSqaredLength * (1.0 - baseToVertex.getLengthSQ())
+				+ edgeDotBaseToVertex * edgeDotBaseToVertex;
 
 			// does the swept sphere collide against infinite edge?
 			if (this.getLowestRoot(a, b, c, t, newTObj)) {
@@ -657,23 +673,23 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 			}
 		} // end no collision found
 
-
-		// set result:  
+		// set result:
 		if (foundCollision) {
 			// distance to collision is t
 			var distToCollision = t * colData.velocity.getLength();
 
 			// does this triangle qualify for closest hit?
-			if (!colData.foundCollision ||
-				distToCollision < colData.nearestDistance) {
+			if (
+				!colData.foundCollision
+				|| distToCollision < colData.nearestDistance
+			) {
 				colData.nearestDistance = distToCollision;
 				colData.intersectionPoint = collisionPoint.clone();
 				colData.foundCollision = true;
 				colData.intersectionTriangle = triangle;
 				++colData.triangleHits;
 			}
-
-		} // end found collision 
+		} // end found collision
 	}
 
 	/**
@@ -720,7 +736,8 @@ export class AnimatorCollisionResponse extends CL3D.Animator {
 	 * @public
 	 */
 	jump(jumpspeed) {
-		if (this.JumpForce == 0)
+		if (this.JumpForce == 0) {
 			this.JumpForce = jumpspeed * 100;
+		}
 	}
-};
+}

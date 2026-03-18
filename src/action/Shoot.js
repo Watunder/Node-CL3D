@@ -18,7 +18,7 @@ export class ActionShoot extends CL3D.Action {
 		this.BulletSpeed = 0.0;
 		this.SceneNodeToUseAsBullet = -1;
 		this.WeaponRange = 100.0;
-		this.Type = 'Shoot';
+		this.Type = "Shoot";
 		this.SceneNodeToShootFrom = -1;
 		this.ShootToCameraTarget = false;
 		this.AdditionalDirectionRotation = null;
@@ -43,10 +43,12 @@ export class ActionShoot extends CL3D.Action {
 		a.ActionHandlerOnImpact = this.ActionHandlerOnImpact ? this.ActionHandlerOnImpact.createClone(oldNodeId, newNodeId) : null;
 		a.ShootDisplacement = this.ShootDisplacement.clone();
 
-		if (a.SceneNodeToUseAsBullet == oldNodeId)
+		if (a.SceneNodeToUseAsBullet == oldNodeId) {
 			a.SceneNodeToUseAsBullet = newNodeId;
-		if (a.SceneNodeToShootFrom == oldNodeId)
+		}
+		if (a.SceneNodeToShootFrom == oldNodeId) {
 			a.SceneNodeToShootFrom = newNodeId;
+		}
 
 		return a;
 	}
@@ -56,8 +58,9 @@ export class ActionShoot extends CL3D.Action {
 	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
-		if (!currentNode || !sceneManager)
+		if (!currentNode || !sceneManager) {
 			return;
+		}
 
 		// calculate ray, depending on how we were shot: If shot by an AI, use its target.
 		// it not, use the active camera and shoot into the center of the screen.
@@ -66,7 +69,7 @@ export class ActionShoot extends CL3D.Action {
 		var shooterNode = null;
 		var cam = null; // temp variable, used multiple times below
 
-		var ainodes = sceneManager.getAllSceneNodesWithAnimator('gameai');
+		var ainodes = sceneManager.getAllSceneNodesWithAnimator("gameai");
 
 		if (this.SceneNodeToShootFrom != -1) {
 			var userSpecifiedNode = sceneManager.getSceneNodeFromId(this.SceneNodeToShootFrom);
@@ -97,9 +100,7 @@ export class ActionShoot extends CL3D.Action {
 
 					// now simply shoot from shooter node center to ray end
 					ray.End = lookLine.End;
-				}
-
-				else {
+				} else {
 					// set ray end based on rotation of scene node and add AdditionalDirectionRotation
 					var matrot = userSpecifiedNode.AbsoluteTransformation;
 
@@ -114,12 +115,10 @@ export class ActionShoot extends CL3D.Action {
 					ray.End.addToThis(ray.Start);
 				}
 			}
-		}
-
-		else if (currentNode != null) {
+		} else if (currentNode != null) {
 			shooterNode = currentNode;
 
-			var shootingAI = currentNode.getAnimatorOfType('gameai');
+			var shootingAI = currentNode.getAnimatorOfType("gameai");
 			if (shootingAI && shootingAI instanceof CL3D.AnimatorGameAI && shootingAI.isCurrentlyShooting()) {
 				ray = shootingAI.getCurrentlyShootingLine();
 				rayFound = true;
@@ -136,10 +135,9 @@ export class ActionShoot extends CL3D.Action {
 			}
 		}
 
-		if (!rayFound)
+		if (!rayFound) {
 			return; // no current node?
-
-
+		}
 
 		// normalize ray to weapon range
 		var vect = ray.getVector();
@@ -151,12 +149,12 @@ export class ActionShoot extends CL3D.Action {
 		this.shortenRayToClosestCollisionPointWithWorld(ray, ainodes, this.WeaponRange, sceneManager);
 
 		// decide if we do a bullet or direct shot
-		if (this.ShootType == 1) //ESIT_BULLET)
-		{
+		if (this.ShootType == 1) { // ESIT_BULLET)
 			var bulletTemplate = null;
 
-			if (this.SceneNodeToUseAsBullet != -1)
+			if (this.SceneNodeToUseAsBullet != -1) {
 				bulletTemplate = sceneManager.getSceneNodeFromId(this.SceneNodeToUseAsBullet);
+			}
 
 			if (bulletTemplate) {
 				// create bullet now
@@ -187,7 +185,7 @@ export class ActionShoot extends CL3D.Action {
 					anim.recalculateImidiateValues();
 
 					anim.TestShootCollisionWithBullet = true;
-					anim.ShootCollisionNodeToIgnore = shooterNode; //currentNode;
+					anim.ShootCollisionNodeToIgnore = shooterNode; // currentNode;
 					anim.ShootCollisionDamage = this.Damage;
 					anim.DeleteSceneNodeAfterEndReached = true;
 					anim.ActionToExecuteOnEnd = this.ActionHandlerOnImpact;
@@ -196,10 +194,7 @@ export class ActionShoot extends CL3D.Action {
 					cloned.addAnimator(anim);
 				}
 			}
-		}
-
-		else if (this.ShootType == 0) //EST_DIRECT)
-		{
+		} else if (this.ShootType == 0) { // EST_DIRECT)
 			// directly hit the target instead of creating a bullet
 			// only check the nearest collision point with all the nodes
 			// and take the nearest hit node as target
@@ -210,17 +205,16 @@ export class ActionShoot extends CL3D.Action {
 				sceneManager.LastBulletImpactPosition = ray.End.clone();
 
 				// finally found a node to hit. Hit it.
-				var targetanimAi = bestHitNode.getAnimatorOfType('gameai');
+				var targetanimAi = bestHitNode.getAnimatorOfType("gameai");
 
-				if (targetanimAi)
+				if (targetanimAi) {
 					targetanimAi.OnHit(this.Damage, bestHitNode);
+				}
 			}
-
 		} // end direct shot
 	}
 
 	/**
-	 * 
 	 * @param {CL3D.Line3d} ray
 	 * @param {string | any[]} ainodes
 	 * @param {Number} maxLen
@@ -230,7 +224,7 @@ export class ActionShoot extends CL3D.Action {
 		if (ainodes.length != 0) {
 			// find world to test against collision so we do not need to do this with every
 			// single node, to improve performance
-			var animAi = ainodes[0].getAnimatorOfType('gameai');
+			var animAi = ainodes[0].getAnimatorOfType("gameai");
 			if (animAi) {
 				var world = animAi.World;
 				if (world) {
@@ -248,7 +242,6 @@ export class ActionShoot extends CL3D.Action {
 	}
 
 	/**
-	 * 
 	 * @param {CL3D.Line3d} ray
 	 * @param {string | any[]} ainodes
 	 * @param {Number} maxLen
@@ -260,17 +253,18 @@ export class ActionShoot extends CL3D.Action {
 		var bestHitNode = null;
 
 		for (var i = 0; i < ainodes.length; ++i) {
-			if (ainodes[i] === toIgnore) // don't collide against myself
+			if (ainodes[i] === toIgnore) { // don't collide against myself
 				continue;
+			}
 
-			var enemyAI = ainodes[i].getAnimatorOfType('gameai');
+			var enemyAI = ainodes[i].getAnimatorOfType("gameai");
 
-			if (enemyAI && !enemyAI.isAlive()) // don't test collision against dead items
+			if (enemyAI && !enemyAI.isAlive()) { // don't test collision against dead items
 				continue;
+			}
 
 			var collisionDistance = { N: 0 };
-			if (CL3D.AnimatorOnClick.prototype.static_getCollisionDistanceWithNode(sceneManager, ainodes[i], ray, false,
-				false, null, collisionDistance)) {
+			if (CL3D.AnimatorOnClick.prototype.static_getCollisionDistanceWithNode(sceneManager, ainodes[i], ray, false, false, null, collisionDistance)) {
 				if (collisionDistance.N < bestDistance) {
 					bestDistance = collisionDistance.N;
 					bestHitNode = ainodes[i];
@@ -295,4 +289,4 @@ export class ActionShoot extends CL3D.Action {
 	getWeaponRange() {
 		return this.WeaponRange;
 	}
-};
+}

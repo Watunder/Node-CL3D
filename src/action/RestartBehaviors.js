@@ -11,14 +11,14 @@ import * as CL3D from "../main.js";
  */
 export class ActionRestartBehaviors extends CL3D.Action {
 	constructor() {
-        super();
+		super();
 
 		/**
 		 * @type {Number}
 		 */
 		this.SceneNodeToRestart = null;
 		this.ChangeCurrentSceneNode = false;
-		this.Type = 'RestartBehaviors';
+		this.Type = "RestartBehaviors";
 	}
 
 	/**
@@ -31,8 +31,9 @@ export class ActionRestartBehaviors extends CL3D.Action {
 		a.SceneNodeToRestart = this.SceneNodeToRestart;
 		a.ChangeCurrentSceneNode = this.ChangeCurrentSceneNode;
 
-		if (a.ChangeCurrentSceneNode != bChangeCurrentSceneNode)
+		if (a.ChangeCurrentSceneNode != bChangeCurrentSceneNode) {
 			a.ChangeCurrentSceneNode = bChangeCurrentSceneNode;
+		}
 		return a;
 	}
 
@@ -41,22 +42,24 @@ export class ActionRestartBehaviors extends CL3D.Action {
 	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
-		if (!currentNode || !sceneManager)
+		if (!currentNode || !sceneManager) {
 			return;
+		}
 
 		var nodeToHandle = null;
-		if (this.ChangeCurrentSceneNode)
+		if (this.ChangeCurrentSceneNode) {
 			nodeToHandle = currentNode;
-
-		else if (this.SceneNodeToRestart != -1)
+		} else if (this.SceneNodeToRestart != -1) {
 			nodeToHandle = sceneManager.getSceneNodeFromId(this.SceneNodeToRestart);
+		}
 
 		if (nodeToHandle) {
 			for (var i = 0; i < nodeToHandle.Animators.length; ++i) {
 				var a = nodeToHandle.Animators[i];
-				if (a != null)
+				if (a != null) {
 					a.reset();
+				}
 			}
 		}
 	}
-};
+}

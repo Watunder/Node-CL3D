@@ -21,350 +21,344 @@ export const CopperCubeVariables = new Array();
  * @public
  */
 export class CopperCubeVariable {
-    constructor() {
-        this.Name = '';
-        this.StringValue = '';
-        this.ActiveValueType = 0; // 0=string, 1=int, 2=float
-        this.IntValue = 0;
-        this.FloatValue = 0.0;
-    }
-   
-    /**
-     * Static function, returns the instance of an existing CopperCube variable or creates one if not existing.
-     * @public
-     * @param {String} n Name of the variable
-     * @param {Boolean} createIfNotExisting if the variable is not found, it will be created if this is set to true.
-     * @param {CL3D.Scene} scene The current scene. This parameter is optional, this can be 0. It is used for getting runtime variables such as #player1.health
-     * @returns {CL3D.CopperCubeVariable} Returns instance of the variable or null if not found
-     */
-    static getVariable(n, createIfNotExisting, scene) {
-        if (n == null)
-            return null;
+	constructor() {
+		this.Name = "";
+		this.StringValue = "";
+		this.ActiveValueType = 0; // 0=string, 1=int, 2=float
+		this.IntValue = 0;
+		this.FloatValue = 0.0;
+	}
 
-        var toFind = n.toLowerCase();
-        var ar = CL3D.CopperCubeVariables;
+	/**
+	 * Static function, returns the instance of an existing CopperCube variable or creates one if not existing.
+	 * @public
+	 * @param {String} n Name of the variable
+	 * @param {Boolean} createIfNotExisting if the variable is not found, it will be created if this is set to true.
+	 * @param {CL3D.Scene} scene The current scene. This parameter is optional, this can be 0. It is used for getting runtime variables such as #player1.health
+	 * @returns {CL3D.CopperCubeVariable} Returns instance of the variable or null if not found
+	 */
+	static getVariable(n, createIfNotExisting, scene) {
+		if (n == null) {
+			return null;
+		}
 
-        for (var i = 0; i < ar.length; ++i) {
-            var v = ar[i];
-            if (v != null && v.getName().toLowerCase() == toFind)
-                return v;
-        }
+		var toFind = n.toLowerCase();
+		var ar = CL3D.CopperCubeVariables;
 
-        // for temporary virtual variables like "#player.health", create one now
-        var tmpvar = CL3D.CopperCubeVariable.createTemporaryVariableIfPossible(n, scene);
-        if (tmpvar)
-            return tmpvar;
+		for (var i = 0; i < ar.length; ++i) {
+			var v = ar[i];
+			if (v != null && v.getName().toLowerCase() == toFind) {
+				return v;
+			}
+		}
 
-        // not found, so create new
-        if (createIfNotExisting == true) {
-            var nv = new CL3D.CopperCubeVariable();
-            nv.setName(n);
-            ar.push(nv);
+		// for temporary virtual variables like "#player.health", create one now
+		var tmpvar = CL3D.CopperCubeVariable.createTemporaryVariableIfPossible(n, scene);
+		if (tmpvar) {
+			return tmpvar;
+		}
 
-            return nv;
-        }
+		// not found, so create new
+		if (createIfNotExisting == true) {
+			var nv = new CL3D.CopperCubeVariable();
+			nv.setName(n);
+			ar.push(nv);
 
-        return null;
-    }
-        
-    /**
-     * @public
-     * Creates a coppercube variable of the type "#player.health" with the correct expected content
-     */
-    static createTemporaryVariableIfPossible(varname, scene) {
-        var ret = CL3D.CopperCubeVariable.getSceneNodeAndAttributeNameFromTemporaryVariableName(varname, scene);
-        if (ret == null)
-            return null;
+			return nv;
+		}
 
-        var nv = new CL3D.CopperCubeVariable();
-        nv.setName(varname);
-        nv.setValueAsInt(0);
-        var node = ret.node;
+		return null;
+	}
 
-        if (ret.attrname == 'health' && node != null) {
-            var gameai = node.getAnimatorOfType('gameai');
-            if (gameai != null)
-                nv.setValueAsInt(gameai.Health);
-        }
+	/**
+	 * @public
+	 * Creates a coppercube variable of the type "#player.health" with the correct expected content
+	 */
+	static createTemporaryVariableIfPossible(varname, scene) {
+		var ret = CL3D.CopperCubeVariable.getSceneNodeAndAttributeNameFromTemporaryVariableName(varname, scene);
+		if (ret == null) {
+			return null;
+		}
 
-        else if (ret.attrname == 'movementspeed' && node != null) {
-            var an = node.getAnimatorOfType('gameai');
-            var an2 = node.getAnimatorOfType('keyboardcontrolled');
-            var an3 = node.getAnimatorOfType('camerafps');
+		var nv = new CL3D.CopperCubeVariable();
+		nv.setName(varname);
+		nv.setValueAsInt(0);
+		var node = ret.node;
 
-            if (an3)
-                nv.setValueAsFloat(an3.MoveSpeed);
+		if (ret.attrname == "health" && node != null) {
+			var gameai = node.getAnimatorOfType("gameai");
+			if (gameai != null) {
+				nv.setValueAsInt(gameai.Health);
+			}
+		} else if (ret.attrname == "movementspeed" && node != null) {
+			var an = node.getAnimatorOfType("gameai");
+			var an2 = node.getAnimatorOfType("keyboardcontrolled");
+			var an3 = node.getAnimatorOfType("camerafps");
 
-            else if (an2)
-                nv.setValueAsFloat(an2.MoveSpeed);
+			if (an3) {
+				nv.setValueAsFloat(an3.MoveSpeed);
+			} else if (an2) {
+				nv.setValueAsFloat(an2.MoveSpeed);
+			} else if (an) {
+				nv.setValueAsFloat(an.MovementSpeed);
+			}
+		} else if (ret.attrname == "damage" && node != null) {
+			var theaction = node.findActionOfType("Shoot");
+			if (theaction) {
+				nv.setValueAsInt(theaction.Damage);
+			}
+		} else if (ret.attrname == "colsmalldistance" && node != null) {
+			var acr = node.getAnimatorOfType("collisionresponse");
+			if (acr != null) {
+				nv.setValueAsFloat(acr.SlidingSpeed);
+			}
+		} else if (ret.attrname == "soundvolume") {
+			nv.setValueAsFloat(CL3D.gSoundManager.getGlobalVolume() * 100.0);
+		}
 
-            else if (an)
-                nv.setValueAsFloat(an.MovementSpeed);
-        }
+		return nv;
+	}
 
-        else if (ret.attrname == 'damage' && node != null) {
-            var theaction = node.findActionOfType('Shoot');
-            if (theaction)
-                nv.setValueAsInt(theaction.Damage);
-        }
+	/**
+	 * @public
+	 * Saves the content of a coppercube variable of the type "#player.health" back into the correct scene node
+	 */
+	static saveContentOfPotentialTemporaryVariableIntoSource(thevar, scene) {
+		var ret = CL3D.CopperCubeVariable.getSceneNodeAndAttributeNameFromTemporaryVariableName(thevar.Name, scene);
+		if (ret == null) {
+			return;
+		}
 
-        else if (ret.attrname == 'colsmalldistance' && node != null) {
-            var acr = node.getAnimatorOfType('collisionresponse');
-            if (acr != null)
-                nv.setValueAsFloat(acr.SlidingSpeed);
-        }
+		var node = ret.node;
 
-        else if (ret.attrname == 'soundvolume') {
-            nv.setValueAsFloat(CL3D.gSoundManager.getGlobalVolume() * 100.0);
-        }
+		if (ret.attrname == "health" && node != null) {
+			var gameai = node.getAnimatorOfType("gameai");
+			if (gameai != null) {
+				var healthBefore = gameai.Health;
+				var healthNew = thevar.getValueAsInt();
+				var damage = healthBefore - healthNew;
 
-        return nv;
-    }
-        
-    /**
-     * @public
-     * Saves the content of a coppercube variable of the type "#player.health" back into the correct scene node
-     */
-    static saveContentOfPotentialTemporaryVariableIntoSource(thevar, scene) {
-        var ret = CL3D.CopperCubeVariable.getSceneNodeAndAttributeNameFromTemporaryVariableName(thevar.Name, scene);
-        if (ret == null)
-            return;
+				if (damage > 0) {
+					gameai.OnHit(damage, node);
+				} else {
+					gameai.Health = healthNew;
+				}
+			}
+		} else if (ret.attrname == "movementspeed" && node != null) {
+			var an = node.getAnimatorOfType("gameai");
+			var an2 = node.getAnimatorOfType("keyboardcontrolled");
+			var an3 = node.getAnimatorOfType("camerafps");
 
-        var node = ret.node;
+			if (an3) {
+				an3.MoveSpeed = thevar.getValueAsFloat();
+			} else if (an2) {
+				an2.MoveSpeed = thevar.getValueAsFloat();
+			} else if (an) {
+				an.MovementSpeed = thevar.getValueAsFloat();
+			}
+		} else if (ret.attrname == "damage" && node != null) {
+			var theaction = node.findActionOfType("Shoot");
+			if (theaction) {
+				theaction.Damage = thevar.getValueAsInt();
+			}
+		} else if (ret.attrname == "damage" && node != null) {
+			var theaction = node.findActionOfType("Shoot");
+			if (theaction) {
+				theaction.Damage = thevar.getValueAsInt();
+			}
+		} else if (ret.attrname == "colsmalldistance" && node != null) {
+			var acr = node.getAnimatorOfType("collisionresponse");
+			if (acr != null) {
+				acr.SlidingSpeed = thevar.getValueAsInt();
+				acr.UseFixedSlidingSpeed = true;
+			}
+		} else if (ret.attrname == "soundvolume") {
+			CL3D.gSoundManager.setGlobalVolume(thevar.getValueAsFloat() / 100.0);
+		}
+	}
 
-        if (ret.attrname == 'health' && node != null) {
-            var gameai = node.getAnimatorOfType('gameai');
-            if (gameai != null) {
-                var healthBefore = gameai.Health;
-                var healthNew = thevar.getValueAsInt();
-                var damage = healthBefore - healthNew;
+	/**
+	 * @public
+	 * Parses the variable name of the type "#player.health" and returns attribute name and scene node in the scene
+	 */
+	static getSceneNodeAndAttributeNameFromTemporaryVariableName(varname, scene) {
+		if (varname.length == 0 || scene == null) {
+			return null;
+		}
 
-                if (damage > 0)
-                    gameai.OnHit(damage, node);
+		// temporary virtual variables have the layout like "#player.health"
+		if (varname[0] != "#") {
+			return null;
+		}
 
-                else
-                    gameai.Health = healthNew;
-            }
-        }
+		var pos = varname.indexOf(".");
+		if (pos == -1) {
+			return null;
+		}
 
-        else if (ret.attrname == 'movementspeed' && node != null) {
-            var an = node.getAnimatorOfType('gameai');
-            var an2 = node.getAnimatorOfType('keyboardcontrolled');
-            var an3 = node.getAnimatorOfType('camerafps');
+		// get attibute name
+		var attrname = varname.substr(pos + 1, varname.length - pos);
+		if (attrname.length == 0) {
+			return null;
+		}
 
-            if (an3)
-                an3.MoveSpeed = thevar.getValueAsFloat();
+		// find scene node
+		var sceneNodeName = varname.substr(1, pos - 1);
+		var node = null;
 
-            else if (an2)
-                an2.MoveSpeed = thevar.getValueAsFloat();
+		if (sceneNodeName == "system") {
+			// system variable
+		} else {
+			node = scene.getSceneNodeFromName(sceneNodeName);
 
-            else if (an)
-                an.MovementSpeed = thevar.getValueAsFloat();
-        }
+			if (node == null) {
+				return null;
+			}
+		}
 
-        else if (ret.attrname == 'damage' && node != null) {
-            var theaction = node.findActionOfType('Shoot');
-            if (theaction)
-                theaction.Damage = thevar.getValueAsInt();
-        }
+		// return
+		var retobj = {}; // used for passing scene node and attribute name back if available
+		retobj.node = node;
+		retobj.attrname = attrname;
+		return retobj;
+	}
 
-        else if (ret.attrname == 'damage' && node != null) {
-            var theaction = node.findActionOfType('Shoot');
-            if (theaction)
-                theaction.Damage = thevar.getValueAsInt();
-        }
+	/**
+	 * Returns if this variable is a string
+	 * @public
+	 */
+	isString() {
+		return this.ActiveValueType == 0;
+	}
 
-        else if (ret.attrname == 'colsmalldistance' && node != null) {
-            var acr = node.getAnimatorOfType('collisionresponse');
-            if (acr != null) {
-                acr.SlidingSpeed = thevar.getValueAsInt();
-                acr.UseFixedSlidingSpeed = true;
-            }
-        }
+	/**
+	 * Returns if this variable is a float value
+	 * @public
+	 */
+	isFloat() {
+		return this.ActiveValueType == 2;
+	}
 
-        else if (ret.attrname == 'soundvolume') {
-            CL3D.gSoundManager.setGlobalVolume(thevar.getValueAsFloat() / 100.0);
-        }
-    }
-        
-    /**
-     * @public
-     * Parses the variable name of the type "#player.health" and returns attribute name and scene node in the scene
-     */
-    static getSceneNodeAndAttributeNameFromTemporaryVariableName(varname, scene) {
-        if (varname.length == 0 || scene == null)
-            return null;
+	/**
+	 * Returns if this variable is an int value
+	 * @public
+	 */
+	isInt() {
+		return this.ActiveValueType == 1;
+	}
 
-        // temporary virtual variables have the layout like "#player.health"
-        if (varname[0] != '#')
-            return null;
+	/**
+	 * Returns the name of the variable
+	 * @public
+	 */
+	getName() {
+		return this.Name;
+	}
 
-        var pos = varname.indexOf('.');
-        if (pos == -1)
-            return null;
+	/**
+	 * Sets the name of the variable
+	 * @public
+	 * @param n Name
+	 */
+	setName(n) {
+		this.Name = n;
+	}
 
-        // get attibute name
-        var attrname = varname.substr(pos + 1, varname.length - pos);
-        if (attrname.length == 0)
-            return null;
+	/**
+	 * @public
+	 */
+	setAsCopy(copyFrom) {
+		if (copyFrom == null) {
+			return;
+		}
 
-        // find scene node	
-        var sceneNodeName = varname.substr(1, pos - 1);
-        var node = null;
+		this.ActiveValueType = copyFrom.ActiveValueType;
 
-        if (sceneNodeName == 'system') {
-            // system variable
-        }
+		this.StringValue = copyFrom.StringValue;
+		this.IntValue = copyFrom.IntValue;
+		this.FloatValue = copyFrom.FloatValue;
+	}
 
-        else {
-            node = scene.getSceneNodeFromName(sceneNodeName);
+	/**
+	 * Returns the value of the variable as string
+	 * @public
+	 */
+	getValueAsString() {
+		switch (this.ActiveValueType) {
+			case 1: // int
+				return String(this.IntValue);
+			case 2: // float
+				if ((this.FloatValue % 1) == 0.0) {
+					return String(this.FloatValue);
+				} else {
+					return this.FloatValue.toFixed(6);
+				}
+		}
 
-            if (node == null)
-                return null;
-        }
+		return this.StringValue;
+	}
 
-        // return
-        var retobj = {}; // used for passing scene node and attribute name back if available
-        retobj.node = node;
-        retobj.attrname = attrname;
-        return retobj;
-    }
-        
-    /**
-     * Returns if this variable is a string
-     * @public
-     */
-    isString() {
-        return this.ActiveValueType == 0;
-    }
-        
-    /**
-     * Returns if this variable is a float value
-     * @public
-     */
-    isFloat() {
-        return this.ActiveValueType == 2;
-    }
-        
-    /**
-     * Returns if this variable is an int value
-     * @public
-     */
-    isInt() {
-        return this.ActiveValueType == 1;
-    }
-        
-    /**
-     * Returns the name of the variable
-     * @public
-     */
-    getName() {
-        return this.Name;
-    }
-        
-    /**
-     * Sets the name of the variable
-     * @public
-     * @param n Name
-     */
-    setName(n) {
-        this.Name = n;
-    }
-        
-    /**
-     * @public
-     */
-    setAsCopy(copyFrom) {
-        if (copyFrom == null)
-            return;
+	/**
+	 * Returns the value of the variable as int
+	 * @public
+	 */
+	getValueAsInt() {
+		switch (this.ActiveValueType) {
+			case 0: // string
+				return Math.floor(Number(this.StringValue));
+			case 1: // int
+				return this.IntValue;
+			case 2: // float
+				return this.FloatValue;
+		}
 
-        this.ActiveValueType = copyFrom.ActiveValueType;
+		return 0;
+	}
 
-        this.StringValue = copyFrom.StringValue;
-        this.IntValue = copyFrom.IntValue;
-        this.FloatValue = copyFrom.FloatValue;
-    }
-        
-    /**
-     * Returns the value of the variable as string
-     * @public
-     */
-    getValueAsString() {
-        switch (this.ActiveValueType) {
-            case 1: // int
-                return String(this.IntValue);
-            case 2: // float
-                if ((this.FloatValue % 1) == 0.0)
-                    return String(this.FloatValue);
+	/**
+	 * Returns the value of the variable as float
+	 * @public
+	 */
+	getValueAsFloat() {
+		switch (this.ActiveValueType) {
+			case 0: // string
+				return Number(this.StringValue);
+			case 1: // int
+				return this.IntValue;
+			case 2: // float
+				return this.FloatValue;
+		}
 
-                else
-                    return this.FloatValue.toFixed(6);
-        }
+		return 0;
+	}
 
-        return this.StringValue;
-    }
-        
-    /**
-     * Returns the value of the variable as int
-     * @public
-     */
-    getValueAsInt() {
-        switch (this.ActiveValueType) {
-            case 0: // string
-                return Math.floor(Number(this.StringValue));
-            case 1: // int
-                return this.IntValue;
-            case 2: // float
-                return this.FloatValue;
-        }
+	/**
+	 * Sets the value of the variable as string
+	 * @public
+	 * @param v the new value
+	 */
+	setValueAsString(v) {
+		this.ActiveValueType = 0;
+		this.StringValue = v;
+	}
 
-        return 0;
-    }
-        
-    /**
-     * Returns the value of the variable as float
-     * @public
-     */
-    getValueAsFloat() {
-        switch (this.ActiveValueType) {
-            case 0: // string
-                return Number(this.StringValue);
-            case 1: // int
-                return this.IntValue;
-            case 2: // float
-                return this.FloatValue;
-        }
+	/**
+	 * Sets the value of the variable as int
+	 * @public
+	 * @param v the new value
+	 */
+	setValueAsInt(v) {
+		this.ActiveValueType = 1;
+		this.IntValue = v;
+	}
 
-        return 0;
-    }
-        
-    /**
-     * Sets the value of the variable as string
-     * @public
-     * @param v the new value
-     */
-    setValueAsString(v) {
-        this.ActiveValueType = 0;
-        this.StringValue = v;
-    }
-        
-    /**
-     * Sets the value of the variable as int
-     * @public
-     * @param v the new value
-     */
-    setValueAsInt(v) {
-        this.ActiveValueType = 1;
-        this.IntValue = v;
-    }
-        
-    /**
-     * Sets the value of the variable as float
-     * @public
-     * @param v the new value
-     */
-    setValueAsFloat(v) {
-        this.ActiveValueType = 2;
-        this.FloatValue = v;
-    }
-};
+	/**
+	 * Sets the value of the variable as float
+	 * @public
+	 * @param v the new value
+	 */
+	setValueAsFloat(v) {
+		this.ActiveValueType = 2;
+		this.FloatValue = v;
+	}
+}

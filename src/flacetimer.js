@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 /**
@@ -14,8 +14,8 @@ export class CLTimer {
 	 * @public
 	 */
 	static getTime() {
-		//var d = new Date();
-		//return d.getTime();
+		// var d = new Date();
+		// return d.getTime();
 		return performance.now();
 	}
 }

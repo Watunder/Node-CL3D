@@ -1,49 +1,49 @@
 {
-  "type": "module",
-  "name": "cl3d",
-  "version": "0.1.7",
-  "description": "CopperLicht in Node.js and browser ",
-  "keywords": [
-    "nodejs",
-    "webgl",
-    "multi-platform",
-    "browser",
-    "canvas",
-    "es6-modules",
-    "copperlicht",
-    "cl3d"
-  ],
-  "maintainers": [
-    "Watunder (https://github.com/Watunder)"
-  ],
-  "contributors": [
-    "Nikolaus Gebhardt (https://x.com/ambiera)",
-    "Watunder (https://github.com/Watunder)"
-  ],
-  "license": "See license in LICENSE.md",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Watunder/Node-CL3D.git"
-  },
-  "main": "./dist/cl3d.js",
-  "scripts": {
-    "build": "npx rollup -c",
-    "test": "cd scripts && node test.js",
-    "bpkg": "cd scripts && node bpkg.js",
-    "install": "cd scripts && node install.js",
-    "postinstall": "cd scripts && node postinstall.js"
-  },
-  "dependencies": {
-    "3d-core-raub": "git+https://github.com/Watunder/3d-core-raub.git",
-    "file-fetch": "git+https://github.com/Watunder/file-fetch.git",
-    "nc-screen": "^1.4.2"
-  },
-  "devDependencies": {
-    "@rollup/plugin-replace": "^6.0.2",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@typhonjs-build-test/esm-d-ts": "^0.2.2",
-    "bpkg": "^0.9.2",
-    "minimist": "^1.2.8",
-    "rollup": "^4.42.0"
-  }
+	"type": "module",
+	"name": "cl3d",
+	"version": "0.1.7",
+	"description": "CopperLicht in Node.js and browser ",
+	"keywords": [
+		"nodejs",
+		"webgl",
+		"multi-platform",
+		"browser",
+		"canvas",
+		"es6-modules",
+		"copperlicht",
+		"cl3d"
+	],
+	"maintainers": [
+		"Watunder (https://github.com/Watunder)"
+	],
+	"contributors": [
+		"Nikolaus Gebhardt (https://x.com/ambiera)",
+		"Watunder (https://github.com/Watunder)"
+	],
+	"license": "See license in LICENSE.md",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Watunder/Node-CL3D.git"
+	},
+	"main": "./dist/cl3d.js",
+	"scripts": {
+		"build": "npx rollup -c",
+		"test": "cd scripts && node test.js",
+		"bpkg": "cd scripts && node bpkg.js",
+		"install": "cd scripts && node install.js",
+		"postinstall": "cd scripts && node postinstall.js"
+	},
+	"dependencies": {
+		"3d-core-raub": "git+https://github.com/Watunder/3d-core-raub.git",
+		"file-fetch": "git+https://github.com/Watunder/file-fetch.git",
+		"nc-screen": "^1.4.2"
+	},
+	"devDependencies": {
+		"@rollup/plugin-replace": "^6.0.2",
+		"@rollup/plugin-terser": "^0.4.4",
+		"@typhonjs-build-test/esm-d-ts": "^0.2.2",
+		"bpkg": "^0.9.2",
+		"minimist": "^1.2.8",
+		"rollup": "^4.42.0"
+	}
 }

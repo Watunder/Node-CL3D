@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -19,7 +19,7 @@ export class HotspotSceneNode extends CL3D.SceneNode {
 		this.Width = 0;
 		this.Height = 0;
 	}
-};
+}
 
 // -------------------------------------------------------------------
 // Dummy scene node
@@ -47,11 +47,13 @@ export class DummyTransformationSceneNode extends CL3D.SceneNode {
 		var c = new CL3D.DummyTransformationSceneNode();
 		this.cloneMembers(c, newparent, oldNodeId, newNodeId);
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
-		if (this.RelativeTransformationMatrix)
+		if (this.RelativeTransformationMatrix) {
 			c.RelativeTransformationMatrix = this.RelativeTransformationMatrix;
+		}
 
 		return c;
 	}
@@ -68,12 +70,12 @@ export class DummyTransformationSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'dummytrans';
+		return "dummytrans";
 	}
-};
+}
 
 // -------------------------------------------------------------------
-// Terrain scene node: Also does basically nothing, 
+// Terrain scene node: Also does basically nothing,
 // mostly everything is set up in the scene graph by the editor
 // -------------------------------------------------------------------
 
@@ -90,6 +92,6 @@ export class TerrainSceneNode extends CL3D.SceneNode {
 	}
 
 	getType() {
-		return 'terrain';
+		return "terrain";
 	}
-};
+}

@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
@@ -11,13 +11,12 @@ import * as CL3D from "./main.js";
  */
 export class Texture {
 	constructor() {
-		this.Name = '';
+		this.Name = "";
 		this.Loaded = false;
 
 		this.Image = null;
 		this.Texture = null; // webgl texture object
 		this.RTTFrameBuffer = null; // when used as RTT
-
 
 		this.CachedWidth = null; // used if the texture was created from a 2d canvas
 		this.CachedHeight = null; // used if the texture was created from a 2d canvas
@@ -47,11 +46,13 @@ export class Texture {
 	 * @returns {Number}
 	 */
 	getWidth() {
-		if (this.Image)
+		if (this.Image) {
 			return this.Image.width;
+		}
 
-		if (this.CachedWidth != null)
+		if (this.CachedWidth != null) {
 			return this.CachedWidth;
+		}
 
 		return 0;
 	}
@@ -61,11 +62,13 @@ export class Texture {
 	 * @returns {Number}
 	 */
 	getHeight() {
-		if (this.Image)
+		if (this.Image) {
 			return this.Image.height;
+		}
 
-		if (this.CachedHeight != null)
+		if (this.CachedHeight != null) {
 			return this.CachedHeight;
+		}
 
 		return 0;
 	}

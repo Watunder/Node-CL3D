@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -19,7 +19,7 @@ export class CCDocument {
 		 * @type {String[]}
 		 */
 		this.Scripts = new Array();
-		//this.UpdateMode = CL3D.Scene.REDRAW_WHEN_SCENE_CHANGED;
+		// this.UpdateMode = CL3D.Scene.REDRAW_WHEN_SCENE_CHANGED;
 		this.UpdateMode = CL3D.Scene.REDRAW_EVERY_FRAME;
 		this.WaitUntilTexturesLoaded = false;
 
@@ -27,27 +27,23 @@ export class CCDocument {
 		this.CanvasHeight = 200;
 	}
 
-	addScene(s)
-	{
+	addScene(s) {
 		this.Scenes.push(s);
 	}
 
-	getCurrentScene(s)
-	{
-		if (this.CurrentScene < 0 || this.CurrentScene >= this.Scenes.length)
+	getCurrentScene(s) {
+		if (this.CurrentScene < 0 || this.CurrentScene >= this.Scenes.length) {
 			return null;
+		}
 		return this.Scenes[this.CurrentScene];
 	}
 
-	setCurrentScene(s)
-	{
-		for (var i=0; i<this.Scenes.length; ++i)
-		{
-			if (this.Scenes[i] === s)
-			{
+	setCurrentScene(s) {
+		for (var i = 0; i < this.Scenes.length; ++i) {
+			if (this.Scenes[i] === s) {
 				this.CurrentScene = i;
 				return;
 			}
 		}
 	}
-};
+}

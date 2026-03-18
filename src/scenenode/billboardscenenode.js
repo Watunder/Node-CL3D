@@ -1,12 +1,12 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
 
 /**
- * A billboard is like a 3d sprite: A 2d element, which always looks to the camera. 
+ * A billboard is like a 3d sprite: A 2d element, which always looks to the camera.
  * It is usually used for explosions, fire, lensflares, particles and things like that.
- * @class A billboard is like a 3d sprite: A 2d element, which always looks to the camera. 
+ * @class A billboard is like a 3d sprite: A 2d element, which always looks to the camera.
  * @constructor
  * @extends CL3D.SceneNode
  */
@@ -54,8 +54,9 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 		this.vtx4.TCoords.Y = 1;
 
 		// construct bounding box
-		for (var i = 0; i < 4; ++i)
+		for (var i = 0; i < 4; ++i) {
 			this.Box.addInternalPointByVector(vertices[i].Pos);
+		}
 	}
 
 	/**
@@ -77,7 +78,7 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'billboard';
+		return "billboard";
 	}
 
 	/**
@@ -85,11 +86,16 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible) {
-			if (this.isParentActiveFPSCameraToRenderChildrenWithoutZBuffer())
-				mgr.registerNodeForRendering(this, this.MeshBuffer.Mat.isTransparent() ? CL3D.Scene.RENDER_MODE_TRANSPARENT_AFTER_ZBUFFER_CLEAR : CL3D.Scene.TRANSPARENT_SOLID_AFTER_ZBUFFER_CLEAR);
-
-			else
+			if (this.isParentActiveFPSCameraToRenderChildrenWithoutZBuffer()) {
+				mgr.registerNodeForRendering(
+					this,
+					this.MeshBuffer.Mat.isTransparent()
+						? CL3D.Scene.RENDER_MODE_TRANSPARENT_AFTER_ZBUFFER_CLEAR
+						: CL3D.Scene.TRANSPARENT_SOLID_AFTER_ZBUFFER_CLEAR,
+				);
+			} else {
 				mgr.registerNodeForRendering(this, this.MeshBuffer.Mat.isTransparent() ? CL3D.Scene.RENDER_MODE_TRANSPARENT : CL3D.Scene.RENDER_MODE_DEFAULT);
+			}
 
 			CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr);
 		}
@@ -100,8 +106,9 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 	 */
 	render(renderer) {
 		var cam = this.scene.getActiveCamera();
-		if (!cam)
+		if (!cam) {
 			return;
+		}
 
 		var bShadowMapEnabled = renderer.isShadowMapEnabled();
 		renderer.quicklyEnableShadowMap(false);
@@ -128,9 +135,7 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 
 			renderer.setMaterial(this.MeshBuffer.Mat);
 			renderer.drawMeshBuffer(mb);
-		}
-
-		else {
+		} else {
 			// old software drawing of billboard, which needs a mesh buffer update of it every frame:
 			var pos = this.getAbsolutePosition();
 
@@ -141,8 +146,9 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 			view.normalize();
 
 			var horizontal = up.crossProduct(view);
-			if (horizontal.getLengthSQ() == 0)
+			if (horizontal.getLengthSQ() == 0) {
 				horizontal.set(up.Y, up.X, up.Z);
+			}
 
 			horizontal.normalize();
 			horizontal.multiplyThisWithScal(0.5 * this.SizeX);
@@ -151,13 +157,14 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 			vertical.normalize();
 			vertical.multiplyThisWithScal(0.5 * this.SizeY);
 
-			if (this.IsVertical)
+			if (this.IsVertical) {
 				vertical.set(0, -0.5 * this.SizeY, 0);
+			}
 
 			view.multiplyThisWithScal(1.0);
 
-			//for (s32 i=0; i<4; ++i)
-			//	vertices[i].Normal = view;
+			// for (s32 i=0; i<4; ++i)
+			// 	vertices[i].Normal = view;
 			this.vtx1.Pos.setTo(pos);
 			this.vtx1.Pos.addToThis(horizontal);
 			this.vtx1.Pos.addToThis(vertical);
@@ -184,8 +191,9 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 			renderer.drawMeshBuffer(this.MeshBuffer);
 		}
 
-		if (bShadowMapEnabled)
+		if (bShadowMapEnabled) {
 			renderer.quicklyEnableShadowMap(true);
+		}
 	}
 
 	/**
@@ -209,8 +217,9 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 		var c = new CL3D.BillboardSceneNode();
 		this.cloneMembers(c, newparent, oldNodeId, newNodeId);
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
 		c.SizeX = this.SizeX;
 		c.SizeY = this.SizeY;
@@ -237,4 +246,4 @@ export class BillboardSceneNode extends CL3D.SceneNode {
 		this.SizeX = x;
 		this.SizeY = y;
 	}
-};
+}

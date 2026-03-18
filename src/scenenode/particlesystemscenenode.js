@@ -1,51 +1,51 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
 
 /**
  * A particle system is a simple way to simulate things like fire, smoke, rain, etc in your 3d scene.
-  * @class A particle system is a simple way to simulate things like fire, smoke, rain, etc in your 3d scene.
+ * @class A particle system is a simple way to simulate things like fire, smoke, rain, etc in your 3d scene.
  * @constructor
  * @extends CL3D.SceneNode
- * @example 
+ * @example
  * // Example showing how to create a particle system:
  * // create the 3d engine
  * var engine = new CL3D.CopperLicht(document.getElementById('3darea'));
- * 
+ *
  * if (!engine.initRenderer())
  * 	return; // this browser doesn't support WebGL
- * 	
+ *
  * // add a new 3d scene
- * 
+ *
  * var scene = new CL3D.Scene();
  * engine.addScene(scene);
- * 
+ *
  * scene.setBackgroundColor(CL3D.createColor(1, 0, 0, 64));
- * 
+ *
  * // add a user controlled camera with a first person shooter style camera controller
  * var cam = new CL3D.CameraSceneNode();
  * cam.Pos.X = 50;
  * cam.Pos.Y = 20;
- * 
- * var animator = new CL3D.AnimatorCameraFPS(cam, engine);										
- * cam.addAnimator(animator);										
- * animator.lookAt(new CL3D.Vect3d(0,20,0));			
- * 
+ *
+ * var animator = new CL3D.AnimatorCameraFPS(cam, engine);
+ * cam.addAnimator(animator);
+ * animator.lookAt(new CL3D.Vect3d(0,20,0));
+ *
  * scene.getRootSceneNode().addChild(cam);
- * scene.setActiveCamera(cam);		
- * 
+ * scene.setActiveCamera(cam);
+ *
  * // add a particle system to the scene
  * var psystem = new CL3D.ParticleSystemSceneNode();
  * scene.getRootSceneNode().addChild(psystem);
- * 
+ *
  * psystem.Direction = new CL3D.Vect3d(0, 0.03, 0);
  * psystem.MaxAngleDegrees = 20;
- * 
+ *
  * // set material and texture of the partcle system:
  * psystem.getMaterial(0).Tex1 = engine.getTextureManager().getTexture("crate_wood.jpg", true);
  * psystem.getMaterial(0).Type = CL3D.Material.EMT_TRANSPARENT_ADD_COLOR;
-*/
+ */
 export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	/**
 	 * Default direction the particles will be emitted to.
@@ -54,7 +54,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	 * @default (0, 0.03, 0)
 	 */
 	Direction = null;
-				
+
 	/**
 	 * Maximal amount of degrees the emitting direction is ignored
 	 * @public
@@ -256,7 +256,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 		this.TimeSinceLastEmitting = 0;
 		this.Particles = new Array();
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -264,8 +264,9 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 		var c = new CL3D.ParticleSystemSceneNode();
 		this.cloneMembers(c, newparent, oldNodeId, newNodeId);
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
 		c.Direction = this.Direction.clone();
 		c.MaxAngleDegrees = this.MaxAngleDegrees;
@@ -294,7 +295,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 
 		return c;
 	}
-	
+
 	/**
 	 * Get the axis aligned, not transformed bounding box of this node.
 	 * This means that if this node is an animated 3d character, moving in a room, the bounding box will
@@ -306,7 +307,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	getBoundingBox() {
 		return this.Box;
 	}
-	
+
 	/**
 	 * Returns the type string of the scene node.
 	 * Returns 'billboard' for the mesh scene node.
@@ -314,9 +315,9 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'particlesystem';
+		return "particlesystem";
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -331,12 +332,13 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	 * @public
 	 */
 	OnRegisterSceneNode = function(mgr) {
-		if (this.Visible) {				
-			if (this.Particles.length != 0)
+		if (this.Visible) {
+			if (this.Particles.length != 0) {
 				mgr.registerNodeForRendering(this, this.Buffer.Mat.isTransparent() ? CL3D.Scene.RENDER_MODE_TRANSPARENT : CL3D.Scene.RENDER_MODE_DEFAULT);
-			CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr); 
+			}
+			CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr);
 		}
-	}
+	};
 
 	/**
 	 * @public
@@ -344,44 +346,47 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 	getMaterialCount() {
 		return 1;
 	}
-	
+
 	/**
 	 * @public
 	 */
 	getMaterial(i) {
 		return this.Buffer.Mat;
 	}
-	
+
 	/**
 	 * @public
 	 */
 	OnAnimate(mgr, timeMs) {
 		var framechanged = false;
 
-		if (this.Visible)
+		if (this.Visible) {
 			framechanged = this.doParticleSystem(timeMs);
+		}
 
 		return CL3D.SceneNode.prototype.OnAnimate.call(this, mgr, timeMs) || framechanged;
 	}
-	
+
 	/**
 	 * @public
 	 */
 	render(renderer) {
 		var cam = this.scene.getActiveCamera();
-		if (!cam)
+		if (!cam) {
 			return;
+		}
 
-		if (this.Particles.length == 0)
+		if (this.Particles.length == 0) {
 			return;
+		}
 
 		var oldFog = renderer.FogEnabled;
-		if (this.DisableFog)
+		if (this.DisableFog) {
 			renderer.FogEnabled = false;
+		}
 
 		var bShadowMapEnabled = renderer.isShadowMapEnabled();
 		renderer.quicklyEnableShadowMap(false);
-
 
 		// reallocate arrays, if they are too small
 		this.reallocateBuffers();
@@ -402,7 +407,12 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 			f = -0.5 * particle.sizeY;
 			var vertical = new CL3D.Vect3d(m.m01 * f, m.m05 * f, m.m09 * f);
 
-			var clr = CL3D.createColor(CL3D.getAlpha(particle.color), CL3D.getRed(particle.color) / 4.0, CL3D.getGreen(particle.color) / 4.0, CL3D.getBlue(particle.color) / 4.0);
+			var clr = CL3D.createColor(
+				CL3D.getAlpha(particle.color),
+				CL3D.getRed(particle.color) / 4.0,
+				CL3D.getGreen(particle.color) / 4.0,
+				CL3D.getBlue(particle.color) / 4.0,
+			);
 
 			v = this.Buffer.Vertices[0 + idx];
 			v.Pos = particle.pos.add(horizontal).add(vertical);
@@ -430,21 +440,23 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 		// render all
 		var mat = new CL3D.Matrix4(true);
 
-		//if (!this.ParticlesAreGlobal)
-		//mat.setTranslation(this.AbsoluteTransformation.getTranslation());
+		// if (!this.ParticlesAreGlobal)
+		// mat.setTranslation(this.AbsoluteTransformation.getTranslation());
 		renderer.setWorld(mat);
 
 		this.Buffer.update(false, true); // TODO performance: we could also tell the engine only to update the data if the size hasn't changed
 		renderer.setMaterial(this.Buffer.Mat);
 		renderer.drawMeshBuffer(this.Buffer, this.Particles.length * 2 * 3);
 
-		if (this.DisableFog)
+		if (this.DisableFog) {
 			renderer.FogEnabled = oldFog;
+		}
 
-		if (bShadowMapEnabled)
+		if (bShadowMapEnabled) {
 			renderer.quicklyEnableShadowMap(true);
+		}
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -458,8 +470,9 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 		var timediff = time - this.LastEmitTime;
 		this.LastEmitTime = time;
 
-		if (!this.Visible)
+		if (!this.Visible) {
 			return false;
+		}
 
 		var changed = false;
 
@@ -475,22 +488,21 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 
 		var scale = timediff;
 
-		if (this.Particles.length != 0)
+		if (this.Particles.length != 0) {
 			changed = true;
+		}
 
 		for (var i = 0; i < this.Particles.length;) {
 			var p = this.Particles[i];
 
-			if (now > p.endTime)
+			if (now > p.endTime) {
 				this.Particles.splice(i, 1);
-
-			else {
+			} else {
 				p.pos.addToThis(p.vector.multiplyWithScal(scale));
 				this.Buffer.Box.addInternalPointByVector(p.pos);
 				++i;
 			}
 		}
-
 
 		// correct bounding box
 		var m = this.MaxStartSizeX * 0.5;
@@ -503,7 +515,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 		this.Buffer.Box.MinEdge.Y -= m;
 		this.Buffer.Box.MinEdge.Z -= m;
 
-		//if (true) //ParticlesAreGlobal)
+		// if (true) //ParticlesAreGlobal)
 		{
 			var absinv = new CL3D.Matrix4(false);
 			this.AbsoluteTransformation.getInverse(absinv);
@@ -513,12 +525,12 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 
 		return changed;
 	}
-	
+
 	/**
 	 * @public
 	 */
 	emit(time, diff) {
-		var pps = (this.MaxParticlesPerSecond - this.MinParticlesPerSecond);
+		var pps = this.MaxParticlesPerSecond - this.MinParticlesPerSecond;
 		var perSecond = pps ? (this.MinParticlesPerSecond + (Math.random() * pps)) : this.MinParticlesPerSecond;
 		var everyWhatMillisecond = 1000.0 / perSecond;
 
@@ -526,10 +538,11 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 
 		this.TimeSinceLastEmitting += diff;
 
-		if (this.TimeSinceLastEmitting <= everyWhatMillisecond)
+		if (this.TimeSinceLastEmitting <= everyWhatMillisecond) {
 			return false;
+		}
 
-		var amountNewParticles = ((this.TimeSinceLastEmitting / everyWhatMillisecond) + 0.5);
+		var amountNewParticles = (this.TimeSinceLastEmitting / everyWhatMillisecond) + 0.5;
 
 		this.TimeSinceLastEmitting = 0;
 
@@ -538,11 +551,12 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 			amountNewParticles -= delta;
 		}
 
-		if (amountNewParticles <= 0)
+		if (amountNewParticles <= 0) {
 			return false;
+		}
 
-		//Particles.set_used(oldParticleAmount + amountNewParticles);
-		//Particles.reallocate(oldParticleAmount + amountNewParticles);
+		// Particles.set_used(oldParticleAmount + amountNewParticles);
+		// Particles.reallocate(oldParticleAmount + amountNewParticles);
 		var rotatedDirection = this.Direction.clone();
 		this.AbsoluteTransformation.rotateVect(rotatedDirection);
 
@@ -555,12 +569,15 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 			p.pos = new CL3D.Vect3d(0, 0, 0);
 
 			if (!bPointEmitter) {
-				if (this.EmittArea.X != 0.0)
+				if (this.EmittArea.X != 0.0) {
 					p.pos.X = (Math.random() * this.EmittArea.X) - this.EmittArea.X * 0.5;
-				if (this.EmittArea.Y != 0.0)
+				}
+				if (this.EmittArea.Y != 0.0) {
 					p.pos.Y = (Math.random() * this.EmittArea.Y) - this.EmittArea.Y * 0.5;
-				if (this.EmittArea.Z != 0.0)
+				}
+				if (this.EmittArea.Z != 0.0) {
 					p.pos.Z = (Math.random() * this.EmittArea.Z) - this.EmittArea.Z * 0.5;
+				}
 			}
 
 			p.startTime = time;
@@ -574,11 +591,11 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 				p.vector = tgt;
 			}
 
-			if (this.MaxLifeTime - this.MinLifeTime == 0)
+			if (this.MaxLifeTime - this.MinLifeTime == 0) {
 				p.endTime = time + this.MinLifeTime;
-
-			else
+			} else {
 				p.endTime = time + this.MinLifeTime + (Math.random() * (this.MaxLifeTime - this.MinLifeTime));
+			}
 
 			p.color = CL3D.getInterpolatedColor(this.MinStartColor, this.MaxStartColor, (Math.random() * 100) / 100.0);
 
@@ -588,9 +605,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 			if (this.MinStartSizeX == this.MaxStartSizeX && this.MinStartSizeY == this.MaxStartSizeY) {
 				p.startSizeX = this.MinStartSizeX;
 				p.startSizeY = this.MinStartSizeY;
-			}
-
-			else {
+			} else {
 				var f = (Math.random() * 100) / 100.0;
 				var inv = 1.0 - f;
 				p.startSizeX = this.MinStartSizeX * f + this.MaxStartSizeX * inv;
@@ -603,23 +618,24 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 			p.sizeX = p.startSizeX;
 			p.sizeY = p.startSizeY;
 
-			//AbsoluteTransformation.rotateVect(p.startVector);
-			//if (this.ParticlesAreGlobal)
+			// AbsoluteTransformation.rotateVect(p.startVector);
+			// if (this.ParticlesAreGlobal)
 			this.AbsoluteTransformation.transformVect(p.pos);
 
-			//Particles[i] = p;
+			// Particles[i] = p;
 			this.Particles.unshift(p); // = push_front
 		}
 
 		return true;
 	}
-	
+
 	/**
 	 * @public
 	 */
 	affect(now, diff) {
-		if (!this.FadeOutAffector && !this.GravityAffector && !this.ScaleAffector)
+		if (!this.FadeOutAffector && !this.GravityAffector && !this.ScaleAffector) {
 			return false;
+		}
 
 		var i = 0;
 		var p = null;
@@ -666,13 +682,15 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 
 		return true;
 	}
-	
+
 	/**
 	 * @public
 	 */
 	reallocateBuffers() {
-		if (this.Particles.length * 4 > this.Buffer.Vertices.length ||
-			this.Particles.length * 6 > this.Buffer.Indices.length) {
+		if (
+			this.Particles.length * 4 > this.Buffer.Vertices.length
+			|| this.Particles.length * 6 > this.Buffer.Indices.length
+		) {
 			var oldSize = this.Buffer.Vertices.length;
 			var va = this.Buffer.Vertices;
 
@@ -715,7 +733,7 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
 			}
 		}
 	}
-};
+}
 
 // ------------------------------------------------------------------------
 
@@ -726,9 +744,9 @@ export class ParticleSystemSceneNode extends CL3D.SceneNode {
  * @public
  */
 export class Particle {
-	constructor (init) {
-		this.pos = null; //:Vect3dF;
-		this.vector = null;		
+	constructor(init) {
+		this.pos = null; // :Vect3dF;
+		this.vector = null;
 		this.startTime = 0;
 		this.endTime = 0;
 		this.color = 0;
@@ -739,4 +757,4 @@ export class Particle {
 		this.startSizeX = 0.0;
 		this.startSizeY = 0.0;
 	}
-};
+}

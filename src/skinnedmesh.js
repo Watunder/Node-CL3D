@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
@@ -22,8 +22,9 @@ export class MeshCache {
 	getMeshFromName(name) {
 		for (var i = 0; i < this.Meshes.length; ++i) {
 			var t = this.Meshes[i]; // as AnimatedMesh;
-			if (t.Name == name)
+			if (t.Name == name) {
 				return t;
+			}
 		}
 
 		return null;
@@ -34,14 +35,14 @@ export class MeshCache {
 	 */
 	addMesh(t) {
 		if (t != null) {
-			//if (this.getMeshFromName(t.Name) != null)
-			//	Debug.print("ERROR! Cannot add the mesh multiple times: " + t.Name);
-			//else
-			//	Debug.print("adding mesh: " + t.Name);
+			// if (this.getMeshFromName(t.Name) != null)
+			// 	Debug.print("ERROR! Cannot add the mesh multiple times: " + t.Name);
+			// else
+			// 	Debug.print("adding mesh: " + t.Name);
 			this.Meshes.push(t);
 		}
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------
 // SkinnedMeshJoint
@@ -52,7 +53,7 @@ export class MeshCache {
  */
 export class SkinnedMeshJoint {
 	constructor() {
-		this.Name = ''; //;
+		this.Name = ""; // ;
 		this.LocalMatrix = new CL3D.Matrix4();
 		this.Children = new Array(); // SkinnedMeshJoint
 		this.AttachedMeshes = new Array(); // int
@@ -61,23 +62,23 @@ export class SkinnedMeshJoint {
 		this.RotationKeys = new Array(); // SkinnedMeshRotationKey
 		this.Weights = new Array(); // SkinnedMeshWeight
 		this.StaticCollisionBoundingBox = new CL3D.Box3d(); // box used by CopperCube as collision proxy object, when the object is static and if it is set at all (not always)
-		
+
 		// runtime:
 		this.GlobalMatrix = new CL3D.Matrix4();
 		this.GlobalAnimatedMatrix = new CL3D.Matrix4();
 		this.LocalAnimatedMatrix = new CL3D.Matrix4();
-		this.Animatedposition = new CL3D.Vect3d(0,0,0);
-		this.Animatedscale = new CL3D.Vect3d(1,1,1);
+		this.Animatedposition = new CL3D.Vect3d(0, 0, 0);
+		this.Animatedscale = new CL3D.Vect3d(1, 1, 1);
 		this.Animatedrotation = new CL3D.Quaternion();
-		this.GlobalInversedMatrix = new CL3D.Matrix4(); //the x format pre-calculates this
+		this.GlobalInversedMatrix = new CL3D.Matrix4(); // the x format pre-calculates this
 
 		this.GlobalSkinningSpace = false;
-		
+
 		this.positionHint = -1;
 		this.scaleHint = -1;
 		this.rotationHint = -1;
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------
 // SkinnedMeshWeight
@@ -88,16 +89,16 @@ export class SkinnedMeshJoint {
  */
 export class SkinnedMeshWeight {
 	constructor() {
-		this.buffer_id = 0; //;
-		this.vertex_id = 0; //;
-		this.strength = 0; //;
-		
+		this.buffer_id = 0; // ;
+		this.vertex_id = 0; // ;
+		this.strength = 0; // ;
+
 		// private, to be used during skinning only
 		this.StaticPos = new CL3D.Vect3d();
 		this.StaticNormal = new CL3D.Vect3d();
 	}
-};
-	
+}
+
 // ------------------------------------------------------------------------------------------------
 // SkinnedMeshScaleKey
 // ------------------------------------------------------------------------------------------------
@@ -107,11 +108,10 @@ export class SkinnedMeshWeight {
  */
 export class SkinnedMeshScaleKey {
 	constructor() {
-
-		this.frame = 0; //;
+		this.frame = 0; // ;
 		this.scale = new CL3D.Vect3d();
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------
 // SkinnedMeshPositionKey
@@ -120,12 +120,12 @@ export class SkinnedMeshScaleKey {
 /**
  * @public
  */
-export class SkinnedMeshPositionKey {	
+export class SkinnedMeshPositionKey {
 	constructor() {
-		this.frame = 0; //;
+		this.frame = 0; // ;
 		this.position = new CL3D.Vect3d();
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------
 // SkinnedMeshRotationKey
@@ -134,12 +134,12 @@ export class SkinnedMeshPositionKey {
 /**
  * @public
  */
-export class SkinnedMeshRotationKey {	
+export class SkinnedMeshRotationKey {
 	constructor() {
-		this.frame = 0; //;
+		this.frame = 0; // ;
 		this.rotation = new CL3D.Quaternion();
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------
 // NamedAnimationRange
@@ -149,18 +149,18 @@ export class SkinnedMeshRotationKey {
  * @public
  */
 export class NamedAnimationRange {
-	Name = '';
+	Name = "";
 	Begin = 0;
 	End = 0;
 	FPS = 0;
 
 	constructor() {
-		this.Name = '';
+		this.Name = "";
 		this.Begin = 0;
 		this.End = 0;
 		this.FPS = 0;
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------
 // SkinnedMesh
@@ -174,7 +174,7 @@ export class SkinnedMesh {
 		/*private const EIM_CONSTANT = 0;
 		private const EIM_LINEAR = 1;
 		private const EIM_COUNT = 2;*/
-		this.Name = '';
+		this.Name = "";
 		this.AnimatedMeshesToLink = new Array();
 
 		this.AnimationFrames = 0.0;
@@ -190,7 +190,7 @@ export class SkinnedMesh {
 		this.LastSkinnedFrame = 0;
 		this.BoneControlUsed = 0;
 		this.BoundingBox = new CL3D.Box3d();
-		this.InterpolationMode = 1; //EIM_LINEAR;
+		this.InterpolationMode = 1; // EIM_LINEAR;
 
 		this.Vertices_Moved = new Array(); // Vector.< Vector.<Boolean> > = new Vector.< Vector.<Boolean> >;
 		this.skinDoesNotMatchJointPositions = true;
@@ -239,13 +239,15 @@ export class SkinnedMesh {
 				joint = this.AllJoints[i];
 
 				for (var n = 0; n < joint.Children.length; ++n) {
-					if (joint.Children[n] === this.AllJoints[CheckingIdx])
+					if (joint.Children[n] === this.AllJoints[CheckingIdx]) {
 						foundParent = true;
+					}
 				}
 			}
 
-			if (!foundParent)
+			if (!foundParent) {
 				this.RootJoints.push(this.AllJoints[CheckingIdx]);
+			}
 		}
 
 		// Set array sizes
@@ -256,8 +258,9 @@ export class SkinnedMesh {
 
 			mbuffer = this.LocalBuffers[i]; // as MeshBuffer;
 			var vtxcount = mbuffer.Vertices.length;
-			for (var v = 0; v < vtxcount; ++v)
+			for (var v = 0; v < vtxcount; ++v) {
 				buf.push(false);
+			}
 		}
 
 		this.checkForAnimation();
@@ -276,9 +279,7 @@ export class SkinnedMesh {
 		if (this.LocalBuffers.length == 0) {
 			this.BoundingBox.MinEdge.set(0, 0, 0);
 			this.BoundingBox.MaxEdge.set(0, 0, 0);
-		}
-
-		else {
+		} else {
 			mbuffer = this.LocalBuffers[0]; // as MeshBuffer;
 			this.BoundingBox.MinEdge = mbuffer.Box.MinEdge.clone();
 			this.BoundingBox.MaxEdge = mbuffer.Box.MaxEdge.clone();
@@ -288,9 +289,7 @@ export class SkinnedMesh {
 				if (mbuffer.Transformation == null) {
 					this.BoundingBox.addInternalPointByVector(mbuffer.Box.MinEdge);
 					this.BoundingBox.addInternalPointByVector(mbuffer.Box.MaxEdge);
-				}
-
-				else {
+				} else {
 					var newbox = mbuffer.Box.clone();
 					mbuffer.Transformation.transformBoxEx(newbox);
 
@@ -301,7 +300,7 @@ export class SkinnedMesh {
 		}
 
 		// debug output infos
-		//console.log("HasAnimation:" + this.HasAnimation + " Roots:" + this.RootJoints.length + " Frames:" + this.AnimationFrames);
+		// console.log("HasAnimation:" + this.HasAnimation + " Roots:" + this.RootJoints.length + " Frames:" + this.AnimationFrames);
 	}
 
 	/**
@@ -317,10 +316,12 @@ export class SkinnedMesh {
 
 		for (i = 0; i < this.AllJoints.length; ++i) {
 			joint = this.AllJoints[i]; // as SkinnedMeshJoint;
-			if (joint.PositionKeys.length ||
-				joint.ScaleKeys.length ||
-				joint.RotationKeys.length ||
-				joint.Weights.length) {
+			if (
+				joint.PositionKeys.length
+				|| joint.ScaleKeys.length
+				|| joint.RotationKeys.length
+				|| joint.Weights.length
+			) {
 				this.HasAnimation = true;
 				break;
 			}
@@ -335,20 +336,23 @@ export class SkinnedMesh {
 
 				if (joint.PositionKeys.length) {
 					var poskey = joint.PositionKeys[joint.PositionKeys.length - 1];
-					if (poskey.frame > this.AnimationFrames)
+					if (poskey.frame > this.AnimationFrames) {
 						this.AnimationFrames = poskey.frame;
+					}
 				}
 
 				if (joint.ScaleKeys.length) {
 					var scalekey = joint.ScaleKeys[joint.ScaleKeys.length - 1];
-					if (scalekey.frame > this.AnimationFrames)
+					if (scalekey.frame > this.AnimationFrames) {
 						this.AnimationFrames = scalekey.frame;
+					}
 				}
 
 				if (joint.RotationKeys.length) {
 					var rotkey = joint.RotationKeys[joint.RotationKeys.length - 1];
-					if (rotkey.frame > this.AnimationFrames)
+					if (rotkey.frame > this.AnimationFrames) {
 						this.AnimationFrames = rotkey.frame;
+					}
 				}
 			}
 		}
@@ -365,7 +369,7 @@ export class SkinnedMesh {
 					var buffer_id = w.buffer_id;
 					var vertex_id = w.vertex_id;
 
-					//w.Moved = 
+					// w.Moved =
 					mbuffer = this.LocalBuffers[buffer_id];
 					var vtx = mbuffer.Vertices[vertex_id];
 					w.StaticPos = vtx.Pos.clone();
@@ -373,40 +377,41 @@ export class SkinnedMesh {
 				}
 			}
 		}
-
 	}
 
 	/**
 	 * @public
 	 */
 	CalculateGlobalMatrices(joint, parentJoint) {
-		if (joint == null && parentJoint != null)
-			return;
-
-		if (joint == null) {
-			// go trough root joints
-			for (var i = 0; i < this.RootJoints.length; ++i)
-				this.CalculateGlobalMatrices(this.RootJoints[i], null);
+		if (joint == null && parentJoint != null) {
 			return;
 		}
 
-		if (parentJoint == null)
-			joint.GlobalMatrix = joint.LocalMatrix.clone();
+		if (joint == null) {
+			// go trough root joints
+			for (var i = 0; i < this.RootJoints.length; ++i) {
+				this.CalculateGlobalMatrices(this.RootJoints[i], null);
+			}
+			return;
+		}
 
-		else
+		if (parentJoint == null) {
+			joint.GlobalMatrix = joint.LocalMatrix.clone();
+		} else {
 			joint.GlobalMatrix = parentJoint.GlobalMatrix.multiply(joint.LocalMatrix);
+		}
 
 		joint.LocalAnimatedMatrix = joint.LocalMatrix.clone();
 		joint.GlobalAnimatedMatrix = joint.GlobalMatrix.clone();
 
-		if (joint.GlobalInversedMatrix.isIdentity()) // might be pre calculated
-		{
+		if (joint.GlobalInversedMatrix.isIdentity()) { // might be pre calculated
 			joint.GlobalInversedMatrix = joint.GlobalMatrix.clone();
 			joint.GlobalInversedMatrix.makeInverse(); // slow
 		}
 
-		for (var j = 0; j < joint.Children.length; ++j)
+		for (var j = 0; j < joint.Children.length; ++j) {
 			this.CalculateGlobalMatrices(joint.Children[j], joint);
+		}
 	}
 
 	/**
@@ -424,15 +429,18 @@ export class SkinnedMesh {
 	 * @public
 	 */
 	animateMesh(frame, blend) {
-		if (!this.HasAnimation ||
-			(CL3D.equals(this.LastAnimatedFrame, frame) && (blend == 1.0))) {
+		if (
+			!this.HasAnimation
+			|| (CL3D.equals(this.LastAnimatedFrame, frame) && (blend == 1.0))
+		) {
 			return false;
 		}
 
 		this.LastAnimatedFrame = frame;
 
-		if (blend < 0.0)
-			return false; //No need to animate
+		if (blend < 0.0) {
+			return false; // No need to animate
+		}
 
 		if (CL3D.equals(blend, 1.0)) {
 			// no animation blending
@@ -443,18 +451,13 @@ export class SkinnedMesh {
 				var scale = joint.Animatedscale.clone();
 				var rotation = joint.Animatedrotation.clone(); // Quaternion
 
-				this.getFrameData(frame, joint,
-					position, joint.positionHint,
-					scale, joint.scaleHint,
-					rotation, joint.rotationHint);
+				this.getFrameData(frame, joint, position, joint.positionHint, scale, joint.scaleHint, rotation, joint.rotationHint);
 
 				joint.Animatedposition = position.clone();
 				joint.Animatedscale = scale.clone();
 				joint.Animatedrotation = rotation.clone();
 			}
-		}
-
-		else {
+		} else {
 			// with animation blending
 			for (var i = 0; i < this.AllJoints.length; ++i) {
 				var joint = this.AllJoints[i];
@@ -467,10 +470,7 @@ export class SkinnedMesh {
 				var scale = oldscale.clone();
 				var rotation = oldrotation.clone(); // Quaternion
 
-				this.getFrameData(frame, joint,
-					position, joint.positionHint,
-					scale, joint.scaleHint,
-					rotation, joint.rotationHint);
+				this.getFrameData(frame, joint, position, joint.positionHint, scale, joint.scaleHint, rotation, joint.rotationHint);
 
 				joint.Animatedposition = oldposition.getInterpolated(position, blend);
 				joint.Animatedscale = oldscale.getInterpolated(scale, blend);
@@ -487,10 +487,7 @@ export class SkinnedMesh {
 	/**
 	 * @public
 	 */
-	getFrameData(frame, joint,
-		position, positionHint,
-		scale, scaleHint,
-		rotation, rotationHint) {
+	getFrameData(frame, joint, position, positionHint, scale, scaleHint, rotation, rotationHint) {
 		var foundPositionIndex = -1;
 		var foundScaleIndex = -1;
 		var foundRotationIndex = -1;
@@ -500,8 +497,8 @@ export class SkinnedMesh {
 		var RotationKeys = joint.RotationKeys;
 
 		var poskey;
-		var scalekey; //:SkinnedMeshScaleKey;
-		var rotkey; //:SkinnedMeshRotationKey;
+		var scalekey; // :SkinnedMeshScaleKey;
+		var rotkey; // :SkinnedMeshRotationKey;
 
 		var i;
 		var fd1;
@@ -532,12 +529,11 @@ export class SkinnedMesh {
 					}
 				}
 			}*/
-			//The hint test failed, do a full scan...
+			// The hint test failed, do a full scan...
 			if (foundPositionIndex == -1) {
 				for (i = 0; i < PositionKeys.length; ++i) {
 					poskey = PositionKeys[i];
-					if (poskey.frame >= frame) //Keys should to be sorted by frame
-					{
+					if (poskey.frame >= frame) { // Keys should to be sorted by frame
 						foundPositionIndex = i;
 						positionHint = i;
 						break;
@@ -545,45 +541,45 @@ export class SkinnedMesh {
 				}
 			}
 
-			//Do interpolation...
+			// Do interpolation...
 			if (foundPositionIndex != -1) {
 				if (this.InterpolationMode == 0 /*EIM_CONSTANT*/ || foundPositionIndex == 0) {
 					poskey = PositionKeys[foundPositionIndex];
 					position = poskey.position.clone();
-				}
-				else if (this.InterpolationMode == 1 /*EIM_LINEAR*/) {
+				} else if (this.InterpolationMode == 1 /*EIM_LINEAR*/) {
 					poskey = PositionKeys[foundPositionIndex];
 					var poskeyb = PositionKeys[foundPositionIndex - 1];
 
 					fd1 = frame - poskey.frame;
 					fd2 = poskeyb.frame - frame;
 
-					//position = ((poskeyb.position-poskey.position)/(fd1+fd2))*fd1 + poskey.position;
+					// position = ((poskeyb.position-poskey.position)/(fd1+fd2))*fd1 + poskey.position;
 					position.setTo(
-						poskeyb.position.
-							substract(poskey.position).
-							multiplyThisWithScalReturnMe(1.0 / (fd1 + fd2)).
-							multiplyThisWithScalReturnMe(fd1).
-							addToThisReturnMe(poskey.position));
+						poskeyb.position
+							.substract(poskey.position)
+							.multiplyThisWithScalReturnMe(1.0 / (fd1 + fd2))
+							.multiplyThisWithScalReturnMe(fd1)
+							.addToThisReturnMe(poskey.position),
+					);
 				}
 
-				//if (Config.isDebugCompilation)
-				//{
-				//	Debug.print(
-				//		"joint: " + joint.Name + 
-				//		" position: " + position + 
-				//		", key:%d" + foundPositionIndex +
-				//		", frame:" + frame + 
-				//		", keyposition: " + PositionKeys[foundPositionIndex-1].position);
-				//}
+				// if (Config.isDebugCompilation)
+				// {
+				// 	Debug.print(
+				// 		"joint: " + joint.Name +
+				// 		" position: " + position +
+				// 		", key:%d" + foundPositionIndex +
+				// 		", frame:" + frame +
+				// 		", keyposition: " + PositionKeys[foundPositionIndex-1].position);
+				// }
 			}
 		}
 
-		//------------------------------------------------------------
+		// ------------------------------------------------------------
 		if (ScaleKeys.length) {
 			foundScaleIndex = -1;
 
-			//Test the Hints...
+			// Test the Hints...
 			/*if (scaleHint>=0 && (u32)scaleHint < ScaleKeys.length)
 			{
 				//check this hint
@@ -600,12 +596,11 @@ export class SkinnedMesh {
 					}
 				}
 			}*/
-			//The hint test failed, do a full scan...
+			// The hint test failed, do a full scan...
 			if (foundScaleIndex == -1) {
 				for (i = 0; i < ScaleKeys.length; ++i) {
 					scalekey = ScaleKeys[i];
-					if (scalekey.frame >= frame) //Keys should to be sorted by frame
-					{
+					if (scalekey.frame >= frame) { // Keys should to be sorted by frame
 						foundScaleIndex = i;
 						scaleHint = i;
 						break;
@@ -613,36 +608,35 @@ export class SkinnedMesh {
 				}
 			}
 
-			//Do interpolation...
+			// Do interpolation...
 			if (foundScaleIndex != -1) {
 				if (this.InterpolationMode == 0 /*EIM_CONSTANT*/ || foundScaleIndex == 0) {
 					scalekey = ScaleKeys[foundScaleIndex];
 					scale = scalekey.scale.clone();
-				}
-
-				else if (this.InterpolationMode == 1 /*EIM_LINEAR*/) {
+				} else if (this.InterpolationMode == 1 /*EIM_LINEAR*/) {
 					scalekey = ScaleKeys[foundScaleIndex];
 					var scalekeyb = ScaleKeys[foundScaleIndex - 1]; // SkinnedMeshScaleKey
 
 					fd1 = frame - scalekey.frame;
 					fd2 = scalekeyb.frame - frame;
 
-					//scale = ((scalekeyb.scale-scalekey.scale)/(fd1+fd2))*fd1 + scalekey.scale;
+					// scale = ((scalekeyb.scale-scalekey.scale)/(fd1+fd2))*fd1 + scalekey.scale;
 					scale.setTo(
-						scalekeyb.scale.
-							substract(scalekey.scale).
-							multiplyThisWithScalReturnMe(1.0 / (fd1 + fd2)).
-							multiplyThisWithScalReturnMe(fd1).
-							addToThisReturnMe(scalekey.scale));
+						scalekeyb.scale
+							.substract(scalekey.scale)
+							.multiplyThisWithScalReturnMe(1.0 / (fd1 + fd2))
+							.multiplyThisWithScalReturnMe(fd1)
+							.addToThisReturnMe(scalekey.scale),
+					);
 				}
 			}
 		}
 
-		//-------------------------------------------------------------
+		// -------------------------------------------------------------
 		if (RotationKeys.length) {
 			foundRotationIndex = -1;
 
-			//Test the Hints...
+			// Test the Hints...
 			/*if (rotationHint>=0 && (u32)rotationHint < RotationKeys.length)
 			{
 				//check this hint
@@ -659,12 +653,11 @@ export class SkinnedMesh {
 					}
 				}
 			}*/
-			//The hint test failed, do a full scan...
+			// The hint test failed, do a full scan...
 			if (foundRotationIndex == -1) {
 				for (i = 0; i < RotationKeys.length; ++i) {
 					rotkey = RotationKeys[i];
-					if (rotkey.frame >= frame) //Keys should be sorted by frame
-					{
+					if (rotkey.frame >= frame) { // Keys should be sorted by frame
 						foundRotationIndex = i;
 						rotationHint = i;
 						break;
@@ -672,13 +665,12 @@ export class SkinnedMesh {
 				}
 			}
 
-			//Do interpolation...
+			// Do interpolation...
 			if (foundRotationIndex != -1) {
 				if (this.InterpolationMode == 0 /*EIM_CONSTANT*/ || foundRotationIndex == 0) {
 					rotkey = RotationKeys[foundRotationIndex];
 					rotation = rotkey.rotation.clone();
-				}
-				else if (this.InterpolationMode == 1 /*EIM_LINEAR*/) {
+				} else if (this.InterpolationMode == 1 /*EIM_LINEAR*/) {
 					rotkey = RotationKeys[foundRotationIndex];
 					var rotkeyb = RotationKeys[foundRotationIndex - 1]; // SkinnedMeshRotationKey
 
@@ -698,13 +690,17 @@ export class SkinnedMesh {
 		for (var i = 0; i < this.AllJoints.length; ++i) {
 			var joint = this.AllJoints[i];
 
-			if (joint.PositionKeys.length ||
-				joint.ScaleKeys.length ||
-				joint.RotationKeys.length) {
-				if (!joint.Animatedrotation)
+			if (
+				joint.PositionKeys.length
+				|| joint.ScaleKeys.length
+				|| joint.RotationKeys.length
+			) {
+				if (!joint.Animatedrotation) {
 					joint.Animatedrotation = new CL3D.Quaternion();
-				if (!joint.Animatedposition)
+				}
+				if (!joint.Animatedposition) {
 					joint.Animatedposition = new CL3D.Vect3d();
+				}
 
 				/*var translateMatrix = new CL3D.Matrix4(true);
 				translateMatrix.setTranslation(joint.Animatedposition);
@@ -734,12 +730,13 @@ export class SkinnedMesh {
 				// -----------------------------------
 				joint.GlobalSkinningSpace = false;
 
-				if (joint.ScaleKeys.length && joint.Animatedscale &&
-					!joint.Animatedscale.equalsByNumbers(1, 1, 1)) {
-
-					//var scalematrix = new CL3D.Matrix4(true);
-					//scalematrix.setScale(joint.Animatedscale);
-					//joint.LocalAnimatedMatrix = joint.LocalAnimatedMatrix.multiply(scalematrix);
+				if (
+					joint.ScaleKeys.length && joint.Animatedscale
+					&& !joint.Animatedscale.equalsByNumbers(1, 1, 1)
+				) {
+					// var scalematrix = new CL3D.Matrix4(true);
+					// scalematrix.setScale(joint.Animatedscale);
+					// joint.LocalAnimatedMatrix = joint.LocalAnimatedMatrix.multiply(scalematrix);
 					// -------- joint->LocalAnimatedMatrix *= scaleMatrix -----------------
 					Pos = joint.Animatedscale;
 					mptr.m00 *= Pos.X;
@@ -756,9 +753,7 @@ export class SkinnedMesh {
 					mptr.m11 *= Pos.Z;
 					// -----------------------------------
 				}
-			}
-
-			else {
+			} else {
 				joint.LocalAnimatedMatrix = joint.LocalMatrix.clone(); // no copy necessary, reference is ok
 			}
 		}
@@ -785,9 +780,7 @@ export class SkinnedMesh {
 				if (mbuffer.Transformation == null) {
 					this.BoundingBox.addInternalPointByVector(mbuffer.Box.MinEdge);
 					this.BoundingBox.addInternalPointByVector(mbuffer.Box.MaxEdge);
-				}
-
-				else {
+				} else {
 					var newbox = mbuffer.Box.clone();
 					mbuffer.Transformation.transformBoxEx(newbox);
 
@@ -808,28 +801,27 @@ export class SkinnedMesh {
 				this.buildAll_GlobalAnimatedMatrices(root, null);
 			}
 			return;
-		}
-
-		else {
+		} else {
 			// Find global matrix
-			if (parentJoint == null || joint.GlobalSkinningSpace)
+			if (parentJoint == null || joint.GlobalSkinningSpace) {
 				joint.GlobalAnimatedMatrix = joint.LocalAnimatedMatrix.clone();
-
-			else
+			} else {
 				joint.GlobalAnimatedMatrix = parentJoint.GlobalAnimatedMatrix.multiply(joint.LocalAnimatedMatrix);
-
+			}
 		}
 
-		for (var j = 0; j < joint.Children.length; ++j)
+		for (var j = 0; j < joint.Children.length; ++j) {
 			this.buildAll_GlobalAnimatedMatrices(joint.Children[j], joint);
+		}
 	}
 
 	/**
 	 * @public
 	 */
 	skinMesh(animateNormals) {
-		if (!this.HasAnimation)
+		if (!this.HasAnimation) {
 			return;
+		}
 
 		this.skinDoesNotMatchJointPositions = false;
 		this.buildAll_GlobalAnimatedMatrices(null, null);
@@ -849,11 +841,12 @@ export class SkinnedMesh {
 
 		// clear skinning helper array
 		for (i = 0; i < this.LocalBuffers.length; ++i) {
-			//var buf:Vector.<Boolean> = Vertices_Moved[i];
-			var buf = this.Vertices_Moved[i];;
+			// var buf:Vector.<Boolean> = Vertices_Moved[i];
+			var buf = this.Vertices_Moved[i];
 
-			for (j = 0; j < buf.length; ++j)
+			for (j = 0; j < buf.length; ++j) {
 				buf[j] = false;
+			}
 		}
 
 		// start skinning with root joints
@@ -868,7 +861,7 @@ export class SkinnedMesh {
 	 */
 	skinJoint(joint, parentJoint, animateNormals) {
 		if (joint.Weights.length) {
-			//Find this joints pull on vertices...
+			// Find this joints pull on vertices...
 			var jointVertexPull = joint.GlobalAnimatedMatrix.multiply(joint.GlobalInversedMatrix);
 
 			var thisVertexMove = new CL3D.Vect3d();
@@ -878,16 +871,16 @@ export class SkinnedMesh {
 			var mbuffer;
 			var vtx;
 
-			//Skin Vertices Positions and Normals...
+			// Skin Vertices Positions and Normals...
 			for (var i = 0; i < joint.Weights.length; ++i) {
 				var weight = joint.Weights[i]; // SkinnedMeshWeight
-
 
 				// Pull this vertex...
 				jointVertexPull.transformVect2(thisVertexMove, weight.StaticPos);
 
-				if (animateNormals)
+				if (animateNormals) {
 					jointVertexPull.rotateVect2(thisNormalMove, weight.StaticNormal);
+				}
 
 				mbuffer = buffersUsed[weight.buffer_id];
 				vtx = mbuffer.Vertices[weight.vertex_id];
@@ -897,38 +890,41 @@ export class SkinnedMesh {
 
 					vtx.Pos = thisVertexMove.multiplyWithScal(weight.strength);
 
-					if (animateNormals)
+					if (animateNormals) {
 						vtx.Normal = thisNormalMove.multiplyWithScal(weight.strength);
-				}
-
-				else {
+					}
+				} else {
 					vtx.Pos.addToThis(thisVertexMove.multiplyWithScal(weight.strength));
 
-					if (animateNormals)
+					if (animateNormals) {
 						vtx.Normal.addToThis(thisNormalMove.multiplyWithScal(weight.strength));
+					}
 				}
 			}
 		}
 
 		// skin childen
-		for (var j = 0; j < joint.Children.length; ++j)
+		for (var j = 0; j < joint.Children.length; ++j) {
 			this.skinJoint(joint.Children[j], joint, animateNormals);
+		}
 	}
 
 	/**
 	 * @public
 	 */
 	getNamedAnimationRangeByName(thename) {
-		if (!thename)
+		if (!thename) {
 			return null;
+		}
 
 		var count = this.NamedAnimationRanges.length;
 		var lwrname = thename.toLowerCase();
 
 		for (var j = 0; j < count; ++j) {
 			var n = this.NamedAnimationRanges[j];
-			if (n.Name && n.Name.toLowerCase() == lwrname)
+			if (n.Name && n.Name.toLowerCase() == lwrname) {
 				return n;
+			}
 		}
 
 		return null;
@@ -946,7 +942,7 @@ export class SkinnedMesh {
 	 * Used to see by the loader if this model already has been loaded before
 	 */
 	containsData(buf) {
-		return this.AllJoints.length > 0 ||
-			this.LocalBuffers.length > 0;
+		return this.AllJoints.length > 0
+			|| this.LocalBuffers.length > 0;
 	}
-};
+}

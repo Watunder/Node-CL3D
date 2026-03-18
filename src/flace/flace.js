@@ -1,9 +1,9 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
 import { getDevicePixelRatio } from "../share/getDevicePixelRatio.js";
-import { isBrowser } from '../utils/environment.js';
+import { isBrowser } from "../utils/environment.js";
 
 /**
  * @type {CL3D.CCDocument}
@@ -24,11 +24,11 @@ export let gDocument = new CL3D.CCDocument();
  * @param {Boolean=} aspectRatio set to true to expand the canvas with preserving aspect ratio.
  * @returns {CL3D.CopperLicht} the instance of the CopperLicht engine
  */
-export const startCopperLichtFromFile = function (filetoload, mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullPage, aspectRatio) {
+export const startCopperLichtFromFile = function(filetoload, mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullPage, aspectRatio) {
 	let engine = new CL3D.CopperLicht(mainElement, loadingScreenText, loadingScreenBackgroundColor, noWebGLText, fullPage, aspectRatio);
 	engine.load(filetoload);
 	return engine;
-}
+};
 
 /**
  * @description The main class of the CopperLicht 3D engine.
@@ -205,26 +205,31 @@ export class CopperLicht {
 
 		this.LastCameraDragTime = 0; // flag to disable AnimatorOnClick actions when an AnimatorCameraFPS is currently dragging the camera
 
-		if (noWebGLText == null)
+		if (noWebGLText == null) {
 			this.NoWebGLText = "Error: This browser does not support WebGL (or it is disabled).<br/>See <a href=\"www.ambiera.com/copperlicht/browsersupport.html\">here</a> for details.";
-		else
+		} else {
 			this.NoWebGLText = noWebGLText;
+		}
 
 		this.fullPage = fullPage ? true : false;
-		if (this.fullPage)
+		if (this.fullPage) {
 			this.initMakeWholePageSize();
+		}
 
 		this.aspectRatio = aspectRatio ? true : false;
 
 		this.LoadingDialog = null;
-		if (loadingScreenText != null)
+		if (loadingScreenText != null) {
 			this.createTextDialog(true, loadingScreenText, loadingScreenBackgroundColor);
+		}
 
 		this.updateCanvasTopLeftPosition();
 
 		// redraw loading animator every few seconds
 		const me = this;
-		setInterval(() => { me.loadingUpdateIntervalHandler(); }, 500);
+		setInterval(() => {
+			me.loadingUpdateIntervalHandler();
+		}, 500);
 
 		// init scripting
 		CL3D.ScriptingInterface.getScriptingInterface().setEngine(this);
@@ -235,10 +240,11 @@ export class CopperLicht {
 		const me = this;
 		const interval = 1000.0 / this.FPS;
 
-		if (typeof globalThis.requestAnimationFrame == 'undefined') {
-			setInterval(() => { me.draw3DIntervalHandler(interval); }, interval);
-		}
-		else {
+		if (typeof globalThis.requestAnimationFrame == "undefined") {
+			setInterval(() => {
+				me.draw3DIntervalHandler(interval);
+			}, interval);
+		} else {
 			const running = (now) => {
 				globalThis.requestAnimationFrame(running);
 
@@ -287,36 +293,48 @@ export class CopperLicht {
 		if (isBrowser) {
 			// key evt receiver
 			const me = this;
-			document.onkeydown = (evt) => { me.handleKeyDown(evt); };
-			document.onkeyup = (evt) => { me.handleKeyUp(evt); };
+			document.onkeydown = (evt) => {
+				me.handleKeyDown(evt);
+			};
+			document.onkeyup = (evt) => {
+				me.handleKeyUp(evt);
+			};
 
 			const canvas = this.MainElement;
 			if (canvas != null) {
 				canvas.onmousemove = (evt) => {
-					if (me.handleMouseMove(evt))
+					if (me.handleMouseMove(evt)) {
 						me.handleEventPropagation(evt, true);
+					}
 				};
 				canvas.onmousedown = (evt) => {
-					if (me.handleMouseDown(evt))
+					if (me.handleMouseDown(evt)) {
 						me.handleEventPropagation(evt, true);
+					}
 				};
 				canvas.onmouseup = (evt) => {
-					if (me.handleMouseUp(evt))
+					if (me.handleMouseUp(evt)) {
 						me.handleEventPropagation(evt, true);
+					}
 				};
 
-				canvas.onmouseover = (evt) => { me.MouseIsInside = true; };
-				canvas.onmouseout = (evt) => { me.MouseIsInside = false; };
+				canvas.onmouseover = (evt) => {
+					me.MouseIsInside = true;
+				};
+				canvas.onmouseout = (evt) => {
+					me.MouseIsInside = false;
+				};
 
 				this.setupEventHandlersForFullscreenChange();
 
 				try {
 					const w = (evt) => {
-						if (me.handleMouseWheel(evt))
+						if (me.handleMouseWheel(evt)) {
 							me.handleEventPropagation(evt, true);
+						}
 					};
-					canvas.addEventListener('mousewheel', w, false);
-					canvas.addEventListener('DOMMouseScroll', w, false);
+					canvas.addEventListener("mousewheel", w, false);
+					canvas.addEventListener("DOMMouseScroll", w, false);
 				} catch (e) {
 					console.log(e);
 				}
@@ -327,20 +345,23 @@ export class CopperLicht {
 						// detect pinch start
 						if (evt.touches != null) {
 							me.IsTouchPinching = evt.touches.length == 2;
-							if (me.IsTouchPinching)
+							if (me.IsTouchPinching) {
 								me.StartTouchPinchDistance = me.getPinchDistance(evt);
+							}
 						}
 
 						// emulate normal mouse down
-						if (me.handleMouseDown(evt.changedTouches[0]))
+						if (me.handleMouseDown(evt.changedTouches[0])) {
 							me.handleEventPropagation(evt, true);
+						}
 					};
 					const touchend = (evt) => {
 						me.IsTouchPinching = false;
 
 						// emulate normal mouse up
-						if (me.handleMouseUp(evt.changedTouches[0]))
+						if (me.handleMouseUp(evt.changedTouches[0])) {
 							me.handleEventPropagation(evt, true);
+						}
 					};
 					const touchmove = (evt) => {
 						if (me.IsTouchPinching && evt.touches != null && evt.touches.length >= 2) {
@@ -349,12 +370,11 @@ export class CopperLicht {
 							let delta = dist - me.StartTouchPinchDistance;
 							me.StartTouchPinchDistance = dist;
 							me.sendMouseWheelEvent(delta);
-						}
-
-						else {
+						} else {
 							// emular normal mouse move
-							if (me.handleMouseMove(evt.changedTouches[0]))
+							if (me.handleMouseMove(evt.changedTouches[0])) {
 								me.handleEventPropagation(evt, true);
+							}
 						}
 					};
 
@@ -367,9 +387,7 @@ export class CopperLicht {
 					console.log(e);
 				}
 			}
-		}
-		else {
-
+		} else {
 		}
 	}
 
@@ -378,8 +396,9 @@ export class CopperLicht {
 	 */
 	getPinchDistance(evt) {
 		var t = evt.touches;
-		if (t[0].pageX == null)
+		if (t[0].pageX == null) {
 			return 0;
+		}
 
 		return Math.sqrt((t[0].pageX - t[1].pageX) * (t[0].pageX - t[1].pageX) + (t[0].pageY - t[1].pageY) * (t[0].pageY - t[1].pageY));
 	}
@@ -395,7 +414,7 @@ export class CopperLicht {
 	 * loaded data with the data from that file, but append it. This means that the scenes in the .ccbjs or .ccbz file will be added to the list of
 	 * existing scenes, instead of replacing them.
 	 * @param functionToCallWhenLoaded (optional) a function to call when the file has been loaded
-	*/
+	 */
 	load(filetoload, importIntoExistingDocument, functionToCallWhenLoaded) {
 		if (this.MainElement) {
 			if (!this.createRenderer(this.MainElement.width, this.MainElement.height, { alpha: false }, this.MainElement)) {
@@ -406,8 +425,11 @@ export class CopperLicht {
 
 		var me = this;
 		this.LoadingAFile = true;
-		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1 || filetoload.indexOf('.ccp') != -1);
-		l.load(async (p) => { await me.parseFile(p, filetoload, importIntoExistingDocument); if (functionToCallWhenLoaded) functionToCallWhenLoaded(); });
+		var l = new CL3D.CCFileLoader(filetoload, filetoload.indexOf(".ccbz") != -1 || filetoload.indexOf(".ccp") != -1);
+		l.load(async (p) => {
+			await me.parseFile(p, filetoload, importIntoExistingDocument);
+			if (functionToCallWhenLoaded) functionToCallWhenLoaded();
+		});
 
 		return true;
 	}
@@ -416,14 +438,16 @@ export class CopperLicht {
 	 * @public
 	 */
 	createRenderer(width, height, options, canvas) {
-		if (this.TheRenderer != null)
+		if (this.TheRenderer != null) {
 			return true;
+		}
 
 		this.TheRenderer = new CL3D.Renderer(this.TheTextureManager);
 		this.TheRenderer.init(width, height, options, canvas);
 
-		if (this.TheTextureManager)
+		if (this.TheTextureManager) {
 			this.TheTextureManager.TheRenderer = this.TheRenderer;
+		}
 
 		this.registerEventHandlers();
 
@@ -438,12 +462,12 @@ export class CopperLicht {
 	initMakeWholePageSize() {
 		document.body.style.margin = "0";
 		document.body.style.padding = "0";
-		document.body.style.overflow = 'hidden';
+		document.body.style.overflow = "hidden";
 	}
 
 	/**
 	 * @public
-	 * @param {Boolean} aspectRatio 
+	 * @param {Boolean} aspectRatio
 	 */
 	makeWholePageSize(aspectRatio) {
 		if (this.tmpWidth != globalThis.innerWidth || this.tmpHeight != globalThis.innerHeight) {
@@ -513,10 +537,11 @@ export class CopperLicht {
 	 */
 	draw3DIntervalHandler(timeMs) {
 		// resize
-		if (this.fullPage)
+		if (this.fullPage) {
 			this.makeWholePageSize(this.aspectRatio);
-		else
+		} else {
 			this.makeWholeCanvasSize();
+		}
 
 		// draw
 		this.draw3dScene(timeMs);
@@ -526,11 +551,13 @@ export class CopperLicht {
 	 * @public
 	 */
 	loadingUpdateIntervalHandler() {
-		if (this.LoadingDialog != null)
+		if (this.LoadingDialog != null) {
 			this.updateLoadingDialog();
+		}
 
-		if (!CL3D.gCCDebugInfoEnabled)
+		if (!CL3D.gCCDebugInfoEnabled) {
 			return;
+		}
 
 		++this.LoadingAnimationCounter;
 		var texturesToLoad = 0;
@@ -547,21 +574,28 @@ export class CopperLicht {
 		}
 
 		if (this.LoadingAFile || texturesToLoad) {
-			var txt = 'Loading';
-			if (texturesToLoad > 0)
-				txt = 'Textures loaded: ' + (totalTextureCount - texturesToLoad) + '/' + totalTextureCount;
+			var txt = "Loading";
+			if (texturesToLoad > 0) {
+				txt = "Textures loaded: " + (totalTextureCount - texturesToLoad) + "/" + totalTextureCount;
+			}
 
 			switch (this.LoadingAnimationCounter % 4) {
-				case 0: txt += ('   '); break;
-				case 1: txt += ('.  '); break;
-				case 2: txt += ('.. '); break;
-				case 3: txt += ('...'); break;
+				case 0:
+					txt += "   ";
+					break;
+				case 1:
+					txt += ".  ";
+					break;
+				case 2:
+					txt += ".. ";
+					break;
+				case 3:
+					txt += "...";
+					break;
 			}
 
 			/// TODO
-		}
-
-		else {
+		} else {
 			/// TODO
 		}
 	}
@@ -575,7 +609,7 @@ export class CopperLicht {
 	}
 
 	addScenesFromDocument(filetoload, newRootNodeChildrenParent, functionToCallWhenLoaded) {
-		var loader = new CL3D.CCFileLoader(filetoload, filetoload.indexOf('.ccbz') != -1 || filetoload.indexOf('.ccp') != -1);
+		var loader = new CL3D.CCFileLoader(filetoload, filetoload.indexOf(".ccbz") != -1 || filetoload.indexOf(".ccp") != -1);
 		loader.load(async (filecontent) => {
 			await this.parseFile(filecontent, filetoload, true, true, newRootNodeChildrenParent);
 			if (functionToCallWhenLoaded) functionToCallWhenLoaded();
@@ -589,14 +623,24 @@ export class CopperLicht {
 		this.LoadingAFile = false;
 
 		var loader = new CL3D.FlaceLoader();
-		var doc = await loader.loadFile(filecontent, filename, this.TheTextureManager, this.TheMeshCache, this, copyRootNodeChildren, newRootNodeChildrenParent);
+		var doc = await loader.loadFile(
+			filecontent,
+			filename,
+			this.TheTextureManager,
+			this.TheMeshCache,
+			this,
+			copyRootNodeChildren,
+			newRootNodeChildrenParent,
+		);
 		if (doc != null) {
 			// var docJSON = JSON.stringify(JSON.decycle(doc));
 			// var blob = new Blob([docJSON], {type: "text/plain;charset=utf-8"});
 			// saveAs(blob, "doc.json");
-			if (!importIntoExistingDocument ||
-				gDocument == null ||
-				(gDocument != null && gDocument.Scenes.length == 0)) {
+			if (
+				!importIntoExistingDocument
+				|| gDocument == null
+				|| (gDocument != null && gDocument.Scenes.length == 0)
+			) {
 				// default behavior, load document and replace all data.
 				// Also, this is forced to do if there isn't a current document or scene.
 				gDocument = doc;
@@ -609,20 +653,16 @@ export class CopperLicht {
 
 				if (!doc.WaitUntilTexturesLoaded) {
 					this.startFirstSceneAfterEverythingLoaded();
-				}
-
-				else
+				} else {
 					this.WaitingForTexturesToBeLoaded = true;
-			}
-
-			else {
+				}
+			} else {
 				// import all scenes loaded into this current, already existing document.
 				if (!copyRootNodeChildren || !newRootNodeChildrenParent) {
 					for (var sceneNr = 0; sceneNr < doc.Scenes.length; ++sceneNr) {
 						// console.log("imported scene " + doc.Scenes[sceneNr].Name);
 						gDocument.addScene(doc.Scenes[sceneNr]);
 					}
-
 				}
 			}
 		}
@@ -639,8 +679,9 @@ export class CopperLicht {
 		this.draw3dScene();
 
 		// notify loading complete handler
-		if (this.OnLoadingComplete != null)
+		if (this.OnLoadingComplete != null) {
 			this.OnLoadingComplete();
+		}
 	}
 
 	/**
@@ -651,12 +692,13 @@ export class CopperLicht {
 	 * @public
 	 */
 	draw3dScene(timeMs) {
-		if (gDocument == null || this.TheRenderer == null)
+		if (gDocument == null || this.TheRenderer == null) {
 			return;
+		}
 
-
-		if (this.isLoading())
+		if (this.isLoading()) {
 			return;
+		}
 
 		this.updateCanvasTopLeftPosition();
 
@@ -664,31 +706,36 @@ export class CopperLicht {
 		var renderScene = gDocument.getCurrentScene();
 
 		if (!this.IsPaused && renderScene) {
-			if (this.updateAllVideoStreams()) // at least one video is playing if it returns true
+			if (this.updateAllVideoStreams()) { // at least one video is playing if it returns true
 				renderScene.forceRedrawNextFrame();
+			}
 
-			if (this.OnAnimate)
+			if (this.OnAnimate) {
 				this.OnAnimate();
+			}
 
 			this.TheRenderer.registerFrame();
 
 			if (renderScene.doAnimate(this.TheRenderer)) {
 				this.TheRenderer.beginScene(renderScene.BackgroundColor);
 
-				if (this.OnBeforeDrawAll)
+				if (this.OnBeforeDrawAll) {
 					this.OnBeforeDrawAll();
+				}
 
 				// draw scene
 				renderScene.drawAll(this.TheRenderer);
 
 				// callback
-				if (this.OnAfterDrawAll)
+				if (this.OnAfterDrawAll) {
 					this.OnAfterDrawAll();
+				}
 
 				// scripting frame
 				var sc = CL3D.ScriptingInterface.getScriptingInterfaceReadOnly();
-				if (sc != null)
+				if (sc != null) {
 					sc.runDrawCallbacks(this.TheRenderer, timeMs);
+				}
 
 				// finished
 				this.TheRenderer.endScene();
@@ -718,8 +765,9 @@ export class CopperLicht {
 	 * @public
 	 */
 	getScenes() {
-		if (gDocument)
+		if (gDocument) {
 			return gDocument.Scenes;
+		}
 
 		return 0;
 	}
@@ -731,8 +779,9 @@ export class CopperLicht {
 	addScene(scene) {
 		if (gDocument) {
 			gDocument.Scenes.push(scene);
-			if (gDocument.Scenes.length == 1)
+			if (gDocument.Scenes.length == 1) {
 				gDocument.setCurrentScene(scene);
+			}
 		}
 	}
 
@@ -743,18 +792,21 @@ export class CopperLicht {
 	 * @public
 	 */
 	gotoSceneByName(scenename, ignorecase) {
-		if (!gDocument)
+		if (!gDocument) {
 			return false;
+		}
 
 		var scenes = gDocument.Scenes;
 		var name = scenename;
-		if (ignorecase)
+		if (ignorecase) {
 			name = name.toLowerCase();
+		}
 
 		for (var i = 0; i < scenes.length; ++i) {
 			var sname = scenes[i].Name;
-			if (ignorecase)
+			if (ignorecase) {
 				sname = sname.toLowerCase();
+			}
 
 			if (name == sname) {
 				this.gotoScene(scenes[i]);
@@ -771,36 +823,35 @@ export class CopperLicht {
 	 * @public
 	 */
 	gotoScene(scene) {
-		if (!scene)
+		if (!scene) {
 			return false;
+		}
 
 		// set active camera
 		// TODO: handle panorama scenes later
-		//var panoScene = typeof scene == FlacePanoramaScene;
-		var isPanoScene = scene.getSceneType() == 'panorama';
-		var isFree3dScene = scene.getSceneType() == 'free';
+		// var panoScene = typeof scene == FlacePanoramaScene;
+		var isPanoScene = scene.getSceneType() == "panorama";
+		var isFree3dScene = scene.getSceneType() == "free";
 
 		var activeCamera = null;
 
 		gDocument.setCurrentScene(scene);
 
 		// make sprites of old scene invisible
-		//if (CurrentActiveScene)
-		//	CurrentActiveScene.setSpriteChildrenVisible(false);
+		// if (CurrentActiveScene)
+		// 	CurrentActiveScene.setSpriteChildrenVisible(false);
 		// init cameras and create default ones if there is none yet
 		if (scene.WasAlreadyActivatedOnce) {
 			activeCamera = scene.getActiveCamera();
-			//scene.setSpriteChildrenVisible(true);
-		}
-
-		else {
+			// scene.setSpriteChildrenVisible(true);
+		} else {
 			scene.WasAlreadyActivatedOnce = true;
 
-			//setActionHandlerForHotspots(scene.RootNode);
+			// setActionHandlerForHotspots(scene.RootNode);
 			var foundActiveCamera = false;
-			var cameras = scene.getAllSceneNodesOfType('camera');
+			var cameras = scene.getAllSceneNodesOfType("camera");
 			if (cameras) {
-				//console.log("Found " + cameras.length + " cameras!");
+				// console.log("Found " + cameras.length + " cameras!");
 				for (var i = 0; i < cameras.length; ++i) {
 					var fcam = cameras[i];
 					if (fcam && fcam.Active) {
@@ -809,7 +860,7 @@ export class CopperLicht {
 						foundActiveCamera = true;
 
 						activeCamera.setAutoAspectIfNoFixedSet(this.TheRenderer.width, this.TheRenderer.height);
-						//console.log("activated camera from file:" + fcam.Name);
+						// console.log("activated camera from file:" + fcam.Name);
 						break;
 					}
 				}
@@ -817,8 +868,9 @@ export class CopperLicht {
 
 			if (!foundActiveCamera) {
 				var aspect = 4.0 / 3.0;
-				if (this.TheRenderer.width && this.TheRenderer.height)
+				if (this.TheRenderer.width && this.TheRenderer.height) {
 					aspect = this.TheRenderer.width / this.TheRenderer.height;
+				}
 
 				activeCamera = new CL3D.CameraSceneNode();
 				activeCamera.setAspectRatio(aspect);
@@ -832,27 +884,29 @@ export class CopperLicht {
 					createdAnimator = new CL3D.AnimatorCameraFPS(activeCamera, this);
 					activeCamera.addAnimator(createdAnimator);
 				}
-				//else
-				//{
-				//interfaceTexture = panoScene.InterfaceTexture;
-				//createdAnimator = new CL3D.AnimatorCameraPano(activeCamera, this, interfaceTexture);
-				//activeCamera.addAnimator(createdAnimator);
-				//}
+				// else
+				// {
+				// interfaceTexture = panoScene.InterfaceTexture;
+				// createdAnimator = new CL3D.AnimatorCameraPano(activeCamera, this, interfaceTexture);
+				// activeCamera.addAnimator(createdAnimator);
+				// }
 				if (isFree3dScene) {
-					if (scene.DefaultCameraPos != null)
+					if (scene.DefaultCameraPos != null) {
 						activeCamera.Pos = scene.DefaultCameraPos.clone();
+					}
 
 					if (scene.DefaultCameraTarget != null) {
-						if (createdAnimator != null)
+						if (createdAnimator != null) {
 							createdAnimator.lookAt(scene.DefaultCameraTarget);
-
-						else
+						} else {
 							activeCamera.setTarget(scene.DefaultCameraTarget);
+						}
 					}
 				}
 
-				if (createdAnimator)
+				if (createdAnimator) {
 					createdAnimator.setMayMove(!isPanoScene);
+				}
 			}
 
 			scene.setActiveCamera(activeCamera);
@@ -871,7 +925,7 @@ export class CopperLicht {
 		scene.forceRedrawNextFrame();
 
 		// done
-		//console.log("Scene ready.");
+		// console.log("Scene ready.");
 		return true;
 	}
 
@@ -879,16 +933,19 @@ export class CopperLicht {
 	 * @public
 	 */
 	setNextCameraActiveIfNeeded() {
-		if (this.NextCameraToSetActive == null)
+		if (this.NextCameraToSetActive == null) {
 			return;
+		}
 
 		var scene = gDocument.getCurrentScene();
-		if (scene == null)
+		if (scene == null) {
 			return;
+		}
 
 		if (this.NextCameraToSetActive.scene === scene) {
-			if (this.TheRenderer)
+			if (this.TheRenderer) {
 				this.NextCameraToSetActive.setAutoAspectIfNoFixedSet(this.TheRenderer.getWidth(), this.TheRenderer.getHeight());
+			}
 
 			scene.setActiveCamera(this.NextCameraToSetActive);
 			this.NextCameraToSetActive = null;
@@ -903,18 +960,22 @@ export class CopperLicht {
 	 */
 	handleKeyDown(evt) {
 		var scene = this.getScene();
-		if (scene == null)
+		if (scene == null) {
 			return false;
+		}
 
 		var usedToDoAction = false;
 
 		var cam = scene.getActiveCamera();
-		if (cam != null)
+		if (cam != null) {
 			usedToDoAction = cam.onKeyDown(evt);
+		}
 
-		for (var i = 0; i < this.RegisteredAnimatorsForKeyDown.length; ++i)
-			if (this.RegisteredAnimatorsForKeyDown[i].onKeyDown(evt))
+		for (var i = 0; i < this.RegisteredAnimatorsForKeyDown.length; ++i) {
+			if (this.RegisteredAnimatorsForKeyDown[i].onKeyDown(evt)) {
 				usedToDoAction = true;
+			}
+		}
 
 		return this.handleEventPropagation(evt, usedToDoAction);
 	}
@@ -927,18 +988,22 @@ export class CopperLicht {
 	 */
 	handleKeyUp(evt) {
 		var scene = this.getScene();
-		if (scene == null)
+		if (scene == null) {
 			return false;
+		}
 
 		var usedToDoAction = false;
 
 		var cam = scene.getActiveCamera();
-		if (cam != null)
+		if (cam != null) {
 			usedToDoAction = cam.onKeyUp(evt);
+		}
 
-		for (var i = 0; i < this.RegisteredAnimatorsForKeyUp.length; ++i)
-			if (this.RegisteredAnimatorsForKeyUp[i].onKeyUp(evt))
+		for (var i = 0; i < this.RegisteredAnimatorsForKeyUp.length; ++i) {
+			if (this.RegisteredAnimatorsForKeyUp[i].onKeyUp(evt)) {
 				usedToDoAction = true;
+			}
+		}
 
 		return this.handleEventPropagation(evt, usedToDoAction);
 	}
@@ -951,8 +1016,7 @@ export class CopperLicht {
 		if (isBrowser && usedToDoAction) {
 			try {
 				evt.preventDefault();
-			}
-			catch (e) {
+			} catch (e) {
 				console.log(e);
 			}
 
@@ -966,16 +1030,18 @@ export class CopperLicht {
 	 * @public
 	 */
 	registerAnimatorForKeyUp(an) {
-		if (an != null)
+		if (an != null) {
 			this.RegisteredAnimatorsForKeyUp.push(an);
+		}
 	}
 
 	/**
 	 * @public
 	 */
 	registerAnimatorForKeyDown(an) {
-		if (an != null)
+		if (an != null) {
 			this.RegisteredAnimatorsForKeyDown.push(an);
+		}
 	}
 
 	/**
@@ -1016,12 +1082,12 @@ export class CopperLicht {
 		}
 
 		if (isBrowser) {
-			if (evt.pageX)
+			if (evt.pageX) {
 				return evt.pageX - this.CanvasTopLeftX;
-			else
+			} else {
 				return evt.clientX - this.MainElement.offsetLeft + document.body.scrollLeft;
-		}
-		else {
+			}
+		} else {
 			return evt.x;
 		}
 	}
@@ -1036,12 +1102,12 @@ export class CopperLicht {
 		}
 
 		if (isBrowser) {
-			if (evt.pageY)
+			if (evt.pageY) {
 				return evt.pageY - this.CanvasTopLeftY;
-			else
+			} else {
 				return evt.clientY - this.MainElement.offsetTop + document.body.scrollTop;
-		}
-		else {
+			}
+		} else {
 			return evt.y;
 		}
 	}
@@ -1056,8 +1122,7 @@ export class CopperLicht {
 		this.MouseIsDown = true;
 		this.MouseIsInside = true;
 
-		if (evt) //  && !this.isInPointerLockMode())
-		{
+		if (evt) { //  && !this.isInPointerLockMode())
 			this.MouseDownX = this.getMousePosXFromEvent(evt);
 			this.MouseDownY = this.getMousePosYFromEvent(evt);
 
@@ -1065,20 +1130,23 @@ export class CopperLicht {
 			this.MouseY = this.MouseDownY;
 		}
 
-		//console.log("MouseDown " + this.MouseDownX + " " + this.MouseDownY);
-		//console.log("e.offsetX:" + evt.offsetX + " e.layerX:" + evt.layerX + " e.clientX:" + evt.clientX);
+		// console.log("MouseDown " + this.MouseDownX + " " + this.MouseDownY);
+		// console.log("e.offsetX:" + evt.offsetX + " e.layerX:" + evt.layerX + " e.clientX:" + evt.clientX);
 		var scene = this.getScene();
-		if (scene == null)
+		if (scene == null) {
 			return false;
+		}
 
 		var handledByUser = false;
-		if (this.OnMouseDown)
+		if (this.OnMouseDown) {
 			handledByUser = this.OnMouseDown();
+		}
 
 		if (!handledByUser) {
 			var cam = scene.getActiveCamera();
-			if (cam != null)
+			if (cam != null) {
 				cam.onMouseDown(evt);
+			}
 
 			scene.postMouseDownToAnimators(evt);
 		}
@@ -1161,9 +1229,7 @@ export class CopperLicht {
 		if (this.isInPointerLockMode()) {
 			this.MouseMoveX = 0;
 			this.MouseMoveY = 0;
-		}
-
-		else {
+		} else {
 			this.MouseDownX = this.MouseX;
 			this.MouseDownY = this.MouseY;
 		}
@@ -1179,8 +1245,9 @@ export class CopperLicht {
 		this.MouseIsDown = false;
 
 		var scene = this.getScene();
-		if (scene == null)
+		if (scene == null) {
 			return false;
+		}
 
 		if (evt) {
 			this.MouseX = this.getMousePosXFromEvent(evt);
@@ -1188,15 +1255,17 @@ export class CopperLicht {
 		}
 
 		var handledByUser = false;
-		if (this.OnMouseUp)
+		if (this.OnMouseUp) {
 			handledByUser = this.OnMouseUp();
+		}
 
 		if (!handledByUser) {
 			var cam = scene.getActiveCamera();
-			if (cam != null)
+			if (cam != null) {
 				cam.onMouseUp(evt);
+			}
 
-			//console.log("MouseUp " + this.MouseDownX + " " + this.MouseDownY);
+			// console.log("MouseUp " + this.MouseDownX + " " + this.MouseDownY);
 			scene.postMouseUpToAnimators(evt);
 		}
 
@@ -1204,12 +1273,14 @@ export class CopperLicht {
 	}
 	sendMouseWheelEvent(delta) {
 		var scene = this.getScene();
-		if (scene == null)
+		if (scene == null) {
 			return;
+		}
 
 		var cam = scene.getActiveCamera();
-		if (cam != null)
+		if (cam != null) {
 			cam.onMouseWheel(delta);
+		}
 
 		scene.postMouseWheelToAnimators(delta);
 	}
@@ -1229,8 +1300,8 @@ export class CopperLicht {
 	 */
 	handleMouseMove(evt) {
 		if (this.isInPointerLockMode()) {
-			this.MouseMoveX = (evt['movementX'] || evt['mozMovementX'] || evt['webkitMovementX'] || 0);
-			this.MouseMoveY = (evt['movementY'] || evt['mozMovementY'] || evt['webkitMovementY'] || 0);
+			this.MouseMoveX = evt["movementX"] || evt["mozMovementX"] || evt["webkitMovementX"] || 0;
+			this.MouseMoveY = evt["movementY"] || evt["mozMovementY"] || evt["webkitMovementY"] || 0;
 		}
 
 		if (evt) {
@@ -1239,13 +1310,15 @@ export class CopperLicht {
 		}
 
 		var scene = this.getScene();
-		if (scene == null)
+		if (scene == null) {
 			return false;
+		}
 
-		//console.log("MouseMove " + this.MouseX + " " + this.MouseY);
+		// console.log("MouseMove " + this.MouseX + " " + this.MouseY);
 		var cam = scene.getActiveCamera();
-		if (cam != null)
+		if (cam != null) {
 			cam.onMouseMove(evt);
+		}
 
 		scene.postMouseMoveToAnimators(evt);
 
@@ -1264,14 +1337,16 @@ export class CopperLicht {
 	 */
 	get3DPositionFrom2DPosition(x, y) {
 		var r = this.TheRenderer;
-		if (r == null)
+		if (r == null) {
 			return null;
+		}
 
 		var proj = r.getProjection();
 		var view = r.getView();
 
-		if (proj == null || view == null)
+		if (proj == null || view == null) {
 			return null;
+		}
 
 		var viewProjection = proj.multiply(view);
 		var frustrum = new CL3D.ViewFrustrum();
@@ -1301,28 +1376,31 @@ export class CopperLicht {
 	get2DPositionFrom3DPosition(pos3d) {
 		var mat = new CL3D.Matrix4(false);
 		var r = this.TheRenderer;
-		if (!r.Projection)
+		if (!r.Projection) {
 			return null;
+		}
 
 		r.Projection.copyTo(mat);
 		mat = mat.multiply(r.View);
-		//mat = mat.multiply(World);
+		// mat = mat.multiply(World);
 		var hWidth = r.getWidth() / 2;
 		var hHeight = r.getHeight() / 2;
 		var render2DTranslationX = hWidth;
 		var render2DTranslationY = hHeight;
 
-		if (hHeight == 0 || hWidth == 0)
+		if (hHeight == 0 || hWidth == 0) {
 			return null;
+		}
 
 		var v4df = new CL3D.Vect3d(pos3d.X, pos3d.Y, pos3d.Z);
-		v4df['W'] = 1;
+		v4df["W"] = 1;
 
 		mat.multiplyWith1x4Matrix(v4df);
-		var zDiv = v4df['W'] == 0.0 ? 1.0 : (1.0 / v4df['W']);
+		var zDiv = v4df["W"] == 0.0 ? 1.0 : (1.0 / v4df["W"]);
 
-		if (v4df.Z < 0)
+		if (v4df.Z < 0) {
 			return null;
+		}
 
 		var ret = new CL3D.Vect2d();
 
@@ -1336,8 +1414,9 @@ export class CopperLicht {
 	 * @public
 	 */
 	setActiveCameraNextFrame(cam) {
-		if (cam == null)
+		if (cam == null) {
 			return;
+		}
 
 		this.NextCameraToSetActive = cam;
 	}
@@ -1357,32 +1436,32 @@ export class CopperLicht {
 	 * @param {CL3D.TriangleSelector} world: TriangleSelector
 	 */
 	setCollisionWorldForAllSceneNodes(n, world) {
-		if (!n)
+		if (!n) {
 			return;
+		}
 
 		for (var ai = 0; ai < n.Animators.length; ++ai) {
 			var coll = n.Animators[ai];
 			if (coll) {
-				if (coll.getType() == 'collisionresponse')
+				if (coll.getType() == "collisionresponse") {
 					coll.setWorld(world);
-
-				else {
-					if (coll.getType() == 'onclick' || coll.getType() == 'onmove')
+				} else {
+					if (coll.getType() == "onclick" || coll.getType() == "onmove") {
 						coll.World = world;
-
-					else if (coll.getType() == 'gameai')
+					} else if (coll.getType() == "gameai") {
 						coll.World = world;
-
-					else if (coll.getType() == '3rdpersoncamera')
+					} else if (coll.getType() == "3rdpersoncamera") {
 						coll.World = world;
+					}
 				}
 			}
 		}
 
 		for (var i = 0; i < n.Children.length; ++i) {
 			var c = n.Children[i];
-			if (c)
+			if (c) {
 				this.setCollisionWorldForAllSceneNodes(c, world);
+			}
 		}
 	}
 
@@ -1392,11 +1471,13 @@ export class CopperLicht {
 	 * @public
 	 */
 	reloadScene(sceneName) {
-		if (!sceneName || !gDocument)
+		if (!sceneName || !gDocument) {
 			return false;
+		}
 
-		if (this.LastLoadedFileContent == null)
+		if (this.LastLoadedFileContent == null) {
 			return false;
+		}
 
 		var scene = null;
 		var sceneidx = -1;
@@ -1409,12 +1490,20 @@ export class CopperLicht {
 			}
 		}
 
-		if (sceneidx == -1)
+		if (sceneidx == -1) {
 			return false;
+		}
 
 		var loader = new CL3D.FlaceLoader();
-		var newscene = loader.reloadScene(this.LastLoadedFileContent, scene, sceneidx,
-			this.LastLoadedFilename, this.TheTextureManager, this.TheMeshCache, this);
+		var newscene = loader.reloadScene(
+			this.LastLoadedFileContent,
+			scene,
+			sceneidx,
+			this.LastLoadedFilename,
+			this.TheTextureManager,
+			this.TheMeshCache,
+			this,
+		);
 
 		if (newscene != null) {
 			var currentlyActive = gDocument.getCurrentScene() == scene;
@@ -1423,8 +1512,9 @@ export class CopperLicht {
 			gDocument.Scenes[sceneidx] = newscene;
 
 			// restart the scene if it is currently active
-			if (currentlyActive)
+			if (currentlyActive) {
 				this.gotoScene(newscene);
+			}
 		}
 
 		return true;
@@ -1436,7 +1526,7 @@ export class CopperLicht {
 	 */
 	updateLoadingDialog() {
 		if (!this.LoadingAFile && !this.WaitingForTexturesToBeLoaded) {
-			this.LoadingDialog.style.display = 'none';
+			this.LoadingDialog.style.display = "none";
 			this.LoadingDialog = null;
 		}
 	}
@@ -1446,8 +1536,9 @@ export class CopperLicht {
 	 * Creates a nicely looking loading dialog, with the specified loading text
 	 */
 	createTextDialog(forLoadingDlg, text, loadingScreenBackgroundColor) {
-		if (this.MainElement == null)
+		if (this.MainElement == null) {
 			return;
+		}
 
 		if (this.fullPage) {
 			this.MainElement.setAttribute("width", String(globalThis.innerWidth));
@@ -1466,49 +1557,53 @@ export class CopperLicht {
 		var x = this.CanvasTopLeftX + ((this.MainElement.width - w) / 2);
 		var y = this.CanvasTopLeftY + (this.MainElement.height / 2);
 
-		if (!forLoadingDlg)
+		if (!forLoadingDlg) {
 			y += 30;
+		}
 
-		var containsLogo = forLoadingDlg && text.indexOf('<img') != -1;
+		var containsLogo = forLoadingDlg && text.indexOf("<img") != -1;
 
-		text = text.replace('$PROGRESS$', '');
+		text = text.replace("$PROGRESS$", "");
 
-		var content = '';
+		var content = "";
 
 		if (containsLogo) {
 			// force preload image
 			var li = new Image();
 			this.LoadingImage = li;
-			var imgsrcPos = text.indexOf('src="');
-			var imgurl = text.substring(imgsrcPos + 5, text.indexOf('"', imgsrcPos + 5));
+			var imgsrcPos = text.indexOf("src=\"");
+			var imgurl = text.substring(imgsrcPos + 5, text.indexOf("\"", imgsrcPos + 5));
 			li.src = imgurl;
 
 			// loading screen with logo image
 			var bgColor = "#000000";
-			if (typeof loadingScreenBackgroundColor !== "undefined")
+			if (typeof loadingScreenBackgroundColor !== "undefined") {
 				bgColor = loadingScreenBackgroundColor;
+			}
 
-			dlg.style.cssText = "position: absolute; left:" + this.CanvasTopLeftX + "px; top:" + this.CanvasTopLeftY + "px; color:#ffffff; padding:5px; height:" + this.MainElement.height + "px; width:" + this.MainElement.width + "px; background-color:" + bgColor + ";";
+			dlg.style.cssText = "position: absolute; left:" + this.CanvasTopLeftX + "px; top:" + this.CanvasTopLeftY + "px; color:#ffffff; padding:5px; height:"
+				+ this.MainElement.height + "px; width:" + this.MainElement.width + "px; background-color:" + bgColor + ";";
 
 			content = "<div style=\"position: relative; top: 50%;  transform: translateY(-50%);\">" + text + "</div>";
-		}
-
-		else {
+		} else {
 			// normal dialog
-			dlg.style.cssText = "position: absolute; left:" + x + "px; top:" + y + "px; color:#ffffff; padding:5px; background-color:#000000; height:" + h + "px; width:" + w + "px; border-radius:5px; border:1px solid #777777;  opacity:0.5;";
+			dlg.style.cssText = "position: absolute; left:" + x + "px; top:" + y + "px; color:#ffffff; padding:5px; background-color:#000000; height:" + h
+				+ "px; width:" + w + "px; border-radius:5px; border:1px solid #777777;  opacity:0.5;";
 
 			content = "<p style=\"margin:0; padding-left:" + paddingleft + "px; padding-bottom:5px;\">" + text + "</p> ";
 
-			if (forLoadingDlg && !containsLogo)
+			if (forLoadingDlg && !containsLogo) {
 				content += "<img style=\"position:absolute; left:5px; top:3px;\" src=\"scenes/copperlichtdata/loading.gif\" />";
+			}
 		}
 
 		dlg.innerHTML = content;
 
 		dlg_div.appendChild(dlg);
 
-		if (forLoadingDlg)
+		if (forLoadingDlg) {
 			this.LoadingDialog = dlg_div;
+		}
 	}
 
 	/**
@@ -1530,10 +1625,9 @@ export class CopperLicht {
 		const canvas = this.MainElement;
 
 		if (canvas) {
-			canvas.requestPointerLock =
-				canvas['requestPointerLock'] ||
-				canvas['mozRequestPointerLock'] ||
-				canvas['webkitRequestPointerLock'];
+			canvas.requestPointerLock = canvas["requestPointerLock"]
+				|| canvas["mozRequestPointerLock"]
+				|| canvas["webkitRequestPointerLock"];
 
 			canvas.requestPointerLock();
 		}
@@ -1546,15 +1640,15 @@ export class CopperLicht {
 	onPointerLockChanged() {
 		const canvas = this.MainElement;
 
-		if (document['PointerLockElement'] === canvas ||
-			document['pointerLockElement'] === canvas ||
-			document['mozPointerLockElement'] === canvas ||
-			document['webkitPointerLockElement'] === canvas) {
+		if (
+			document["PointerLockElement"] === canvas
+			|| document["pointerLockElement"] === canvas
+			|| document["mozPointerLockElement"] === canvas
+			|| document["webkitPointerLockElement"] === canvas
+		) {
 			// pointer locked
 			this.pointerIsCurrentlyLocked = true;
-		}
-
-		else {
+		} else {
 			// pointer lock lost
 			this.pointerIsCurrentlyLocked = false;
 		}
@@ -1566,16 +1660,20 @@ export class CopperLicht {
 	 */
 	setupEventHandlersForFullscreenChange() {
 		const me = this;
-		const fullscreenChange = () => { me.onFullscreenChanged(); };
-		const pointerLockChange = () => { me.onPointerLockChanged(); };
+		const fullscreenChange = () => {
+			me.onFullscreenChanged();
+		};
+		const pointerLockChange = () => {
+			me.onPointerLockChanged();
+		};
 
-		document.addEventListener('fullscreenchange', fullscreenChange, false);
-		document.addEventListener('mozfullscreenchange', fullscreenChange, false);
-		document.addEventListener('webkitfullscreenchange', fullscreenChange, false);
+		document.addEventListener("fullscreenchange", fullscreenChange, false);
+		document.addEventListener("mozfullscreenchange", fullscreenChange, false);
+		document.addEventListener("webkitfullscreenchange", fullscreenChange, false);
 
-		document.addEventListener('pointerlockchange', pointerLockChange, false);
-		document.addEventListener('mozpointerlockchange', pointerLockChange, false);
-		document.addEventListener('webkitpointerlockchange', pointerLockChange, false);
+		document.addEventListener("pointerlockchange", pointerLockChange, false);
+		document.addEventListener("mozpointerlockchange", pointerLockChange, false);
+		document.addEventListener("webkitpointerlockchange", pointerLockChange, false);
 	}
 
 	/**
@@ -1587,16 +1685,17 @@ export class CopperLicht {
 	 * set it to - for example - the parent of the canvas for showing some more info.
 	 */
 	switchToFullscreen(withPointerLock, elementToSetToFullsceen) {
-		if (elementToSetToFullsceen == null)
+		if (elementToSetToFullsceen == null) {
 			elementToSetToFullsceen = this.MainElement;
+		}
 
 		this.requestPointerLockAfterFullscreen = withPointerLock;
 
-		elementToSetToFullsceen.requestFullscreen = elementToSetToFullsceen.requestFullscreen ||
-			elementToSetToFullsceen.mozRequestFullscreen ||
-			elementToSetToFullsceen.mozRequestFullScreen || // Older API upper case 'S'.
-			elementToSetToFullsceen.msRequestFullscreen ||
-			elementToSetToFullsceen.webkitRequestFullscreen;
+		elementToSetToFullsceen.requestFullscreen = elementToSetToFullsceen.requestFullscreen
+			|| elementToSetToFullsceen.mozRequestFullscreen
+			|| elementToSetToFullsceen.mozRequestFullScreen // Older API upper case 'S'.
+			|| elementToSetToFullsceen.msRequestFullscreen
+			|| elementToSetToFullsceen.webkitRequestFullscreen;
 		elementToSetToFullsceen.requestFullscreen();
 	}
 
@@ -1607,8 +1706,9 @@ export class CopperLicht {
 	getOrCreateVideoStream(filename, createIfNotFound, handlerOnVideoEnded, handlerOnVideoFailed) {
 		for (var i = 0; i < this.playingVideoStreams.length; ++i) {
 			var v = this.playingVideoStreams[i];
-			if (v.filename == filename)
+			if (v.filename == filename) {
 				return v;
+			}
 		}
 
 		if (createIfNotFound) {
@@ -1654,12 +1754,11 @@ export class CopperLicht {
 				// remove
 				this.playingVideoStreams.splice(i, 1);
 				--i;
-			}
-
-			else
+			} else {
 				aVideoIsPlaying = true;
+			}
 		}
 
 		return aVideoIsPlaying;
 	}
-};
+}

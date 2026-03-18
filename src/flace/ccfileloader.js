@@ -1,8 +1,8 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import { doFetch } from "../share/doFetch.js";
-import { isNode } from '../utils/environment.js';
+import { isNode } from "../utils/environment.js";
 
 /**
  * @constructor
@@ -22,8 +22,8 @@ export class CCFileLoader {
 
 		try {
 			if (isNode) {
-				let path = me.FileToLoad.replaceAll('\\', '/');
-				me.FileToLoad = path.startsWith('file:') ? path : `file:///${path}`;
+				let path = me.FileToLoad.replaceAll("\\", "/");
+				me.FileToLoad = path.startsWith("file:") ? path : `file:///${path}`;
 			}
 
 			doFetch(me.FileToLoad, { signal })
@@ -36,36 +36,36 @@ export class CCFileLoader {
 							if (functionCallBackOnError) {
 								functionCallBackOnError(message);
 								reportedError = true;
-							}
-							else
+							} else {
 								console.log(message);
+							}
 						}
 					}
-					if (me.useArrayBufferReturn)
+					if (me.useArrayBufferReturn) {
 						return await response.arrayBuffer();
-					else
+					} else {
 						return await response.text();
+					}
 				})
 				.then((data) => {
-					if (functionCallBack)
+					if (functionCallBack) {
 						functionCallBack(data);
-				})
-		}
-		catch (e) {
-			if (functionCallBackOnError)
+					}
+				});
+		} catch (e) {
+			if (functionCallBackOnError) {
 				functionCallBackOnError(e.message);
-			else {
+			} else {
 				console.log("Could not open file " + this.FileToLoad + ": " + e.message);
 			}
 		}
-	};
+	}
 
 	abort() {
 		try {
 			this.Controller.abort();
-		}
-		catch (e) {
+		} catch (e) {
 			console.log("Could not abort " + this.FileToLoad);
 		}
 	}
-};
+}

@@ -11,40 +11,40 @@ import * as CL3D from "./main.js";
  * @constructor
  */
 export class Line3d {
-    /**
-     * Start point of the line
-     * @public
-     * @type {CL3D.Vect3d}
-     */
-    Start = null;
+	/**
+	 * Start point of the line
+	 * @public
+	 * @type {CL3D.Vect3d}
+	 */
+	Start = null;
 
-    /**
-     * End point of the line
-     * @public
-     * @type {CL3D.Vect3d}
-     */
-    End = null;
-    
-    constructor() {
-        this.Start = new CL3D.Vect3d();
-        this.End = new CL3D.Vect3d();
-    }
+	/**
+	 * End point of the line
+	 * @public
+	 * @type {CL3D.Vect3d}
+	 */
+	End = null;
 
-    /**
-     * Returns the vector representing the line
-     * @public
-     * @returns {CL3D.Vect3d} center
-     */
-    getVector() {
-        return this.End.substract(this.Start);
-    }
+	constructor() {
+		this.Start = new CL3D.Vect3d();
+		this.End = new CL3D.Vect3d();
+	}
 
-    /**
-     * Returns the length of the line
-     * @public
-     * @returns {Number} center
-     */
-    getLength() {
-        return this.getVector().getLength();
-    }
-};
+	/**
+	 * Returns the vector representing the line
+	 * @public
+	 * @returns {CL3D.Vect3d} center
+	 */
+	getVector() {
+		return this.End.substract(this.Start);
+	}
+
+	/**
+	 * Returns the length of the line
+	 * @public
+	 * @returns {Number} center
+	 */
+	getLength() {
+		return this.getVector().getLength();
+	}
+}

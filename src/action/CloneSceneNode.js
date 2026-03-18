@@ -10,90 +10,94 @@ import * as CL3D from "../main.js";
  * @class
  */
 export class ActionCloneSceneNode extends CL3D.Action {
-    /**
-     * @type {Number}
-     */
-    SceneNodeToClone;
-    /**
-     * @type {boolean}
-     */
-    CloneCurrentSceneNode;
-    /**
-     * @type {CL3D.ActionHandler}
-     */
-    TheActionHandler;
+	/**
+	 * @type {Number}
+	 */
+	SceneNodeToClone;
+	/**
+	 * @type {boolean}
+	 */
+	CloneCurrentSceneNode;
+	/**
+	 * @type {CL3D.ActionHandler}
+	 */
+	TheActionHandler;
 
-    constructor() {
-        super();
+	constructor() {
+		super();
 
-        this.Type = 'CloneSceneNode';
-    }
+		this.Type = "CloneSceneNode";
+	}
 
-    /**
-     * @param {Number} oldNodeId
-     * @param {Number} newNodeId
-     */
-    createClone(oldNodeId, newNodeId) {
-        var a = new CL3D.ActionCloneSceneNode();
-        a.SceneNodeToClone = this.SceneNodeToClone;
-        a.CloneCurrentSceneNode = this.CloneCurrentSceneNode;
-        a.TheActionHandler = this.TheActionHandler ? this.TheActionHandler.createClone(oldNodeId, newNodeId) : null;
+	/**
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
+	 */
+	createClone(oldNodeId, newNodeId) {
+		var a = new CL3D.ActionCloneSceneNode();
+		a.SceneNodeToClone = this.SceneNodeToClone;
+		a.CloneCurrentSceneNode = this.CloneCurrentSceneNode;
+		a.TheActionHandler = this.TheActionHandler ? this.TheActionHandler.createClone(oldNodeId, newNodeId) : null;
 
-        if (a.SceneNodeToClone == oldNodeId)
-            a.SceneNodeToClone = newNodeId;
-        return a;
-    }
+		if (a.SceneNodeToClone == oldNodeId) {
+			a.SceneNodeToClone = newNodeId;
+		}
+		return a;
+	}
 
-    /**
-     * @param {CL3D.SceneNode} currentNode
-     * @param {CL3D.Scene} sceneManager
-     */
-    execute(currentNode, sceneManager) {
-        if (!currentNode || !sceneManager)
-            return;
+	/**
+	 * @param {CL3D.SceneNode} currentNode
+	 * @param {CL3D.Scene} sceneManager
+	 */
+	execute(currentNode, sceneManager) {
+		if (!currentNode || !sceneManager) {
+			return;
+		}
 
-        var nodeToHandle = null;
-        if (this.CloneCurrentSceneNode)
-            nodeToHandle = currentNode;
-        else
-            if (this.SceneNodeToClone != -1)
-                nodeToHandle = sceneManager.getSceneNodeFromId(this.SceneNodeToClone);
+		var nodeToHandle = null;
+		if (this.CloneCurrentSceneNode) {
+			nodeToHandle = currentNode;
+		} else if (this.SceneNodeToClone != -1) {
+			nodeToHandle = sceneManager.getSceneNodeFromId(this.SceneNodeToClone);
+		}
 
-        if (nodeToHandle) {
-            var oldId = nodeToHandle.Id;
-            var newId = -1;
+		if (nodeToHandle) {
+			var oldId = nodeToHandle.Id;
+			var newId = -1;
 
-            // get new, unused id
-            newId = sceneManager.getUnusedSceneNodeId();
+			// get new, unused id
+			newId = sceneManager.getUnusedSceneNodeId();
 
-            // clone
-            var cloned = nodeToHandle.createClone(nodeToHandle.Parent, oldId, newId);
+			// clone
+			var cloned = nodeToHandle.createClone(nodeToHandle.Parent, oldId, newId);
 
-            if (cloned != null) {
-                cloned.Id = newId;
-                nodeToHandle.Parent.addChild(cloned);
+			if (cloned != null) {
+				cloned.Id = newId;
+				nodeToHandle.Parent.addChild(cloned);
 
-                // update refernced ids which haven't been updated yet
-                sceneManager.replaceAllReferencedNodes(nodeToHandle, cloned);
+				// update refernced ids which haven't been updated yet
+				sceneManager.replaceAllReferencedNodes(nodeToHandle, cloned);
 
-                // also clone collision detection of the node in the world
-                var selector = nodeToHandle.Selector;
-                if (selector) {
-                    var newSelector = selector.createClone(cloned);
-                    if (newSelector) {
-                        // set to node
-                        cloned.Selector = newSelector;
+				// also clone collision detection of the node in the world
+				var selector = nodeToHandle.Selector;
+				if (selector) {
+					var newSelector = selector.createClone(cloned);
+					if (newSelector) {
+						// set to node
+						cloned.Selector = newSelector;
 
-                        // also, copy into world
-                        if (sceneManager.getCollisionGeometry())
-                            sceneManager.getCollisionGeometry().addSelector(newSelector);
-                    }
-                }
+						// also, copy into world
+						if (sceneManager.getCollisionGeometry()) {
+							sceneManager.getCollisionGeometry().addSelector(newSelector);
+						}
+					}
+				}
 
-                // run action on clone
-                if (this.TheActionHandler)
-                    this.TheActionHandler.execute(cloned);
-            }
-        }
-    }
-};
+				// run action on clone
+				if (this.TheActionHandler) {
+					this.TheActionHandler.execute(cloned);
+				}
+			}
+		}
+	}
+}

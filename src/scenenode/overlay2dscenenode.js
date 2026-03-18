@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -77,29 +77,27 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		this.SizeModeIsAbsolute = true;
 
 		// what it looks like
-		this.ShowBackGround = true; //:Boolean;
-		this.BackGroundColor = 0; //:int;
+		this.ShowBackGround = true; // :Boolean;
+		this.BackGroundColor = 0; // :int;
 
-		this.Texture = null; //:Texture;
+		this.Texture = null; // :Texture;
 		this.TextureHover = null; // :Texture;
 		this.TextureMask = null; // TODO: mask
 		this.RetainAspectRatio = true; // :Boolean;
 		this.BlurImage = false;
 
-		this.DrawText = false; //:Boolean;
-		this.TextAlignment = 1; //:int;
-		this.Text = ""; //:String;
-		this.FontName = ""; //:String;
-		this.TextColor = 0; //:int;
+		this.DrawText = false; // :Boolean;
+		this.TextAlignment = 1; // :int;
+		this.Text = ""; // :String;
+		this.FontName = ""; // :String;
+		this.TextColor = 0; // :int;
 
-		this.AnimateOnHover = false; //:Boolean;
-		this.OnHoverSetFontColor = false; //:Boolean;
-		this.HoverFontColor = 0; //:int;
-		this.OnHoverSetBackgroundColor = false; //:Boolean;
-		this.HoverBackgroundColor = 0; //:int;
-		this.OnHoverDrawTexture = false; //:Boolean;
-
-
+		this.AnimateOnHover = false; // :Boolean;
+		this.OnHoverSetFontColor = false; // :Boolean;
+		this.HoverFontColor = 0; // :int;
+		this.OnHoverSetBackgroundColor = false; // :Boolean;
+		this.HoverBackgroundColor = 0; // :int;
+		this.OnHoverDrawTexture = false; // :Boolean;
 
 		// runtime
 		this.TextTexture = null;
@@ -108,8 +106,8 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		this.CreatedTextTextureFontName = "";
 
 		this.CurrentFontPixelHeight = 0;
-		//this.CreatedTextColor = 0;
-		//this.CreatedTextHoverColor = 0;
+		// this.CreatedTextColor = 0;
+		// this.CreatedTextHoverColor = 0;
 	}
 
 	/**
@@ -138,7 +136,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return '2doverlay';
+		return "2doverlay";
 	}
 
 	/**
@@ -166,8 +164,9 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	 */
 	setShowBackgroundColor(showBackground, color) {
 		this.ShowBackGround = showBackground;
-		if (this.ShowBackGround)
+		if (this.ShowBackGround) {
 			this.BackGroundColor = color;
+		}
 	}
 
 	/**
@@ -190,8 +189,9 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		this.Text = text;
 		this.DrawText = this.Text != null && this.Text != "";
 
-		if (this.FontName == "")
+		if (this.FontName == "") {
 			this.FontName = "12;default;arial;normal;bold;true";
+		}
 	}
 
 	/**
@@ -224,24 +224,25 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 			var mposy = this.engine.getMouseY();
 
 			// is point inside rect
-			bHovering = (rctTarget.x <= mposx && rctTarget.y <= mposy &&
-				rctTarget.x + rctTarget.w >= mposx &&
-				rctTarget.y + rctTarget.h >= mposy);
+			bHovering = rctTarget.x <= mposx && rctTarget.y <= mposy
+				&& rctTarget.x + rctTarget.w >= mposx
+				&& rctTarget.y + rctTarget.h >= mposy;
 		}
 
 		var maskTex = this.TextureMask;
 		// draw background
-		if (bHovering && this.OnHoverSetBackgroundColor)
+		if (bHovering && this.OnHoverSetBackgroundColor) {
 			renderer.draw2DRectangle(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, this.HoverBackgroundColor, true, this.TextureMask);
-
-		else if (this.ShowBackGround)
+		} else if (this.ShowBackGround) {
 			renderer.draw2DRectangle(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, this.BackGroundColor, true, this.TextureMask);
+		}
 
-		//renderer.draw2DRectangle(100,100,100,100, CL3D.createColor(100, 255, 0, 0), true); // TODO: remove
+		// renderer.draw2DRectangle(100,100,100,100, CL3D.createColor(100, 255, 0, 0), true); // TODO: remove
 		// draw texture
 		var tex = this.Texture;
-		if (bHovering && this.TextureHover && this.OnHoverDrawTexture)
+		if (bHovering && this.TextureHover && this.OnHoverDrawTexture) {
 			tex = this.TextureHover;
+		}
 
 		if (tex != null && tex.isLoaded()) {
 			var w = tex.getWidth();
@@ -250,10 +251,8 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 			if (!this.RetainAspectRatio) {
 				// ignore aspect ratio
 				renderer.draw2DImage(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, tex, true, null, null, null, !this.BlurImage, maskTex);
-			}
-
-			else {
-				//rctTarget = this.getScreenCoordinatesRect(false, renderer);
+			} else {
+				// rctTarget = this.getScreenCoordinatesRect(false, renderer);
 				if (w && h && rctTarget.h && rctTarget.w) {
 					var aspectRatio = h / w;
 					var width = rctTarget.w;
@@ -287,8 +286,9 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 			var colorToUse = this.TextColor;
 
 			if (bHovering) {
-				if (this.TextHoverTexture)
+				if (this.TextHoverTexture) {
 					textureToUse = this.TextHoverTexture;
+				}
 
 				colorToUse = this.HoverFontColor;
 			}
@@ -297,23 +297,16 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 				var fw = textureToUse.OriginalWidth;
 				var fh = textureToUse.OriginalHeight;
 
-				if (this.TextAlignment == 1) // center
-				{
-					renderer.draw2DFontImage(rctTarget.x + ((rctTarget.w - fw) / 2),
-						rctTarget.y + ((rctTarget.h - fh) / 2),
-						fw, fh, textureToUse, colorToUse);
-				}
-
-				else {
+				if (this.TextAlignment == 1) { // center
+					renderer.draw2DFontImage(rctTarget.x + ((rctTarget.w - fw) / 2), rctTarget.y + ((rctTarget.h - fh) / 2), fw, fh, textureToUse, colorToUse);
+				} else {
 					// top left
 					renderer.draw2DFontImage(rctTarget.x, rctTarget.y, fw, fh, textureToUse, colorToUse);
 				}
-
 			}
-		}
-
-		else
+		} else {
 			this.destroyTextTextures(renderer);
+		}
 	}
 
 	/**
@@ -335,32 +328,33 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 
 		if (!createNewTexture) {
 			// also check for text content
-			createNewTexture = this.CreatedTextTextureText != this.Text ||
-				this.CreatedTextTextureFontName != this.FontName;
-			//this.TextColor != this.CreatedTextColor ||
-			//this.HoverFontColor != this.CreatedTextHoverColor;
+			createNewTexture = this.CreatedTextTextureText != this.Text
+				|| this.CreatedTextTextureFontName != this.FontName;
+			// this.TextColor != this.CreatedTextColor ||
+			// this.HoverFontColor != this.CreatedTextHoverColor;
 		}
 
-		if (!createNewTexture)
+		if (!createNewTexture) {
 			return;
+		}
 
 		// delete old textures
 		this.destroyTextTextures(renderer);
 
 		// create new CL3D.Textures
 		var canvas = createCanvas(1, 1);
-		if (canvas == null)
+		if (canvas == null) {
 			return;
+		}
 
 		var ctx = null;
 
-		try
-		{
+		try {
 			ctx = canvas.getContext("2d");
-			if (ctx == null)
+			if (ctx == null) {
 				return;
-		}
-		catch (err) {
+			}
+		} catch (err) {
 			return;
 		}
 
@@ -370,8 +364,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		// we could also draw the text with alpha into the texture, unfortunately, firefox doesn't like this
 		// and creates random green pixels at the border at the font. So we draw it with white onto
 		// black and factor the color in the shader
-		if (this.TextAlignment == 2) // multiline
-		{
+		if (this.TextAlignment == 2) { // multiline
 			// multiline text
 			var BrokenText = new Array();
 			this.breakText(BrokenText, forcedwidth, this.Text, ctx);
@@ -393,9 +386,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 				ctx.fillText(BrokenText[i], 0, y);
 				y += lineheight;
 			}
-		}
-
-		else {
+		} else {
 			// single line
 			var dim = ctx.measureText(this.Text);
 			canvas.width = dim.width;
@@ -430,30 +421,26 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		var size = text.length;
 		var length = 0;
 		var elWidth = rectWidth - 6;
-		var c = 'c';
+		var c = "c";
 		var WordWrap = true;
 
 		for (var i = 0; i < size; ++i) {
 			c = text.charAt(i);
 			var lineBreak = false;
 
-			if (c == '\r') // Mac or Windows breaks
-			{
+			if (c == "\r") { // Mac or Windows breaks
 				lineBreak = true;
-				c = ' ';
-				if (text.charAt(i + 1) == '\n') // Windows breaks
-				{
+				c = " ";
+				if (text.charAt(i + 1) == "\n") { // Windows breaks
 					text = text.substr(0, i).concat(text.substr(i + 2)); // == text.erase(i+1);
 					--size;
 				}
-			}
-			else if (c == '\n') // Unix breaks
-			{
+			} else if (c == "\n") { // Unix breaks
 				lineBreak = true;
-				c = ' ';
+				c = " ";
 			}
 
-			if (c == ' ' || c == 0 || i == (size - 1)) {
+			if (c == " " || c == 0 || i == (size - 1)) {
 				if (word.length) {
 					// here comes the next whitespace, look if
 					// we can break the last word to the next line.
@@ -467,9 +454,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 
 						lastLineStart = i - word.length;
 						line = word;
-					}
-
-					else {
+					} else {
 						// add word to line
 						line = line.concat(whitespace);
 						line = line.concat(word);
@@ -495,9 +480,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 					whitespace = "";
 					length = 0;
 				}
-			}
-
-			else {
+			} else {
 				// yippee this is a word..
 				word = word.concat(c);
 			}
@@ -523,7 +506,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 	getScreenCoordinatesRect(adjustForViewPortRendering, renderer) {
 		var w = renderer.getWidth();
 		var h = renderer.getHeight();
-		//core::dimension2d<s32> screensize = driver->getScreenSize();
+		// core::dimension2d<s32> screensize = driver->getScreenSize();
 		var retobj = new Object();
 
 		retobj.sw = w;
@@ -535,9 +518,7 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 			retobj.y = this.PosAbsoluteY;
 			retobj.w = this.SizeAbsoluteWidth;
 			retobj.h = this.SizeAbsoluteHeight;
-		}
-
-		else {
+		} else {
 			// use relative coordinates
 			retobj.x = this.PosRelativeX * w;
 			retobj.y = this.PosRelativeY * h;
@@ -600,64 +581,61 @@ export class Overlay2DSceneNode extends CL3D.SceneNode {
 		// input format:
 		// example format: #fnt_23;default;arial;normal;bold;true
 		// with parameters:
-		//Point Size
-		//Family (Default|Decorative|Roman|Script|Swiss|Modern)
-		//Face Name (Arial etc)
-		//Style (Normal|Slant|Italic)
-		//Weight (Normal|Light|Bold)
-		//Underlined (True|False)
+		// Point Size
+		// Family (Default|Decorative|Roman|Script|Swiss|Modern)
+		// Face Name (Arial etc)
+		// Style (Normal|Slant|Italic)
+		// Weight (Normal|Light|Bold)
+		// Underlined (True|False)
 		var outSize = 12;
 		var outName = "Arial";
 		var outItalic = false;
 		var outBold = false;
 
-		if (fontStr.indexOf('#fnt_') == 0)
+		if (fontStr.indexOf("#fnt_") == 0) {
 			fontStr = fontStr.substr(5);
+		}
 
-		var res = fontStr.split(';');
+		var res = fontStr.split(";");
 		for (var i = 0; i < res.length; ++i) {
 			var value = res[i];
 			var valuelwr = value.toLowerCase();
 
-			if (i == 0) // point size
-			{
+			if (i == 0) { // point size
 				var ptSize = parseInt(valuelwr);
 				outSize = ptSize;
-			}
-
-			else if (i == 2) // face name
+			} else if (i == 2) { // face name
 				outName = value;
-
-			else if (i == 3) // style
-			{
-				if (valuelwr.indexOf('italic') != -1)
+			} else if (i == 3) { // style
+				if (valuelwr.indexOf("italic") != -1) {
 					outItalic = true;
-			}
-
-			else if (i == 4) // weight
-			{
-				if (valuelwr.indexOf('bold') != -1)
+				}
+			} else if (i == 4) { // weight
+				if (valuelwr.indexOf("bold") != -1) {
 					outBold = true;
+				}
 			}
 		}
 
 		// all data extracted, build style string
 		// example: "italic 12pt Arial"
 		var ret = "";
-		if (outItalic)
+		if (outItalic) {
 			ret += "italic ";
-		if (outBold)
+		}
+		if (outBold) {
 			ret += "bold ";
+		}
 
-		//ret += outSize + "pt ";
+		// ret += outSize + "pt ";
 		// in 96dpi: (we assume this for the display here)
 		// points = pixels * 72 / 96
 		// pixels = (points * 96) / 72
-		this.CurrentFontPixelHeight = (outSize * 96 / 72);
+		this.CurrentFontPixelHeight = outSize * 96 / 72;
 		ret += this.CurrentFontPixelHeight + "px ";
 
 		ret += outName;
 
 		return ret;
 	}
-};
+}

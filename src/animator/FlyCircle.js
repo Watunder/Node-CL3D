@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -12,7 +12,6 @@ import * as CL3D from "../main.js";
  */
 export class AnimatorFlyCircle extends CL3D.Animator {
 	/**
-	 * 
 	 * @param {CL3D.Vect3d=} center 3d position of the center of the circle
 	 * @param {Number=} radius radius of the circle
 	 * @param {CL3D.Vect3d=} direction direction of the circle. For example (0,1,0) for up.
@@ -29,14 +28,18 @@ export class AnimatorFlyCircle extends CL3D.Animator {
 		this.Speed = 0.01;
 		this.Radius = 100;
 
-		if (center)
+		if (center) {
 			this.Center = center.clone();
-		if (radius)
+		}
+		if (radius) {
 			this.Radius = radius;
-		if (direction)
+		}
+		if (direction) {
 			this.Direction = direction.clone();
-		if (speed)
+		}
+		if (speed) {
 			this.Speed = speed;
+		}
 
 		this.init();
 	}
@@ -47,7 +50,7 @@ export class AnimatorFlyCircle extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'flycircle';
+		return "flycircle";
 	}
 
 	/**
@@ -74,7 +77,7 @@ export class AnimatorFlyCircle extends CL3D.Animator {
 	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
-		var diff = (timeMs - this.StartTime);
+		var diff = timeMs - this.StartTime;
 
 		if (diff != 0) {
 			var t = diff * this.Speed;
@@ -87,7 +90,7 @@ export class AnimatorFlyCircle extends CL3D.Animator {
 
 		return false;
 	}
-	
+
 	init() {
 		this.Direction.normalize();
 
@@ -95,9 +98,7 @@ export class AnimatorFlyCircle extends CL3D.Animator {
 			this.VecV = new CL3D.Vect3d(50, 0, 0);
 			this.VecV = this.VecV.crossProduct(this.Direction);
 			this.VecV.normalize();
-		}
-
-		else {
+		} else {
 			this.VecV = new CL3D.Vect3d(0, 50, 0);
 			this.VecV = this.VecV.crossProduct(this.Direction);
 			this.VecV.normalize();
@@ -106,4 +107,4 @@ export class AnimatorFlyCircle extends CL3D.Animator {
 		this.VecU = this.VecV.crossProduct(this.Direction);
 		this.VecU.normalize();
 	}
-};
+}

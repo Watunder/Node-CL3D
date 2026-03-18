@@ -1,10 +1,10 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
 
 /**
- * 3d plane class with lots of operators and methods. 
+ * 3d plane class with lots of operators and methods.
  * @class 3d plane class with lots of operators and methods
  * @public
  * @constructor
@@ -104,7 +104,7 @@ export class Plane3d {
 	 * @public
 	 */
 	normalize() {
-		var len = (1.0 / this.Normal.getLength());
+		var len = 1.0 / this.Normal.getLength();
 		this.Normal = this.Normal.multiplyWithScal(len);
 		this.D *= len;
 	}
@@ -120,15 +120,16 @@ export class Plane3d {
 	classifyPointRelation(point) {
 		var d = this.Normal.dotProduct(point) + this.D;
 
-		if (d < -0.000001)
+		if (d < -0.000001) {
 			return CL3D.Plane3d.ISREL3D_BACK;
+		}
 
-		if (d > 0.000001)
+		if (d > 0.000001) {
 			return CL3D.Plane3d.ISREL3D_FRONT;
+		}
 
 		return CL3D.Plane3d.ISREL3D_PLANAR;
 	}
-	
 
 	/**
 	 * Get the intersection point with two other planes if there is one.
@@ -139,8 +140,9 @@ export class Plane3d {
 		var linePoint = new CL3D.Vect3d();
 		var lineVect = new CL3D.Vect3d();
 
-		if (this.getIntersectionWithPlane(o1, linePoint, lineVect))
+		if (this.getIntersectionWithPlane(o1, linePoint, lineVect)) {
 			return o2.getIntersectionWithLine(linePoint, lineVect, outPoint);
+		}
 
 		return false;
 	}
@@ -159,8 +161,9 @@ export class Plane3d {
 		var fn11 = other.Normal.getLength();
 		var det = fn00 * fn11 - fn01 * fn01;
 
-		if (Math.abs(det) < 0.00000001)
+		if (Math.abs(det) < 0.00000001) {
 			return false;
+		}
 
 		var invdet = 1.0 / det;
 		var fc0 = (fn11 * -this.D + fn01 * other.D) * invdet;
@@ -185,11 +188,12 @@ export class Plane3d {
 	getIntersectionWithLine(linePoint, lineVect, outIntersection) {
 		var t2 = this.Normal.dotProduct(lineVect);
 
-		if (t2 == 0)
+		if (t2 == 0) {
 			return false;
+		}
 
 		var t = -(this.Normal.dotProduct(linePoint) + this.D) / t2;
-		linePoint.add((lineVect.multiplyWithScal(t))).copyTo(outIntersection);
+		linePoint.add(lineVect.multiplyWithScal(t)).copyTo(outIntersection);
 		return true;
 	}
 
@@ -211,4 +215,4 @@ export class Plane3d {
 		var d = this.Normal.dotProduct(lookDirection);
 		return d <= 0;
 	}
-};
+}

@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -44,12 +44,15 @@ export class AnimatorOnProximity extends CL3D.Animator {
 		this.TheActionHandler = null;
 		this.FunctionToCall = functionToCall;
 
-		if (radius)
+		if (radius) {
 			this.Range = radius;
-		if (idOfSceneNode)
+		}
+		if (idOfSceneNode) {
 			this.SceneNodeToTest = idOfSceneNode;
-		if (triggerOnLeave)
-			this.EnterType = 1; //this.EPET_LEAVE;
+		}
+		if (triggerOnLeave) {
+			this.EnterType = 1; // this.EPET_LEAVE;
+		}
 
 		this.IsInsideRadius = false;
 	}
@@ -59,7 +62,7 @@ export class AnimatorOnProximity extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'oncollide';
+		return "oncollide";
 	}
 	/**
 	 * @param {CL3D.SceneNode} node
@@ -83,21 +86,23 @@ export class AnimatorOnProximity extends CL3D.Animator {
 	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
-		if (n == null || this.sceneManager == null)
+		if (n == null || this.sceneManager == null) {
 			return false;
+		}
 
 		var actionInvoked = false;
 
 		var nodeToHandle = null;
-		if (this.ProximityType == 0) //EPT_THE_ACTIVE_CAMERA)
+		if (this.ProximityType == 0) { // EPT_THE_ACTIVE_CAMERA)
 			nodeToHandle = this.sceneManager.getActiveCamera();
-
-		else if (this.SceneNodeToTest != -1)
+		} else if (this.SceneNodeToTest != -1) {
 			nodeToHandle = this.sceneManager.getSceneNodeFromId(this.SceneNodeToTest);
+		}
 
 		if (nodeToHandle) {
-			if (n === nodeToHandle)
+			if (n === nodeToHandle) {
 				return false; // same node
+			}
 
 			var posNode1 = nodeToHandle.getAbsolutePosition();
 			var posNode2 = n.getAbsolutePosition();
@@ -109,17 +114,17 @@ export class AnimatorOnProximity extends CL3D.Animator {
 					isInside = posNode1.getDistanceTo(posNode2) < this.Range;
 					break;
 				case 1: // box
-					{
-						var mat = new CL3D.Matrix4(false);
-						if (n.getAbsoluteTransformation().getInverse(mat)) {
-							var test = posNode1.clone();
-							mat.transformVect(test);
-							var box = new CL3D.Box3d();
-							box.MinEdge = this.RangeBox.multiplyWithScal(-0.5);
-							box.MaxEdge = this.RangeBox.multiplyWithScal(0.5);
-							isInside = box.isPointInside(test);
-						}
+				{
+					var mat = new CL3D.Matrix4(false);
+					if (n.getAbsoluteTransformation().getInverse(mat)) {
+						var test = posNode1.clone();
+						mat.transformVect(test);
+						var box = new CL3D.Box3d();
+						box.MinEdge = this.RangeBox.multiplyWithScal(-0.5);
+						box.MaxEdge = this.RangeBox.multiplyWithScal(0.5);
+						isInside = box.isPointInside(test);
 					}
+				}
 			}
 
 			switch (this.EnterType) {
@@ -129,7 +134,7 @@ export class AnimatorOnProximity extends CL3D.Animator {
 						actionInvoked = true;
 					}
 					break;
-				case 1: //EPET_LEAVE:
+				case 1: // EPET_LEAVE:
 					if (!isInside && this.IsInsideRadius) {
 						this.invokeAction(nodeToHandle, n);
 						actionInvoked = true;
@@ -146,19 +151,22 @@ export class AnimatorOnProximity extends CL3D.Animator {
 	 * @public
 	 */
 	invokeAction(node, n) {
-		if (this.FunctionToCall)
+		if (this.FunctionToCall) {
 			this.FunctionToCall.call(node, n);
+		}
 
-		if (this.TheActionHandler)
+		if (this.TheActionHandler) {
 			this.TheActionHandler.execute(node);
+		}
 	}
 	/**
 	 * @public
 	 */
 	findActionByType(type) {
-		if (this.TheActionHandler)
+		if (this.TheActionHandler) {
 			return this.TheActionHandler.findAction(type);
+		}
 
 		return null;
 	}
-};
+}

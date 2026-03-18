@@ -19,10 +19,10 @@ export class ActionSwitchToScene extends CL3D.Action {
 	 * @param {CL3D.CopperLicht} [engine]
 	 */
 	constructor(engine) {
-        super();
+		super();
 
 		this.Engine = engine;
-		this.Type = 'SwitchToScene';
+		this.Type = "SwitchToScene";
 	}
 
 	/**
@@ -34,13 +34,14 @@ export class ActionSwitchToScene extends CL3D.Action {
 		a.SceneName = this.SceneName;
 		return a;
 	}
-    
+
 	/**
 	 * @param {CL3D.SceneNode} currentNode
 	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
-		if (this.Engine)
+		if (this.Engine) {
 			this.Engine.gotoSceneByName(this.SceneName, true);
+		}
 	}
-};
+}

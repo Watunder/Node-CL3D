@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
@@ -13,7 +13,6 @@ import * as CL3D from "./main.js";
  * @param {Number} z z coordinate, can be null.
  */
 export class Vect3d {
-
 	/**
 	 * X coordinate of the vector
 	 * @public
@@ -24,7 +23,7 @@ export class Vect3d {
 	/**
 	 * Y coordinate of the vector
 	 * @public
-	 * @type Number 
+	 * @type Number
 	 */
 	Y = 0;
 
@@ -121,8 +120,9 @@ export class Vect3d {
 	 */
 	normalize() {
 		let l = this.X * this.X + this.Y * this.Y + this.Z * this.Z;
-		if (l > -0.0000001 && l < 0.0000001)
+		if (l > -0.0000001 && l < 0.0000001) {
 			return;
+		}
 
 		l = 1.0 / Math.sqrt(l);
 		this.X *= l;
@@ -137,8 +137,9 @@ export class Vect3d {
 	 */
 	getNormalized() {
 		let l = this.X * this.X + this.Y * this.Y + this.Z * this.Z;
-		if (l > -0.0000001 && l < 0.0000001)
+		if (l > -0.0000001 && l < 0.0000001) {
 			return new CL3D.Vect3d(0, 0, 0);
+		}
 
 		l = 1.0 / Math.sqrt(l);
 		return new CL3D.Vect3d(this.X * l, this.Y * l, this.Z * l);
@@ -149,8 +150,9 @@ export class Vect3d {
 	 */
 	setLength(n) {
 		let l = this.X * this.X + this.Y * this.Y + this.Z * this.Z;
-		if (l > -0.0000001 && l < 0.0000001)
+		if (l > -0.0000001 && l < 0.0000001) {
 			return;
+		}
 
 		l = n / Math.sqrt(l);
 		this.X *= l;
@@ -173,9 +175,9 @@ export class Vect3d {
 	 * @param other {CL3D.Vect3d} other vector
 	 */
 	equals(other) {
-		return CL3D.equals(this.X, other.X) &&
-			CL3D.equals(this.Y, other.Y) &&
-			CL3D.equals(this.Z, other.Z);
+		return CL3D.equals(this.X, other.X)
+			&& CL3D.equals(this.Y, other.Y)
+			&& CL3D.equals(this.Z, other.Z);
 	}
 	/**
 	 * Returns true if this vector equals zero. Doesn't use the comparison operator but the {@link iszero} function.
@@ -189,16 +191,16 @@ export class Vect3d {
 	 * @public
 	 */
 	equalsByNumbers(x, y, z) {
-		return CL3D.equals(this.X, x) &&
-			CL3D.equals(this.Y, y) &&
-			CL3D.equals(this.Z, z);
+		return CL3D.equals(this.X, x)
+			&& CL3D.equals(this.Y, y)
+			&& CL3D.equals(this.Z, z);
 	}
 	/**
 	 * Returns true if this vector == zero.
 	 * @public
 	 */
 	isZero() {
-		//return CL3D.iszero(X) && CL3D.iszero(Y) && CL3D.iszero(Z);
+		// return CL3D.iszero(X) && CL3D.iszero(Y) && CL3D.iszero(Z);
 		return this.X == 0 && this.Y == 0 && this.Z == 0;
 	}
 	/**
@@ -324,19 +326,23 @@ export class Vect3d {
 
 		angle.Y = CL3D.radToDeg(Math.atan2(this.X, this.Z));
 
-		if (angle.Y < 0.0)
+		if (angle.Y < 0.0) {
 			angle.Y += 360.0;
-		if (angle.Y >= 360.0)
+		}
+		if (angle.Y >= 360.0) {
 			angle.Y -= 360.0;
+		}
 
 		let z1 = Math.sqrt(this.X * this.X + this.Z * this.Z);
 
 		angle.X = CL3D.radToDeg(Math.atan2(z1, this.Y)) - 90.0;
 
-		if (angle.X < 0.0)
+		if (angle.X < 0.0) {
 			angle.X += 360.0;
-		if (angle.X >= 360.0)
+		}
+		if (angle.X >= 360.0) {
 			angle.X -= 360.0;
+		}
 
 		return angle;
 	}

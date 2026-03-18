@@ -34,17 +34,16 @@ export class ActionChangeSceneNodeRotation extends CL3D.Action {
 	 * @type {Number}
 	 */
 	TimeNeededForRotationMs;
-	
 
 	constructor() {
-        super();
+		super();
 
-		this.Type = 'ChangeSceneNodeRotation';
+		this.Type = "ChangeSceneNodeRotation";
 	}
 
 	/**
-	 * @param {Number} oldNodeId 
-	 * @param {Number} newNodeId 
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionChangeSceneNodeRotation();
@@ -55,34 +54,36 @@ export class ActionChangeSceneNodeRotation extends CL3D.Action {
 		a.RotateAnimated = this.RotateAnimated;
 		a.TimeNeededForRotationMs = this.TimeNeededForRotationMs;
 
-		if (a.SceneNodeToChangeRotation == oldNodeId)
+		if (a.SceneNodeToChangeRotation == oldNodeId) {
 			a.SceneNodeToChangeRotation = newNodeId;
+		}
 		return a;
 	}
-    
+
 	/**
-	 * @param {CL3D.SceneNode} currentNode 
-	 * @param {CL3D.Scene} sceneManager 
+	 * @param {CL3D.SceneNode} currentNode
+	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
-		if (!currentNode || !sceneManager)
+		if (!currentNode || !sceneManager) {
 			return;
+		}
 
 		var nodeToHandle = null;
-		if (this.ChangeCurrentSceneNode)
+		if (this.ChangeCurrentSceneNode) {
 			nodeToHandle = currentNode;
-
-		else if (this.SceneNodeToChangeRotation != -1)
+		} else if (this.SceneNodeToChangeRotation != -1) {
 			nodeToHandle = sceneManager.getSceneNodeFromId(this.SceneNodeToChangeRotation);
+		}
 
 		if (nodeToHandle) {
 			var finalRot = null;
 
 			switch (this.RotationChangeType) {
-				case 0: //EIT_ABSOLUTE_ROTATION:
+				case 0: // EIT_ABSOLUTE_ROTATION:
 					finalRot = this.Vector.clone();
 					break;
-				case 1: //EIT_RELATIVE_ROTATION:
+				case 1: // EIT_RELATIVE_ROTATION:
 					finalRot = nodeToHandle.Rot.add(this.Vector);
 					break;
 			}
@@ -91,9 +92,7 @@ export class ActionChangeSceneNodeRotation extends CL3D.Action {
 				if (!this.RotateAnimated) {
 					// not animated, set rotation directly
 					nodeToHandle.Rot = finalRot;
-				}
-
-				else {
+				} else {
 					// rotate animated to target
 					var anim = new CL3D.AnimatorRotation();
 					anim.setRotateToTargetAndStop(finalRot, nodeToHandle.Rot, this.TimeNeededForRotationMs);
@@ -103,4 +102,4 @@ export class ActionChangeSceneNodeRotation extends CL3D.Action {
 			}
 		}
 	}
-};
+}

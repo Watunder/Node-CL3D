@@ -1,12 +1,12 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
 
 /**
- * An animator animates a scene node. It can animate position, rotation, material, and so on. 
+ * An animator animates a scene node. It can animate position, rotation, material, and so on.
  * A scene node animator is able to animate a {@link SceneNode} in a very simple way: It may change its position,
- * rotation, scale and/or material. There are lots of animators to choose from. You can create scene node animators 
+ * rotation, scale and/or material. There are lots of animators to choose from. You can create scene node animators
  * and attach them to a scene node using {@link SceneNode.addAnimator()}.<br/>
  * Note that this class is only the base class of all Animators, it doesn't do anything itself. See
  * {@link AnimatorCameraFPS} for a concrete Animator example.
@@ -25,7 +25,7 @@ export class Animator {
 	 * @public
 	 */
 	getType() {
-		return 'none';
+		return "none";
 	}
 
 	/**
@@ -40,15 +40,15 @@ export class Animator {
 
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input
-	 * 
+	 *
 	 * @param {any} event
 	 */
 	onMouseDown(event) {
 	}
-	
+
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input
-	 * 
+	 *
 	 * @param {any} delta
 	 */
 	onMouseWheel(delta) {
@@ -56,7 +56,7 @@ export class Animator {
 
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input
-	 * 
+	 *
 	 * @param {any} event
 	 */
 	onMouseUp(event) {
@@ -64,7 +64,7 @@ export class Animator {
 
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input
-	 * 
+	 *
 	 * @param {any} event
 	 */
 	onMouseMove(event) {
@@ -73,7 +73,7 @@ export class Animator {
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input.
 	 * Returns false if the event has not been processed.
-	 * 
+	 *
 	 * @param {any} event
 	 */
 	onKeyDown(event) {
@@ -83,7 +83,7 @@ export class Animator {
 	/**
 	 * Event handler called by the engine so the animator can react to mouse and key input
 	 * Returns false if the event has not been processed.
-	 * 
+	 *
 	 * @param {any} event
 	 */
 	onKeyUp(event) {
@@ -92,7 +92,7 @@ export class Animator {
 
 	/**
 	 * Resets the animator, if supported
-	 * 
+	 *
 	 * @param {undefined} [event]
 	 */
 	reset(event) {
@@ -115,4 +115,4 @@ export class Animator {
 	createClone(node, newManager, oldNodeId, newNodeId) {
 		return null;
 	}
-};
+}
