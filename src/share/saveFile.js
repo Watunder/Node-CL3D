@@ -16,13 +16,11 @@ if (isNode) {
 	});
 } else if (isBrowser) {
 	saveFileImpl = (filepath, data) => {
-		let blob = new Blob([data]);
-
-		let element = document.createElement("save-file");
-
-		element.href = URL.createObjectURL(blob);
+		const element = document.createElement("a");
+		element.href = URL.createObjectURL(new Blob([data]));
 		element.download = filepath;
 		element.click();
+		URL.revokeObjectURL(element.href);
 	};
 }
 

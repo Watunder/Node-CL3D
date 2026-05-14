@@ -10,7 +10,15 @@ let openWebpageImpl = (url) => {
 if (isNode) {
 	await import("child_process").then(async (module) => {
 		openWebpageImpl = (url) => {
-			module.default.exec("start " + url);
+			let command = "";
+			if (process.platform === "win32") {
+				command = "start";
+			} else if (process.platform === "darwin") {
+				command = "open";
+			} else {
+				command = "xdg-open";
+			}
+			module.default.exec(`${command} ${url}`);
 		};
 	});
 } else if (isBrowser) {

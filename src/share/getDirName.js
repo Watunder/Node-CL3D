@@ -12,7 +12,6 @@ if (isNode) {
 		getDirNameImpl = () => {
 			const __filename = import.meta.url;
 			const __dirname = module.default.dirname(__filename);
-
 			return __dirname;
 		};
 	});
