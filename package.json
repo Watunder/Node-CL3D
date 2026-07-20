@@ -35,8 +35,7 @@
 	},
 	"dependencies": {
 		"3d-core-raub": "git+https://github.com/Watunder/3d-core-raub.git",
-		"file-fetch": "git+https://github.com/Watunder/file-fetch.git",
-		"nc-screen": "^1.4.2"
+		"file-fetch": "git+https://github.com/Watunder/file-fetch.git"
 	},
 	"devDependencies": {
 		"@rollup/plugin-replace": "^6.0.2",
