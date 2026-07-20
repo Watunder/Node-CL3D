@@ -26,13 +26,10 @@ const imports = [
 		builtinModules: [
 			"child_process",
 			"module",
-			"events",
 			"path",
 			"fs",
 		],
 		externalModules: [
-			"canvas",
-			"nc-screen",
 			"file-fetch",
 			"3d-core-raub",
 			"@napi-rs/canvas",
