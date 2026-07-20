@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
@@ -20,7 +20,7 @@ export class Quaternion {
 	/**
 	 * Y component of the Quaternion
 	 * @public
-	 * @type Number 
+	 * @type Number
 	 */
 	Y = 0;
 
@@ -44,17 +44,21 @@ export class Quaternion {
 		this.Z = 0;
 		this.W = 1;
 
-		if (x != null)
+		if (x != null) {
 			this.X = x;
+		}
 
-		if (y != null)
+		if (y != null) {
 			this.Y = y;
+		}
 
-		if (z != null)
+		if (z != null) {
 			this.Z = z;
+		}
 
-		if (w != null)
+		if (w != null) {
 			this.W = w;
+		}
 	}
 
 	/**
@@ -125,21 +129,17 @@ export class Quaternion {
 		var invscale;
 
 		if ((angle + 1.0) > 0.05) {
-			if ((1.0 - angle) >= 0.05) // spherical interpolation
-			{
+			if ((1.0 - angle) >= 0.05) { // spherical interpolation
 				var theta = Math.acos(angle);
 				var invsintheta = 1.0 / Math.sin(theta);
 				scale = Math.sin(theta * (1.0 - time)) * invsintheta;
 				invscale = Math.sin(theta * time) * invsintheta;
-			}
-			else // linear interploation
-			{
+			} // linear interploation
+			else {
 				scale = 1.0 - time;
 				invscale = time;
 			}
-		}
-
-		else {
+		} else {
 			q2 = new CL3D.Quaternion(-q1.Y, q1.X, -q1.W, q1.Z);
 			scale = Math.sin(CL3D.PI * (0.5 - time));
 			invscale = Math.sin(CL3D.PI * time);
@@ -216,10 +216,10 @@ export class Quaternion {
 		var sqz = this.Z * this.Z;
 
 		// heading = rotation about z-axis
-		dest.Z = (Math.atan2(2.0 * (this.X * this.Y + this.Z * this.W), (sqx - sqy - sqz + sqw)));
+		dest.Z = Math.atan2(2.0 * (this.X * this.Y + this.Z * this.W), sqx - sqy - sqz + sqw);
 
 		// bank = rotation about x-axis
-		dest.X = (Math.atan2(2.0 * (this.Y * this.Z + this.X * this.W), (-sqx - sqy + sqz + sqw)));
+		dest.X = Math.atan2(2.0 * (this.Y * this.Z + this.X * this.W), -sqx - sqy + sqz + sqw);
 
 		// attitude = rotation about y-axis
 		dest.Y = Math.asin(CL3D.clamp(-2.0 * (this.X * this.Z - this.Y * this.W), -1.0, 1.0));
@@ -227,9 +227,9 @@ export class Quaternion {
 
 	/**
 	 * Sets the quaternion from euler coordinates
-	 * @param {Number} x 
-	 * @param {Number} y 
-	 * @param {Number} z 
+	 * @param {Number} x
+	 * @param {Number} y
+	 * @param {Number} z
 	 * @public
 	 */
 	setFromEuler(x, y, z) {
@@ -250,10 +250,10 @@ export class Quaternion {
 		var cpsy = cp * sy;
 		var spsy = sp * sy;
 
-		this.X = (sr * cpcy - cr * spsy);
-		this.Y = (cr * spcy + sr * cpsy);
-		this.Z = (cr * cpsy - sr * spcy);
-		this.W = (cr * cpcy + sr * spsy);
+		this.X = sr * cpcy - cr * spsy;
+		this.Y = cr * spcy + sr * cpsy;
+		this.Z = cr * cpsy - sr * spcy;
+		this.W = cr * cpcy + sr * spsy;
 
 		this.normalize();
 	}
@@ -261,8 +261,9 @@ export class Quaternion {
 	normalize() {
 		var n = this.X * this.X + this.Y * this.Y + this.Z * this.Z + this.W * this.W;
 
-		if (n == 1)
+		if (n == 1) {
 			return;
+		}
 
 		n = 1.0 / Math.sqrt(n);
 		this.multiplyThisWith(n);
@@ -275,4 +276,4 @@ export class Quaternion {
 	toString() {
 		return "(x: " + this.X + " y:" + this.Y + " z:" + this.Z + " w:" + this.W + ")";
 	}
-};
+}

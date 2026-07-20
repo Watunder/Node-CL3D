@@ -21,14 +21,14 @@ export class ActionExecuteJavaScript extends CL3D.Action {
 	JScript;
 
 	constructor() {
-        super();
+		super();
 
-		this.Type = 'ExecuteJavaScript';
+		this.Type = "ExecuteJavaScript";
 	}
 
 	/**
-	 * @param {Number} oldNodeId 
-	 * @param {Number} newNodeId 
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionExecuteJavaScript();
@@ -37,8 +37,8 @@ export class ActionExecuteJavaScript extends CL3D.Action {
 	}
 
 	/**
-	 * @param {CL3D.SceneNode} currentNode 
-	 * @param {CL3D.Scene} sceneManager 
+	 * @param {CL3D.SceneNode} currentNode
+	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
 		gCurrentJScriptNode = currentNode;
@@ -47,4 +47,4 @@ export class ActionExecuteJavaScript extends CL3D.Action {
 
 		gCurrentJScriptNode = null;
 	}
-};
+}

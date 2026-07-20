@@ -28,11 +28,11 @@ export class ActionSetSceneNodeAnimation extends CL3D.Action {
 	AnimName;
 
 	constructor() {
-        super();
+		super();
 
-		this.Type = 'SetSceneNodeAnimation';
+		this.Type = "SetSceneNodeAnimation";
 	}
-    
+
 	/**
 	 * @param {Number} oldNodeId
 	 * @param {Number} newNodeId
@@ -44,8 +44,9 @@ export class ActionSetSceneNodeAnimation extends CL3D.Action {
 		a.Loop = this.Loop;
 		a.AnimName = this.AnimName;
 
-		if (a.SceneNodeToChangeAnim == oldNodeId)
+		if (a.SceneNodeToChangeAnim == oldNodeId) {
 			a.SceneNodeToChangeAnim = newNodeId;
+		}
 
 		return a;
 	}
@@ -55,22 +56,23 @@ export class ActionSetSceneNodeAnimation extends CL3D.Action {
 	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
-		if (!currentNode || !sceneManager)
+		if (!currentNode || !sceneManager) {
 			return;
+		}
 
 		var nodeToHandle = null;
-		if (this.ChangeCurrentSceneNode)
+		if (this.ChangeCurrentSceneNode) {
 			nodeToHandle = currentNode;
-
-		else if (this.SceneNodeToChangeAnim != -1)
+		} else if (this.SceneNodeToChangeAnim != -1) {
 			nodeToHandle = sceneManager.getSceneNodeFromId(this.SceneNodeToChangeAnim);
+		}
 
 		if (nodeToHandle) {
 			// set animation
 			var animatedMesh = nodeToHandle;
-			if (animatedMesh instanceof CL3D.AnimatedMeshSceneNode && animatedMesh.getType() == 'animatedmesh') {
+			if (animatedMesh instanceof CL3D.AnimatedMeshSceneNode && animatedMesh.getType() == "animatedmesh") {
 				animatedMesh.setAnimationByEditorName(this.AnimName, this.Loop);
 			}
 		}
 	}
-};
+}

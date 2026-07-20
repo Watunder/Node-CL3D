@@ -40,10 +40,10 @@ export class ActionSetCameraTarget extends CL3D.Action {
 
 		this.UseAnimatedMovement = false;
 		this.TimeNeededForMovementMs = 0;
-		this.Type = 'SetCameraTarget';
+		this.Type = "SetCameraTarget";
 	}
 
-	/** 
+	/**
 	 * @param {Number} oldNodeId
 	 * @param {Number} newNodeId
 	 */
@@ -65,38 +65,40 @@ export class ActionSetCameraTarget extends CL3D.Action {
 	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
-		if (!currentNode || !sceneManager)
+		if (!currentNode || !sceneManager) {
 			return;
+		}
 
 		var nodeToHandle = null;
-		if (this.ChangeCurrentSceneNode)
+		if (this.ChangeCurrentSceneNode) {
 			nodeToHandle = currentNode;
-
-		else if (this.SceneNodeToChangePosition != -1)
+		} else if (this.SceneNodeToChangePosition != -1) {
 			nodeToHandle = sceneManager.getSceneNodeFromId(this.SceneNodeToChangePosition);
+		}
 
 		var cam = nodeToHandle;
-		if (cam instanceof CL3D.CameraSceneNode && cam.getType() == 'camera') {
+		if (cam instanceof CL3D.CameraSceneNode && cam.getType() == "camera") {
 			var finalpos = cam.getTarget().clone();
 
 			switch (this.PositionChangeType) {
-				case 0: //EIT_ABSOLUTE_POSITION:
+				case 0: // EIT_ABSOLUTE_POSITION:
 					finalpos = this.Vector.clone();
 					break;
-				case 1: //EIT_RELATIVE_POSITION:
+				case 1: // EIT_RELATIVE_POSITION:
 					finalpos = nodeToHandle.Pos.add(this.Vector);
 					break;
-				case 2: //EIT_RELATIVE_TO_SCENE_NODE:
+				case 2: // EIT_RELATIVE_TO_SCENE_NODE:
 					{
 						var nodeRelativeTo = null;
-						if (this.RelativeToCurrentSceneNode)
+						if (this.RelativeToCurrentSceneNode) {
 							nodeRelativeTo = currentNode;
-
-						else if (this.SceneNodeRelativeTo != -1)
+						} else if (this.SceneNodeRelativeTo != -1) {
 							nodeRelativeTo = sceneManager.getSceneNodeFromId(this.SceneNodeRelativeTo);
+						}
 
-						if (nodeRelativeTo)
+						if (nodeRelativeTo) {
 							finalpos = nodeRelativeTo.Pos.add(this.Vector);
+						}
 					}
 					break;
 			}
@@ -113,17 +115,16 @@ export class ActionSetCameraTarget extends CL3D.Action {
 					anim.recalculateImidiateValues();
 
 					nodeToHandle.addAnimator(anim);
-				}
-
-				else {
+				} else {
 					// set target directly
 					cam.setTarget(finalpos);
 
-					var animfps = cam.getAnimatorOfType('camerafps');
-					if (animfps != null && animfps instanceof CL3D.AnimatorCameraFPS)
+					var animfps = cam.getAnimatorOfType("camerafps");
+					if (animfps != null && animfps instanceof CL3D.AnimatorCameraFPS) {
 						animfps.lookAt(finalpos);
+					}
 				}
 			}
 		}
 	}
-};
+}

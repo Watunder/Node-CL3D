@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -76,23 +76,22 @@ export class Light {
 		r.Direction = this.Direction != null ? this.Direction.clone() : null;
 		return r;
 	}
-};
+}
 
 /**
  * A class rendering a point light.
  * Lighting works like this: Simply add a light scene node to the scene (as shown in the example below), and
  * set the 'Lighting' flag of the material of the scene nodes you want to be lighted to 'true'. That's it,
  * your scene will now by lit by dynamic light. For changing how the light looks like, change the LightData
- * structure of the light, it holds the attenuation, position, and color of the light. 
+ * structure of the light, it holds the attenuation, position, and color of the light.
  * Example showing how to add this to the current scene:
  * @constructor
- * @extends CL3D.SceneNode 
+ * @extends CL3D.SceneNode
  * @class class rendering a point light.
  * @example
  * // add a cube to the scene
  * var lightnode = new CL3D.LightSceneNode();
  * scene.getRootSceneNode().addChild(lightnode);
- *
  */
 export class LightSceneNode extends CL3D.SceneNode {
 	/**
@@ -118,7 +117,7 @@ export class LightSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'light';
+		return "light";
 	}
 
 	/**
@@ -138,10 +137,11 @@ export class LightSceneNode extends CL3D.SceneNode {
 	 * @public
 	 */
 	OnRegisterSceneNode(mgr) {
-		if (this.Visible)
+		if (this.Visible) {
 			mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_LIGHTS);
+		}
 
-		CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr); // register children 
+		CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr); // register children
 
 		this.LightData.Position = this.getAbsolutePosition();
 	}
@@ -162,10 +162,10 @@ export class LightSceneNode extends CL3D.SceneNode {
 	 * @public
 	 */
 	render(renderer) {
-		if (this.LightData.IsDirectional)
+		if (this.LightData.IsDirectional) {
 			renderer.setDirectionalLight(this.LightData);
-
-		else
+		} else {
 			renderer.addDynamicLight(this.LightData);
+		}
 	}
-};
+}

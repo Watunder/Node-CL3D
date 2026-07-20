@@ -1,15 +1,15 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
-//public static const REDRAW_WHEN_CAM_MOVED:int = 0;
-//public static const REDRAW_WHEN_SCENE_CHANGED:int = 1;
-//public static const REDRAW_EVERY_FRAME:int = 2;
+// public static const REDRAW_WHEN_CAM_MOVED:int = 0;
+// public static const REDRAW_WHEN_SCENE_CHANGED:int = 1;
+// public static const REDRAW_EVERY_FRAME:int = 2;
 
-//public static const REGISTER_MODE_DEFAULT:int = 0;
-//public static const REGISTER_MODE_SKYBOX:int = 1;
-//public static const REGISTER_MODE_CAMERA:int = 2;
-//public static const REGISTER_MODE_LIGHTS:int = 3;
-//public static const REGISTER_MODE_2DOVERLAY:int = 4;
+// public static const REGISTER_MODE_DEFAULT:int = 0;
+// public static const REGISTER_MODE_SKYBOX:int = 1;
+// public static const REGISTER_MODE_CAMERA:int = 2;
+// public static const REGISTER_MODE_LIGHTS:int = 3;
+// public static const REGISTER_MODE_2DOVERLAY:int = 4;
 
 import * as CL3D from "../main.js";
 import { GLSL, isNode } from "../utils/environment.js";
@@ -413,7 +413,7 @@ export class Scene {
 	init() {
 		this.RootNode = new CL3D.SceneNode();
 		this.RootNode.scene = this;
-		this.Name = '';
+		this.Name = "";
 		this.BackgroundColor = 0;
 		this.CollisionWorld = null;
 
@@ -478,8 +478,7 @@ export class Scene {
 		 * @type {Array.<{node: CL3D.SceneNode, timeAfterToDelete: Number}>}
 		 */
 		this.DeletionList = new Array();
-		this.LastBulletImpactPosition = new CL3D.Vect3d; // hack for IRR_SCENE_MANAGER_LAST_BULLET_IMPACT_POSITION parameter
-
+		this.LastBulletImpactPosition = new CL3D.Vect3d(); // hack for IRR_SCENE_MANAGER_LAST_BULLET_IMPACT_POSITION parameter
 
 		// runtime post processing
 		this.RTTSizeWhenStartingPostEffects = null;
@@ -491,30 +490,31 @@ export class Scene {
 	}
 
 	/**
-	  * Returns the type string of the current scene.
-	  * @public
-	*/
+	 * Returns the type string of the current scene.
+	 * @public
+	 */
 	getCurrentCameraFrustrum() {
 		return this.CurrentCameraFrustrum;
 	}
 
 	/**
-	  * Returns the type string of the current scene.
-	  * @public
-	*/
+	 * Returns the type string of the current scene.
+	 * @public
+	 */
 	getSceneType() {
 		return "unknown";
 	}
 
 	/**
-	  * returns true if rendering needs to be done at all
-	  * @public
-	*/
+	 * returns true if rendering needs to be done at all
+	 * @public
+	 */
 	doAnimate(renderer) {
 		this.LastUsedRenderer = renderer;
 
-		if (this.StartTime == 0)
+		if (this.StartTime == 0) {
 			this.StartTime = CL3D.CLTimer.getTime();
+		}
 
 		// clear
 		this.TheSkyBoxSceneNode = null;
@@ -522,24 +522,26 @@ export class Scene {
 		// animate
 		var sceneChanged = false;
 
-		if (this.clearDeletionList(false))
+		if (this.clearDeletionList(false)) {
 			sceneChanged = true;
+		}
 
-		if (this.RootNode.OnAnimate(this, CL3D.CLTimer.getTime()))
+		if (this.RootNode.OnAnimate(this, CL3D.CLTimer.getTime())) {
 			sceneChanged = true;
+		}
 
 		var viewHasChanged = this.HasViewChangedSinceLastRedraw();
 		var textureLoadWasFinished = renderer ? renderer.getAndResetTextureWasLoadedFlag() : false;
 
 		// check if we need to redraw at all
-		var needToRedraw = this.ForceRedrawThisFrame ||
-			(this.RedrawMode == 0 /*REDRAW_WHEN_CAM_MOVED*/ && (viewHasChanged || textureLoadWasFinished)) ||
-			(this.RedrawMode == 1 /*REDRAW_WHEN_SCENE_CHANGED*/ && (viewHasChanged || sceneChanged || textureLoadWasFinished)) ||
-			(this.RedrawMode == 2 /*REDRAW_EVERY_FRAME*/) ||
-			CL3D.ScriptingInterface.getScriptingInterface().needsRedraw();
+		var needToRedraw = this.ForceRedrawThisFrame
+			|| (this.RedrawMode == 0 /*REDRAW_WHEN_CAM_MOVED*/ && (viewHasChanged || textureLoadWasFinished))
+			|| (this.RedrawMode == 1 /*REDRAW_WHEN_SCENE_CHANGED*/ && (viewHasChanged || sceneChanged || textureLoadWasFinished))
+			|| (this.RedrawMode == 2 /*REDRAW_EVERY_FRAME*/)
+			|| CL3D.ScriptingInterface.getScriptingInterface().needsRedraw();
 
 		if (!needToRedraw) {
-			//Debug.print("Don't need to redraw at all.");
+			// Debug.print("Don't need to redraw at all.");
 			return false;
 		}
 
@@ -548,21 +550,23 @@ export class Scene {
 	}
 
 	/**
-	  * Returns the current mode of rendering, can be for example {@link Scene.RENDER_MODE_TRANSPARENT}.
-	  * Is useful for scene nodes which render themselves for example both solid and transparent.
-	  * @public
-	*/
+	 * Returns the current mode of rendering, can be for example {@link Scene.RENDER_MODE_TRANSPARENT}.
+	 * Is useful for scene nodes which render themselves for example both solid and transparent.
+	 * @public
+	 */
 	getCurrentRenderMode() {
 		return this.CurrentRenderMode;
 	}
 
 	initShadowMapRendering(renderer, forceRecreate) {
 		if (!forceRecreate) {
-			if (this.ShadowBuffer)
+			if (this.ShadowBuffer) {
 				return true;
+			}
 
-			if (this.TriedShadowInit)
+			if (this.TriedShadowInit) {
 				return false;
+			}
 		}
 
 		this.TriedShadowInit = true;
@@ -573,10 +577,14 @@ export class Scene {
 			var useFloatingPointTexture = !renderer.ShadowMapUsesRGBPacking;
 
 			this.ShadowBuffer = renderer.addRenderTargetTexture(
-				bufferSize, bufferSize, useFloatingPointTexture);
+				bufferSize,
+				bufferSize,
+				useFloatingPointTexture,
+			);
 
-			if (!this.ShadowBuffer)
+			if (!this.ShadowBuffer) {
 				return false;
+			}
 
 			// if using a shadow cascade, create a second buffer for that
 			if (CL3D.UseShadowCascade) {
@@ -584,7 +592,10 @@ export class Scene {
 				if (tSize2 > 1000) tSize2 = tSize2 / 2;
 
 				this.ShadowBuffer2 = renderer.addRenderTargetTexture(
-					tSize2, tSize2, useFloatingPointTexture);
+					tSize2,
+					tSize2,
+					useFloatingPointTexture,
+				);
 
 				if (!this.ShadowBuffer2) {
 					this.ShadowBuffer = null;
@@ -599,25 +610,26 @@ export class Scene {
 
 			var newMaterialTypeSolid = renderer.createMaterialType(
 				renderer.vs_shader_normaltransform_for_shadowmap,
-				useFloatingPointTexture ? renderer.fs_shader_draw_depth_shadowmap_depth :
-					renderer.fs_shader_draw_depth_shadowmap_rgbapack
+				useFloatingPointTexture
+					? renderer.fs_shader_draw_depth_shadowmap_depth
+					: renderer.fs_shader_draw_depth_shadowmap_rgbapack,
 			);
-
 
 			var newMaterialTypeAlphaRef = renderer.createMaterialType(
 				renderer.vs_shader_normaltransform_alpharef_for_shadowmap,
-				renderer.fs_shader_alpharef_draw_depth_shadowmap_depth
+				renderer.fs_shader_alpharef_draw_depth_shadowmap_depth,
 			);
 
 			var newMaterialTypeAlphaRefMovingGrass = renderer.createMaterialType(
 				renderer.vs_shader_normaltransform_alpharef_moving_grass_for_shadowmap,
-				renderer.fs_shader_alpharef_draw_depth_shadowmap_depth
+				renderer.fs_shader_alpharef_draw_depth_shadowmap_depth,
 			);
 
-
-			if (newMaterialTypeSolid == -1 ||
-				newMaterialTypeAlphaRef == -1 ||
-				newMaterialTypeAlphaRefMovingGrass == -1) {
+			if (
+				newMaterialTypeSolid == -1
+				|| newMaterialTypeAlphaRef == -1
+				|| newMaterialTypeAlphaRefMovingGrass == -1
+			) {
 				this.ShadowBuffer = null;
 				this.ShadowBuffer2 = null;
 				return false;
@@ -634,8 +646,9 @@ export class Scene {
 	renderShadowMap(renderer) {
 		// The code in this method is unfinished for now and only creates shadow map renderings for
 		// the internal test cases. It will be extended in future updates.
-		if (!this.initShadowMapRendering(renderer))
+		if (!this.initShadowMapRendering(renderer)) {
 			return false;
+		}
 
 		// find directional light
 		var lightDirection = null;
@@ -649,8 +662,9 @@ export class Scene {
 			}
 		}
 
-		if (!lightDirection)
+		if (!lightDirection) {
 			return false; // we only support shadow maps from directional light for now
+		}
 
 		// go through everything and draw it using shadow buffer from light
 		// setup camera
@@ -677,11 +691,11 @@ export class Scene {
 			var s = this.SceneNodesToRender[i];
 			var transformedBox = s.getTransformedBoundingBox();
 
-			if (boxesAdded == 0)
+			if (boxesAdded == 0) {
 				bbBox = transformedBox;
-
-			else
+			} else {
 				bbBox.addInternalBox(transformedBox);
+			}
 
 			++boxesAdded;
 		}
@@ -690,14 +704,15 @@ export class Scene {
 		var oldRenderTarget = renderer.getRenderTarget();
 
 		for (var pass = 0; pass < (CL3D.UseShadowCascade ? 2 : 1); ++pass) {
-			if (!renderer.setRenderTarget(pass == 0 ? this.ShadowBuffer : this.ShadowBuffer2, true, true))
+			if (!renderer.setRenderTarget(pass == 0 ? this.ShadowBuffer : this.ShadowBuffer2, true, true)) {
 				break;
+			}
 
 			// find a good position for directional light so that all shadows are in the light/camera frustrum:
 			// frustrum should be minimal (to keep resolution high) and contain all objects.
 			// Best approach would be like this:
 			// 	- calculate BBox around visible objects
-			//	- transform the corners of the box light space (using light view matrix)
+			// 	- transform the corners of the box light space (using light view matrix)
 			//  - calculate BBox (ideally an obb) of this transformed box
 			//  - use that oriented bounding box as the orthographic frustrum
 			var lightpos = new CL3D.Vect3d(40, 100, 40);
@@ -716,9 +731,7 @@ export class Scene {
 				center = origPosition.add(camVector);
 
 				orthoViewWidth = frustrumLength * this.ShadowMapCameraViewDetailFactor;
-			}
-
-			else {
+			} else {
 				// make frustrum contain basically everything
 				orthoViewWidth = frustrumLength * 0.9;
 			}
@@ -734,44 +747,43 @@ export class Scene {
 
 			// move upvector a bit if it is perpendicular to the light direction
 			var dot = lightTarget.substract(lightpos).getNormalized().dotProduct(upVector);
-			if (dot == -1)
+			if (dot == -1) {
 				upVector.X += 0.01;
+			}
 
 			cam.ViewMatrix.buildCameraLookAtMatrixLH(lightpos, lightTarget, upVector);
 
 			var zNear = 1.0; // cam.ZNear default is 0.1, but it works much better with 1.0
-			var zFar = Math.max(100.0, frustrumLength) * 2.0; //cam.ZFar;
+			var zFar = Math.max(100.0, frustrumLength) * 2.0; // cam.ZFar;
 
-			if (this.ShadowMapOrthogonal)
+			if (this.ShadowMapOrthogonal) {
 				cam.Projection.buildProjectionMatrixPerspectiveOrthoLH(orthoViewWidth, orthoViewWidth, zNear, zFar);
-
-			else
+			} else {
 				cam.Projection.buildProjectionMatrixPerspectiveFovLH(CL3D.PI / 3.5, 4.0 / 3.0, zNear, zFar);
+			}
 
 			var smatrix = new CL3D.Matrix4();
 			smatrix = smatrix.multiply(cam.Projection);
 			smatrix = smatrix.multiply(cam.ViewMatrix);
 
-			if (pass == 0)
+			if (pass == 0) {
 				this.ShadowMapLightMatrix = smatrix;
-
-			else
+			} else {
 				this.ShadowMapLightMatrix2 = smatrix;
-
+			}
 
 			// render geometry similar to in drawRegistered3DNodes()
 			// camera
 			// active camera
 			this.CurrentRenderMode = CL3D.Scene.RENDER_MODE_CAMERA;
 			if (this.ActiveCamera) {
-				//this.ActiveCamera.render(renderer);
+				// this.ActiveCamera.render(renderer);
 				renderer.setProjection(cam.Projection);
 				renderer.setView(cam.ViewMatrix);
 			}
 
 			// Calculate culling
-			var cullingBox = this.getCullingBBoxAndStoreCameraFrustrum(renderer,
-				renderer.getProjection(), renderer.getView(), lightpos);
+			var cullingBox = this.getCullingBBoxAndStoreCameraFrustrum(renderer, renderer.getProjection(), renderer.getView(), lightpos);
 
 			// draw everything with custom shader into shadow buffer
 			this.CurrentRenderMode = CL3D.Scene.RENDER_MODE_SHADOW_BUFFER; // CL3D.Scene.RENDER_MODE_DEFAULT;
@@ -780,15 +792,15 @@ export class Scene {
 				var s = this.SceneNodesToRender[i];
 				var type = s.getType();
 
-				var isStaticMesh = type == 'mesh';
-				var isAnimated = type == 'animatedmesh';
+				var isStaticMesh = type == "mesh";
+				var isAnimated = type == "animatedmesh";
 
-				if (isStaticMesh || isAnimated) // only for static meshes for now
-				{
+				if (isStaticMesh || isAnimated) { // only for static meshes for now
 					if (cullingBox == null || cullingBox.intersectsWithBox(s.getTransformedBoundingBox())) {
 						if (isStaticMesh) {
-							if (!s.OccludesLight)
+							if (!s.OccludesLight) {
 								continue;
+							}
 
 							renderer.setWorld(s.AbsoluteTransformation);
 
@@ -800,28 +812,21 @@ export class Scene {
 									this.ShadowDrawMaterialAlphaRef.Tex1 = buf.Mat.Tex1;
 									renderer.setMaterial(this.ShadowDrawMaterialAlphaRef);
 									renderer.drawMeshBuffer(buf);
-								}
-
-								else if (matType == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS) {
+								} else if (matType == CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS) {
 									this.ShadowDrawMaterialAlphaRefMovingGrass.Tex1 = buf.Mat.Tex1;
 									renderer.setMaterial(this.ShadowDrawMaterialAlphaRefMovingGrass);
 									renderer.drawMeshBuffer(buf);
-								}
-
-								else if (!buf.Mat.isTransparent()) {
+								} else if (!buf.Mat.isTransparent()) {
 									renderer.setMaterial(this.ShadowDrawMaterialSolid);
 									renderer.drawMeshBuffer(buf);
 								}
 							}
-						}
-
-						else if (isAnimated) {
+						} else if (isAnimated) {
 							s.render(renderer);
 						}
 					}
 				}
 			}
-
 		} // end for all passes
 
 		renderer.setRenderTarget(oldRenderTarget, false, true);
@@ -834,7 +839,6 @@ export class Scene {
 		cam.Pos = origPosition;
 		cam.UpVector = origUpVector;
 		cam.TargetAndRotationAreBound = origBinding;
-
 
 		return true;
 	}
@@ -865,8 +869,9 @@ export class Scene {
 		var prePostEffectsViewPort = renderer.getRenderTargetSize();
 
 		if (this.isAnyPostEffectActive()) {
-			if (!this.PostEffectsInitialized)
+			if (!this.PostEffectsInitialized) {
 				this.initPostProcessingEffects();
+			}
 
 			this.initPostProcessingQuad();
 
@@ -879,18 +884,19 @@ export class Scene {
 
 			if (postEffectRTT) {
 				if (renderer.setRenderTarget(postEffectRTT, true, true, this.BackgroundColor)) {
-					//irr::core::dimension2di rttSz = postEffectRTT->getSize();
-					//renderer.setViewPort(irr::core::rect<irr::s32>(0, 0, rttSz.Width, rttSz.Height));
+					// irr::core::dimension2di rttSz = postEffectRTT->getSize();
+					// renderer.setViewPort(irr::core::rect<irr::s32>(0, 0, rttSz.Width, rttSz.Height));
 					bUsingPostEffects = true;
 				}
 			}
 		}
 
 		// draw everything into shadow map if enabled
-		if (this.ShadowMappingEnabled &&
-			this.renderShadowMap(renderer)) {
-			renderer.enableShadowMap(true, this.ShadowBuffer, this.ShadowMapLightMatrix,
-				this.ShadowBuffer2, this.ShadowMapLightMatrix2);
+		if (
+			this.ShadowMappingEnabled
+			&& this.renderShadowMap(renderer)
+		) {
+			renderer.enableShadowMap(true, this.ShadowBuffer, this.ShadowMapLightMatrix, this.ShadowBuffer2, this.ShadowMapLightMatrix2);
 
 			renderer.ShadowMapBias1 = this.ShadowMapBias1;
 			renderer.ShadowMapBias2 = this.ShadowMapBias2;
@@ -916,8 +922,9 @@ export class Scene {
 		this.StoreViewMatrixForRedrawCheck();
 
 		// disable shadow map drawing again
-		if (this.ShadowMappingEnabled)
+		if (this.ShadowMappingEnabled) {
 			renderer.enableShadowMap(false, null, null);
+		}
 
 		// disable post effect drawing again
 		if (bUsingPostEffects) {
@@ -927,7 +934,7 @@ export class Scene {
 			// set old render target and viewport
 			renderer.setRenderTarget(prePostEffectRenderTarget, false, false);
 
-			//renderer.setViewPort(prePostEffectsViewPort);
+			// renderer.setViewPort(prePostEffectsViewPort);
 			// present post processed image on screen
 			var postEffectRTT = this.createOrGetPostEffectRTT(this.CurrentPostProcessRTTTargetIndex, false, this.CurrentPostProcessRTTTargetSizeFactor);
 			if (postEffectRTT) {
@@ -988,8 +995,9 @@ export class Scene {
 				frustrum = new CL3D.ViewFrustrum();
 				frustrum.setFrom(proj.multiply(view)); // calculate view frustum planes
 
-				if (this.UseCulling || alwaysReturnBox)
+				if (this.UseCulling || alwaysReturnBox) {
 					cullingBox = frustrum.getBoundingBox(camPos);
+				}
 			}
 
 			this.CurrentCameraFrustrum = frustrum;
@@ -1015,8 +1023,9 @@ export class Scene {
 
 		// skybox
 		this.CurrentRenderMode = CL3D.Scene.RENDER_MODE_SKYBOX;
-		if (this.SkyBoxSceneNode)
+		if (this.SkyBoxSceneNode) {
 			this.SkyBoxSceneNode.render(renderer);
+		}
 
 		renderer.clearDynamicLights();
 		renderer.AmbientLight = this.AmbientLight.clone();
@@ -1035,27 +1044,31 @@ export class Scene {
 		// draw lights
 		// sort lights
 		if (camPos != null && this.LightsToRender.length > 0) {
-			this.LightsToRender.sort(function (a, b) {
+			this.LightsToRender.sort(function(a, b) {
 				var distance1 = camPos.getDistanceFromSQ(a.getAbsolutePosition());
 				var distance2 = camPos.getDistanceFromSQ(b.getAbsolutePosition());
-				if (distance1 > distance2)
+				if (distance1 > distance2) {
 					return 1;
-				if (distance1 < distance2)
+				}
+				if (distance1 < distance2) {
 					return -1;
+				}
 				return 0;
 			});
 		}
 
 		this.CurrentRenderMode = CL3D.Scene.RENDER_MODE_LIGHTS;
 
-		for (i = 0; i < this.LightsToRender.length; ++i)
+		for (i = 0; i < this.LightsToRender.length; ++i) {
 			this.LightsToRender[i].render(renderer);
+		}
 
 		nodesRendered += this.LightsToRender.length;
 
 		// call callback
-		if (callbackForOnAfterSkyboxRendering)
+		if (callbackForOnAfterSkyboxRendering) {
 			callbackForOnAfterSkyboxRendering.OnAfterDrawSkyboxes(renderer);
+		}
 
 		// prepare for frustrum culling
 		var cullingBox = this.getCullingBBoxAndStoreCameraFrustrum(renderer, renderer.getProjection(), renderer.getView(), camPos);
@@ -1075,13 +1088,15 @@ export class Scene {
 		this.CurrentRenderMode = CL3D.Scene.RENDER_MODE_TRANSPARENT;
 
 		// sort transparent nodes
-		var sortfunc = function (a, b) {
+		var sortfunc = function(a, b) {
 			var distance1 = camPos.getDistanceFromSQ(a.getAbsolutePosition());
 			var distance2 = camPos.getDistanceFromSQ(b.getAbsolutePosition());
-			if (distance1 < distance2)
+			if (distance1 < distance2) {
 				return 1;
-			if (distance1 > distance2)
+			}
+			if (distance1 > distance2) {
 				return -1;
+			}
 			return 0;
 		};
 
@@ -1099,8 +1114,10 @@ export class Scene {
 		}
 
 		// now for objects with SolidNodeListAfterZClearForFPSCamera and TransparentNodeListAfterZClearForFPSCamera
-		if (this.SceneNodesToRenderAfterZClearForFPSCamera.length ||
-			this.SceneNodesToRenderTransparentAfterZClearForFPSCamera.length) {
+		if (
+			this.SceneNodesToRenderAfterZClearForFPSCamera.length
+			|| this.SceneNodesToRenderTransparentAfterZClearForFPSCamera.length
+		) {
 			renderer.clearZBuffer();
 
 			this.CurrentRenderMode = CL3D.Scene.RENDER_MODE_DEFAULT;
@@ -1136,8 +1153,9 @@ export class Scene {
 	 * @public
 	 */
 	HasViewChangedSinceLastRedraw() {
-		if (!this.ActiveCamera)
+		if (!this.ActiveCamera) {
 			return true;
+		}
 
 		var mat = new CL3D.Matrix4(false);
 		this.ActiveCamera.Projection.copyTo(mat);
@@ -1150,8 +1168,9 @@ export class Scene {
 	 * @public
 	 */
 	StoreViewMatrixForRedrawCheck() {
-		if (!this.ActiveCamera)
+		if (!this.ActiveCamera) {
 			return;
+		}
 
 		this.ActiveCamera.Projection.copyTo(this.LastViewProj);
 		this.LastViewProj = this.LastViewProj.multiply(this.ActiveCamera.ViewMatrix);
@@ -1253,8 +1272,9 @@ export class Scene {
 	 * @public
 	 */
 	registerNodeForRendering(s, mode) {
-		if (mode == null)
+		if (mode == null) {
 			mode = CL3D.Scene.RENDER_MODE_DEFAULT;
+		}
 
 		switch (mode) {
 			case CL3D.Scene.RENDER_MODE_SKYBOX:
@@ -1294,8 +1314,9 @@ export class Scene {
 	 * @returns {Array} array with all scene nodes found with this type.
 	 */
 	getAllSceneNodesOfType(type) {
-		if (this.RootNode == null)
+		if (this.RootNode == null) {
 			return null;
+		}
 
 		var ar = new Array();
 		this.getAllSceneNodesOfTypeImpl(this.RootNode, type, ar);
@@ -1306,8 +1327,9 @@ export class Scene {
 	 * @public
 	 */
 	getAllSceneNodesOfTypeImpl(n, c, a) {
-		if (n.getType() == c)
+		if (n.getType() == c) {
 			a.push(n);
+		}
 
 		for (var i = 0; i < n.Children.length; ++i) {
 			var child = n.Children[i];
@@ -1322,8 +1344,9 @@ export class Scene {
 	 * @returns {Array} array with all scene nodes found with this type.
 	 */
 	getAllSceneNodesWithAnimator(type) {
-		if (this.RootNode == null)
+		if (this.RootNode == null) {
 			return null;
+		}
 
 		var ar = new Array();
 		this.getAllSceneNodesWithAnimatorImpl(this.RootNode, type, ar);
@@ -1334,8 +1357,9 @@ export class Scene {
 	 * @public
 	 */
 	getAllSceneNodesWithAnimatorImpl(n, t, a) {
-		if (n.getAnimatorOfType(t) != null)
+		if (n.getAnimatorOfType(t) != null) {
 			a.push(n);
+		}
 
 		for (var i = 0; i < n.Children.length; ++i) {
 			var child = n.Children[i];
@@ -1350,8 +1374,9 @@ export class Scene {
 	 * @returns {CL3D.SceneNode} the found scene node or null if not found.
 	 */
 	getSceneNodeFromName(name) {
-		if (this.RootNode == null)
+		if (this.RootNode == null) {
 			return null;
+		}
 
 		return this.getSceneNodeFromNameImpl(this.RootNode, name);
 	}
@@ -1360,14 +1385,16 @@ export class Scene {
 	 * @public
 	 */
 	getSceneNodeFromNameImpl(n, name) {
-		if (n.Name == name)
+		if (n.Name == name) {
 			return n;
+		}
 
 		for (var i = 0; i < n.Children.length; ++i) {
 			var child = n.Children[i];
 			var s = this.getSceneNodeFromNameImpl(child, name);
-			if (s)
+			if (s) {
 				return s;
+			}
 		}
 
 		return null;
@@ -1380,8 +1407,9 @@ export class Scene {
 	 * @returns {CL3D.SceneNode} the found scene node or null if not found.
 	 */
 	getSceneNodeFromId(id) {
-		if (this.RootNode == null)
+		if (this.RootNode == null) {
 			return null;
+		}
 
 		return this.getSceneNodeFromIdImpl(this.RootNode, id);
 	}
@@ -1390,14 +1418,16 @@ export class Scene {
 	 * @public
 	 */
 	getSceneNodeFromIdImpl(n, id) {
-		if (n.Id == id)
+		if (n.Id == id) {
 			return n;
+		}
 
 		for (var i = 0; i < n.Children.length; ++i) {
 			var child = n.Children[i];
 			var s = this.getSceneNodeFromIdImpl(child, id);
-			if (s)
+			if (s) {
 				return s;
+			}
 		}
 
 		return null;
@@ -1416,13 +1446,15 @@ export class Scene {
 	 * @public
 	 */
 	registerSceneNodeAnimatorForEvents(a) {
-		if (a == null)
+		if (a == null) {
 			return;
+		}
 
 		for (var i = 0; i < this.RegisteredSceneNodeAnimatorsForEventsList.length; ++i) {
 			var s = this.RegisteredSceneNodeAnimatorsForEventsList[i];
-			if (s === a)
+			if (s === a) {
 				return;
+			}
 		}
 
 		this.RegisteredSceneNodeAnimatorsForEventsList.push(a);
@@ -1432,8 +1464,9 @@ export class Scene {
 	 * @public
 	 */
 	unregisterSceneNodeAnimatorForEvents(a) {
-		if (a == null)
+		if (a == null) {
 			return;
+		}
 
 		for (var i = 0; i < this.RegisteredSceneNodeAnimatorsForEventsList.length; ++i) {
 			var s = this.RegisteredSceneNodeAnimatorsForEventsList[i];
@@ -1500,17 +1533,16 @@ export class Scene {
 	 * @returns Returns a meta triangle selector with the collision geomertry
 	 */
 	createCollisionGeometry(storeInNodes, selectorToReuse) {
-		var ar = this.getAllSceneNodesOfType('mesh');
-		if (ar == null)
+		var ar = this.getAllSceneNodesOfType("mesh");
+		if (ar == null) {
 			return null;
+		}
 
 		var metaselector = null;
 		if (selectorToReuse) {
 			selectorToReuse.clear();
 			metaselector = selectorToReuse;
-		}
-
-		else {
+		} else {
 			metaselector = new CL3D.MetaTriangleSelector();
 		}
 
@@ -1521,50 +1553,53 @@ export class Scene {
 			if (fnode && fnode.DoesCollision) {
 				var selector = null;
 
-				if (fnode.Selector)
+				if (fnode.Selector) {
 					selector = fnode.Selector;
-
-				else {
+				} else {
 					var materialTypeToIgnore = null;
 					var materialTypeToIgnore2 = null;
-					if (fnode.Parent && fnode.Parent.getType() == 'terrain') {
+					if (fnode.Parent && fnode.Parent.getType() == "terrain") {
 						materialTypeToIgnore = CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
 						materialTypeToIgnore2 = CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS;
 					}
 
-					if (fnode.OwnedMesh && fnode.OwnedMesh.GetPolyCount() > 100)
+					if (fnode.OwnedMesh && fnode.OwnedMesh.GetPolyCount() > 100) {
 						selector = new CL3D.OctTreeTriangleSelector(fnode.OwnedMesh, fnode, 64, materialTypeToIgnore, materialTypeToIgnore2);
-
-					else
+					} else {
 						selector = new CL3D.MeshTriangleSelector(fnode.OwnedMesh, fnode, materialTypeToIgnore, materialTypeToIgnore2);
+					}
 				}
 
-				if (storeInNodes && fnode.Selector == null)
+				if (storeInNodes && fnode.Selector == null) {
 					fnode.Selector = selector;
+				}
 
 				metaselector.addSelector(selector);
 			}
 		}
 
 		// static animated meshes
-		ar = this.getAllSceneNodesOfType('animatedmesh');
+		ar = this.getAllSceneNodesOfType("animatedmesh");
 
 		for (var i = 0; i < ar.length; ++i) {
 			var fanimnode = ar[i];
 
-			if (fanimnode && fanimnode.Mesh && fanimnode.Mesh.isStatic() &&
-				fanimnode.Mesh.StaticCollisionBoundingBox &&
-				!fanimnode.Mesh.StaticCollisionBoundingBox.isEmpty()) {
+			if (
+				fanimnode && fanimnode.Mesh && fanimnode.Mesh.isStatic()
+				&& fanimnode.Mesh.StaticCollisionBoundingBox
+				&& !fanimnode.Mesh.StaticCollisionBoundingBox.isEmpty()
+			) {
 				var selector = null;
 
-				if (fanimnode.Selector)
+				if (fanimnode.Selector) {
 					selector = fanimnode.Selector;
-
-				else
+				} else {
 					selector = new CL3D.BoundingBoxTriangleSelector(fanimnode.Mesh.StaticCollisionBoundingBox, fanimnode);
+				}
 
-				if (storeInNodes && fanimnode.Selector == null)
+				if (storeInNodes && fanimnode.Selector == null) {
 					fanimnode.Selector = selector;
+				}
 
 				metaselector.addSelector(selector);
 			}
@@ -1575,13 +1610,13 @@ export class Scene {
 
 	/**
 	 * @public
-	 * @param {CL3D.SceneNode} node 
-	 * @param {Number} afterTimeMs 
+	 * @param {CL3D.SceneNode} node
+	 * @param {Number} afterTimeMs
 	 */
 	addToDeletionQueue(node, afterTimeMs) {
 		var e = {
 			node: node,
-			timeAfterToDelete: afterTimeMs + CL3D.CLTimer.getTime()
+			timeAfterToDelete: afterTimeMs + CL3D.CLTimer.getTime(),
 		};
 
 		this.DeletionList.push(e);
@@ -1591,8 +1626,9 @@ export class Scene {
 	 @public
 	*/
 	clearDeletionList(deleteAll) {
-		if (this.DeletionList.length == 0)
+		if (this.DeletionList.length == 0) {
 			return false;
+		}
 
 		var now = CL3D.CLTimer.getTime();
 		var ret = false;
@@ -1601,17 +1637,18 @@ export class Scene {
 			var e = this.DeletionList[i];
 
 			if (deleteAll || e.timeAfterToDelete < now) {
-				if (e.node.Parent)
+				if (e.node.Parent) {
 					e.node.Parent.removeChild(e.node);
+				}
 				this.DeletionList.splice(i, 1);
 				ret = true;
 
-				if (this.CollisionWorld && e.node.Selector)
+				if (this.CollisionWorld && e.node.Selector) {
 					this.CollisionWorld.removeSelector(e.node.Selector);
-			}
-
-			else
+				}
+			} else {
 				++i;
+			}
 		}
 
 		return ret;
@@ -1621,8 +1658,9 @@ export class Scene {
 	 @public
 	*/
 	isCoordOver2DOverlayNode(x, y, onlyThoseWhoBlockCameraInput) {
-		if (this.RootNode == null || this.LastUsedRenderer == null)
+		if (this.RootNode == null || this.LastUsedRenderer == null) {
 			return null;
+		}
 
 		return this.isCoordOver2DOverlayNodeImpl(this.RootNode, x, y, onlyThoseWhoBlockCameraInput);
 	}
@@ -1631,12 +1669,14 @@ export class Scene {
 	 @public
 	*/
 	isCoordOver2DOverlayNodeImpl(n, x, y, onlyThoseWhoBlockCameraInput) {
-		if (n && n.Visible && (n.getType() == '2doverlay' || n.getType() == 'mobile2dinput')) {
+		if (n && n.Visible && (n.getType() == "2doverlay" || n.getType() == "mobile2dinput")) {
 			if (!onlyThoseWhoBlockCameraInput || (onlyThoseWhoBlockCameraInput && n.blocksCameraInput())) {
 				var r = n.getScreenCoordinatesRect(true, this.LastUsedRenderer);
-				if (r.x <= x && r.y <= y &&
-					r.x + r.w >= x &&
-					r.y + r.h >= y) {
+				if (
+					r.x <= x && r.y <= y
+					&& r.x + r.w >= x
+					&& r.y + r.h >= y
+				) {
 					return n;
 				}
 			}
@@ -1645,8 +1685,9 @@ export class Scene {
 		for (var i = 0; i < n.Children.length; ++i) {
 			var child = n.Children[i];
 			var s = this.isCoordOver2DOverlayNodeImpl(child, x, y, onlyThoseWhoBlockCameraInput);
-			if (s)
+			if (s) {
 				return s;
+			}
 		}
 
 		return null;
@@ -1659,8 +1700,9 @@ export class Scene {
 		for (var tries = 0; tries < 1000; ++tries) {
 			var testId = Math.round((Math.random() * 10000) + 10);
 
-			if (this.getSceneNodeFromId(testId) == null)
+			if (this.getSceneNodeFromId(testId) == null) {
 				return testId;
+			}
 		}
 
 		return -1;
@@ -1670,8 +1712,9 @@ export class Scene {
 	 @public
 	*/
 	replaceAllReferencedNodes(nold, nnew) {
-		if (!nold || !nnew)
+		if (!nold || !nnew) {
 			return;
+		}
 
 		for (var i = 0; i < nold.getChildren().length && i < nnew.getChildren().length; ++i) {
 			var cold = nold.getChildren()[i];
@@ -1686,33 +1729,37 @@ export class Scene {
 	}
 
 	/**
-	  * Enables/disables fog for this whole scene and changes its color and density
-	  * @public
-	  * @example
-	  * scene.setFog(true, CL3D.createColor(1, 100, 100, 100), 0.1);
-	  * @param enabled {Boolean} (optional) set to true to enable fog and false not to enable
-	  * @param color {Number} Fog color. See {@link createColor} on how to create such a color value.
-	  * @param density {Number} Density of the fog. A value like 0.001 is default.
-	*/
+	 * Enables/disables fog for this whole scene and changes its color and density
+	 * @public
+	 * @example
+	 * scene.setFog(true, CL3D.createColor(1, 100, 100, 100), 0.1);
+	 * @param enabled {Boolean} (optional) set to true to enable fog and false not to enable
+	 * @param color {Number} Fog color. See {@link createColor} on how to create such a color value.
+	 * @param density {Number} Density of the fog. A value like 0.001 is default.
+	 */
 	setFog(enabled, color, density) {
 		this.FogEnabled = enabled;
 
-		if (!(color == null))
+		if (!(color == null)) {
 			this.FogColor = color;
+		}
 
-		if (!(density == null))
+		if (!(density == null)) {
 			this.FogDensity = density;
+		}
 	}
 
 	/**
 	 @public
 	*/
 	isAnyPostEffectActive() {
-		if (Global_PostEffectsDisabled)
+		if (Global_PostEffectsDisabled) {
 			return false;
+		}
 
-		if (this.isAnyPostEffectEnabledByUser())
+		if (this.isAnyPostEffectEnabledByUser()) {
 			return true;
+		}
 
 		return false;
 	}
@@ -1722,8 +1769,9 @@ export class Scene {
 	*/
 	isAnyPostEffectEnabledByUser() {
 		for (var ip = 0; ip < this.PostEffectData.length; ++ip) {
-			if (this.PostEffectData[ip].Active)
+			if (this.PostEffectData[ip].Active) {
 				return true;
+			}
 		}
 
 		return false;
@@ -1740,8 +1788,10 @@ export class Scene {
 
 		var clr = CL3D.createColor(255, 64, 64, 64);
 
-		if (this.PostProcessingVerticesQuadBuffer.Vertices == null ||
-			this.PostProcessingVerticesQuadBuffer.Vertices.length == 0) {
+		if (
+			this.PostProcessingVerticesQuadBuffer.Vertices == null
+			|| this.PostProcessingVerticesQuadBuffer.Vertices.length == 0
+		) {
 			this.PostProcessingVerticesQuadBuffer.Vertices = [];
 			this.PostProcessingVerticesQuadBuffer.Vertices.push(null);
 			this.PostProcessingVerticesQuadBuffer.Vertices.push(null);
@@ -1750,20 +1800,52 @@ export class Scene {
 		}
 
 		this.PostProcessingVerticesQuadBuffer.Vertices[0] = CL3D.createVertex(
-			-1.0, -1.0, 0.0, 0.0, 0.0, -1.0, clr,
-			shiftX, shiftY);
+			-1.0,
+			-1.0,
+			0.0,
+			0.0,
+			0.0,
+			-1.0,
+			clr,
+			shiftX,
+			shiftY,
+		);
 
 		this.PostProcessingVerticesQuadBuffer.Vertices[1] = CL3D.createVertex(
-			1.0, -1.0, 0.0, 0.0, 0.0, -1.0, clr,
-			1.0 + shiftX, shiftY);
+			1.0,
+			-1.0,
+			0.0,
+			0.0,
+			0.0,
+			-1.0,
+			clr,
+			1.0 + shiftX,
+			shiftY,
+		);
 
 		this.PostProcessingVerticesQuadBuffer.Vertices[2] = CL3D.createVertex(
-			-1.0, 1.0, 0.0, 0.0, 0.0, -1.0, clr,
-			shiftX, 1.0 + shiftY);
+			-1.0,
+			1.0,
+			0.0,
+			0.0,
+			0.0,
+			-1.0,
+			clr,
+			shiftX,
+			1.0 + shiftY,
+		);
 
 		this.PostProcessingVerticesQuadBuffer.Vertices[3] = CL3D.createVertex(
-			1.0, 1.0, 0.0, 0.0, 0.0, -1.0, clr,
-			1.0 + shiftX, 1.0 + shiftY);
+			1.0,
+			1.0,
+			0.0,
+			0.0,
+			0.0,
+			-1.0,
+			clr,
+			1.0 + shiftX,
+			1.0 + shiftY,
+		);
 	}
 
 	/**
@@ -1780,12 +1862,14 @@ export class Scene {
 	 @public
 	*/
 	createOrGetPostEffectRTT(nCopyNumber, bCreateIfNotExisting, sizeFactor) {
-		if (sizeFactor == null)
+		if (sizeFactor == null) {
 			sizeFactor = 1.0;
+		}
 
 		var rttSizeNeeded = new CL3D.Vect2d(
 			(this.RTTSizeWhenStartingPostEffects.X * sizeFactor) >> 0,
-			(this.RTTSizeWhenStartingPostEffects.Y * sizeFactor) >> 0);
+			(this.RTTSizeWhenStartingPostEffects.Y * sizeFactor) >> 0,
+		);
 
 		if (!this.LastUsedRenderer.UsesWebGL2) {
 			// webgl 1 can only use power of two RTT because of the needed mipmaps, so round up
@@ -1799,8 +1883,9 @@ export class Scene {
 
 		var tex = this.LastUsedRenderer.findTexture(bufName);
 
-		if (!bCreateIfNotExisting)
+		if (!bCreateIfNotExisting) {
 			return tex;
+		}
 
 		if (!tex || tex.OriginalWidth != rttSizeNeeded.X || tex.OriginalHeight != rttSizeNeeded.Y) {
 			if (tex) {
@@ -1817,8 +1902,9 @@ export class Scene {
 	 @public
 	*/
 	processPostEffects() {
-		if (!this.PostEffectsInitialized)
+		if (!this.PostEffectsInitialized) {
 			this.initPostProcessingEffects();
+		}
 
 		var renderer = this.LastUsedRenderer;
 
@@ -1837,8 +1923,9 @@ export class Scene {
 		for (var i = 0; i < this.PostEffectData.length; ++i) {
 			var bActive = this.PostEffectData[i].Active;
 
-			if (bActive)
+			if (bActive) {
 				this.runPostProcessEffect(i, 1.0);
+			}
 		}
 
 		// set back matrices
@@ -1857,7 +1944,11 @@ export class Scene {
 			case CL3D.Scene.EPOSTEFFECT_BLOOM:
 				{
 					// create a copy of the current world image
-					var texWhereCurrentWorldWasRendered = this.createOrGetPostEffectRTT(this.CurrentPostProcessRTTTargetIndex, false, this.CurrentPostProcessRTTTargetSizeFactor);
+					var texWhereCurrentWorldWasRendered = this.createOrGetPostEffectRTT(
+						this.CurrentPostProcessRTTTargetIndex,
+						false,
+						this.CurrentPostProcessRTTTargetSizeFactor,
+					);
 					var copyWorld = this.createOrGetPostEffectRTT(3, true, rttSizeFactor);
 
 					this.copyPostProcessingTexture(texWhereCurrentWorldWasRendered, copyWorld);
@@ -1877,7 +1968,11 @@ export class Scene {
 					}
 
 					// add as bloom to original image
-					var texWithBurredTresholdImage = this.createOrGetPostEffectRTT(this.CurrentPostProcessRTTTargetIndex, false, this.CurrentPostProcessRTTTargetSizeFactor);
+					var texWithBurredTresholdImage = this.createOrGetPostEffectRTT(
+						this.CurrentPostProcessRTTTargetIndex,
+						false,
+						this.CurrentPostProcessRTTTargetSizeFactor,
+					);
 
 					renderer.setRenderTarget(copyWorld, false, false);
 
@@ -1893,7 +1988,10 @@ export class Scene {
 						this.createOrGetPostEffectRTT(this.CurrentPostProcessRTTTargetIndex, true, rttSizeFactor);
 					}
 
-					this.copyPostProcessingTexture(copyWorld, this.createOrGetPostEffectRTT(this.CurrentPostProcessRTTTargetIndex, false, this.CurrentPostProcessRTTTargetSizeFactor));
+					this.copyPostProcessingTexture(
+						copyWorld,
+						this.createOrGetPostEffectRTT(this.CurrentPostProcessRTTTargetIndex, false, this.CurrentPostProcessRTTTargetSizeFactor),
+					);
 				}
 				break;
 			case CL3D.Scene.EPOSTEFFECT_BLUR:
@@ -1911,16 +2009,22 @@ export class Scene {
 				{
 					if (type < this.PostProcessingShaderInstances.length && this.PostProcessingShaderInstances[type] != -1) {
 						// select source and target texture
-						var texWhereCurrentWorldWasRendered = this.createOrGetPostEffectRTT(this.CurrentPostProcessRTTTargetIndex, false, this.CurrentPostProcessRTTTargetSizeFactor);
-						if (!texWhereCurrentWorldWasRendered)
+						var texWhereCurrentWorldWasRendered = this.createOrGetPostEffectRTT(
+							this.CurrentPostProcessRTTTargetIndex,
+							false,
+							this.CurrentPostProcessRTTTargetSizeFactor,
+						);
+						if (!texWhereCurrentWorldWasRendered) {
 							return;
+						}
 
 						this.CurrentPostProcessRTTTargetIndex = (this.CurrentPostProcessRTTTargetIndex + 1) % 2;
 						this.CurrentPostProcessRTTTargetSizeFactor = rttSizeFactor;
 
 						var texWhereWeAreRenderingTo = this.createOrGetPostEffectRTT(this.CurrentPostProcessRTTTargetIndex, true, rttSizeFactor);
-						if (!texWhereWeAreRenderingTo)
+						if (!texWhereWeAreRenderingTo) {
 							return;
+						}
 
 						renderer.setRenderTarget(texWhereWeAreRenderingTo, false, false);
 
@@ -1938,8 +2042,9 @@ export class Scene {
 	 @public
 	*/
 	initPostProcessingEffects() {
-		if (this.PostEffectsInitialized)
+		if (this.PostEffectsInitialized) {
 			return;
+		}
 
 		this.PostEffectsInitialized = true;
 
@@ -1965,7 +2070,7 @@ export class Scene {
 		// create shaders
 		for (var i = 0; i < CL3D.Scene.EPOSTEFFECT_COUNT; ++i) {
 			var nMatBase = CL3D.Material.EMT_SOLID;
-			var shadercontent = '';
+			var shadercontent = "";
 			var nPostProcessingShader = -1;
 			var shaderCallBack = null;
 
@@ -1980,9 +2085,15 @@ export class Scene {
 
 				case CL3D.Scene.EPOSTEFFECT_COLORIZE:
 					shadercontent = this.POSTPROCESS_SHADER_COLORIZE;
-					shaderCallBack = function () {
+					shaderCallBack = function() {
 						var loc = gl.getUniformLocation(renderer.currentGLProgram, "PARAM_Colorize_Color");
-						gl.uniform4f(loc, CL3D.getRed(me.PE_colorizeColor) / 255.0, CL3D.getGreen(me.PE_colorizeColor) / 255.0, CL3D.getBlue(me.PE_colorizeColor) / 255.0, 1.0);
+						gl.uniform4f(
+							loc,
+							CL3D.getRed(me.PE_colorizeColor) / 255.0,
+							CL3D.getGreen(me.PE_colorizeColor) / 255.0,
+							CL3D.getBlue(me.PE_colorizeColor) / 255.0,
+							1.0,
+						);
 					};
 					break;
 
@@ -1992,7 +2103,7 @@ export class Scene {
 
 				case CL3D.Scene.EPOSTEFFECT_BLUR_HORIZONTAL:
 					shadercontent = this.POSTPROCESS_SHADER_BLUR_HORIZONTAL;
-					shaderCallBack = function () {
+					shaderCallBack = function() {
 						var loc = gl.getUniformLocation(renderer.currentGLProgram, "PARAM_SCREENX");
 						gl.uniform1f(loc, renderer.getRenderTargetSize().X);
 					};
@@ -2000,7 +2111,7 @@ export class Scene {
 
 				case CL3D.Scene.EPOSTEFFECT_BLUR_VERTICAL:
 					shadercontent = this.POSTPROCESS_SHADER_BLUR_VERTICAL;
-					shaderCallBack = function () {
+					shaderCallBack = function() {
 						var loc = gl.getUniformLocation(renderer.currentGLProgram, "PARAM_SCREENY");
 						gl.uniform1f(loc, renderer.getRenderTargetSize().Y);
 					};
@@ -2008,7 +2119,7 @@ export class Scene {
 
 				case CL3D.Scene.EPOSTEFFECT_LIGHT_TRESHOLD:
 					shadercontent = this.POSTPROCESS_SHADER_LIGHT_TRESHOLD;
-					shaderCallBack = function () {
+					shaderCallBack = function() {
 						var loc = gl.getUniformLocation(renderer.currentGLProgram, "PARAM_LightTreshold_Treshold");
 						gl.uniform1f(loc, me.PE_bloomTreshold);
 					};
@@ -2020,7 +2131,7 @@ export class Scene {
 
 				case CL3D.Scene.EPOSTEFFECT_VIGNETTE:
 					shadercontent = this.POSTPROCESS_SHADER_VIGNETTE;
-					shaderCallBack = function () {
+					shaderCallBack = function() {
 						var loc = gl.getUniformLocation(renderer.currentGLProgram, "PARAM_Vignette_Intensity");
 						gl.uniform1f(loc, me.PE_vignetteIntensity);
 
@@ -2033,12 +2144,13 @@ export class Scene {
 					break;
 			}
 
-			if (shadercontent != '') {
+			if (shadercontent != "") {
 				// create shader
 				nPostProcessingShader = renderer.createMaterialType(renderer.vs_shader_normaltransform, shadercontent, null, null, null, shaderCallBack);
 
-				if (nPostProcessingShader == -1)
+				if (nPostProcessingShader == -1) {
 					Global_PostEffectsDisabled = true;
+				}
 			}
 
 			this.PostProcessingShaderInstances.push(nPostProcessingShader);
@@ -2068,4 +2180,4 @@ export class Scene {
 
 		this.drawPostprocessingQuad();
 	}
-};
+}

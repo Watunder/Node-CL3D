@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -18,10 +18,10 @@ import * as CL3D from "../main.js";
  */
 export class AnimatorOnClick extends CL3D.Animator {
 	/**
- 	 * @param {CL3D.Scene} scene The scene of the animator.
- 	 * @param {CL3D.CopperLicht} engine an instance of the 3d engine
- 	 * @param {Function=} functionToCall a function which should be called when the scene node has been clicked
- 	 * @param {Boolean=} donotregister (optional) set to true to prevent registering at the scene using registerSceneNodeAnimatorForEvents
+	 * @param {CL3D.Scene} scene The scene of the animator.
+	 * @param {CL3D.CopperLicht} engine an instance of the 3d engine
+	 * @param {Function=} functionToCall a function which should be called when the scene node has been clicked
+	 * @param {Boolean=} donotregister (optional) set to true to prevent registering at the scene using registerSceneNodeAnimatorForEvents
 	 */
 	constructor(scene, engine, functionToCall, donotregister) {
 		super();
@@ -39,8 +39,9 @@ export class AnimatorOnClick extends CL3D.Animator {
 		this.World = null;
 		this.TheObject = null;
 
-		if (!(donotregister == true))
+		if (!(donotregister == true)) {
 			scene.registerSceneNodeAnimatorForEvents(this);
+		}
 
 		this.UseCustomEvent = false;
 	}
@@ -51,7 +52,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'onclick';
+		return "onclick";
 	}
 
 	/**
@@ -87,11 +88,13 @@ export class AnimatorOnClick extends CL3D.Animator {
 	 */
 	onMouseDown(event) {
 		var n = this.TheObject;
-		if (!n)
+		if (!n) {
 			return false;
+		}
 
-		if (!(n.scene === this.SMGr))
+		if (!(n.scene === this.SMGr)) {
 			return false;
+		}
 
 		if (event.button == 2) {
 			return false;
@@ -107,8 +110,9 @@ export class AnimatorOnClick extends CL3D.Animator {
 
 		if (this.engine.isInPointerLockMode()) {
 			var renderer = this.SMGr.getLastUsedRenderer();
-			if (!renderer)
+			if (!renderer) {
 				return false;
+			}
 			x = renderer.getWidth() / 2;
 			y = renderer.getHeight() / 2;
 		}
@@ -119,12 +123,15 @@ export class AnimatorOnClick extends CL3D.Animator {
 			return false;
 		}
 
-		if (n.isActuallyVisible() &&
-			this.isOverNode(n, x, y)) {
+		if (
+			n.isActuallyVisible()
+			&& this.isOverNode(n, x, y)
+		) {
 			this.LastTimeDoneSomething = true;
 
-			if (this.FunctionToCall)
+			if (this.FunctionToCall) {
 				this.FunctionToCall();
+			}
 
 			this.SMGr.forceRedrawNextFrame(); // the animate might not be recalled after this element has been made invisible in this invokeAction()
 			return true;
@@ -136,11 +143,13 @@ export class AnimatorOnClick extends CL3D.Animator {
 	 */
 	onMouseUp(event) {
 		var n = this.TheObject;
-		if (!n)
+		if (!n) {
 			return false;
+		}
 
-		if (!(n.scene === this.SMGr))
+		if (!(n.scene === this.SMGr)) {
 			return false;
+		}
 
 		if (event.button == 2) {
 			return false;
@@ -156,8 +165,9 @@ export class AnimatorOnClick extends CL3D.Animator {
 
 		if (this.engine.isInPointerLockMode()) {
 			var renderer = this.SMGr.getLastUsedRenderer();
-			if (!renderer)
+			if (!renderer) {
 				return false;
+			}
 			x = renderer.getWidth() / 2;
 			y = renderer.getHeight() / 2;
 		}
@@ -182,36 +192,42 @@ export class AnimatorOnClick extends CL3D.Animator {
 	 * @public
 	 */
 	invokeAction(node) {
-		if (this.TheActionHandler)
+		if (this.TheActionHandler) {
 			this.TheActionHandler.execute(node);
+		}
 	}
 
 	/**
 	 * @public
 	 */
 	isOverNode(node, positionX, positionY) {
-		if (node == null)
+		if (node == null) {
 			return false;
+		}
 
 		positionX *= this.engine.DPR;
 		positionY *= this.engine.DPR;
 
-		if (node.getType() == '2doverlay') {
+		if (node.getType() == "2doverlay") {
 			var r = node.getScreenCoordinatesRect(false, this.engine.getRenderer());
-			if (r.x <= positionX && r.y <= positionY &&
-				r.x + r.w >= positionX &&
-				r.y + r.h >= positionY) {
+			if (
+				r.x <= positionX && r.y <= positionY
+				&& r.x + r.w >= positionX
+				&& r.y + r.h >= positionY
+			) {
 				return true;
 			}
 		}
 
 		var posRayEnd = this.engine.get3DPositionFrom2DPosition(positionX, positionY);
-		if (posRayEnd == null)
+		if (posRayEnd == null) {
 			return false;
+		}
 
 		var cam = this.SMGr.getActiveCamera();
-		if (cam == null)
+		if (cam == null) {
 			return false;
+		}
 
 		var campos = cam.getAbsolutePosition();
 
@@ -228,8 +244,9 @@ export class AnimatorOnClick extends CL3D.Animator {
 	static_getDistanceToNearestCollisionPointWithWorld(smgr, begin, end, world, ignoreInvisibleItems) {
 		var maxdist = 999999999999.0;
 
-		if (!world || !smgr)
+		if (!world || !smgr) {
 			return maxdist;
+		}
 
 		var collisionPoint = world.getCollisionPointWithLine(begin, end, true, null, ignoreInvisibleItems);
 		if (collisionPoint) {
@@ -250,8 +267,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 	 * @public
 	 * returns true if collides (and no wall between), false if not
 	 */
-	static_getCollisionDistanceWithNode(smgr, node, ray, bBoundingBoxTestOnly, collidesWithWorld,
-		world, outDistance) {
+	static_getCollisionDistanceWithNode(smgr, node, ray, bBoundingBoxTestOnly, collidesWithWorld, world, outDistance) {
 		var box = node.getBoundingBox();
 		var distance = 0; // temporary variable
 
@@ -259,7 +275,7 @@ export class AnimatorOnClick extends CL3D.Animator {
 		if (node.AbsoluteTransformation.getInverse(mat)) {
 			if (box.intersectsWithLine(mat.getTransformedVect(ray.Start), mat.getTransformedVect(ray.End))) {
 				// the click was inside the bounding box
-				//Debug.print("Click was in BB!");
+				// Debug.print("Click was in BB!");
 				var meshSceneNode = null;
 				if (node.getMesh && node.OwnedMesh) meshSceneNode = node; // instead of checking for the type, we are checking for the method, that should be enough
 
@@ -270,11 +286,11 @@ export class AnimatorOnClick extends CL3D.Animator {
 
 					if (selector == null) {
 						// create and cache triangle selector
-						if (meshSceneNode.OwnedMesh && meshSceneNode.OwnedMesh.GetPolyCount() > 100)
+						if (meshSceneNode.OwnedMesh && meshSceneNode.OwnedMesh.GetPolyCount() > 100) {
 							selector = new CL3D.OctTreeTriangleSelector(meshSceneNode.OwnedMesh, meshSceneNode, 0);
-
-						else
+						} else {
 							selector = new CL3D.MeshTriangleSelector(meshSceneNode.OwnedMesh, meshSceneNode);
+						}
 
 						meshSceneNode.Selector = selector;
 					}
@@ -291,47 +307,40 @@ export class AnimatorOnClick extends CL3D.Animator {
 
 								if (distance + CL3D.TOLERANCE < collisionDistance) {
 									return false; // a wall was between us
-								}
-
-								else {
-									if (outDistance != null)
+								} else {
+									if (outDistance != null) {
 										outDistance.N = collisionPoint.getDistanceTo(ray.Start);
+									}
 
 									return true; // no wall between us, collision ok
 								}
-							}
-
-							else {
+							} else {
 								// no world collision wanted, we are done here
-								if (outDistance != null)
+								if (outDistance != null) {
 									outDistance.N = ray.Start.getDistanceTo(node.getTransformedBoundingBox().getCenter());
+								}
 
 								return true;
 							}
 						}
-						//else
-						//	Debug.print("no colluided with geometry!");
-					}
-
-					else {
+						// else
+						// 	Debug.print("no colluided with geometry!");
+					} else {
 						// no selector possible, but it collided with the bounding box.
 						// so check below for collision with world before this one.
 						bDoBoundingBoxTestOnly = true;
 					}
-
 				}
-
 
 				if (bDoBoundingBoxTestOnly) {
 					if (!collidesWithWorld) {
 						// no world collision wanted, we are done here
-						if (outDistance != null)
+						if (outDistance != null) {
 							outDistance.N = ray.Start.getDistanceTo(node.getTransformedBoundingBox().getCenter());
+						}
 
 						return true;
-					}
-
-					else {
+					} else {
 						// test if there is a wall of the world between us and the collision point on the
 						// bounding box
 						var rayworldteststart = ray.Start.clone();
@@ -347,12 +356,12 @@ export class AnimatorOnClick extends CL3D.Animator {
 						distance = this.static_getDistanceToNearestCollisionPointWithWorld(smgr, rayworldteststart, rayworldtestend, world, true);
 						var raytestlen = rayworldtestend.getDistanceTo(rayworldteststart) - maxradius;
 
-						if (distance < raytestlen)
+						if (distance < raytestlen) {
 							return false; // a wall was between us
-
-						else {
-							if (outDistance != null)
+						} else {
+							if (outDistance != null) {
 								outDistance.N = raytestlen;
+							}
 
 							return true; // no wall between us, collision ok
 						}
@@ -368,9 +377,10 @@ export class AnimatorOnClick extends CL3D.Animator {
 	 * @public
 	 */
 	findActionByType(type) {
-		if (this.TheActionHandler)
+		if (this.TheActionHandler) {
 			return this.TheActionHandler.findAction(type);
+		}
 
 		return null;
 	}
-};
+}

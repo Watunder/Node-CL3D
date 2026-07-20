@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
@@ -21,7 +21,7 @@ export class Vect2d {
 	/**
 	 * Y coordinate of the vector
 	 * @public
-	 * @type Number 
+	 * @type Number
 	 */
 	Y = 0;
 
@@ -29,9 +29,7 @@ export class Vect2d {
 		if (x == null) {
 			this.X = 0;
 			this.Y = 0;
-		}
-
-		else {
+		} else {
 			this.X = x;
 			this.Y = y;
 		}

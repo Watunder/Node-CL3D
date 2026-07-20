@@ -1,11 +1,11 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
 
 /**
  * Class which holds the geometry of an object.
- * A Mesh is nothing more than a collection of some {@link MeshBuffer}s. 
+ * A Mesh is nothing more than a collection of some {@link MeshBuffer}s.
  * A mesh is usually used in a {@link MeshSceneNode} in order to be rendered.
  * @constructor
  * @public
@@ -40,9 +40,11 @@ export class Mesh {
 		let cnt = 0;
 
 		if (this.MeshBuffers) {
-			for (let i = 0; i < this.MeshBuffers.length; ++i)
-				if (this.MeshBuffers[i].Indices)
+			for (let i = 0; i < this.MeshBuffers.length; ++i) {
+				if (this.MeshBuffers[i].Indices) {
 					cnt += this.MeshBuffers[i].Indices.length;
+				}
+			}
 		}
 
 		return cnt / 3;
@@ -56,16 +58,13 @@ export class Mesh {
 		ret.Box = this.Box.clone();
 
 		if (this.MeshBuffers) {
-			for (let i = 0; i < this.MeshBuffers.length; ++i)
-				if (this.MeshBuffers[i])
+			for (let i = 0; i < this.MeshBuffers.length; ++i) {
+				if (this.MeshBuffers[i]) {
 					ret.MeshBuffers.push(this.MeshBuffers[i].createClone());
+				}
+			}
 		}
 
 		return ret;
 	}
 }
-
-
-
-
-

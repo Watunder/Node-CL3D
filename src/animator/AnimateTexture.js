@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -19,8 +19,8 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 	constructor(textures, timeperframe, donotloop) {
 		super();
 
-		//private static const ETCT_CHANGE_ALL = 0;
-		//private static const ETCT_CHANGE_WITH_INDEX = 1;
+		// private static const ETCT_CHANGE_ALL = 0;
+		// private static const ETCT_CHANGE_WITH_INDEX = 1;
 		this.Textures = new Array(); // Textures
 
 		this.Loop = true;
@@ -29,12 +29,15 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 		this.TextureIndexToChange = 0;
 		this.MyStartTime = 0;
 
-		if (textures)
+		if (textures) {
 			this.Textures = textures;
-		if (timeperframe)
+		}
+		if (timeperframe) {
 			this.TimePerFrame = timeperframe;
-		if (donotloop == true)
+		}
+		if (donotloop == true) {
 			this.loop = false;
+		}
 	}
 
 	/**
@@ -43,7 +46,7 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'animatetexture';
+		return "animatetexture";
 	}
 
 	/**
@@ -69,8 +72,9 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
-		if (n == null || this.Textures == null)
+		if (n == null || this.Textures == null) {
 			return false;
+		}
 
 		var changedSomething = false;
 		var mat = null;
@@ -78,24 +82,22 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 		if (this.Textures.length) {
 			var startTime = (this.MyStartTime == 0) ? n.scene.getStartTime() : this.MyStartTime;
 
-			var t = (timeMs - startTime);
+			var t = timeMs - startTime;
 			var endTime = startTime + (this.TimePerFrame * this.Textures.length);
 
 			var idx = 0;
-			if (!this.Loop && timeMs >= endTime)
+			if (!this.Loop && timeMs >= endTime) {
 				idx = this.Textures.length - 1;
-
-			else {
-				if (this.TimePerFrame > 0)
+			} else {
+				if (this.TimePerFrame > 0) {
 					idx = Math.floor((t / this.TimePerFrame) % this.Textures.length);
-
-				else
+				} else {
 					idx = 0;
+				}
 			}
 
 			if (idx < this.Textures.length) {
-				if (this.TextureChangeType == 1) //ETCT_CHANGE_WITH_INDEX)
-				{
+				if (this.TextureChangeType == 1) { // ETCT_CHANGE_WITH_INDEX)
 					// change only the material with the index
 					if (this.TextureIndexToChange >= 0 && this.TextureIndexToChange < n.getMaterialCount()) {
 						mat = n.getMaterial(this.TextureIndexToChange);
@@ -104,9 +106,7 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 							changedSomething = true;
 						}
 					}
-				}
-
-				else {
+				} else {
 					// change all materials
 					var mcount = n.getMaterialCount();
 					for (var i = 0; i < mcount; ++i) {
@@ -129,4 +129,4 @@ export class AnimatorAnimateTexture extends CL3D.Animator {
 	reset() {
 		this.MyStartTime = CL3D.CLTimer.getTime();
 	}
-};
+}

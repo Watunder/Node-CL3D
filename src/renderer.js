@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 // This file is part of the CopperLicht engine, (c) by N.Gebhardt
 
@@ -102,7 +102,6 @@ export class Renderer {
         float alpha = texture2D(texture1, texCoord).r;
         gl_FragColor = vec4(vColor.rgb, alpha);
     }`;
-
 
 	// simple normal 3d world 3d transformation shader
 	vs_shader_normaltransform = GLSL`
@@ -257,7 +256,6 @@ export class Renderer {
 		v_color = vColor;
     }`;
 
-
 	// 3d world 3d transformation shader generating a reflection in texture coordinate 2
 	// normaltransform is the inverse transpose of the upper 3x3 part of the modelview matrix.
 	//
@@ -297,7 +295,6 @@ export class Renderer {
 		v_texCoord2.x = (r.x / (2.0 * m)  + 0.5);
 		v_texCoord2.y = (r.y / (2.0 * m)  + 0.5);
 	}`;
-
 
 	// same shader as before, but now with light
 	vs_shader_reflectiontransform_with_light = GLSL`
@@ -1029,9 +1026,6 @@ export class Renderer {
 		`;
 	// version without cascade shadow maps
 
-
-
-
 	// reusable part for mixing fog and shadow
 	fs_shader_mixdiffusefogandshadow_part = GLSL`
 	// fog
@@ -1042,7 +1036,6 @@ export class Renderer {
 	gl_FragColor = colorWithShadow * 4.0;
 	gl_FragColor.a = diffuseColor.a;
 	`;
-
 
 	// Like fs_shader_onlyfirsttexture_gouraud_fog_shadow_map_rgbpack but with floating point tests
 	fs_shader_onlyfirsttexture_gouraud_fog_shadow_map = GLSL`
@@ -1324,7 +1317,7 @@ export class Renderer {
 	/**
 	 * Returns the current width of the rendering surface in pixels.
 	 * @public
-	 **/
+	 */
 	getWidth() {
 		return this.width;
 	}
@@ -1339,14 +1332,14 @@ export class Renderer {
 	/**
 	 * Returns access to the webgl interface. This should not be needed.
 	 * @public
-	 **/
+	 */
 	getWebGL() {
 		return this.gl;
 	}
 	/**
 	 * Returns the current height of the rendering surface in pixels.
 	 * @public
-	 **/
+	 */
 	getHeight() {
 		return this.height;
 	}
@@ -1362,8 +1355,9 @@ export class Renderer {
 	 * @param {CL3D.Mesh} mesh the mesh to draw
 	 */
 	drawMesh(mesh, forceNoShadowMap) {
-		if (mesh == null)
+		if (mesh == null) {
 			return;
+		}
 
 		for (let i = 0; i < mesh.MeshBuffers.length; ++i) {
 			let buf = mesh.MeshBuffers[i];
@@ -1383,37 +1377,35 @@ export class Renderer {
 		}
 
 		let gl = this.gl;
-		if (gl == null)
+		if (gl == null) {
 			return;
+		}
 
 		// --------------------------------------------
 		// set material
 		let program = null;
 		try {
-			if (this.ShadowMapEnabled && !forceNoShadowMap)
+			if (this.ShadowMapEnabled && !forceNoShadowMap) {
 				program = this.MaterialProgramsWithShadowMap[mat.Type];
-
-			else if (this.FogEnabled) {
-				if (mat.Lighting)
+			} else if (this.FogEnabled) {
+				if (mat.Lighting) {
 					program = this.MaterialProgramsWithLightFog[mat.Type];
-
-				else
+				} else {
 					program = this.MaterialProgramsFog[mat.Type];
-			}
-
-			else {
-				if (mat.Lighting)
+				}
+			} else {
+				if (mat.Lighting) {
 					program = this.MaterialProgramsWithLight[mat.Type];
-
-				else
+				} else {
 					program = this.MaterialPrograms[mat.Type];
+				}
 			}
-		}
-		catch (e) {
+		} catch (e) {
 		}
 
-		if (program == null)
+		if (program == null) {
 			return;
+		}
 
 		this.currentGLProgram = program;
 		gl.useProgram(program);
@@ -1422,45 +1414,44 @@ export class Renderer {
 		if (this.OnChangeMaterial != null) {
 			try {
 				this.OnChangeMaterial(mat.Type);
-			}
-			catch (e) { }
+			} catch (e) {}
 		}
 
-		if (program.shaderCallback != null)
+		if (program.shaderCallback != null) {
 			program.shaderCallback();
+		}
 
 		// set program blend mode
 		if (program.blendenabled) {
 			gl.enable(gl.BLEND);
 			gl.blendFunc(program.blendsfactor, program.blenddfactor);
+		} else {
+			gl.disable(gl.BLEND);
 		}
 
-		else
-			gl.disable(gl.BLEND);
-
 		// zwrite mode
-		if (!mat.ZWriteEnabled || mat.doesNotUseDepthMap())
+		if (!mat.ZWriteEnabled || mat.doesNotUseDepthMap()) {
 			gl.depthMask(false);
-
-		else
+		} else {
 			gl.depthMask(true);
+		}
 
 		// zread mode
-		if (mat.ZReadEnabled)
+		if (mat.ZReadEnabled) {
 			gl.enable(gl.DEPTH_TEST);
-
-		else
+		} else {
 			gl.disable(gl.DEPTH_TEST);
+		}
 
 		// depth function
 		gl.depthFunc(this.InvertedDepthTest ? gl.GREATER : gl.LEQUAL);
 
 		// backface culling
-		if (mat.BackfaceCulling)
+		if (mat.BackfaceCulling) {
 			gl.enable(gl.CULL_FACE);
-
-		else
+		} else {
 			gl.disable(gl.CULL_FACE);
+		}
 
 		// -------------------------------------------
 		// set textures
@@ -1472,9 +1463,7 @@ export class Renderer {
 			// texture clamping
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, mat.ClampTexture1 ? gl.CLAMP_TO_EDGE : gl.REPEAT);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, mat.ClampTexture1 ? gl.CLAMP_TO_EDGE : gl.REPEAT);
-		}
-
-		else {
+		} else {
 			// not yet loaded or inactive
 			gl.activeTexture(gl.TEXTURE0);
 			gl.bindTexture(gl.TEXTURE_2D, null);
@@ -1486,9 +1475,7 @@ export class Renderer {
 		if (mat.Tex2 && mat.Tex2.Loaded) {
 			gl.activeTexture(gl.TEXTURE1);
 			gl.bindTexture(gl.TEXTURE_2D, mat.Tex2.Texture);
-		}
-
-		else {
+		} else {
 			// not yet loaded or inactive
 			gl.activeTexture(gl.TEXTURE1);
 			gl.bindTexture(gl.TEXTURE_2D, null);
@@ -1505,14 +1492,13 @@ export class Renderer {
 		let gl = this.gl;
 		let m = 0;
 
-		if (mode == 1)
+		if (mode == 1) {
 			m = gl.FRONT;
-
-		else if (mode == 2)
+		} else if (mode == 2) {
 			m = gl.BACK;
-
-		else if (mode == 3)
+		} else if (mode == 3) {
 			m = gl.FRONT_AND_BACK;
+		}
 
 		gl.cullFace(m);
 	}
@@ -1524,20 +1510,21 @@ export class Renderer {
 	 * @public
 	 */
 	drawMeshBuffer(buf, indexCountToUse) {
-		if (buf == null)
+		if (buf == null) {
 			return;
+		}
 
-		if (this.gl == null)
+		if (this.gl == null) {
 			return;
+		}
 
-		if (buf.RendererNativeArray == null)
+		if (buf.RendererNativeArray == null) {
 			this.createRendererNativeArray(buf);
-
-		else if (buf.OnlyUpdateBufferIfPossible)
+		} else if (buf.OnlyUpdateBufferIfPossible) {
 			this.updateRendererNativeArray(buf);
-
-		else if (buf.OnlyPositionsChanged)
+		} else if (buf.OnlyPositionsChanged) {
 			this.updatePositionsInRendererNativeArray(buf);
+		}
 
 		buf.OnlyPositionsChanged = false;
 		buf.OnlyUpdateBufferIfPossible = false;
@@ -1549,11 +1536,14 @@ export class Renderer {
 	 * @public
 	 */
 	updateRendererNativeArray(buf) {
-		if (buf.Vertices.length == 0 || buf.Indices.length == 0)
+		if (buf.Vertices.length == 0 || buf.Indices.length == 0) {
 			return;
+		}
 
-		if (buf.RendererNativeArray.vertexCount < buf.Vertices.length ||
-			buf.RendererNativeArray.indexCount < buf.Indices.length) {
+		if (
+			buf.RendererNativeArray.vertexCount < buf.Vertices.length
+			|| buf.RendererNativeArray.indexCount < buf.Indices.length
+		) {
 			buf.RendererNativeArray = null;
 			this.createRendererNativeArray(buf);
 			return;
@@ -1648,10 +1638,12 @@ export class Renderer {
 
 			let tangentsArray = null;
 			let binormalsArray = null;
-			if (buf.Tangents)
+			if (buf.Tangents) {
 				tangentsArray = new Float32Array(len * 3);
-			if (buf.Binormals)
+			}
+			if (buf.Binormals) {
 				binormalsArray = new Float32Array(len * 3);
+			}
 
 			for (let i = 0; i < len; ++i) {
 				let v = buf.Vertices[i];
@@ -1704,7 +1696,7 @@ export class Renderer {
 			// create render arrays
 			obj.positionBuffer = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, obj.positionBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, positionsArray, gl.DYNAMIC_DRAW); //gl.STATIC_DRAW); // set to dynamic draw to make it possible to update it later
+			gl.bufferData(gl.ARRAY_BUFFER, positionsArray, gl.DYNAMIC_DRAW); // gl.STATIC_DRAW); // set to dynamic draw to make it possible to update it later
 			obj.positionsArray = positionsArray; // storing it for making it possible to update this later
 
 			obj.texcoordsBuffer = gl.createBuffer();
@@ -1758,7 +1750,7 @@ export class Renderer {
 	 * @public
 	 */
 	drawWebGlStaticGeometry(b, indexCountToUse) {
-		//console.log("drawElementsBegin with " + b.indexCount + " indices " + b.positionBuffer + " " + b.texcoordsBuffer + " " + b.normalBuffer);
+		// console.log("drawElementsBegin with " + b.indexCount + " indices " + b.positionBuffer + " " + b.texcoordsBuffer + " " + b.normalBuffer);
 		let gl = this.gl;
 
 		let withTangentsAndBinormals = b.tangentBuffer && b.binormalBuffer;
@@ -1808,8 +1800,9 @@ export class Renderer {
 
 		// set world view projection matrix
 		let program = this.currentGLProgram;
-		if (program.locWorldViewProj != null)
+		if (program.locWorldViewProj != null) {
 			gl.uniformMatrix4fv(program.locWorldViewProj, false, this.getMatrixAsWebGLFloatArray(mat));
+		}
 
 		// set normal matrix
 		if (program.locNormalMatrix != null) {
@@ -1841,19 +1834,22 @@ export class Renderer {
 		}
 
 		// set light values
-		if (program.locLightPositions != null)
+		if (program.locLightPositions != null) {
 			this.setDynamicLightsIntoConstants(program, withTangentsAndBinormals, withTangentsAndBinormals); // when using normal maps, we need word space coordinates of the light positions
-
+		}
 
 		// set fog values
-		if (program.locFogColor != null)
+		if (program.locFogColor != null) {
 			this.gl.uniform4f(program.locFogColor, this.FogColor.R, this.FogColor.G, this.FogColor.B, 1.0);
-		if (program.locFogDensity != null)
+		}
+		if (program.locFogDensity != null) {
 			this.gl.uniform1f(program.locFogDensity, this.FogDensity);
+		}
 
 		// set shadow map values
-		if (this.ShadowMapEnabled)
+		if (this.ShadowMapEnabled) {
 			this.setShadowMapDataIntoConstants(program);
+		}
 
 		// set grass movement values
 		if (program.locGrassMovement != null) {
@@ -1863,12 +1859,13 @@ export class Renderer {
 		}
 
 		// draw
-		if (indexCountToUse == null)
+		if (indexCountToUse == null) {
 			indexCountToUse = b.indexCount;
+		}
 
 		gl.drawElements(gl.TRIANGLES, indexCountToUse, gl.UNSIGNED_SHORT, 0);
 
-		//console.log("drawElementsEnd");
+		// console.log("drawElementsEnd");
 		// unbind optional buffers
 		if (withTangentsAndBinormals) {
 			gl.disableVertexAttribArray(5);
@@ -1903,25 +1900,27 @@ export class Renderer {
 			gl.uniformMatrix4fv(program.locWorldviewprojLight2, false, this.getMatrixAsWebGLFloatArray(m));
 		}
 
-		if (program.locShadowMapBias1)
+		if (program.locShadowMapBias1) {
 			gl.uniform1f(program.locShadowMapBias1, this.ShadowMapBias1);
+		}
 
-		if (program.locShadowMapBias2)
+		if (program.locShadowMapBias2) {
 			gl.uniform1f(program.locShadowMapBias2, this.ShadowMapBias2);
+		}
 
-		if (program.locShadowMapBackFaceBias)
+		if (program.locShadowMapBackFaceBias) {
 			gl.uniform1f(program.locShadowMapBackFaceBias, this.ShadowMapBackFaceBias);
+		}
 
-		if (program.locShadowMapOpacity)
+		if (program.locShadowMapOpacity) {
 			gl.uniform1f(program.locShadowMapOpacity, this.ShadowMapOpacity);
+		}
 
 		// shadow map texture
 		if (this.ShadowMapTexture) {
 			gl.activeTexture(gl.TEXTURE2);
 			gl.bindTexture(gl.TEXTURE_2D, this.ShadowMapTexture.Texture);
-		}
-
-		else {
+		} else {
 			// not yet loaded or inactive
 			gl.activeTexture(gl.TEXTURE2);
 			gl.bindTexture(gl.TEXTURE_2D, null);
@@ -1929,14 +1928,11 @@ export class Renderer {
 
 		gl.uniform1i(gl.getUniformLocation(program, "shadowmap"), 2);
 
-
 		if (CL3D.UseShadowCascade) {
 			if (this.ShadowMapTexture2) {
 				gl.activeTexture(gl.TEXTURE3);
 				gl.bindTexture(gl.TEXTURE_2D, this.ShadowMapTexture2.Texture);
-			}
-
-			else {
+			} else {
 				// not yet loaded or inactive
 				gl.activeTexture(gl.TEXTURE3);
 				gl.bindTexture(gl.TEXTURE_2D, null);
@@ -1960,8 +1956,9 @@ export class Renderer {
 		// calculate matrix to transform light position into object space (unless useWorldSpacePositionsForLights is true)
 		let mat = new CL3D.Matrix4(true);
 
-		if (!useWorldSpacePositionsForLights && ((this.Lights != null && this.Lights.length > 0) || this.DirectionalLight != null))
+		if (!useWorldSpacePositionsForLights && ((this.Lights != null && this.Lights.length > 0) || this.DirectionalLight != null)) {
 			this.World.getInverse(mat);
+		}
 
 		// add all lights
 		for (let i = 0; i < 4; ++i) {
@@ -1978,11 +1975,11 @@ export class Renderer {
 
 				let attenuation = 1.0;
 
-				if (useOldNormalMappingAttenuationCalculation)
+				if (useOldNormalMappingAttenuationCalculation) {
 					attenuation = 1.0 / (l.Radius * l.Radius);
-
-				else
+				} else {
 					attenuation = l.Attenuation;
+				}
 
 				positionArray[idx + 3] = attenuation;
 
@@ -1990,9 +1987,7 @@ export class Renderer {
 				colorArray[idx + 1] = l.Color.G;
 				colorArray[idx + 2] = l.Color.B;
 				colorArray[idx + 3] = 1;
-			}
-
-			else {
+			} else {
 				// add a dark light, since the shader expects 4 lights
 				positionArray[idx] = 1;
 				positionArray[idx + 1] = 0;
@@ -2022,11 +2017,11 @@ export class Renderer {
 
 			let dir = null;
 
-			if (dirlight && dirlight.Direction)
+			if (dirlight && dirlight.Direction) {
 				dir = dirlight.Direction.clone();
-
-			else
+			} else {
 				dir = new CL3D.Vect3d(1, 0, 0);
+			}
 
 			dir.multiplyThisWithScal(-1.0);
 
@@ -2035,11 +2030,11 @@ export class Renderer {
 
 			this.gl.uniform3f(program.locDirectionalLight, dir.X, dir.Y, dir.Z);
 
-			if (dirlight)
+			if (dirlight) {
 				this.gl.uniform4f(program.locDirectionalLightColor, dirlight.Color.R, dirlight.Color.G, dirlight.Color.B, 1.0);
-
-			else
+			} else {
 				this.gl.uniform4f(program.locDirectionalLightColor, 0.0, 0.0, 0.0, 1.0);
+			}
 		}
 	}
 	/**
@@ -2048,7 +2043,7 @@ export class Renderer {
 	 */
 	draw3DLine(vect3dFrom, vect3dTo) {
 		// TODO: implement
-		//gl.drawElements(gl.LINES, b.indexCount, gl.UNSIGNED_SHORT, 0);
+		// gl.drawElements(gl.LINES, b.indexCount, gl.UNSIGNED_SHORT, 0);
 	}
 	/**
 	 * Draws a 2d rectangle
@@ -2061,12 +2056,14 @@ export class Renderer {
 	 * @param blend {Boolean} (optional) set to true to enable alpha blending (using the alpha component of the color) and false not to blend
 	 */
 	draw2DRectangle(x, y, width, height, color, blend, maskTex) {
-		if (width <= 0 || height <= 0 || this.width == 0 || this.height == 0)
+		if (width <= 0 || height <= 0 || this.width == 0 || this.height == 0) {
 			return;
+		}
 
 		let doblend = true;
-		if (blend == null || blend == false)
+		if (blend == null || blend == false) {
 			doblend = false;
+		}
 
 		let gl = this.gl;
 
@@ -2150,12 +2147,13 @@ export class Renderer {
 		gl.useProgram(this.currentGLProgram);
 
 		// set color
-		gl.uniform4f(gl.getUniformLocation(this.currentGLProgram, "vColor"),
+		gl.uniform4f(
+			gl.getUniformLocation(this.currentGLProgram, "vColor"),
 			CL3D.getRed(color) / 255,
 			CL3D.getGreen(color) / 255,
 			CL3D.getBlue(color) / 255,
-			doblend ? (CL3D.getAlpha(color) / 255) : 1.0);
-
+			doblend ? (CL3D.getAlpha(color) / 255) : 1.0,
+		);
 
 		// set blend mode and other tests
 		gl.depthMask(false);
@@ -2163,9 +2161,7 @@ export class Renderer {
 
 		if (!doblend) {
 			gl.disable(gl.BLEND);
-		}
-
-		else {
+		} else {
 			gl.enable(gl.BLEND);
 			gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		}
@@ -2198,17 +2194,21 @@ export class Renderer {
 	 * @param {CL3D.Texture?} maskTex mask texture
 	 */
 	draw2DImage(x, y, width, height, tex, blend, shaderToUse, srcRightX, srcBottomY, sharp, maskTex) {
-		if (tex == null || tex.isLoaded() == false || width <= 0 || height <= 0 || this.width == 0 || this.height == 0)
+		if (tex == null || tex.isLoaded() == false || width <= 0 || height <= 0 || this.width == 0 || this.height == 0) {
 			return;
+		}
 
-		if (srcRightX == null)
+		if (srcRightX == null) {
 			srcRightX = 1.0;
-		if (srcBottomY == null)
+		}
+		if (srcBottomY == null) {
 			srcBottomY = 1.0;
+		}
 
 		let doblend = true;
-		if (blend == null || blend == false)
+		if (blend == null || blend == false) {
 			doblend = false;
+		}
 
 		let gl = this.gl;
 
@@ -2290,10 +2290,9 @@ export class Renderer {
 		// set shader
 		if (shaderToUse == null) {
 			this.currentGLProgram = maskTex ? this.Program2DDrawingTextureWithMask : this.Program2DDrawingTextureOnly;
-		}
-
-		else
+		} else {
 			this.currentGLProgram = shaderToUse;
+		}
 
 		gl.useProgram(this.currentGLProgram);
 
@@ -2303,9 +2302,7 @@ export class Renderer {
 
 		if (!doblend) {
 			gl.disable(gl.BLEND);
-		}
-
-		else {
+		} else {
 			gl.enable(gl.BLEND);
 			gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		}
@@ -2318,9 +2315,7 @@ export class Renderer {
 		if (sharp) {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-		}
-
-		else {
+		} else {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 		}
@@ -2341,7 +2336,7 @@ export class Renderer {
 		gl.deleteBuffer(positionBuffer);
 		gl.deleteBuffer(indexBuffer);
 
-		//if (disableBlur)
+		// if (disableBlur)
 		{
 			// reset to default again
 			gl.activeTexture(gl.TEXTURE0);
@@ -2355,8 +2350,9 @@ export class Renderer {
 	 * internal drawing function for drawing 2d overlay fonts
 	 */
 	draw2DFontImage(x, y, width, height, tex, color) {
-		if (tex == null || tex.isLoaded() == false || width <= 0 || height <= 0 || this.width == 0 || this.height == 0)
+		if (tex == null || tex.isLoaded() == false || width <= 0 || height <= 0 || this.width == 0 || this.height == 0) {
 			return;
+		}
 
 		let doblend = true;
 		let gl = this.gl;
@@ -2367,16 +2363,29 @@ export class Renderer {
 		// TODO: in the latest release, non-power-of-two textures do not work anymore, so ALL
 		// out font textures are scaled up. we need to fix this later by drawing them with the actual size and not scaling them up
 		// set color
-		gl.uniform4f(gl.getUniformLocation(this.currentGLProgram, "vColor"),
+		gl.uniform4f(
+			gl.getUniformLocation(this.currentGLProgram, "vColor"),
 			CL3D.getRed(color) / 255,
 			CL3D.getGreen(color) / 255,
 			CL3D.getBlue(color) / 255,
-			doblend ? (CL3D.getAlpha(color) / 255) : 1.0);
+			doblend ? (CL3D.getAlpha(color) / 255) : 1.0,
+		);
 
-		//this.draw2DImage(x, y, width, height, tex, doblend, this.Program2DDrawingCanvasFontColor, );
-		//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-		//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-		this.draw2DImage(x, y, width, height, tex, doblend, this.Program2DDrawingCanvasFontColor, tex.OriginalWidth / tex.CachedWidth, tex.OriginalHeight / tex.CachedHeight, true);
+		// this.draw2DImage(x, y, width, height, tex, doblend, this.Program2DDrawingCanvasFontColor, );
+		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+		this.draw2DImage(
+			x,
+			y,
+			width,
+			height,
+			tex,
+			doblend,
+			this.Program2DDrawingCanvasFontColor,
+			tex.OriginalWidth / tex.CachedWidth,
+			tex.OriginalHeight / tex.CachedHeight,
+			true,
+		);
 	}
 	/**
 	 * Starts the drawing process by clearing the whole scene. Is called by {@link CopperLicht.draw3dScene}(),
@@ -2385,10 +2394,11 @@ export class Renderer {
 	 * @param clearColor {Number} Color for the background. See {@link createColor}.
 	 */
 	beginScene(clearColor) {
-		if (this.gl == null)
+		if (this.gl == null) {
 			return;
+		}
 
-		//console.log("drawBegin");
+		// console.log("drawBegin");
 		// adjust size
 		this.ensuresizeok(this.width, this.height);
 
@@ -2397,10 +2407,7 @@ export class Renderer {
 
 		gl.clearDepth(this.InvertedDepthTest ? 0.0 : 1.0);
 		gl.depthMask(true);
-		gl.clearColor(CL3D.getRed(clearColor) / 255.0,
-			CL3D.getGreen(clearColor) / 255.0,
-			CL3D.getBlue(clearColor) / 255.0,
-			1); //CL3D.getAlpha(clearColor) / 255.0);
+		gl.clearColor(CL3D.getRed(clearColor) / 255.0, CL3D.getGreen(clearColor) / 255.0, CL3D.getBlue(clearColor) / 255.0, 1); // CL3D.getAlpha(clearColor) / 255.0);
 
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	}
@@ -2420,14 +2427,15 @@ export class Renderer {
 	 * @public
 	 */
 	endScene() {
-		if (this.gl == null)
+		if (this.gl == null) {
 			return;
+		}
 
 		let gl = this.gl;
 
-		//gl.flush();
+		// gl.flush();
 
-		//console.log("drawEnd");
+		// console.log("drawEnd");
 	}
 	/**
 	 * Clears all dynamic lights in the rendering pipeline. Is called by {@link CopperLicht.draw3dScene}(),
@@ -2441,7 +2449,7 @@ export class Renderer {
 	/**
 	 * Adds a new dynamic light to the rendering pipeline.
 	 * @public
-	  * @param {CL3D.Light} l light data of the light to add
+	 * @param {CL3D.Light} l light data of the light to add
 	 */
 	addDynamicLight(l) {
 		this.Lights.push(l);
@@ -2450,7 +2458,7 @@ export class Renderer {
 	 * Sets the current dynamic directional light to the rendering pipeline.
 	 * The renderer supports an unlimited amount of point lights and one directional light.
 	 * @public
-	  * @param {CL3D.Light} l light data of the light to add
+	 * @param {CL3D.Light} l light data of the light to add
 	 */
 	setDirectionalLight(l) {
 		this.DirectionalLight = l;
@@ -2459,20 +2467,27 @@ export class Renderer {
 	 * @public
 	 */
 	ensuresizeok(width, height) {
-		if (this.gl == null)
+		if (this.gl == null) {
 			return;
+		}
 
 		if (this.canvas) {
-			if (this.width == this.canvas.width &&
-				this.height == this.canvas.height)
+			if (
+				this.width == this.canvas.width
+				&& this.height == this.canvas.height
+			) {
 				return;
+			}
 
 			this.width = this.canvas.width;
 			this.height = this.canvas.height;
 		} else {
-			if (this.width == width &&
-				this.height == height)
+			if (
+				this.width == width
+				&& this.height == height
+			) {
 				return;
+			}
 
 			this.width = width;
 			this.height = height;
@@ -2481,10 +2496,11 @@ export class Renderer {
 		let gl = this.gl;
 
 		// Set the viewport and projection matrix for the scene
-		if (gl.viewport)
+		if (gl.viewport) {
 			gl.viewport(0, 0, this.width, this.height);
+		}
 
-		//console.log("adjusted size: " + this.width + " " + this.height);
+		// console.log("adjusted size: " + this.width + " " + this.height);
 	}
 	/**
 	 * @public
@@ -2500,27 +2516,26 @@ export class Renderer {
 			this.window = obj.window;
 			this.glfw = obj.glfw;
 
-			this.window.on('resize', (event) => {
+			this.window.on("resize", (event) => {
 				this.ensuresizeok(event.width, event.height);
 			});
 
-			this.window.on('refresh', (event) => {
+			this.window.on("refresh", (event) => {
 				this.ensuresizeok(event.target.width, event.target.height);
 			});
 
 			this.UsesWebGL2 = true;
-		}
-		else
+		} else {
 			this.gl = obj;
+		}
 
-		if (canvas)
+		if (canvas) {
 			this.UsesWebGL2 = true;
+		}
 
 		if (this.gl == null) {
 			return false;
-		}
-
-		else {
+		} else {
 			this.removeCompatibilityProblems();
 			this.initWebGL();
 			this.ensuresizeok(width, height);
@@ -2539,8 +2554,9 @@ export class Renderer {
 	loadShader(shaderType, shaderSource) {
 		let gl = this.gl;
 		let shader = gl.createShader(shaderType);
-		if (shader == null)
+		if (shader == null) {
 			return null;
+		}
 
 		gl.shaderSource(shader, shaderSource);
 		gl.compileShader(shader);
@@ -2549,8 +2565,9 @@ export class Renderer {
 			if (this.printShaderErrors) {
 				let strType = (shaderType == gl.VERTEX_SHADER) ? "vertex" : "fragment";
 				let msg = "Error loading " + strType + " shader: " + gl.getShaderInfoLog(shader);
-				if (CL3D.gCCDebugInfoEnabled)
+				if (CL3D.gCCDebugInfoEnabled) {
 					console.log(msg);
+				}
 			}
 			return null;
 		}
@@ -2572,18 +2589,21 @@ export class Renderer {
 		precision mediump float;
 		`;
 
-		if (finalVertexShader.indexOf('#version 100') == -1)
+		if (finalVertexShader.indexOf("#version 100") == -1) {
 			finalVertexShader = head_append + vertexShaderSource;
+		}
 
-		if (finalFramentShader.indexOf('#version 100') == -1)
+		if (finalFramentShader.indexOf("#version 100") == -1) {
 			finalFramentShader = head_append + fragmentShaderSource;
+		}
 
 		let vertexShader = this.loadShader(gl.VERTEX_SHADER, finalVertexShader);
 		let fragmentShader = this.loadShader(gl.FRAGMENT_SHADER, finalFramentShader);
 
 		if (!vertexShader || !fragmentShader) {
-			if (this.printShaderErrors)
+			if (this.printShaderErrors) {
 				console.log("Could not create shader program");
+			}
 			return null;
 		}
 
@@ -2607,23 +2627,22 @@ export class Renderer {
 			gl.bindAttribLocation(program, 6, "vTangent");
 		}
 
-		//gl.bindTexture(gl.TEXTURE_2D, mat.Tex1.Texture);
+		// gl.bindTexture(gl.TEXTURE_2D, mat.Tex1.Texture);
 		// linking
 		gl.linkProgram(program);
 		if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-			if (this.printShaderErrors)
+			if (this.printShaderErrors) {
 				console.log("Could not link program:" + gl.getProgramInfoLog(program));
-		}
-
-		else {
+			}
+		} else {
 			gl.useProgram(program);
 			gl.uniform1i(gl.getUniformLocation(program, "texture1"), 0);
 			gl.uniform1i(gl.getUniformLocation(program, "texture2"), 1);
 		}
 
 		// setup uniforms (optional)
-		//this.gl.useProgram(program);
-		//this.gl.uniform1i(gl.getUniformLocation(program, "uTexture"), 0);
+		// this.gl.useProgram(program);
+		// this.gl.uniform1i(gl.getUniformLocation(program, "uTexture"), 0);
 		return program;
 	}
 	/**
@@ -2691,11 +2710,11 @@ export class Renderer {
 	 * @param blenddfactor this is optional. Blend destination factor, when blending is enabled. Set to a webGL blend factor like gl.ONE_MINUS_SRC_ALPHA or gl.ONE_MINUS_SRC_COLOR. You can get the gl object by using {@link getWebGL()}.
 	 * @param functionShaderCallback {function} an optional function which should be called when the material is being used. Can be used to set shader variables.
 	 */
-	createMaterialType(vertexShaderSource, fragmentShaderSource, blendenabled,
-		blendsfactor, blenddfactor, functionShaderCallback) {
+	createMaterialType(vertexShaderSource, fragmentShaderSource, blendenabled, blendsfactor, blenddfactor, functionShaderCallback) {
 		let program = this.createMaterialTypeInternal(vertexShaderSource, fragmentShaderSource, blendenabled, blendsfactor, blenddfactor);
-		if (!program)
+		if (!program) {
 			return -1;
+		}
 
 		program.shaderCallback = functionShaderCallback;
 
@@ -2719,8 +2738,7 @@ export class Renderer {
 		let program = null;
 		try {
 			program = this.MaterialPrograms[mattype];
-		}
-		catch (e) { }
+		} catch (e) {}
 
 		return program;
 	}
@@ -2728,8 +2746,9 @@ export class Renderer {
 	 * @public
 	 */
 	createMaterialTypeInternal(vsshader, fsshader, blendenabled, blendsfactor, blenddfactor, useBinormalsAndTangents) {
-		if (useBinormalsAndTangents == null)
+		if (useBinormalsAndTangents == null) {
 			useBinormalsAndTangents = false;
+		}
 
 		let program = this.createShaderProgram(vsshader, fsshader, useBinormalsAndTangents);
 		if (program) {
@@ -2762,7 +2781,6 @@ export class Renderer {
 			program.locShadowMapBackFaceBias = gl.getUniformLocation(program, "shadowMapBackFaceBias");
 			program.locShadowMapOpacity = gl.getUniformLocation(program, "shadowOpacity");
 
-
 			// shader callback function default to null
 			program.shaderCallback = null;
 		}
@@ -2785,15 +2803,48 @@ export class Renderer {
 		let programStandardMaterial = fallbackShader;
 		let programLightmapMaterial = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_lightmapcombine);
 		let programLightmapMaterial_m4 = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_lightmapcombine_m4);
-		let programTransparentAlphaChannel = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_onlyfirsttexture_gouraud, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		let programTransparentAlphaChannelRef = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_onlyfirsttexture_gouraud_alpharef, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		let programTransparentAlphaChannelRefMoveGrass = this.createMaterialTypeInternal(this.vs_shader_normaltransform_movegrass, this.fs_shader_onlyfirsttexture_gouraud_alpharef, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		let programTransparentAdd = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_onlyfirsttexture_gouraud, true, gl.ONE, gl.ONE_MINUS_SRC_COLOR);
+		let programTransparentAlphaChannel = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform,
+			this.fs_shader_onlyfirsttexture_gouraud,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		let programTransparentAlphaChannelRef = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform,
+			this.fs_shader_onlyfirsttexture_gouraud_alpharef,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		let programTransparentAlphaChannelRefMoveGrass = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_movegrass,
+			this.fs_shader_onlyfirsttexture_gouraud_alpharef,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		let programTransparentAdd = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform,
+			this.fs_shader_onlyfirsttexture_gouraud,
+			true,
+			gl.ONE,
+			gl.ONE_MINUS_SRC_COLOR,
+		);
 		let programReflectionMaterial = this.createMaterialTypeInternal(this.vs_shader_reflectiontransform, this.fs_shader_lightmapcombine);
-		let programTranspReflectionMaterial = this.createMaterialTypeInternal(this.vs_shader_reflectiontransform, this.fs_shader_lightmapcombine, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+		let programTranspReflectionMaterial = this.createMaterialTypeInternal(
+			this.vs_shader_reflectiontransform,
+			this.fs_shader_lightmapcombine,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
 		let programGouraudShaded = this.createMaterialTypeInternal(this.vs_shader_normaltransform_gouraud, this.fs_shader_onlyfirsttexture_gouraud);
 		let programNormalmappedMaterial = this.createMaterialTypeInternal(this.vs_shader_normalmappedtransform, this.fs_shader_normalmapped);
-		let programSolidVertexAlphaTwoTextureBlendMaterial = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_vertex_alpha_two_textureblend);
+		let programSolidVertexAlphaTwoTextureBlendMaterial = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform,
+			this.fs_shader_vertex_alpha_two_textureblend,
+		);
 
 		this.Program2DDrawingColorOnly = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_coloronly, this.fs_shader_simplecolor);
 		this.Program2DDrawingColorWithMask = this.createMaterialTypeInternal(this.vs_shader_2ddrawing_texture, this.fs_shader_maskedcolor);
@@ -2822,14 +2873,47 @@ export class Renderer {
 		// -------------------------------------------------------------
 		// now do the same with materials with lighting
 		programStandardMaterial = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light, this.fs_shader_onlyfirsttexture_gouraud);
-		programTransparentAlphaChannel = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light, this.fs_shader_onlyfirsttexture_gouraud, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programTransparentAlphaChannelRef = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light, this.fs_shader_onlyfirsttexture_gouraud_alpharef, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programTransparentAlphaChannelRefMoveGrass = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light_movegrass, this.fs_shader_onlyfirsttexture_gouraud_alpharef, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programTransparentAdd = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light, this.fs_shader_onlyfirsttexture_gouraud, true, gl.ONE, gl.ONE_MINUS_SRC_COLOR);
+		programTransparentAlphaChannel = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light,
+			this.fs_shader_onlyfirsttexture_gouraud,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programTransparentAlphaChannelRef = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light,
+			this.fs_shader_onlyfirsttexture_gouraud_alpharef,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programTransparentAlphaChannelRefMoveGrass = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light_movegrass,
+			this.fs_shader_onlyfirsttexture_gouraud_alpharef,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programTransparentAdd = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light,
+			this.fs_shader_onlyfirsttexture_gouraud,
+			true,
+			gl.ONE,
+			gl.ONE_MINUS_SRC_COLOR,
+		);
 
 		programReflectionMaterial = this.createMaterialTypeInternal(this.vs_shader_reflectiontransform_with_light, this.fs_shader_lightmapcombine_gouraud);
-		programTranspReflectionMaterial = this.createMaterialTypeInternal(this.vs_shader_reflectiontransform_with_light, this.fs_shader_lightmapcombine_gouraud, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programSolidVertexAlphaTwoTextureBlendMaterial = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light, this.fs_shader_vertex_alpha_two_textureblend);
+		programTranspReflectionMaterial = this.createMaterialTypeInternal(
+			this.vs_shader_reflectiontransform_with_light,
+			this.fs_shader_lightmapcombine_gouraud,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programSolidVertexAlphaTwoTextureBlendMaterial = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light,
+			this.fs_shader_vertex_alpha_two_textureblend,
+		);
 
 		this.MaterialProgramsWithLight[CL3D.Material.EMT_SOLID] = programStandardMaterial;
 		this.MaterialProgramsWithLight[CL3D.Material.EMT_SOLID + 1] = programStandardMaterial;
@@ -2846,21 +2930,53 @@ export class Renderer {
 		this.MaterialProgramsWithLight[CL3D.Material.EMT_SOLID_VERTEX_ALPHA_TWO_TEXTURE_BLEND] = programSolidVertexAlphaTwoTextureBlendMaterial;
 		this.MaterialProgramsWithLight[CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS] = programTransparentAlphaChannelRefMoveGrass;
 
-
 		// -------------------------------------------------------------
 		// now create both material types also with fog support
 		let programStandardMaterialFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_onlyfirsttexture_gouraud_fog);
 		let programLightmapMaterialFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_lightmapcombine_fog);
 		let programLightmapMaterial_m4Fog = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_lightmapcombine_m4_fog);
-		let programTransparentAlphaChannelFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_onlyfirsttexture_gouraud_fog, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		let programTransparentAlphaChannelRefFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		let programTransparentAlphaChannelRefFogMoveGrass = this.createMaterialTypeInternal(this.vs_shader_normaltransform_movegrass, this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		let programTransparentAddFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_onlyfirsttexture_gouraud_fog, true, gl.ONE, gl.ONE_MINUS_SRC_COLOR);
+		let programTransparentAlphaChannelFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform,
+			this.fs_shader_onlyfirsttexture_gouraud_fog,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		let programTransparentAlphaChannelRefFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform,
+			this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		let programTransparentAlphaChannelRefFogMoveGrass = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_movegrass,
+			this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		let programTransparentAddFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform,
+			this.fs_shader_onlyfirsttexture_gouraud_fog,
+			true,
+			gl.ONE,
+			gl.ONE_MINUS_SRC_COLOR,
+		);
 		let programReflectionMaterialFog = this.createMaterialTypeInternal(this.vs_shader_reflectiontransform, this.fs_shader_lightmapcombine_fog);
-		let programTranspReflectionMaterialFog = this.createMaterialTypeInternal(this.vs_shader_reflectiontransform, this.fs_shader_lightmapcombine_fog, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+		let programTranspReflectionMaterialFog = this.createMaterialTypeInternal(
+			this.vs_shader_reflectiontransform,
+			this.fs_shader_lightmapcombine_fog,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
 		let programGouraudShadedFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_gouraud, this.fs_shader_onlyfirsttexture_gouraud_fog);
 		let programNormalmappedMaterialFog = this.createMaterialTypeInternal(this.vs_shader_normalmappedtransform, this.fs_shader_normalmapped);
-		let programSolidVertexAlphaTwoTextureBlendMaterialFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform, this.fs_shader_vertex_alpha_two_textureblend_fog);
+		let programSolidVertexAlphaTwoTextureBlendMaterialFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform,
+			this.fs_shader_vertex_alpha_two_textureblend_fog,
+		);
 
 		this.MaterialProgramsFog[CL3D.Material.EMT_SOLID] = programStandardMaterialFog;
 		this.MaterialProgramsFog[CL3D.Material.EMT_SOLID + 1] = programStandardMaterialFog;
@@ -2883,14 +2999,50 @@ export class Renderer {
 		// -------------------------------------------------------------
 		// dynamic light shaders with fog support
 		programStandardMaterialFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light, this.fs_shader_onlyfirsttexture_gouraud_fog);
-		programTransparentAlphaChannelFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light, this.fs_shader_onlyfirsttexture_gouraud_fog, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programTransparentAlphaChannelRefFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light, this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programTransparentAlphaChannelRefFogMoveGrass = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light_movegrass, this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programTransparentAddFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light, this.fs_shader_onlyfirsttexture_gouraud_fog, true, gl.ONE, gl.ONE_MINUS_SRC_COLOR);
+		programTransparentAlphaChannelFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light,
+			this.fs_shader_onlyfirsttexture_gouraud_fog,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programTransparentAlphaChannelRefFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light,
+			this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programTransparentAlphaChannelRefFogMoveGrass = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light_movegrass,
+			this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programTransparentAddFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light,
+			this.fs_shader_onlyfirsttexture_gouraud_fog,
+			true,
+			gl.ONE,
+			gl.ONE_MINUS_SRC_COLOR,
+		);
 
-		programReflectionMaterialFog = this.createMaterialTypeInternal(this.vs_shader_reflectiontransform_with_light, this.fs_shader_lightmapcombine_gouraud_fog);
-		programTranspReflectionMaterialFog = this.createMaterialTypeInternal(this.vs_shader_reflectiontransform_with_light, this.fs_shader_lightmapcombine_gouraud_fog, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programSolidVertexAlphaTwoTextureBlendMaterialFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light, this.fs_shader_vertex_alpha_two_textureblend_fog);
+		programReflectionMaterialFog = this.createMaterialTypeInternal(
+			this.vs_shader_reflectiontransform_with_light,
+			this.fs_shader_lightmapcombine_gouraud_fog,
+		);
+		programTranspReflectionMaterialFog = this.createMaterialTypeInternal(
+			this.vs_shader_reflectiontransform_with_light,
+			this.fs_shader_lightmapcombine_gouraud_fog,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programSolidVertexAlphaTwoTextureBlendMaterialFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light,
+			this.fs_shader_vertex_alpha_two_textureblend_fog,
+		);
 
 		this.MaterialProgramsWithLightFog[CL3D.Material.EMT_SOLID] = programStandardMaterialFog;
 		this.MaterialProgramsWithLightFog[CL3D.Material.EMT_SOLID + 1] = programStandardMaterialFog;
@@ -2909,20 +3061,56 @@ export class Renderer {
 
 		// -------------------------------------------------------------
 		// dynamic light + fog + shadow map shaders
-		let vsshaderShadowMap = this.ShadowMapUsesRGBPacking ?
-			this.fs_shader_onlyfirsttexture_gouraud_fog_shadow_map_rgbpack :
-			this.fs_shader_onlyfirsttexture_gouraud_fog_shadow_map;
+		let vsshaderShadowMap = this.ShadowMapUsesRGBPacking
+			? this.fs_shader_onlyfirsttexture_gouraud_fog_shadow_map_rgbpack
+			: this.fs_shader_onlyfirsttexture_gouraud_fog_shadow_map;
 
 		programStandardMaterialFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_shadowmap_lookup, vsshaderShadowMap);
-		programTransparentAlphaChannelFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_shadowmap_lookup, vsshaderShadowMap, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programTransparentAlphaChannelRefFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_shadowmap_lookup, this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog_shadow_map, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programTransparentAlphaChannelRefFogMoveGrass = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_light_movegrass_with_shadowmap_lookup, this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog_shadow_map, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programTransparentAddFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_shadowmap_lookup, vsshaderShadowMap, true, gl.ONE, gl.ONE_MINUS_SRC_COLOR);
+		programTransparentAlphaChannelFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_shadowmap_lookup,
+			vsshaderShadowMap,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programTransparentAlphaChannelRefFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_shadowmap_lookup,
+			this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog_shadow_map,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programTransparentAlphaChannelRefFogMoveGrass = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_light_movegrass_with_shadowmap_lookup,
+			this.fs_shader_onlyfirsttexture_gouraud_alpharef_fog_shadow_map,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programTransparentAddFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_shadowmap_lookup,
+			vsshaderShadowMap,
+			true,
+			gl.ONE,
+			gl.ONE_MINUS_SRC_COLOR,
+		);
 
 		// TODO: this material needs  shadow map support
-		programReflectionMaterialFog = this.createMaterialTypeInternal(this.vs_shader_reflectiontransform_with_light, this.fs_shader_lightmapcombine_gouraud_fog);
-		programTranspReflectionMaterialFog = this.createMaterialTypeInternal(this.vs_shader_reflectiontransform_with_light, this.fs_shader_lightmapcombine_gouraud_fog, true, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		programSolidVertexAlphaTwoTextureBlendMaterialFog = this.createMaterialTypeInternal(this.vs_shader_normaltransform_with_shadowmap_lookup, this.fs_shader_vertex_alpha_two_textureblend_fog_shadow_map);
+		programReflectionMaterialFog = this.createMaterialTypeInternal(
+			this.vs_shader_reflectiontransform_with_light,
+			this.fs_shader_lightmapcombine_gouraud_fog,
+		);
+		programTranspReflectionMaterialFog = this.createMaterialTypeInternal(
+			this.vs_shader_reflectiontransform_with_light,
+			this.fs_shader_lightmapcombine_gouraud_fog,
+			true,
+			gl.SRC_ALPHA,
+			gl.ONE_MINUS_SRC_ALPHA,
+		);
+		programSolidVertexAlphaTwoTextureBlendMaterialFog = this.createMaterialTypeInternal(
+			this.vs_shader_normaltransform_with_shadowmap_lookup,
+			this.fs_shader_vertex_alpha_two_textureblend_fog_shadow_map,
+		);
 
 		this.MaterialProgramsWithShadowMap[CL3D.Material.EMT_SOLID] = programStandardMaterialFog;
 		this.MaterialProgramsWithShadowMap[CL3D.Material.EMT_SOLID + 1] = programStandardMaterialFog;
@@ -2939,27 +3127,31 @@ export class Renderer {
 		this.MaterialProgramsWithShadowMap[CL3D.Material.EMT_SOLID_VERTEX_ALPHA_TWO_TEXTURE_BLEND] = programSolidVertexAlphaTwoTextureBlendMaterialFog;
 		this.MaterialProgramsWithShadowMap[CL3D.Material.EMT_TRANSPARENT_ALPHA_CHANNEL_REF_MOVING_GRASS] = programTransparentAlphaChannelRefFogMoveGrass;
 
-
 		// -------------------------------------------------------------
 		// reset shader error output
 		this.printShaderErrors = true;
 
 		// set fallback materials
 		for (let f = 0; f < this.MinExternalMaterialTypeId; ++f) {
-			if (this.MaterialPrograms[f] == null)
+			if (this.MaterialPrograms[f] == null) {
 				this.MaterialPrograms[f] = fallbackShader;
+			}
 
-			if (this.MaterialProgramsWithLight[f] == null)
+			if (this.MaterialProgramsWithLight[f] == null) {
 				this.MaterialProgramsWithLight[f] = fallbackShader;
+			}
 
-			if (this.MaterialProgramsFog[f] == null)
+			if (this.MaterialProgramsFog[f] == null) {
 				this.MaterialProgramsFog[f] = fallbackShader;
+			}
 
-			if (this.MaterialProgramsWithLightFog[f] == null)
+			if (this.MaterialProgramsWithLightFog[f] == null) {
 				this.MaterialProgramsWithLightFog[f] = fallbackShader;
+			}
 
-			if (this.MaterialProgramsWithShadowMap[f] == null)
+			if (this.MaterialProgramsWithShadowMap[f] == null) {
 				this.MaterialProgramsWithShadowMap[f] = fallbackShader;
+			}
 		}
 
 		// set WebGL default values
@@ -2973,7 +3165,7 @@ export class Renderer {
 		gl.enable(gl.DEPTH_TEST);
 		gl.disable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		//gl.enable(gl.TEXTURE_2D); invalid in webgl
+		// gl.enable(gl.TEXTURE_2D); invalid in webgl
 		gl.enable(gl.CULL_FACE);
 		gl.cullFace(gl.BACK);
 	}
@@ -3023,8 +3215,9 @@ export class Renderer {
 	 * @public
 	 */
 	setWorld(m) {
-		if (m)
+		if (m) {
 			m.copyTo(this.World);
+		}
 	}
 	/**
 	 * @public
@@ -3044,8 +3237,9 @@ export class Renderer {
 	 * @param {CL3D.Texture} tex the texture to draw
 	 */
 	deleteTexture(tex) {
-		if (tex == null)
+		if (tex == null) {
 			return;
+		}
 
 		let gl = this.gl;
 		gl.deleteTexture(tex.getWebGLTexture());
@@ -3053,8 +3247,9 @@ export class Renderer {
 		tex.Texture = null;
 		tex.Loaded = false;
 
-		if (tex.RTTFrameBuffer)
+		if (tex.RTTFrameBuffer) {
 			gl.deleteFramebuffer(tex.RTTFrameBuffer);
+		}
 
 		this.TheTextureManager.removeTexture(tex);
 
@@ -3080,36 +3275,38 @@ export class Renderer {
 			// or else gl.checkFramebufferStatus will never return gl.FRAMEBUFFER_COMPLETE for a floating point texture
 			if (!this.UsesWebGL2) {
 				// webgl 1
-				let ext1 = gl.getExtension('OES_texture_float');
-				if (!ext1)
+				let ext1 = gl.getExtension("OES_texture_float");
+				if (!ext1) {
 					return null;
+				}
 				this.ExtFloat = ext1;
 
-				let ext2 = gl.getExtension('OES_texture_float_linear'); // for linear filtering
-				if (!ext2)
+				let ext2 = gl.getExtension("OES_texture_float_linear"); // for linear filtering
+				if (!ext2) {
 					return null;
+				}
 				this.ExtFloatLinear = ext2;
-			}
-
-			else {
+			} else {
 				// webgl 2
-				let ext1 = gl.getExtension('EXT_color_buffer_float');
-				if (!ext1)
+				let ext1 = gl.getExtension("EXT_color_buffer_float");
+				if (!ext1) {
 					return null;
+				}
 				this.ExtFloat2 = ext1;
 
-				let ext2 = gl.getExtension('OES_texture_float_linear'); // for linear filtering
-				if (!ext2)
+				let ext2 = gl.getExtension("OES_texture_float_linear"); // for linear filtering
+				if (!ext2) {
 					return null;
+				}
 				this.ExtFloatLinear = ext2;
 			}
 		}
 
-		if (createDepthTexture && !this.UsesWebGL2) // in webgl 2, this is built-in
-		{
-			let ext = gl.getExtension('WEBGL_depth_texture');
-			if (!ext)
+		if (createDepthTexture && !this.UsesWebGL2) { // in webgl 2, this is built-in
+			let ext = gl.getExtension("WEBGL_depth_texture");
+			if (!ext) {
 				return null;
+			}
 			this.ExtDepth = ext;
 		}
 
@@ -3120,32 +3317,28 @@ export class Renderer {
 
 		let withMipMap = false;
 		if (withMipMap) {
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR); //gl.NEAREST);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST); //gl.NEAREST);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR); // gl.NEAREST);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST); // gl.NEAREST);
 			gl.generateMipmap(gl.TEXTURE_2D);
-		}
-
-		else {
+		} else {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-			//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-			//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+			// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+			// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 		}
 
-		if (createDepthTexture)
+		if (createDepthTexture) {
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, sx, sy, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, null);
-
-		else if (createFloatingPointTexture) {
-			if (this.UsesWebGL2)
+		} else if (createFloatingPointTexture) {
+			if (this.UsesWebGL2) {
 				// @ts-ignore
 				gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA32F, sx, sy);
-
-			else
+			} else {
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, sx, sy, 0, gl.RGBA, gl.FLOAT, null);
-		}
-
-		else
+			}
+		} else {
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, sx, sy, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+		}
 
 		// frame buffer
 		let rttFramebuffer = gl.createFramebuffer();
@@ -3155,9 +3348,7 @@ export class Renderer {
 
 		if (createDepthTexture) {
 			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, texture, 0);
-		}
-
-		else {
+		} else {
 			// render buffer
 			let renderbuffer = gl.createRenderbuffer();
 			gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
@@ -3218,9 +3409,7 @@ export class Renderer {
 		if (texture != null) {
 			gl.bindFramebuffer(gl.FRAMEBUFFER, texture.RTTFrameBuffer);
 			gl.viewport(0, 0, texture.CachedWidth, texture.CachedHeight);
-		}
-
-		else {
+		} else {
 			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 			gl.viewport(0, 0, this.width, this.height);
 		}
@@ -3239,10 +3428,7 @@ export class Renderer {
 			if (clearBackBuffer) {
 				mask = mask | gl.COLOR_BUFFER_BIT;
 
-				gl.clearColor(CL3D.getRed(bgcolor) / 255.0,
-					CL3D.getGreen(bgcolor) / 255.0,
-					CL3D.getBlue(bgcolor) / 255.0,
-					1);
+				gl.clearColor(CL3D.getRed(bgcolor) / 255.0, CL3D.getGreen(bgcolor) / 255.0, CL3D.getBlue(bgcolor) / 255.0, 1);
 			}
 
 			if (clearZBuffer) {
@@ -3267,8 +3453,9 @@ export class Renderer {
 	 * @public
 	 */
 	getRenderTargetSize() {
-		if (this.CurrentRenderTarget)
+		if (this.CurrentRenderTarget) {
 			return new CL3D.Vect2d(this.CurrentRenderTarget.CachedWidth, this.CurrentRenderTarget.CachedHeight);
+		}
 
 		return new CL3D.Vect2d(this.width, this.height);
 	}
@@ -3308,10 +3495,12 @@ export class Renderer {
 		let origwidth = canvas.width;
 		let origheight = canvas.height;
 
-		if (canvas.videoWidth)
+		if (canvas.videoWidth) {
 			origwidth = canvas.videoWidth;
-		if (canvas.videoHeight)
+		}
+		if (canvas.videoHeight) {
 			origheight = canvas.videoHeight;
+		}
 
 		let scaledUpWidth = origwidth;
 		let scaledUpHeight = origheight;
@@ -3324,27 +3513,28 @@ export class Renderer {
 			tmpctx.fillStyle = "rgba(0, 255, 255, 1)";
 			tmpctx.fillRect(0, 0, tmpcanvas.width, tmpcanvas.height);
 
-			if (nonscaling)
+			if (nonscaling) {
 				tmpctx.drawImage(canvas, 0, 0, origwidth, origheight, 0, 0, origwidth, origheight);
-
-			else
+			} else {
 				tmpctx.drawImage(canvas, 0, 0, origwidth, origheight, 0, 0, tmpcanvas.width, tmpcanvas.height);
+			}
 
-			if (isNode)
+			if (isNode) {
 				canvas = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
-			else
+			} else {
 				canvas = tmpcanvas;
+			}
 
 			scaledUpWidth = tmpcanvas.width;
 			scaledUpHeight = tmpcanvas.height;
 		}
 
-		//console.log("createTextureFrom2DCanvas orig " + origwidth + "x" + origheight + " and scaled" + scaledUpWidth + "x" + scaledUpHeight);
+		// console.log("createTextureFrom2DCanvas orig " + origwidth + "x" + origheight + " and scaled" + scaledUpWidth + "x" + scaledUpHeight);
 
 		this.fillTextureFromDOMObject(texture, canvas);
 
-		//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 
@@ -3368,10 +3558,12 @@ export class Renderer {
 		let origheight = canvas.height;
 
 		if (globalThis.HTMLVideoElement && canvas instanceof HTMLVideoElement) {
-			if (canvas.videoWidth)
+			if (canvas.videoWidth) {
 				origwidth = canvas.videoWidth;
-			if (canvas.videoHeight)
+			}
+			if (canvas.videoHeight) {
 				origheight = canvas.videoHeight;
+			}
 		}
 
 		let scaledUpWidth = origwidth;
@@ -3382,28 +3574,29 @@ export class Renderer {
 			let tmpcanvas = createCanvas(this.nextHighestPowerOfTwo(origwidth), this.nextHighestPowerOfTwo(origheight));
 			let tmpctx = tmpcanvas.getContext("2d");
 
-			//tmpctx.fillStyle = "rgba(0, 255, 255, 1)";
-			//tmpctx.fillRect(0, 0, tmpcanvas.width, tmpcanvas.height);
-			if (nonscaling)
+			// tmpctx.fillStyle = "rgba(0, 255, 255, 1)";
+			// tmpctx.fillRect(0, 0, tmpcanvas.width, tmpcanvas.height);
+			if (nonscaling) {
 				tmpctx.drawImage(canvas, 0, 0, origwidth, origheight, 0, 0, origwidth, origheight);
-
-			else
+			} else {
 				tmpctx.drawImage(canvas, 0, 0, origwidth, origheight, 0, 0, tmpcanvas.width, tmpcanvas.height);
+			}
 
-			if (isNode)
+			if (isNode) {
 				canvas = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
-			else
+			} else {
 				canvas = tmpcanvas;
+			}
 
 			scaledUpWidth = tmpcanvas.width;
 			scaledUpHeight = tmpcanvas.height;
 		}
 
-		//console.log("createTextureFrom2DCanvas orig " + origwidth + "x" + origheight + " and scaled" + scaledUpWidth + "x" + scaledUpHeight);
+		// console.log("createTextureFrom2DCanvas orig " + origwidth + "x" + origheight + " and scaled" + scaledUpWidth + "x" + scaledUpHeight);
 		this.fillTextureFromDOMObject(texture, canvas);
 
-		//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		//gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 
@@ -3485,23 +3678,26 @@ export class Renderer {
 		// concrete:
 		try {
 			// new version
-			//void texImage2D(GLenum target, GLint level, GLenum internalformat,
+			// void texImage2D(GLenum target, GLint level, GLenum internalformat,
 			//           GLenum format, GLenum type, HTMLImageElement image) raises (DOMException);
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, domobj);
-
-		}
-		catch (e) {
-			if (e.code != null && DOMException != null && DOMException['SECURITY_ERR'] != null &&
-				e.code == DOMException['SECURITY_ERR']) {
-				if (this.domainTextureLoadErrorPrinted == false)
-					console.log("<i>A security setting in the browser prevented loading a texture.<br/>Workaround: run this from a webserver, change security settings, or allow the specific domain.</i>", true);
+		} catch (e) {
+			if (
+				e.code != null && DOMException != null && DOMException["SECURITY_ERR"] != null
+				&& e.code == DOMException["SECURITY_ERR"]
+			) {
+				if (this.domainTextureLoadErrorPrinted == false) {
+					console.log(
+						"<i>A security setting in the browser prevented loading a texture.<br/>Workaround: run this from a webserver, change security settings, or allow the specific domain.</i>",
+						true,
+					);
+				}
 
 				this.domainTextureLoadErrorPrinted = true;
 				return;
 			}
-			//console.log(browserVersion + "Could not texImage2D texture: " + e);
+			// console.log(browserVersion + "Could not texImage2D texture: " + e);
 		}
-
 	}
 	/**
 	 * @public
@@ -3517,14 +3713,13 @@ export class Renderer {
 			let tmpcanvas = createCanvas(this.nextHighestPowerOfTwo(objToCopyFrom.width), this.nextHighestPowerOfTwo(objToCopyFrom.height));
 			if (tmpcanvas != null) {
 				let tmpctx = tmpcanvas.getContext("2d");
-				tmpctx.drawImage(objToCopyFrom,
-					0, 0, objToCopyFrom.width, objToCopyFrom.height,
-					0, 0, tmpcanvas.width, tmpcanvas.height);
+				tmpctx.drawImage(objToCopyFrom, 0, 0, objToCopyFrom.width, objToCopyFrom.height, 0, 0, tmpcanvas.width, tmpcanvas.height);
 
-				if (isNode)
+				if (isNode) {
 					objToCopyFrom = tmpctx.getImageData(0, 0, tmpcanvas.width, tmpcanvas.height);
-				else
+				} else {
 					objToCopyFrom = tmpcanvas;
+				}
 			}
 		}
 
@@ -3533,7 +3728,7 @@ export class Renderer {
 		this.fillTextureFromDOMObject(texture, objToCopyFrom);
 
 		//  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-		//	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 		gl.generateMipmap(gl.TEXTURE_2D);
 
 		// TODO: enable these lines for anisotropic filtering (looks much nicer)
@@ -3555,8 +3750,9 @@ export class Renderer {
 	 * @public
 	 */
 	getStaticBillboardMeshBuffer() {
-		if (this.StaticBillboardMeshBuffer == null)
+		if (this.StaticBillboardMeshBuffer == null) {
 			this.createStaticBillboardMeshBuffer();
+		}
 
 		return this.StaticBillboardMeshBuffer;
 	}
@@ -3564,8 +3760,9 @@ export class Renderer {
 	 * @public
 	 */
 	createStaticBillboardMeshBuffer() {
-		if (this.StaticBillboardMeshBuffer != null)
+		if (this.StaticBillboardMeshBuffer != null) {
 			return;
+		}
 
 		let mb = null;
 
@@ -3611,13 +3808,13 @@ export class Renderer {
 	 * Quickly enables / Disables rendering with shadow map support without any state changes. If enabled, all materials drawn will
 	 * Use the shadow map and the light matrix for rendering their geometry from a light.
 	 * @public
-	 **/
+	 */
 	quicklyEnableShadowMap(enable) {
 		this.ShadowMapEnabled = enable;
 	}
 	/**
 	 * @public
-	 **/
+	 */
 	isShadowMapEnabled() {
 		return this.ShadowMapEnabled;
 	}
@@ -3625,26 +3822,22 @@ export class Renderer {
 	 * Enables / Disables rendering with shadow map support. If enabled, all materials drawn will
 	 * Use the shadow map and the light matrix for rendering their geometry from a light.
 	 * @public
-	 **/
-	enableShadowMap(enable,
-		shadowMapTexture,
-		shadowMapLightMatrix,
-		shadowMapTexture2,
-		shadowMapLightMatrix2) {
+	 */
+	enableShadowMap(enable, shadowMapTexture, shadowMapLightMatrix, shadowMapTexture2, shadowMapLightMatrix2) {
 		this.ShadowMapEnabled = enable;
 		this.ShadowMapTexture = shadowMapTexture;
 		this.ShadowMapTexture2 = shadowMapTexture2;
 
-		if (shadowMapLightMatrix != null)
+		if (shadowMapLightMatrix != null) {
 			this.ShadowMapLightMatrix = shadowMapLightMatrix.clone();
-
-		else
+		} else {
 			this.ShadowMapLightMatrix = null;
+		}
 
-		if (shadowMapLightMatrix2 != null)
+		if (shadowMapLightMatrix2 != null) {
 			this.ShadowMapLightMatrix2 = shadowMapLightMatrix2.clone();
-
-		else
+		} else {
 			this.ShadowMapLightMatrix2 = null;
+		}
 	}
-};
+}

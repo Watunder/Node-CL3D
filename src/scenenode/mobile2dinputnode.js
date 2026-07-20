@@ -1,10 +1,10 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
 
 /**
- * A simple node derived from Mobile2DInputSceneNode to emulate keyboard input for games on touchscreen devices like phones, tablets and similar 
+ * A simple node derived from Mobile2DInputSceneNode to emulate keyboard input for games on touchscreen devices like phones, tablets and similar
  * @class Scene Node which draws a 2d mobile input control
  * @constructor
  * @extends CL3D.SceneNode
@@ -39,7 +39,7 @@ export class Mobile2DInputSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'mobile2dinput';
+		return "mobile2dinput";
 	}
 
 	/**
@@ -63,26 +63,28 @@ export class Mobile2DInputSceneNode extends CL3D.SceneNode {
 			var mposx = this.engine.getMouseX();
 			var mposy = this.engine.getMouseY();
 
-			this.MouseOverButton = (rctTarget.x <= mposx && rctTarget.y <= mposy &&
-				rctTarget.x + rctTarget.w >= mposx &&
-				rctTarget.y + rctTarget.h >= mposy);
+			this.MouseOverButton = rctTarget.x <= mposx && rctTarget.y <= mposy
+				&& rctTarget.x + rctTarget.w >= mposx
+				&& rctTarget.y + rctTarget.h >= mposy;
 
 			// is point inside rect
-			if (this.AnimateOnHover)
+			if (this.AnimateOnHover) {
 				bHovering = this.MouseOverButton;
+			}
 		}
 
 		// draw background
-		if (bHovering && this.OnHoverSetBackgroundColor)
+		if (bHovering && this.OnHoverSetBackgroundColor) {
 			renderer.draw2DRectangle(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, this.HoverBackgroundColor, true);
-
-		else if (this.ShowBackGround)
+		} else if (this.ShowBackGround) {
 			renderer.draw2DRectangle(rctTarget.x, rctTarget.y, rctTarget.w, rctTarget.h, this.BackGroundColor, true);
+		}
 
 		// draw texture
 		var tex = this.Texture;
-		if (bHovering && this.TextureHover && this.OnHoverDrawTexture)
+		if (bHovering && this.TextureHover && this.OnHoverDrawTexture) {
 			tex = this.TextureHover;
+		}
 
 		var usedWidth = 0;
 		var usedHeight = 0;
@@ -97,10 +99,8 @@ export class Mobile2DInputSceneNode extends CL3D.SceneNode {
 
 				usedWidth = rctTarget.w;
 				usedHeight = rctTarget.h;
-			}
-
-			else {
-				//rctTarget = this.getScreenCoordinatesRect(false, renderer);
+			} else {
+				// rctTarget = this.getScreenCoordinatesRect(false, renderer);
 				if (w && h && rctTarget.h && rctTarget.w) {
 					var aspectRatio = h / w;
 					var width = rctTarget.w;
@@ -131,10 +131,12 @@ export class Mobile2DInputSceneNode extends CL3D.SceneNode {
 		this.RealPosX = rctTarget.x;
 		this.RealPosY = rctTarget.y;
 
-		if (this.InputMode == 0 &&
-			this.CursorTex != null &&
-			this.CursorTex.isLoaded() &&
-			tex != null && tex.isLoaded()) {
+		if (
+			this.InputMode == 0
+			&& this.CursorTex != null
+			&& this.CursorTex.isLoaded()
+			&& tex != null && tex.isLoaded()
+		) {
 			// map square coordinates to the visual circle
 			var xCircle = this.CursorPosX * Math.sqrt(1.0 - 0.5 * (this.CursorPosY * this.CursorPosY));
 			var yCircle = this.CursorPosY * Math.sqrt(1.0 - 0.5 * (this.CursorPosX * this.CursorPosX));
@@ -147,13 +149,13 @@ export class Mobile2DInputSceneNode extends CL3D.SceneNode {
 			var sizeDeltaY = 1.0 / (tex.getHeight() / Number(this.CursorTex.getHeight()));
 			var cursorImgWidth = sizeDeltaX * usedWidth;
 			var cursorImgHeight = sizeDeltaY * usedHeight;
-			var xPos = rctTarget.x + (xCircle * (usedWidth)) - (cursorImgWidth * 0.5);
-			var yPos = rctTarget.y + (yCircle * (usedHeight)) - (cursorImgHeight * 0.5);
+			var xPos = rctTarget.x + (xCircle * usedWidth) - (cursorImgWidth * 0.5);
+			var yPos = rctTarget.y + (yCircle * usedHeight) - (cursorImgHeight * 0.5);
 
 			renderer.draw2DImage(xPos, yPos, cursorImgWidth, cursorImgHeight, this.CursorTex, true);
 		}
 	}
-};
+}
 
 // ----------------------------------------------------------------------------------------------
 // Animator for moving cursor position of Mobile2DInputSceneNode

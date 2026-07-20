@@ -3,6 +3,7 @@ export { CameraSceneNode } from "./camerascenenode.js";
 
 //
 export { MeshSceneNode } from "./meshscenenode.js";
+
 export { CubeSceneNode } from "./cubescenenode.js";
 
 export { SkyBoxSceneNode } from "./skyboxscenenode.js";
@@ -14,7 +15,7 @@ export { WaterSurfaceSceneNode } from "./watersurfacescenenode.js";
 export { AnimatedMeshSceneNode, SAnimatedDummySceneNodeChild } from "./animatedmeshscenenode.js";
 
 //
-export { HotspotSceneNode, DummyTransformationSceneNode, TerrainSceneNode } from "./hotspotscenenode.js";
+export { DummyTransformationSceneNode, HotspotSceneNode, TerrainSceneNode } from "./hotspotscenenode.js";
 
 //
 export { Light, LightSceneNode } from "./lightscenenode.js";

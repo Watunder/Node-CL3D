@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -12,23 +12,23 @@ import * as CL3D from "../main.js";
  * @class  Scene node animator making {@link SceneNode}s move along a path, uses {@link PathSceneNode} to define the path.
  */
 export class AnimatorFollowPath extends CL3D.Animator {
-	/** 
+	/**
 	 * Constant for {@link AnimatorFollowPath.EndMode}, specifying to start the movement again when the end of the path has been reached.
-	 * @static 
+	 * @static
 	 * @public
 	 */
 	static EFPFEM_START_AGAIN = 0;
 
-	/** 
+	/**
 	 * Constant for {@link AnimatorFollowPath.EndMode}, specifying to start the movement again when the end of the path has been reached.
-	 * @static 
+	 * @static
 	 * @public
 	 */
 	static EFPFEM_STOP = 1;
 
-	/** 
+	/**
 	 * Constant for {@link AnimatorFollowPath.EndMode}, specifying to start the movement again when the end of the path has been reached.
-	 * @static 
+	 * @static
 	 * @public
 	 */
 	static EFPFEM_SWITCH_TO_CAMERA = 2;
@@ -63,8 +63,8 @@ export class AnimatorFollowPath extends CL3D.Animator {
 
 		this.PathToFollow = null; // string!
 		this.TimeDisplacement = 0;
-		this.AdditionalRotation = null; //;
-		this.CameraToSwitchTo = null; //string	
+		this.AdditionalRotation = null; // ;
+		this.CameraToSwitchTo = null; // string
 
 		this.LastPercentageDoneActionFired = 0;
 		this.bActionFired = false;
@@ -76,7 +76,7 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'followpath';
+		return "followpath";
 	}
 
 	/**
@@ -107,7 +107,6 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	 * @param timeNeeded {Number} Time in milliseconds needed for following the whole path, for example 10000 for 10 seconds.
 	 * @param lookIntoMovementDirection {Boolean} true if the node should look into the movement direction or false
 	 * if not.
-	 *
 	 */
 	setOptions(endmode, timeNeeded, lookIntoMovementDirection) {
 		this.EndMode = endmode;
@@ -122,8 +121,9 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
-		if (n == null || !this.Manager || !this.TimeNeeded)
+		if (n == null || !this.Manager || !this.TimeNeeded) {
 			return false;
+		}
 
 		if (!(n === this.LastObject)) {
 			this.setNode(n);
@@ -132,8 +132,9 @@ export class AnimatorFollowPath extends CL3D.Animator {
 
 		this.linkWithPath();
 
-		if (this.PathNodeToFollow == null)
+		if (this.PathNodeToFollow == null) {
 			return false;
+		}
 
 		var changed = false;
 		var cam = null;
@@ -144,18 +145,19 @@ export class AnimatorFollowPath extends CL3D.Animator {
 
 			cam = n;
 			if (!(this.Manager.getActiveCamera() === cam)) {
-				if (this.PathNodeToFollow.Nodes.length) // for the editor only, set the position to the first path node
+				if (this.PathNodeToFollow.Nodes.length) { // for the editor only, set the position to the first path node
 					cam.Pos = this.PathNodeToFollow.getPathNodePosition(0);
+				}
 
 				this.LastTimeCameraWasInactive = true;
 				return false;
+			} else {
+				this.LastTimeCameraWasInactive = false;
 			}
 
-			else
-				this.LastTimeCameraWasInactive = false;
-
-			if (!this.StartTime || !oldActive)
+			if (!this.StartTime || !oldActive) {
 				this.StartTime = timeMs;
+			}
 		}
 
 		if (!this.StartTime) {
@@ -196,10 +198,9 @@ export class AnimatorFollowPath extends CL3D.Animator {
 					}
 					break;
 			}
-		}
-
-		else
+		} else {
 			this.SwitchedToNextCamera = false;
+		}
 
 		// advance node on path
 		var pos = this.PathNodeToFollow.getPointOnPath(percentageDone);
@@ -213,10 +214,9 @@ export class AnimatorFollowPath extends CL3D.Animator {
 
 			if (this.PathNodeToFollow.IsClosedCircle) {
 				nextPos = this.PathNodeToFollow.getPointOnPath(nextOnWay);
-			}
-
-			else
+			} else {
 				nextPos = this.PathNodeToFollow.getPointOnPath(nextOnWay);
+			}
 
 			if (!CL3D.iszero(nextPos.getDistanceTo(pos))) {
 				var lookvector = nextPos.substract(pos);
@@ -227,19 +227,15 @@ export class AnimatorFollowPath extends CL3D.Animator {
 					var newTarget = pos.add(lookvector);
 					changed = changed || !newTarget.equals(cam.Target);
 					cam.setTarget(newTarget);
-				}
-
-				else {
-					//node->setRotation(AdditionalRotation + lookvector.getHorizontalAngle());
+				} else {
+					// node->setRotation(AdditionalRotation + lookvector.getHorizontalAngle());
 					var newRot;
 
 					if (!this.AdditionalRotation || this.AdditionalRotation.equalsZero()) {
 						newRot = lookvector.getHorizontalAngle();
 						changed = changed || !newRot.equals(n.Rot);
 						n.Rot = newRot;
-					}
-
-					else {
+					} else {
 						// TODO: in this part, there is a bug somewhere, but only in the flash version.
 						// that's because the above version is implemented which at least works correctly
 						// when AdditionalRotation is zero, and is faster additionally.
@@ -261,32 +257,37 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	}
 
 	/**
-	* @public
-	*/
+	 * @public
+	 */
 	setNode(n) {
 		this.LastObject = n;
-		if (this.LastObject)
-			this.IsCamera = (this.LastObject.getType() == 'camera');
+		if (this.LastObject) {
+			this.IsCamera = this.LastObject.getType() == "camera";
+		}
 	}
 
 	/**
-	* @public
-	*/
+	 * @public
+	 */
 	linkWithPath() {
-		if (this.PathNodeToFollow)
+		if (this.PathNodeToFollow) {
 			return;
+		}
 
-		if (this.TriedToLinkWithPath)
+		if (this.TriedToLinkWithPath) {
 			return;
+		}
 
-		if (!this.PathToFollow.length)
+		if (!this.PathToFollow.length) {
 			return;
+		}
 
-		if (!this.Manager)
+		if (!this.Manager) {
 			return;
+		}
 
 		var node = this.Manager.getSceneNodeFromName(this.PathToFollow);
-		if (node && node instanceof CL3D.PathSceneNode && node.getType() == 'path') {
+		if (node && node instanceof CL3D.PathSceneNode && node.getType() == "path") {
 			this.setPathToFollow(node);
 		}
 	}
@@ -304,17 +305,20 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	 * @public
 	 */
 	switchToNextCamera() {
-		if (!this.Manager)
+		if (!this.Manager) {
 			return;
+		}
 
-		if (!this.CameraToSwitchTo.length)
+		if (!this.CameraToSwitchTo.length) {
 			return;
+		}
 
 		var node = this.Manager.getSceneNodeFromName(this.CameraToSwitchTo);
-		if (node && node instanceof CL3D.CameraSceneNode && node.getType() == 'camera') {
+		if (node && node instanceof CL3D.CameraSceneNode && node.getType() == "camera") {
 			var renderer = this.Manager.getLastUsedRenderer();
-			if (renderer)
+			if (renderer) {
 				node.setAutoAspectIfNoFixedSet(renderer.getWidth(), renderer.getHeight());
+			}
 			this.Manager.setActiveCamera(node);
 		}
 	}
@@ -323,9 +327,10 @@ export class AnimatorFollowPath extends CL3D.Animator {
 	 * @public
 	 */
 	findActionByType(type) {
-		if (this.TheActionHandler)
+		if (this.TheActionHandler) {
 			return this.TheActionHandler.findAction(type);
+		}
 
 		return null;
 	}
-};
+}

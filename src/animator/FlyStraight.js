@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -12,12 +12,12 @@ import * as CL3D from "../main.js";
  */
 export class AnimatorFlyStraight extends CL3D.Animator {
 	/**
- 	 * @param {CL3D.Vect3d=} start Start 3d position of the line
- 	 * @param {CL3D.Vect3d=} end End 3d position of the line
- 	 * @param {Number=} timeforway Time for moving along the whole line in milliseconds. For example 2000 for 2 seconds.
- 	 * @param {Boolean=} loop set to true for looping along the line, false for stopping movement when the end has been reached.
- 	 * @param {Boolean=} deleteMeAfterEndReached set to true if the animator should delete itself after the end has been reached.
- 	 * @param {Boolean=} animateCameraTargetInsteadOfPosition if the animated node is a camera, set to true to animate the camera target instead of the position of the camera.
+	 * @param {CL3D.Vect3d=} start Start 3d position of the line
+	 * @param {CL3D.Vect3d=} end End 3d position of the line
+	 * @param {Number=} timeforway Time for moving along the whole line in milliseconds. For example 2000 for 2 seconds.
+	 * @param {Boolean=} loop set to true for looping along the line, false for stopping movement when the end has been reached.
+	 * @param {Boolean=} deleteMeAfterEndReached set to true if the animator should delete itself after the end has been reached.
+	 * @param {Boolean=} animateCameraTargetInsteadOfPosition if the animated node is a camera, set to true to animate the camera target instead of the position of the camera.
 	 */
 	constructor(start, end, timeforway, loop, deleteMeAfterEndReached, animateCameraTargetInsteadOfPosition) {
 		super();
@@ -40,21 +40,27 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 		this.ActionToExecuteOnEnd = null;
 		this.ExecuteActionOnEndOnlyIfTimeSmallerThen = 0;
 
-		if (start)
+		if (start) {
 			this.Start = start.clone();
-		if (end)
+		}
+		if (end) {
 			this.End = end.clone();
-		if (timeforway)
+		}
+		if (timeforway) {
 			this.TimeForWay = timeforway;
-		if (loop)
+		}
+		if (loop) {
 			this.Loop = loop;
+		}
 
 		this.recalculateImidiateValues();
 
-		if (deleteMeAfterEndReached)
+		if (deleteMeAfterEndReached) {
 			this.DeleteMeAfterEndReached = deleteMeAfterEndReached;
-		if (animateCameraTargetInsteadOfPosition)
+		}
+		if (animateCameraTargetInsteadOfPosition) {
 			this.AnimateCameraTargetInsteadOfPosition = animateCameraTargetInsteadOfPosition;
+		}
 	}
 
 	/**
@@ -63,7 +69,7 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'flystraight';
+		return "flystraight";
 	}
 
 	/**
@@ -92,7 +98,7 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
-		var t = (timeMs - this.StartTime);
+		var t = timeMs - this.StartTime;
 		var endReached = false;
 
 		if (t != 0) {
@@ -101,51 +107,51 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 			if (!this.Loop && t >= this.TimeForWay) {
 				pos = this.End.clone();
 				endReached = true;
-			}
-
-			else {
+			} else {
 				pos.addToThis(this.Vector.multiplyWithScal((t % this.TimeForWay) * this.TimeFactor));
 			}
 
 			if (this.AnimateCameraTargetInsteadOfPosition) {
-				if (n instanceof CL3D.CameraSceneNode && n.getType() == 'camera') {
+				if (n instanceof CL3D.CameraSceneNode && n.getType() == "camera") {
 					n.setTarget(pos);
 
-					var animfps = n.getAnimatorOfType('camerafps');
-					if (animfps != null && animfps instanceof CL3D.AnimatorCameraFPS)
+					var animfps = n.getAnimatorOfType("camerafps");
+					if (animfps != null && animfps instanceof CL3D.AnimatorCameraFPS) {
 						animfps.lookAt(pos);
+					}
 				}
-			}
-
-			else {
+			} else {
 				n.Pos = pos;
 			}
 
-			if (this.TestShootCollisionWithBullet && this.StartTime != timeMs) // the node must not be in the exact same frame it was created in,
-
-			// otherwise, we risk an endless loop if the bullet is shot in the onHit handler
-			{
+			if (this.TestShootCollisionWithBullet && this.StartTime != timeMs) { // the node must not be in the exact same frame it was created in,
+				// otherwise, we risk an endless loop if the bullet is shot in the onHit handler
 				endReached = this.doShootCollisionTest(n) || endReached;
 			}
 
 			if (endReached) {
-				if (n.scene)
+				if (n.scene) {
 					n.scene.LastBulletImpactPosition = n.Pos.clone();
+				}
 
 				if (this.ActionToExecuteOnEnd) {
 					var runAction = true;
-					if (this.ExecuteActionOnEndOnlyIfTimeSmallerThen > 0 && t > this.ExecuteActionOnEndOnlyIfTimeSmallerThen)
+					if (this.ExecuteActionOnEndOnlyIfTimeSmallerThen > 0 && t > this.ExecuteActionOnEndOnlyIfTimeSmallerThen) {
 						runAction = false;
+					}
 
-					if (runAction)
+					if (runAction) {
 						this.ActionToExecuteOnEnd.execute(n);
+					}
 				}
 
-				if (this.DeleteMeAfterEndReached)
+				if (this.DeleteMeAfterEndReached) {
 					n.removeAnimator(this);
+				}
 
-				if (this.DeleteSceneNodeAfterEndReached && n.scene)
+				if (this.DeleteSceneNodeAfterEndReached && n.scene) {
 					n.scene.addToDeletionQueue(n, 0);
+				}
 			}
 
 			return true;
@@ -158,24 +164,27 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 	 * @public
 	 */
 	doShootCollisionTest(bulletNode) {
-		if (!bulletNode)
+		if (!bulletNode) {
 			return false;
+		}
 
 		bulletNode.updateAbsolutePosition();
 		var box = bulletNode.getTransformedBoundingBox();
 
 		var hit = false;
 
-		var nodes = bulletNode.scene.getAllSceneNodesWithAnimator('gameai');
+		var nodes = bulletNode.scene.getAllSceneNodesWithAnimator("gameai");
 
 		for (var i = 0; i < nodes.length; ++i) {
-			if (nodes[i] === this.ShootCollisionNodeToIgnore)
+			if (nodes[i] === this.ShootCollisionNodeToIgnore) {
 				continue;
+			}
 
-			var enemyAI = nodes[i].getAnimatorOfType('gameai');
+			var enemyAI = nodes[i].getAnimatorOfType("gameai");
 
-			if (enemyAI && !enemyAI.isAlive()) // don't test collision against dead items
+			if (enemyAI && !enemyAI.isAlive()) { // don't test collision against dead items
 				continue;
+			}
 
 			if (box.intersectsWithBox(nodes[i].getTransformedBoundingBox())) {
 				// hit found
@@ -187,7 +196,7 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 
 		return hit;
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -197,4 +206,4 @@ export class AnimatorFlyStraight extends CL3D.Animator {
 		this.Vector.normalize();
 		this.TimeFactor = this.WayLength / this.TimeForWay;
 	}
-};
+}

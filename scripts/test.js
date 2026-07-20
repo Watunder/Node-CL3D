@@ -1,17 +1,32 @@
+// dependcy module
+import { randomInt } from "crypto";
+import path from "path";
+import url from "url";
+import * as CL3D from "../src/main.js";
+
 // parse args
-const args = await import("minimist").then(async (module) => {
-	return module.default(process.argv.slice(2));
-});
+function parseArgs(argv) {
+	const args = { _: [] };
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+		if (arg.startsWith("--")) {
+			const [key, value] = arg.slice(2).split("=");
+			args[key] = value !== undefined ? value : true;
+		} else if (arg.startsWith("-")) {
+			const key = arg.slice(1);
+			args[key] = true;
+		} else {
+			args._.push(arg);
+		}
+	}
+	return args;
+}
+
+const args = parseArgs(process.argv.slice(2));
 
 const example = args["example"] || (args["_"].length == 0 ? `tutorial${randomInt(1, 9)}` : false);
 
 const file = example || args["_"][0];
-
-// dependcy module
-import path from "path";
-import url from "url";
-import * as CL3D from "../src/main.js";
-import { randomInt } from "crypto";
 
 // local file path
 const __filename = url.fileURLToPath(import.meta.url);
@@ -27,13 +42,13 @@ const bindInput = (engine) => {
 	 */
 	let window = engine.TheRenderer.window;
 
-	window.on('keydown', (event) => {
+	window.on("keydown", (event) => {
 		engine.handleKeyDown(event);
 	});
 
-	window.on('keyup', (event) => {
+	window.on("keyup", (event) => {
 		engine.handleKeyUp(event);
-	})
+	});
 
 	window.on("mousemove", (event) => {
 		engine.handleMouseMove(event);
@@ -58,8 +73,7 @@ const bindInput = (engine) => {
 	window.on("wheel", (event) => {
 		engine.handleMouseWheel(event);
 	});
-}
-
+};
 
 // run cl3d
 switch (example) {
@@ -68,8 +82,9 @@ switch (example) {
 			// create the 3d engine
 			const engine = new CL3D.CopperLicht();
 
-			if (!engine.initRenderer(1280, 720, {}))
+			if (!engine.initRenderer(1280, 720, {})) {
 				throw new Error("this browser doesn't support WebGL");
+			}
 
 			// add a new 3d scene
 
@@ -120,19 +135,22 @@ switch (example) {
 
 					// additional, let the sphere constantly rotate
 					let sphereSceneNode = scene.getSceneNodeFromName("sphereMesh1");
-					if (sphereSceneNode)
+					if (sphereSceneNode) {
 						sphereSceneNode.addAnimator(new CL3D.AnimatorRotation(new CL3D.Vect3d(0, 1.6, 0.8)));
+					}
 				}
-			}
+			};
 
 			window.on("keydown", (event) => {
 				// when pressed "L", move the cube scene node a bit up
-				if (event.key == "f" && cubeSceneNode)
+				if (event.key == "f" && cubeSceneNode) {
 					cubeSceneNode.Pos.Y += 5;
+				}
 
 				// when pressed "G", move the cube scene node a bit down
-				if (event.key == "g" && cubeSceneNode)
+				if (event.key == "g" && cubeSceneNode) {
 					cubeSceneNode.Pos.Y -= 5;
+				}
 			});
 
 			bindInput(engine);
@@ -174,13 +192,14 @@ switch (example) {
 					renderer.setWorld(this.getAbsoluteTransformation());
 					renderer.drawMesh(this.MyMesh);
 				}
-			};
+			}
 
 			// create the 3d engine
 			const engine = new CL3D.CopperLicht();
 
-			if (!engine.initRenderer(1280, 720, {}))
+			if (!engine.initRenderer(1280, 720, {})) {
 				throw new Error("this browser doesn't support WebGL");
+			}
 
 			// add a new 3d scene
 			let scene = new CL3D.Scene();
@@ -220,8 +239,9 @@ switch (example) {
 		{
 			const engine = new CL3D.CopperLicht();
 
-			if (!engine.initRenderer(1280, 720, {}))
+			if (!engine.initRenderer(1280, 720, {})) {
 				throw new Error("this browser doesn't support WebGL");
+			}
 
 			// add a new 3d scene
 
@@ -256,9 +276,9 @@ switch (example) {
 			scene.setActiveCamera(cam);
 
 			// draw handler
-			//let pos3d = new CL3D.Vect3d(0, 0, 0);
+			// let pos3d = new CL3D.Vect3d(0, 0, 0);
 
-			engine.OnAnimate = function () {
+			engine.OnAnimate = function() {
 				// let element = document.getElementById("originlabel");
 				// if (element) {
 				// 	// set the position of the label to the 2d position of the 3d point
@@ -280,7 +300,7 @@ switch (example) {
 
 				// 	element.style.display = hide ? "none" : "block";
 				// }
-			}
+			};
 
 			bindInput(engine);
 		}
@@ -290,8 +310,9 @@ switch (example) {
 		{
 			const engine = new CL3D.CopperLicht();
 
-			if (!engine.initRenderer(1280, 720, {}))
+			if (!engine.initRenderer(1280, 720, {})) {
 				throw new Error("this browser doesn't support WebGL");
+			}
 
 			// add a new 3d scene
 
@@ -306,8 +327,9 @@ switch (example) {
 			scene.getRootSceneNode().addChild(skybox);
 
 			// set texture sides of the skybox
-			for (let i = 0; i < 6; ++i)
+			for (let i = 0; i < 6; ++i) {
 				skybox.getMaterial(i).Tex1 = engine.getTextureManager().getTexture(path.join(__example, "stars.jpg"), true);
+			}
 
 			// add a cube to test out
 			let cubenode = new CL3D.CubeSceneNode();
@@ -367,15 +389,15 @@ switch (example) {
 				gl_FragColor = texture2D(texture1, texCoord) * 2.0;		\
 			}";
 
-
 			// create a solid material using the shaders. For transparent materials, take a look
 			// at the other parameters of createMaterialType
 
 			let newMaterialType = engine.getRenderer().createMaterialType(vertex_shader_source, fragment_shader_source);
-			if (newMaterialType != -1)
+			if (newMaterialType != -1) {
 				cubenode.getMaterial(0).Type = newMaterialType;
-			else
-				console.log("could not create shader"); //copperLicht will write the exact error line in the html
+			} else {
+				console.log("could not create shader"); // copperLicht will write the exact error line in the html
+			}
 
 			bindInput(engine);
 		}
@@ -391,8 +413,9 @@ switch (example) {
 
 			engine.OnLoadingComplete = () => {
 				let scene = engine.getScene();
-				if (!scene)
+				if (!scene) {
 					return;
+				}
 
 				// in the CopperCube 3d editor, we already created a camera which collides against the wall in this scene.
 				// But to demonstrate how this would work manually, we create a new camera here which does this as well:
@@ -424,21 +447,22 @@ switch (example) {
 				let colanimator = new CL3D.AnimatorCollisionResponse(
 					new CL3D.Vect3d(20, 40, 20), // size of the player ellipsoid
 					new CL3D.Vect3d(0, 30, 0), // position of the eye in the ellipsoid
-					scene.getCollisionGeometry());
+					scene.getCollisionGeometry(),
+				);
 
 				cam.addAnimator(colanimator);
-			}
+			};
 
 			// every time the user presses space, we want to do a collision test with the wall
 			// and create a cube where we hit the wall
 
 			window.on("keydown", (event) => {
 				let scene = engine.getScene();
-				if (!scene)
+				if (!scene) {
 					return;
+				}
 
-				if (event.key == " ") // space has been pressed
-				{
+				if (event.key == " ") { // space has been pressed
 					let cam = scene.getActiveCamera();
 
 					// calculate the start and end 3d point of the line, the beinning being
@@ -483,38 +507,36 @@ switch (example) {
 
 			window.on("keydown", (event) => {
 				let scene = engine.getScene();
-				if (!scene)
+				if (!scene) {
 					return;
+				}
 
 				// soldier is an AnimatedMeshSceneNode.
 				let soldier = scene.getSceneNodeFromName("soldier");
 
 				if (soldier) {
-					if (event.key == " ") // space has been pressed
-					{
+					if (event.key == " ") { // space has been pressed
 						// switch to next animation
 						// select the next animation:
 
 						let animations = ["walk", "stand", "idle_a", "aim"];
 						++lastPlayedAnimation;
-						if (lastPlayedAnimation > animations.length - 1)
+						if (lastPlayedAnimation > animations.length - 1) {
 							lastPlayedAnimation = 0;
+						}
 
 						let nextAnimationName = animations[lastPlayedAnimation];
 
 						// and set it to be played
 
 						soldier.setAnimation(nextAnimationName);
-					}
-					else
-						if (event.key == "c") // "c" has been pressed
-						{
-							// clone soldier
+					} else if (event.key == "c") { // "c" has been pressed
+						// clone soldier
 
-							let clone = soldier.createClone(scene.getRootSceneNode());
-							clone.Pos.X += (Math.random() * 50) - 25;
-							clone.Pos.Z += (Math.random() * 50) - 25;
-						}
+						let clone = soldier.createClone(scene.getRootSceneNode());
+						clone.Pos.X += (Math.random() * 50) - 25;
+						clone.Pos.Z += (Math.random() * 50) - 25;
+					}
 				}
 			});
 
@@ -538,8 +560,7 @@ switch (example) {
 					scene.ShadowMapResolution = 1024;
 					scene.ShadowMapBias1 = 0.0001;
 					scene.ShadowMapCameraViewDetailFactor = 0.1;
-
-				}
+				};
 				engine.load(path.join(__tutorialdata, "shadows.ccbz"), false, setupShadowScene);
 			}
 
@@ -551,8 +572,9 @@ switch (example) {
 		{
 			const engine = new CL3D.CopperLicht();
 
-			if (!engine.initRenderer(1280, 720, {}))
+			if (!engine.initRenderer(1280, 720, {})) {
 				throw new Error("this browser doesn't support WebGL");
+			}
 
 			engine.load(file);
 
@@ -560,8 +582,7 @@ switch (example) {
 		}
 		break;
 
-	default:
-		{
-			console.log(`${example || 'the file'} does not exsit!`);
-		}
+	default: {
+		console.log(`${example || "the file"} does not exsit!`);
+	}
 }

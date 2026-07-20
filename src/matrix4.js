@@ -1,10 +1,10 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
 
 /**
- * A 4x4 matrix. Mostly used as transformation matrix for 3d calculations. 
+ * A 4x4 matrix. Mostly used as transformation matrix for 3d calculations.
  * The matrix is a D3D style matrix, row major with translations in the 4th row.
  * @constructor
  * @public
@@ -13,8 +13,9 @@ import * as CL3D from "./main.js";
  */
 export class Matrix4 {
 	constructor(bMakeIdentity) {
-		if (bMakeIdentity == null)
+		if (bMakeIdentity == null) {
 			bMakeIdentity = true;
+		}
 
 		this.m00 = 0;
 		this.m01 = 0;
@@ -48,10 +49,22 @@ export class Matrix4 {
 	 * @public
 	 */
 	makeIdentity() {
-		this.m00 = 1; this.m01 = 0; this.m02 = 0; this.m03 = 0;
-		this.m04 = 0; this.m05 = 1; this.m06 = 0; this.m07 = 0;
-		this.m08 = 0; this.m09 = 0; this.m10 = 1; this.m11 = 0;
-		this.m12 = 0; this.m13 = 0; this.m14 = 0; this.m15 = 1;
+		this.m00 = 1;
+		this.m01 = 0;
+		this.m02 = 0;
+		this.m03 = 0;
+		this.m04 = 0;
+		this.m05 = 1;
+		this.m06 = 0;
+		this.m07 = 0;
+		this.m08 = 0;
+		this.m09 = 0;
+		this.m10 = 1;
+		this.m11 = 0;
+		this.m12 = 0;
+		this.m13 = 0;
+		this.m14 = 0;
+		this.m15 = 1;
 		this.bIsIdentity = true;
 	}
 	/**
@@ -59,13 +72,14 @@ export class Matrix4 {
 	 * @public
 	 */
 	isIdentity() {
-		if (this.bIsIdentity)
+		if (this.bIsIdentity) {
 			return true;
+		}
 
-		this.bIsIdentity = (CL3D.isone(this.m00) && CL3D.iszero(this.m01) && CL3D.iszero(this.m02) && CL3D.iszero(this.m03) &&
-			CL3D.iszero(this.m04) && CL3D.isone(this.m05) && CL3D.iszero(this.m06) && CL3D.iszero(this.m07) &&
-			CL3D.iszero(this.m08) && CL3D.iszero(this.m09) && CL3D.isone(this.m10) && CL3D.iszero(this.m11) &&
-			CL3D.iszero(this.m12) && CL3D.iszero(this.m13) && CL3D.iszero(this.m14) && CL3D.isone(this.m15));
+		this.bIsIdentity = CL3D.isone(this.m00) && CL3D.iszero(this.m01) && CL3D.iszero(this.m02) && CL3D.iszero(this.m03)
+			&& CL3D.iszero(this.m04) && CL3D.isone(this.m05) && CL3D.iszero(this.m06) && CL3D.iszero(this.m07)
+			&& CL3D.iszero(this.m08) && CL3D.iszero(this.m09) && CL3D.isone(this.m10) && CL3D.iszero(this.m11)
+			&& CL3D.iszero(this.m12) && CL3D.iszero(this.m13) && CL3D.iszero(this.m14) && CL3D.isone(this.m15);
 
 		return this.bIsIdentity;
 	}
@@ -74,35 +88,36 @@ export class Matrix4 {
 	 * @public
 	 */
 	isTranslateOnly() {
-		if (this.bIsIdentity)
+		if (this.bIsIdentity) {
 			return true;
+		}
 
-		return (CL3D.isone(this.m00) && CL3D.iszero(this.m01) && CL3D.iszero(this.m02) && CL3D.iszero(this.m03) &&
-			CL3D.iszero(this.m04) && CL3D.isone(this.m05) && CL3D.iszero(this.m06) && CL3D.iszero(this.m07) &&
-			CL3D.iszero(this.m08) && CL3D.iszero(this.m09) && CL3D.isone(this.m10) && CL3D.iszero(this.m11) &&
-			CL3D.isone(this.m15));
+		return (CL3D.isone(this.m00) && CL3D.iszero(this.m01) && CL3D.iszero(this.m02) && CL3D.iszero(this.m03)
+			&& CL3D.iszero(this.m04) && CL3D.isone(this.m05) && CL3D.iszero(this.m06) && CL3D.iszero(this.m07)
+			&& CL3D.iszero(this.m08) && CL3D.iszero(this.m09) && CL3D.isone(this.m10) && CL3D.iszero(this.m11)
+			&& CL3D.isone(this.m15));
 	}
 	/**
 	 * Returns if this matrix equals another matrix, uses {@link equals} as comparison operator.
 	 * @public
 	 */
 	equals(mat) {
-		return CL3D.equals(this.m00, mat.m00) &&
-			CL3D.equals(this.m01, mat.m01) &&
-			CL3D.equals(this.m02, mat.m02) &&
-			CL3D.equals(this.m03, mat.m03) &&
-			CL3D.equals(this.m04, mat.m04) &&
-			CL3D.equals(this.m05, mat.m05) &&
-			CL3D.equals(this.m06, mat.m06) &&
-			CL3D.equals(this.m07, mat.m07) &&
-			CL3D.equals(this.m08, mat.m08) &&
-			CL3D.equals(this.m09, mat.m09) &&
-			CL3D.equals(this.m10, mat.m10) &&
-			CL3D.equals(this.m11, mat.m11) &&
-			CL3D.equals(this.m12, mat.m12) &&
-			CL3D.equals(this.m13, mat.m13) &&
-			CL3D.equals(this.m14, mat.m14) &&
-			CL3D.equals(this.m15, mat.m15);
+		return CL3D.equals(this.m00, mat.m00)
+			&& CL3D.equals(this.m01, mat.m01)
+			&& CL3D.equals(this.m02, mat.m02)
+			&& CL3D.equals(this.m03, mat.m03)
+			&& CL3D.equals(this.m04, mat.m04)
+			&& CL3D.equals(this.m05, mat.m05)
+			&& CL3D.equals(this.m06, mat.m06)
+			&& CL3D.equals(this.m07, mat.m07)
+			&& CL3D.equals(this.m08, mat.m08)
+			&& CL3D.equals(this.m09, mat.m09)
+			&& CL3D.equals(this.m10, mat.m10)
+			&& CL3D.equals(this.m11, mat.m11)
+			&& CL3D.equals(this.m12, mat.m12)
+			&& CL3D.equals(this.m13, mat.m13)
+			&& CL3D.equals(this.m14, mat.m14)
+			&& CL3D.equals(this.m15, mat.m15);
 	}
 	/**
 	 * Returns the translation stored in the matrix as 3d vector
@@ -154,18 +169,22 @@ export class Matrix4 {
 	 * @public
 	 */
 	getRotatedVect(v) {
-		return new CL3D.Vect3d(v.X * this.m00 + v.Y * this.m04 + v.Z * this.m08,
+		return new CL3D.Vect3d(
+			v.X * this.m00 + v.Y * this.m04 + v.Z * this.m08,
 			v.X * this.m01 + v.Y * this.m05 + v.Z * this.m09,
-			v.X * this.m02 + v.Y * this.m06 + v.Z * this.m10);
+			v.X * this.m02 + v.Y * this.m06 + v.Z * this.m10,
+		);
 	}
 	/**
 	 * returns a new transformed vector from the input vector
 	 * @public
 	 */
 	getTransformedVect(v) {
-		return new CL3D.Vect3d(v.X * this.m00 + v.Y * this.m04 + v.Z * this.m08 + this.m12,
+		return new CL3D.Vect3d(
+			v.X * this.m00 + v.Y * this.m04 + v.Z * this.m08 + this.m12,
 			v.X * this.m01 + v.Y * this.m05 + v.Z * this.m09 + this.m13,
-			v.X * this.m02 + v.Y * this.m06 + v.Z * this.m10 + this.m14);
+			v.X * this.m02 + v.Y * this.m06 + v.Z * this.m10 + this.m14,
+		);
 	}
 	/**
 	 * Transforms the input vector by this matrix
@@ -194,9 +213,7 @@ export class Matrix4 {
 	 * @public
 	 */
 	getTranslatedVect(v) {
-		return new CL3D.Vect3d(v.X + this.m12,
-			v.Y + this.m13,
-			v.Z + this.m14);
+		return new CL3D.Vect3d(v.X + this.m12, v.Y + this.m13, v.Z + this.m14);
 	}
 	/**
 	 * Translates a vector by this matrix
@@ -216,22 +233,22 @@ export class Matrix4 {
 
 		/*let member = plane.getMemberPoint();
 		transformVect(member);
-	    
+
 		let origin = new CL3D.Vect3d();
 		transformVect(plane.Normal);
 		transformVect(origin);
-    
+
 		plane.Normal = plane.Normal.substract(origin);
 		plane.D = - member.dotProduct(plane.Normal);
-	    
+
 		plane.Normal.normalize();*/
 		// this works as well, bit without scale:
 		/*let member = plane.getMemberPoint();
 		transformVect(member);
-	    
+
 		let normal = plane.Normal.clone();
 		rotateVect(normal);
-	    
+
 		plane.setPlane(member, normal);*/
 		let member = plane.getMemberPoint();
 
@@ -244,8 +261,10 @@ export class Matrix4 {
 		// The normal needs to be rotated and inverse scaled, but not translated.
 		let scale = this.getScale();
 
-		if (!CL3D.equals(scale.X, 0.0) && !CL3D.equals(scale.Y, 0.0) && !CL3D.equals(scale.Z, 0.0)
-			&& (!CL3D.equals(scale.X, 1.0) || !CL3D.equals(scale.Y, 1.0) || !CL3D.equals(scale.Z, 1.0))) {
+		if (
+			!CL3D.equals(scale.X, 0.0) && !CL3D.equals(scale.Y, 0.0) && !CL3D.equals(scale.Z, 0.0)
+			&& (!CL3D.equals(scale.X, 1.0) || !CL3D.equals(scale.Y, 1.0) || !CL3D.equals(scale.Z, 1.0))
+		) {
 			// Rotating the vector will also apply the scale, so we have to invert it twice.
 			normal.X *= 1.0 / (scale.X * scale.X);
 			normal.Y *= 1.0 / (scale.Y * scale.Y);
@@ -302,12 +321,12 @@ export class Matrix4 {
 	 */
 	multiplyWith1x4Matrix(v) {
 		let tmp = v.clone();
-		tmp.W = v['W'];
+		tmp.W = v["W"];
 
 		v.X = tmp.X * this.m00 + tmp.Y * this.m04 + tmp.Z * this.m08 + tmp.W * this.m12;
 		v.Y = tmp.X * this.m01 + tmp.Y * this.m05 + tmp.Z * this.m09 + tmp.W * this.m13;
 		v.Z = tmp.X * this.m02 + tmp.Y * this.m06 + tmp.Z * this.m10 + tmp.W * this.m14;
-		v['W'] = tmp.X * this.m03 + tmp.Y * this.m07 + tmp.Z * this.m11 + tmp.W * this.m15;
+		v["W"] = tmp.X * this.m03 + tmp.Y * this.m07 + tmp.Z * this.m11 + tmp.W * this.m15;
 	}
 	/**
 	 * same as multiplyWith1x4Matrix, but faster and returns w as value
@@ -334,34 +353,67 @@ export class Matrix4 {
 			return true;
 		}
 
-		let d = (this.m00 * this.m05 - this.m01 * this.m04) * (this.m10 * this.m15 - this.m11 * this.m14) -
-			(this.m00 * this.m06 - this.m02 * this.m04) * (this.m09 * this.m15 - this.m11 * this.m13) +
-			(this.m00 * this.m07 - this.m03 * this.m04) * (this.m09 * this.m14 - this.m10 * this.m13) +
-			(this.m01 * this.m06 - this.m02 * this.m05) * (this.m08 * this.m15 - this.m11 * this.m12) -
-			(this.m01 * this.m07 - this.m03 * this.m05) * (this.m08 * this.m14 - this.m10 * this.m12) +
-			(this.m02 * this.m07 - this.m03 * this.m06) * (this.m08 * this.m13 - this.m09 * this.m12);
+		let d = (this.m00 * this.m05 - this.m01 * this.m04) * (this.m10 * this.m15 - this.m11 * this.m14)
+			- (this.m00 * this.m06 - this.m02 * this.m04) * (this.m09 * this.m15 - this.m11 * this.m13)
+			+ (this.m00 * this.m07 - this.m03 * this.m04) * (this.m09 * this.m14 - this.m10 * this.m13)
+			+ (this.m01 * this.m06 - this.m02 * this.m05) * (this.m08 * this.m15 - this.m11 * this.m12)
+			- (this.m01 * this.m07 - this.m03 * this.m05) * (this.m08 * this.m14 - this.m10 * this.m12)
+			+ (this.m02 * this.m07 - this.m03 * this.m06) * (this.m08 * this.m13 - this.m09 * this.m12);
 
-		if (d > -0.0000001 && d < 0.0000001)
+		if (d > -0.0000001 && d < 0.0000001) {
 			return false;
+		}
 
 		d = 1.0 / d;
 
-		out.m00 = d * (this.m05 * (this.m10 * this.m15 - this.m11 * this.m14) + this.m06 * (this.m11 * this.m13 - this.m09 * this.m15) + this.m07 * (this.m09 * this.m14 - this.m10 * this.m13));
-		out.m01 = d * (this.m09 * (this.m02 * this.m15 - this.m03 * this.m14) + this.m10 * (this.m03 * this.m13 - this.m01 * this.m15) + this.m11 * (this.m01 * this.m14 - this.m02 * this.m13));
-		out.m02 = d * (this.m13 * (this.m02 * this.m07 - this.m03 * this.m06) + this.m14 * (this.m03 * this.m05 - this.m01 * this.m07) + this.m15 * (this.m01 * this.m06 - this.m02 * this.m05));
-		out.m03 = d * (this.m01 * (this.m07 * this.m10 - this.m06 * this.m11) + this.m02 * (this.m05 * this.m11 - this.m07 * this.m09) + this.m03 * (this.m06 * this.m09 - this.m05 * this.m10));
-		out.m04 = d * (this.m06 * (this.m08 * this.m15 - this.m11 * this.m12) + this.m07 * (this.m10 * this.m12 - this.m08 * this.m14) + this.m04 * (this.m11 * this.m14 - this.m10 * this.m15));
-		out.m05 = d * (this.m10 * (this.m00 * this.m15 - this.m03 * this.m12) + this.m11 * (this.m02 * this.m12 - this.m00 * this.m14) + this.m08 * (this.m03 * this.m14 - this.m02 * this.m15));
-		out.m06 = d * (this.m14 * (this.m00 * this.m07 - this.m03 * this.m04) + this.m15 * (this.m02 * this.m04 - this.m00 * this.m06) + this.m12 * (this.m03 * this.m06 - this.m02 * this.m07));
-		out.m07 = d * (this.m02 * (this.m07 * this.m08 - this.m04 * this.m11) + this.m03 * (this.m04 * this.m10 - this.m06 * this.m08) + this.m00 * (this.m06 * this.m11 - this.m07 * this.m10));
-		out.m08 = d * (this.m07 * (this.m08 * this.m13 - this.m09 * this.m12) + this.m04 * (this.m09 * this.m15 - this.m11 * this.m13) + this.m05 * (this.m11 * this.m12 - this.m08 * this.m15));
-		out.m09 = d * (this.m11 * (this.m00 * this.m13 - this.m01 * this.m12) + this.m08 * (this.m01 * this.m15 - this.m03 * this.m13) + this.m09 * (this.m03 * this.m12 - this.m00 * this.m15));
-		out.m10 = d * (this.m15 * (this.m00 * this.m05 - this.m01 * this.m04) + this.m12 * (this.m01 * this.m07 - this.m03 * this.m05) + this.m13 * (this.m03 * this.m04 - this.m00 * this.m07));
-		out.m11 = d * (this.m03 * (this.m05 * this.m08 - this.m04 * this.m09) + this.m00 * (this.m07 * this.m09 - this.m05 * this.m11) + this.m01 * (this.m04 * this.m11 - this.m07 * this.m08));
-		out.m12 = d * (this.m04 * (this.m10 * this.m13 - this.m09 * this.m14) + this.m05 * (this.m08 * this.m14 - this.m10 * this.m12) + this.m06 * (this.m09 * this.m12 - this.m08 * this.m13));
-		out.m13 = d * (this.m08 * (this.m02 * this.m13 - this.m01 * this.m14) + this.m09 * (this.m00 * this.m14 - this.m02 * this.m12) + this.m10 * (this.m01 * this.m12 - this.m00 * this.m13));
-		out.m14 = d * (this.m12 * (this.m02 * this.m05 - this.m01 * this.m06) + this.m13 * (this.m00 * this.m06 - this.m02 * this.m04) + this.m14 * (this.m01 * this.m04 - this.m00 * this.m05));
-		out.m15 = d * (this.m00 * (this.m05 * this.m10 - this.m06 * this.m09) + this.m01 * (this.m06 * this.m08 - this.m04 * this.m10) + this.m02 * (this.m04 * this.m09 - this.m05 * this.m08));
+		out.m00 = d
+			* (this.m05 * (this.m10 * this.m15 - this.m11 * this.m14) + this.m06 * (this.m11 * this.m13 - this.m09 * this.m15)
+				+ this.m07 * (this.m09 * this.m14 - this.m10 * this.m13));
+		out.m01 = d
+			* (this.m09 * (this.m02 * this.m15 - this.m03 * this.m14) + this.m10 * (this.m03 * this.m13 - this.m01 * this.m15)
+				+ this.m11 * (this.m01 * this.m14 - this.m02 * this.m13));
+		out.m02 = d
+			* (this.m13 * (this.m02 * this.m07 - this.m03 * this.m06) + this.m14 * (this.m03 * this.m05 - this.m01 * this.m07)
+				+ this.m15 * (this.m01 * this.m06 - this.m02 * this.m05));
+		out.m03 = d
+			* (this.m01 * (this.m07 * this.m10 - this.m06 * this.m11) + this.m02 * (this.m05 * this.m11 - this.m07 * this.m09)
+				+ this.m03 * (this.m06 * this.m09 - this.m05 * this.m10));
+		out.m04 = d
+			* (this.m06 * (this.m08 * this.m15 - this.m11 * this.m12) + this.m07 * (this.m10 * this.m12 - this.m08 * this.m14)
+				+ this.m04 * (this.m11 * this.m14 - this.m10 * this.m15));
+		out.m05 = d
+			* (this.m10 * (this.m00 * this.m15 - this.m03 * this.m12) + this.m11 * (this.m02 * this.m12 - this.m00 * this.m14)
+				+ this.m08 * (this.m03 * this.m14 - this.m02 * this.m15));
+		out.m06 = d
+			* (this.m14 * (this.m00 * this.m07 - this.m03 * this.m04) + this.m15 * (this.m02 * this.m04 - this.m00 * this.m06)
+				+ this.m12 * (this.m03 * this.m06 - this.m02 * this.m07));
+		out.m07 = d
+			* (this.m02 * (this.m07 * this.m08 - this.m04 * this.m11) + this.m03 * (this.m04 * this.m10 - this.m06 * this.m08)
+				+ this.m00 * (this.m06 * this.m11 - this.m07 * this.m10));
+		out.m08 = d
+			* (this.m07 * (this.m08 * this.m13 - this.m09 * this.m12) + this.m04 * (this.m09 * this.m15 - this.m11 * this.m13)
+				+ this.m05 * (this.m11 * this.m12 - this.m08 * this.m15));
+		out.m09 = d
+			* (this.m11 * (this.m00 * this.m13 - this.m01 * this.m12) + this.m08 * (this.m01 * this.m15 - this.m03 * this.m13)
+				+ this.m09 * (this.m03 * this.m12 - this.m00 * this.m15));
+		out.m10 = d
+			* (this.m15 * (this.m00 * this.m05 - this.m01 * this.m04) + this.m12 * (this.m01 * this.m07 - this.m03 * this.m05)
+				+ this.m13 * (this.m03 * this.m04 - this.m00 * this.m07));
+		out.m11 = d
+			* (this.m03 * (this.m05 * this.m08 - this.m04 * this.m09) + this.m00 * (this.m07 * this.m09 - this.m05 * this.m11)
+				+ this.m01 * (this.m04 * this.m11 - this.m07 * this.m08));
+		out.m12 = d
+			* (this.m04 * (this.m10 * this.m13 - this.m09 * this.m14) + this.m05 * (this.m08 * this.m14 - this.m10 * this.m12)
+				+ this.m06 * (this.m09 * this.m12 - this.m08 * this.m13));
+		out.m13 = d
+			* (this.m08 * (this.m02 * this.m13 - this.m01 * this.m14) + this.m09 * (this.m00 * this.m14 - this.m02 * this.m12)
+				+ this.m10 * (this.m01 * this.m12 - this.m00 * this.m13));
+		out.m14 = d
+			* (this.m12 * (this.m02 * this.m05 - this.m01 * this.m06) + this.m13 * (this.m00 * this.m06 - this.m02 * this.m04)
+				+ this.m14 * (this.m01 * this.m04 - this.m00 * this.m05));
+		out.m15 = d
+			* (this.m00 * (this.m05 * this.m10 - this.m06 * this.m09) + this.m01 * (this.m06 * this.m08 - this.m04 * this.m10)
+				+ this.m02 * (this.m04 * this.m09 - this.m05 * this.m08));
 
 		out.bIsIdentity = this.bIsIdentity;
 
@@ -417,10 +469,22 @@ export class Matrix4 {
 	 */
 	asArray() {
 		return [
-			this.m00, this.m01, this.m02, this.m03,
-			this.m04, this.m05, this.m06, this.m07,
-			this.m08, this.m09, this.m10, this.m11,
-			this.m12, this.m13, this.m14, this.m15
+			this.m00,
+			this.m01,
+			this.m02,
+			this.m03,
+			this.m04,
+			this.m05,
+			this.m06,
+			this.m07,
+			this.m08,
+			this.m09,
+			this.m10,
+			this.m11,
+			this.m12,
+			this.m13,
+			this.m14,
+			this.m15,
 		];
 	}
 	/**
@@ -433,22 +497,54 @@ export class Matrix4 {
 		this.bIsIdentity = false;
 
 		switch (i) {
-			case 0: this.m00 = n; break;
-			case 1: this.m01 = n; break;
-			case 2: this.m02 = n; break;
-			case 3: this.m03 = n; break;
-			case 4: this.m04 = n; break;
-			case 5: this.m05 = n; break;
-			case 6: this.m06 = n; break;
-			case 7: this.m07 = n; break;
-			case 8: this.m08 = n; break;
-			case 9: this.m09 = n; break;
-			case 10: this.m10 = n; break;
-			case 11: this.m11 = n; break;
-			case 12: this.m12 = n; break;
-			case 13: this.m13 = n; break;
-			case 14: this.m14 = n; break;
-			case 15: this.m15 = n; break;
+			case 0:
+				this.m00 = n;
+				break;
+			case 1:
+				this.m01 = n;
+				break;
+			case 2:
+				this.m02 = n;
+				break;
+			case 3:
+				this.m03 = n;
+				break;
+			case 4:
+				this.m04 = n;
+				break;
+			case 5:
+				this.m05 = n;
+				break;
+			case 6:
+				this.m06 = n;
+				break;
+			case 7:
+				this.m07 = n;
+				break;
+			case 8:
+				this.m08 = n;
+				break;
+			case 9:
+				this.m09 = n;
+				break;
+			case 10:
+				this.m10 = n;
+				break;
+			case 11:
+				this.m11 = n;
+				break;
+			case 12:
+				this.m12 = n;
+				break;
+			case 13:
+				this.m13 = n;
+				break;
+			case 14:
+				this.m14 = n;
+				break;
+			case 15:
+				this.m15 = n;
+				break;
 		}
 	}
 	/**
@@ -465,20 +561,31 @@ export class Matrix4 {
 	 * @public
 	 */
 	copyTo(mat) {
-		mat.m00 = this.m00; mat.m01 = this.m01; mat.m02 = this.m02; mat.m03 = this.m03;
-		mat.m04 = this.m04; mat.m05 = this.m05; mat.m06 = this.m06; mat.m07 = this.m07;
-		mat.m08 = this.m08; mat.m09 = this.m09; mat.m10 = this.m10; mat.m11 = this.m11;
-		mat.m12 = this.m12; mat.m13 = this.m13; mat.m14 = this.m14; mat.m15 = this.m15;
+		mat.m00 = this.m00;
+		mat.m01 = this.m01;
+		mat.m02 = this.m02;
+		mat.m03 = this.m03;
+		mat.m04 = this.m04;
+		mat.m05 = this.m05;
+		mat.m06 = this.m06;
+		mat.m07 = this.m07;
+		mat.m08 = this.m08;
+		mat.m09 = this.m09;
+		mat.m10 = this.m10;
+		mat.m11 = this.m11;
+		mat.m12 = this.m12;
+		mat.m13 = this.m13;
+		mat.m14 = this.m14;
+		mat.m15 = this.m15;
 		mat.bIsIdentity = this.bIsIdentity;
 	}
 	/**
 	 * Builds a left-handed perspective projection matrix based on a field of view.
 	 * @public
 	 */
-	buildProjectionMatrixPerspectiveFovLH(fieldOfViewRadians,
-		aspectRatio, zNear, zFar) {
+	buildProjectionMatrixPerspectiveFovLH(fieldOfViewRadians, aspectRatio, zNear, zFar) {
 		let h = 1.0 / Math.tan(fieldOfViewRadians / 2.0);
-		let w = (h / aspectRatio);
+		let w = h / aspectRatio;
 
 		this.m00 = w;
 		this.m01 = 0;
@@ -492,12 +599,12 @@ export class Matrix4 {
 
 		this.m08 = 0;
 		this.m09 = 0;
-		this.m10 = (zFar / (zFar - zNear));
+		this.m10 = zFar / (zFar - zNear);
 		this.m11 = 1;
 
 		this.m12 = 0;
 		this.m13 = 0;
-		this.m14 = (-zNear * zFar / (zFar - zNear));
+		this.m14 = -zNear * zFar / (zFar - zNear);
 		this.m15 = 0;
 
 		this.bIsIdentity = false;
@@ -506,8 +613,7 @@ export class Matrix4 {
 	 * Builds a left-handed orthogonal projection matrix.
 	 * @public
 	 */
-	buildProjectionMatrixPerspectiveOrthoLH(widthOfViewVolume, heightOfViewVolume,
-		zNear, zFar) {
+	buildProjectionMatrixPerspectiveOrthoLH(widthOfViewVolume, heightOfViewVolume, zNear, zFar) {
 		this.m00 = 2.0 / widthOfViewVolume;
 		this.m01 = 0;
 		this.m02 = 0;
@@ -525,7 +631,7 @@ export class Matrix4 {
 
 		this.m12 = 0;
 		this.m13 = 0;
-		this.m14 = (zNear / (zNear - zFar));
+		this.m14 = zNear / (zNear - zFar);
 		this.m15 = 1;
 
 		this.bIsIdentity = false;
@@ -534,8 +640,7 @@ export class Matrix4 {
 	 * Builds a left-handed orthogonal projection matrix.
 	 * @public
 	 */
-	buildProjectionMatrixPerspectiveOrthoRH(widthOfViewVolume, heightOfViewVolume,
-		zNear, zFar) {
+	buildProjectionMatrixPerspectiveOrthoRH(widthOfViewVolume, heightOfViewVolume, zNear, zFar) {
 		this.m00 = 2.0 / widthOfViewVolume;
 		this.m01 = 0;
 		this.m02 = 0;
@@ -553,7 +658,7 @@ export class Matrix4 {
 
 		this.m12 = 0;
 		this.m13 = 0;
-		this.m14 = (zNear / (zNear - zFar));
+		this.m14 = zNear / (zNear - zFar);
 		this.m15 = 1;
 
 		this.bIsIdentity = false;
@@ -614,20 +719,20 @@ export class Matrix4 {
 		let cy = Math.cos(rotation.Z);
 		let sy = Math.sin(rotation.Z);
 
-		this.m00 = (cp * cy);
-		this.m01 = (cp * sy);
-		this.m02 = (-sp);
+		this.m00 = cp * cy;
+		this.m01 = cp * sy;
+		this.m02 = -sp;
 
 		let srsp = sr * sp;
 		let crsp = cr * sp;
 
-		this.m04 = (srsp * cy - cr * sy);
-		this.m05 = (srsp * sy + cr * cy);
-		this.m06 = (sr * cp);
+		this.m04 = srsp * cy - cr * sy;
+		this.m05 = srsp * sy + cr * cy;
+		this.m06 = sr * cp;
 
-		this.m08 = (crsp * cy + sr * sy);
-		this.m09 = (crsp * sy - sr * cy);
-		this.m10 = (cr * cp);
+		this.m08 = crsp * cy + sr * sy;
+		this.m09 = crsp * sy - sr * cy;
+		this.m10 = cr * cp;
 
 		this.bIsIdentity = false;
 	}
@@ -648,16 +753,14 @@ export class Matrix4 {
 		let Z;
 
 		if (Math.abs(C) > 0.00000001) {
-			let invC = (1.0 / C);
+			let invC = 1.0 / C;
 			rotx = this.m10 * invC;
 			roty = this.m06 * invC;
 			X = Math.atan2(roty, rotx) * CL3D.RADTODEG;
 			rotx = this.m00 * invC;
 			roty = this.m01 * invC;
 			Z = Math.atan2(roty, rotx) * CL3D.RADTODEG;
-		}
-
-		else {
+		} else {
 			X = 0.0;
 			rotx = this.m05;
 			roty = -this.m04;
@@ -716,15 +819,17 @@ export class Matrix4 {
 		let edges = box.getEdges();
 
 		let i;
-		for (i = 0; i < 8; ++i)
+		for (i = 0; i < 8; ++i) {
 			this.transformVect(edges[i]);
+		}
 
 		let v = edges[0];
 		box.MinEdge = v.clone();
 		box.MaxEdge = v.clone();
 
-		for (i = 1; i < 8; ++i)
+		for (i = 1; i < 8; ++i) {
 			box.addInternalPointByVector(edges[i]);
+		}
 	}
 	/**
 	 * Transforms a 3d box with another method which is more exact than transformBoxEx
@@ -748,9 +853,7 @@ export class Matrix4 {
 				if (a < b) {
 					Bmin[i] += a;
 					Bmax[i] += b;
-				}
-
-				else {
+				} else {
 					Bmin[i] += b;
 					Bmax[i] += a;
 				}
@@ -770,9 +873,9 @@ export class Matrix4 {
 	 * @public
 	 */
 	toString() {
-		return this.m00 + " " + this.m01 + " " + this.m02 + " " + this.m03 + "\n" +
-			this.m04 + " " + this.m05 + " " + this.m06 + " " + this.m07 + "\n" +
-			this.m08 + " " + this.m09 + " " + this.m10 + " " + this.m11 + "\n" +
-			this.m12 + " " + this.m13 + " " + this.m14 + " " + this.m15;
+		return this.m00 + " " + this.m01 + " " + this.m02 + " " + this.m03 + "\n"
+			+ this.m04 + " " + this.m05 + " " + this.m06 + " " + this.m07 + "\n"
+			+ this.m08 + " " + this.m09 + " " + this.m10 + " " + this.m11 + "\n"
+			+ this.m12 + " " + this.m13 + " " + this.m14 + " " + this.m15;
 	}
 }

@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -18,10 +18,10 @@ export class Free3dScene extends CL3D.Scene {
 	}
 
 	/**
-	  * returns the type string of the current scene. For free 3d scenes, this is 'free'.
-	  * @public
-	*/
+	 * returns the type string of the current scene. For free 3d scenes, this is 'free'.
+	 * @public
+	 */
 	getSceneType() {
 		return "free";
 	}
-};
+}

@@ -2,14 +2,14 @@
 export { AnimatorOnClick } from "./OnClick.js";
 export { AnimatorOnMove } from "./OnMove.js";
 
-// 
-export { AnimatorOnProximity } from "./OnCollide.js";
+//
 export { AnimatorCollisionResponse } from "./CollisionResponse.js";
+export { AnimatorOnProximity } from "./OnCollide.js";
 
 //
-export { AnimatorFollowPath } from "./FollowPath.js";
-export { AnimatorFlyStraight } from "./FlyStraight.js";
 export { AnimatorFlyCircle } from "./FlyCircle.js";
+export { AnimatorFlyStraight } from "./FlyStraight.js";
+export { AnimatorFollowPath } from "./FollowPath.js";
 
 // material
 export { AnimatorAnimateTexture } from "./AnimateTexture.js";
@@ -18,8 +18,8 @@ export { AnimatorAnimateTexture } from "./AnimateTexture.js";
 export { AnimatorRotation } from "./Rotation.js";
 
 // camera
-export { AnimatorCameraModelViewer } from "./CameraModelViewer.js";
 export { AnimatorCameraFPS } from "./CameraFPS.js";
+export { AnimatorCameraModelViewer } from "./CameraModelViewer.js";
 
 /// private
 // contains several animators which only make sense in combination with the Coppercube editor, and are not pulic.

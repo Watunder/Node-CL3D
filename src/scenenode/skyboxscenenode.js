@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -7,10 +7,10 @@ import * as CL3D from "../main.js";
  * A class rendering a sky box around the whole scene. It is a cube with 6 faces and six textures, which
  * can be accessed using {@link SceneNode}.getMaterial().
  * @constructor
- * @extends CL3D.MeshSceneNode 
- * @class A class rendering a sky box around the whole scene. 
+ * @extends CL3D.MeshSceneNode
+ * @class A class rendering a sky box around the whole scene.
  */
-export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
+export class SkyBoxSceneNode extends CL3D.MeshSceneNode {
 	constructor() {
 		super();
 
@@ -88,7 +88,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'sky';
+		return "sky";
 	}
 
 	/**
@@ -109,7 +109,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (this.Visible) {
-			mgr.registerNodeForRendering(this, 1); //SceneManager.REGISTER_MODE_SKYBOX);
+			mgr.registerNodeForRendering(this, 1); // SceneManager.REGISTER_MODE_SKYBOX);
 			CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr);
 		}
 	}
@@ -118,11 +118,12 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 	 * @public
 	 */
 	render(renderer) {
-		//renderer.setWorld(this.AbsoluteTransformation);
-		//renderer.drawMesh(this.OwnedMesh);
+		// renderer.setWorld(this.AbsoluteTransformation);
+		// renderer.drawMesh(this.OwnedMesh);
 		var cam = this.scene.getActiveCamera();
-		if (!cam || !this.OwnedMesh)
+		if (!cam || !this.OwnedMesh) {
 			return;
+		}
 
 		var translate = new CL3D.Matrix4(false);
 		this.AbsoluteTransformation.copyTo(translate);
@@ -136,7 +137,7 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 		renderer.setWorld(translate.multiply(scale));
 		renderer.drawMesh(this.OwnedMesh, true);
 	}
-	
+
 	/**
 	 * @public
 	 */
@@ -144,15 +145,17 @@ export class SkyBoxSceneNode extends CL3D.MeshSceneNode  {
 		var c = new CL3D.SkyBoxSceneNode();
 		this.cloneMembers(c, newparent, oldNodeId, newNodeId);
 
-		if (this.OwnedMesh)
+		if (this.OwnedMesh) {
 			c.OwnedMesh = this.OwnedMesh.clone();
+		}
 
 		c.ReadonlyMaterials = this.ReadonlyMaterials;
 		c.DoesCollision = this.DoesCollision;
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
 		return c;
 	}
-};
+}

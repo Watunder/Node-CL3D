@@ -1,11 +1,11 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
 
 /**
- * A sound scene node represents and plays a 3d sound  
- * @class A sound scene node represents and plays a 3d sound  
+ * A sound scene node represents and plays a 3d sound
+ * @class A sound scene node represents and plays a 3d sound
  * @constructor
  * @extends CL3D.SceneNode
  */
@@ -29,8 +29,8 @@ export class SoundSceneNode extends CL3D.SceneNode {
 
 		this.PlayingSound = null;
 
-		//private var PlayingSoundTransform:SoundTransform;
-		//private const RollOffFactor:Number = 1.0;
+		// private var PlayingSoundTransform:SoundTransform;
+		// private const RollOffFactor:Number = 1.0;
 		this.SoundPlayCompleted = false;
 		this.TimeMsDelayFinished = 0;
 		this.PlayedCount = 0;
@@ -65,7 +65,7 @@ export class SoundSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'sound';
+		return "sound";
 	}
 
 	/**
@@ -83,25 +83,24 @@ export class SoundSceneNode extends CL3D.SceneNode {
 	 * @public
 	 */
 	get2DAngle(X, Y) {
-		if (Y == 0)
+		if (Y == 0) {
 			return X < 0 ? 180 : 0;
-		else if (X == 0)
+		} else if (X == 0) {
 			return Y < 0 ? 90 : 270;
+		}
 
 		var tmp = Y / Math.sqrt(X * X + Y * Y);
 		tmp = Math.atan(Math.sqrt(1 - tmp * tmp) / tmp) * CL3D.RADTODEG;
 
-		if (X > 0 && Y > 0)
+		if (X > 0 && Y > 0) {
 			return tmp + 270;
-
-		else if (X > 0 && Y < 0)
+		} else if (X > 0 && Y < 0) {
 			return tmp + 90;
-
-		else if (X < 0 && Y < 0)
+		} else if (X < 0 && Y < 0) {
 			return 90 - tmp;
-
-		else if (X < 0 && Y > 0)
+		} else if (X < 0 && Y > 0) {
 			return 270 - tmp;
+		}
 
 		return tmp;
 	}
@@ -121,58 +120,58 @@ export class SoundSceneNode extends CL3D.SceneNode {
 		// unfortunately, HTML5 audio currently is very primitive, so we can only set the volume for this right now
 		var effectiveVolume = this.Volume;
 
-		if (!mgr)
+		if (!mgr) {
 			return;
+		}
 
-		if (!playingSnd)
+		if (!playingSnd) {
 			return;
+		}
 
 		// calculate distance
 		var cam = mgr.getActiveCamera();
-		if (!cam)
+		if (!cam) {
 			return;
+		}
 		var listenerPos = cam.getAbsolutePosition();
 		var lookdir = cam.getTarget().substract(listenerPos);
 		var distanceToListener = listenerPos.getDistanceTo(Position);
 
 		if (distanceToListener < this.MinDistance) {
 			// no change in volume, listener is inside minDistance
-		}
-
-		else {
+		} else {
 			// calculate volume attenuation/rolloff
 			distanceToListener -= this.MinDistance;
 			var fact = this.MaxDistance - this.MinDistance;
 
 			if (fact > 0) {
-				if (false) // linear
-				{
+				if (false) { // linear
 					// linear rolloff
 					var interpol = distanceToListener / fact; // interpol is 0 if far away, 1 if close
 					effectiveVolume = effectiveVolume * (10.0 - interpol);
-				}
-
-				else {
+				} else {
 					// logarithmic rolloff
-					if (distanceToListener > fact) // keep volume at same level at max distance
+					if (distanceToListener > fact) { // keep volume at same level at max distance
 						distanceToListener = fact;
+					}
 
 					var loga = 10.0;
 
-					if (distanceToListener != 0)
+					if (distanceToListener != 0) {
 						loga = this.MinDistance / distanceToListener;
+					}
 
 					distanceToListener *= this.RollOffFactor;
 
 					effectiveVolume = effectiveVolume * loga;
 				}
 
-				if (effectiveVolume > 10.0)
+				if (effectiveVolume > 10.0) {
 					effectiveVolume = 10.0;
-			}
-
-			else
+				}
+			} else {
 				effectiveVolume = 10.0;
+			}
 		}
 
 		// set pan
@@ -181,13 +180,13 @@ export class SoundSceneNode extends CL3D.SceneNode {
 		/*
 		var lookangle:Number = 0;
 		var toSoundAngle:Number = 0;
-    
+
 		var normUp:Vect3dF = cam.getUpVector().clone();
 		normUp.normalize();
 		normUp.X *= normUp.X;
 		normUp.Y *= normUp.Y;
 		normUp.Z *= normUp.Z;
-    
+
 		if (normUp.Y >= normUp.X && normUp.Y >= normUp.Z)
 		{
 			// irrlicht default, Y is up
@@ -207,26 +206,27 @@ export class SoundSceneNode extends CL3D.SceneNode {
 			lookangle = get2DAngle(lookdir.X, lookdir.Y);
 			toSoundAngle = get2DAngle(Position.X - listenerPos.X, Position.Y - listenerPos.Y);
 		}
-    
+
 		lookangle = normalizeAngle(lookangle);
 		toSoundAngle = normalizeAngle(toSoundAngle);
-    
+
 		var lookAngleToSoundAngle:Number = lookangle - toSoundAngle;
-    
+
 		lookAngleToSoundAngle = normalizeRelativeAngle(lookAngleToSoundAngle);
-    
+
 		// we need to set the pan between -1.0 and 1.0, the realAngle
 		var effectivePan:Number = (lookAngleToSoundAngle / 180.0);
 		if (effectivePan > 1.0)
 			effectivePan = 1.0;
 		if (effectivePan < -1.0)
 			effectivePan = -1.0;
-		    
+
 		playingSnd.pan = effectivePan;
 		*/
 		// set volume
-		if (effectiveVolume > 1.0)
+		if (effectiveVolume > 1.0) {
 			effectiveVolume = 1.0;
+		}
 
 		CL3D.gSoundManager.setVolume(playingSnd, effectiveVolume);
 	}
@@ -258,11 +258,10 @@ export class SoundSceneNode extends CL3D.SceneNode {
 				this.updateSoundFor3DSound(this.PlayingSound, pos, scene);
 			}
 
-
 			switch (this.PlayMode) {
-				case 0: //EPM_NOTHING:
+				case 0: // EPM_NOTHING:
 					break;
-				case 1: //EPM_RANDOM:
+				case 1: // EPM_RANDOM:
 					{
 						if (this.PlayingSound && this.PlayingSound.hasPlayingCompleted()) {
 							this.PlayingSound = null;
@@ -270,21 +269,20 @@ export class SoundSceneNode extends CL3D.SceneNode {
 							// calculate next play time
 							var delta = this.MaxTimeInterval - this.MinTimeInterval;
 
-							if (delta < 2)
+							if (delta < 2) {
 								delta = 2;
+							}
 
 							this.TimeMsDelayFinished = timeMs + (Math.random() * delta) + this.MinTimeInterval;
-						}
-
-						else if (!this.PlayingSound && (!this.TimeMsDelayFinished || timeMs > this.TimeMsDelayFinished)) {
-							// play new sound		
+						} else if (!this.PlayingSound && (!this.TimeMsDelayFinished || timeMs > this.TimeMsDelayFinished)) {
+							// play new sound
 							if (this.TheSound) {
 								this.startSound(false);
 							}
 						}
 					}
 					break;
-				case 2: //EPM_LOOPING:
+				case 2: // EPM_LOOPING:
 					{
 						if (!this.PlayingSound) {
 							if (this.TheSound) {
@@ -293,13 +291,11 @@ export class SoundSceneNode extends CL3D.SceneNode {
 						}
 					}
 					break;
-				case 3: //EPM_ONCE:
+				case 3: // EPM_ONCE:
 					{
 						if (this.PlayedCount) {
 							// stop
-						}
-
-						else {
+						} else {
 							// start
 							if (this.TheSound) {
 								this.startSound(false);
@@ -309,9 +305,8 @@ export class SoundSceneNode extends CL3D.SceneNode {
 					}
 					break;
 			}
-		}
-		catch (e) {
-			//Debug.print("Error:" + e);
+		} catch (e) {
+			// Debug.print("Error:" + e);
 		}
 
 		return false;
@@ -324,10 +319,11 @@ export class SoundSceneNode extends CL3D.SceneNode {
 		var c = new CL3D.SoundSceneNode();
 		this.cloneMembers(c, newparent, oldNodeId, newNodeId);
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
 		// TODO: copy other members
 		return c;
 	}
-};
+}

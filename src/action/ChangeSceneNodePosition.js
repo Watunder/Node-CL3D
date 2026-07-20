@@ -39,18 +39,17 @@ export class ActionChangeSceneNodePosition extends CL3D.Action {
 	 */
 	SceneNodeRelativeTo;
 
-
 	constructor() {
 		super();
 
 		this.UseAnimatedMovement = false;
 		this.TimeNeededForMovementMs = 0;
-		this.Type = 'ChangeSceneNodePosition';
+		this.Type = "ChangeSceneNodePosition";
 	}
 
 	/**
-	 * @param {Number} oldNodeId 
-	 * @param {Number} newNodeId 
+	 * @param {Number} oldNodeId
+	 * @param {Number} newNodeId
 	 */
 	createClone(oldNodeId, newNodeId) {
 		var a = new CL3D.ActionChangeSceneNodePosition();
@@ -64,53 +63,57 @@ export class ActionChangeSceneNodePosition extends CL3D.Action {
 		a.UseAnimatedMovement = this.UseAnimatedMovement;
 		a.TimeNeededForMovementMs = this.TimeNeededForMovementMs;
 
-		if (a.SceneNodeToChangePosition == oldNodeId)
+		if (a.SceneNodeToChangePosition == oldNodeId) {
 			a.SceneNodeToChangePosition = newNodeId;
-		if (a.SceneNodeRelativeTo == oldNodeId)
+		}
+		if (a.SceneNodeRelativeTo == oldNodeId) {
 			a.SceneNodeRelativeTo = newNodeId;
+		}
 
 		return a;
 	}
 
 	/**
-	 * @param {CL3D.SceneNode} currentNode 
-	 * @param {CL3D.Scene} sceneManager 
+	 * @param {CL3D.SceneNode} currentNode
+	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
-		if (!currentNode || !sceneManager)
+		if (!currentNode || !sceneManager) {
 			return;
+		}
 
 		var nodeToHandle = null;
-		if (this.ChangeCurrentSceneNode)
+		if (this.ChangeCurrentSceneNode) {
 			nodeToHandle = currentNode;
-
-		else if (this.SceneNodeToChangePosition != -1)
+		} else if (this.SceneNodeToChangePosition != -1) {
 			nodeToHandle = sceneManager.getSceneNodeFromId(this.SceneNodeToChangePosition);
+		}
 
 		if (nodeToHandle) {
 			var finalpos = null;
 
 			switch (this.PositionChangeType) {
-				case 0: //EIT_ABSOLUTE_POSITION:
+				case 0: // EIT_ABSOLUTE_POSITION:
 					finalpos = this.Vector.clone();
 					break;
-				case 1: //EIT_RELATIVE_POSITION:
+				case 1: // EIT_RELATIVE_POSITION:
 					finalpos = nodeToHandle.Pos.add(this.Vector);
 					break;
-				case 2: //EIT_RELATIVE_TO_SCENE_NODE:
+				case 2: // EIT_RELATIVE_TO_SCENE_NODE:
 					{
 						var nodeRelativeTo = null;
-						if (this.RelativeToCurrentSceneNode)
+						if (this.RelativeToCurrentSceneNode) {
 							nodeRelativeTo = currentNode;
-
-						else if (this.SceneNodeRelativeTo != -1)
+						} else if (this.SceneNodeRelativeTo != -1) {
 							nodeRelativeTo = sceneManager.getSceneNodeFromId(this.SceneNodeRelativeTo);
+						}
 
-						if (nodeRelativeTo)
+						if (nodeRelativeTo) {
 							finalpos = nodeRelativeTo.Pos.add(this.Vector);
+						}
 					}
 					break;
-				case 3: //EIT_RELATIVE_IN_FACING_DIRECTION:
+				case 3: // EIT_RELATIVE_IN_FACING_DIRECTION:
 					{
 						var len = this.Vector.getLength();
 						var matr = nodeToHandle.AbsoluteTransformation;
@@ -118,15 +121,16 @@ export class ActionChangeSceneNodePosition extends CL3D.Action {
 						var moveVect = new CL3D.Vect3d(1, 0, 0);
 						matr.rotateVect(moveVect);
 
-						if (nodeToHandle instanceof CL3D.CameraSceneNode && nodeToHandle.getType() == 'camera')
+						if (nodeToHandle instanceof CL3D.CameraSceneNode && nodeToHandle.getType() == "camera") {
 							moveVect = nodeToHandle.Target.substract(nodeToHandle.Pos);
+						}
 
 						moveVect.setLength(len);
 
 						finalpos = nodeToHandle.Pos.add(moveVect);
 					}
 					break;
-				case 4: //EIT_RANDOM_POSITION:
+				case 4: // EIT_RANDOM_POSITION:
 					{
 						var box = new CL3D.Box3d();
 						box.reset(this.Vector.X, this.Vector.Y, this.Vector.Z);
@@ -138,7 +142,7 @@ export class ActionChangeSceneNodePosition extends CL3D.Action {
 						finalpos.Z = box.MinEdge.Z + (Math.random() * (box.MaxEdge.Z - box.MinEdge.Z));
 					}
 					break;
-				case 5: //EIT_RELATIVE_TO_LAST_BULLET_IMPACT:
+				case 5: // EIT_RELATIVE_TO_LAST_BULLET_IMPACT:
 					{
 						finalpos = sceneManager.LastBulletImpactPosition.add(this.Vector);
 					}
@@ -156,13 +160,11 @@ export class ActionChangeSceneNodePosition extends CL3D.Action {
 					anim.recalculateImidiateValues();
 
 					nodeToHandle.addAnimator(anim);
-				}
-
-				else {
+				} else {
 					// set position directly
 					nodeToHandle.Pos = finalpos;
 				}
 			}
 		}
 	}
-};
+}

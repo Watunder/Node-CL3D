@@ -1,11 +1,12 @@
 import * as CL3D from "../../dist/cl3d.js";
 
 // create the 3d engine
-const canvas = document.getElementById('3darea');
+const canvas = document.getElementById("3darea");
 const engine = new CL3D.CopperLicht(canvas);
 
-if (!engine.initRenderer(1280, 720, { alpha: false }, canvas))
-    throw new Error("this browser doesn't support WebGL");
+if (!engine.initRenderer(1280, 720, { alpha: false }, canvas)) {
+	throw new Error("this browser doesn't support WebGL");
+}
 
 // add a new 3d scene
 

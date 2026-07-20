@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -12,15 +12,15 @@ import * as CL3D from "../main.js";
  */
 export class AnimatorRotation extends CL3D.Animator {
 	/**
-	 * 
 	 * @param {CL3D.Vect3d=} speed vector defining the RotationSpeed in each direction
 	 */
 	constructor(speed) {
 		super();
 
 		this.Rotation = new CL3D.Vect3d();
-		if (speed)
+		if (speed) {
 			this.Rotation = speed.clone();
+		}
 
 		this.StartTime = CL3D.CLTimer.getTime();
 
@@ -35,7 +35,7 @@ export class AnimatorRotation extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'rotation';
+		return "rotation";
 	}
 
 	/**
@@ -67,22 +67,19 @@ export class AnimatorRotation extends CL3D.Animator {
 				this.StartTime = timeMs;
 				return true;
 			}
-		}
-
-		else {
+		} else {
 			// rotate to a target rotation and then stop
-			if (this.RotateToTargetEndTime - this.StartTime == 0)
+			if (this.RotateToTargetEndTime - this.StartTime == 0) {
 				return false;
+			}
 
 			var interpol = (timeMs - this.StartTime) / (this.RotateToTargetEndTime - this.StartTime);
 			if (interpol > 1.0) {
 				// end reached, destroy this animator
 				n.Rot = this.Rotation.clone();
 				n.removeAnimator(this);
-			}
-
-			else {
-				// interpolate 
+			} else {
+				// interpolate
 				var q1 = new CL3D.Quaternion();
 				var vtmp = this.Rotation.multiplyWithScal(CL3D.DEGTORAD);
 
@@ -116,4 +113,4 @@ export class AnimatorRotation extends CL3D.Animator {
 		this.BeginRotation = beginRot.clone();
 		this.RotateToTargetEndTime = this.StartTime + timeForMovement;
 	}
-};
+}

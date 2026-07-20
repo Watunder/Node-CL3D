@@ -1,0 +1,17 @@
+{
+	"useTabs": true,
+	"indentWidth": 4,
+	"lineWidth": 999,
+	"excludes": [
+		"**/node_modules",
+		"**/dist",
+		"**/*-lock.json"
+	],
+	"plugins": [
+		"https://plugins.dprint.dev/typescript-0.95.15.wasm",
+		"https://plugins.dprint.dev/json-0.21.1.wasm",
+		"https://plugins.dprint.dev/markdown-0.21.1.wasm",
+		"https://plugins.dprint.dev/g-plane/malva-v0.15.2.wasm",
+		"https://plugins.dprint.dev/g-plane/markup_fmt-v0.26.0.wasm"
+	]
+}

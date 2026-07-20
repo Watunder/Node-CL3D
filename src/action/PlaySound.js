@@ -50,7 +50,7 @@ export class ActionPlaySound extends CL3D.Action {
 	constructor() {
 		super();
 
-		this.Type = 'PlaySound';
+		this.Type = "PlaySound";
 	}
 
 	/**
@@ -69,8 +69,9 @@ export class ActionPlaySound extends CL3D.Action {
 		a.PlayAs2D = this.PlayAs2D;
 		a.TheSound = this.TheSound;
 
-		if (a.SceneNodeToPlayAt == oldNodeId)
+		if (a.SceneNodeToPlayAt == oldNodeId) {
 			a.SceneNodeToPlayAt = newNodeId;
+		}
 
 		return a;
 	}
@@ -80,12 +81,12 @@ export class ActionPlaySound extends CL3D.Action {
 	 * @param {CL3D.Scene} sceneManager
 	 */
 	execute(currentNode, sceneManager) {
-		if (sceneManager == null || this.TheSound == null)
+		if (sceneManager == null || this.TheSound == null) {
 			return;
+		}
 
-		if (this.PlayAs2D || true) // currently no 3d playing supported
-		{
+		if (this.PlayAs2D || true) { // currently no 3d playing supported
 			this.PlayingSound = CL3D.gSoundManager.play2D(this.TheSound, this.PlayLooped, this.Volume);
 		}
 	}
-};
+}

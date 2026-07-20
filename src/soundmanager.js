@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
@@ -20,8 +20,9 @@ export class SoundManager {
 	getSoundFromName(name) {
 		for (var i = 0; i < this.Sounds.length; ++i) {
 			var t = this.Sounds[i];
-			if (t.Name == name)
+			if (t.Name == name) {
 				return t;
+			}
 		}
 
 		return null;
@@ -32,8 +33,9 @@ export class SoundManager {
 	 */
 	addSound(t) {
 		if (t != null) {
-			if (this.getSoundFromName(t.Name) != null && CL3D.gCCDebugInfoEnabled)
+			if (this.getSoundFromName(t.Name) != null && CL3D.gCCDebugInfoEnabled) {
 				console.log("ERROR! Cannot add the sound multiple times: " + t.Name);
+			}
 
 			this.Sounds.push(t);
 		}
@@ -44,13 +46,15 @@ export class SoundManager {
 	 * name is the url
 	 */
 	getSoundFromSoundName(name, createIfNotFound) {
-		if (name == null || name == "")
+		if (name == null || name == "") {
 			return null;
+		}
 
 		var t = this.getSoundFromName(name);
 
-		if (t != null)
+		if (t != null) {
 			return t;
+		}
 
 		if (createIfNotFound) {
 			t = new CL3D.SoundSource(name);
@@ -60,49 +64,53 @@ export class SoundManager {
 
 		return null;
 	}
-	
+
 	/**
 	 * @public
 	 * s can either be the URL or the SoundSource object
 	 */
 	play2D(s, looped, volume) {
-		if (s == null)
+		if (s == null) {
 			return null;
+		}
 
-		// s can be the url or the sound source	
+		// s can be the url or the sound source
 		var soundSrc = null;
-		if (typeof (s) == 'string')
+		if (typeof s == "string") {
 			soundSrc = this.getSoundFromSoundName(s, true);
-
-		else
+		} else {
 			soundSrc = s;
+		}
 
-		if (soundSrc == null ||
-			soundSrc.audioElem == null)
+		if (
+			soundSrc == null
+			|| soundSrc.audioElem == null
+		) {
 			return null;
+		}
 
 		// if there is already an audio source playing with this file, stop that one.
 		// a limitation by the HTML 5 audio api
 		this.clearFinishedPlayingSounds();
 
-		for (var i = 0; i < this.PlayingSounds.length;)
+		for (var i = 0; i < this.PlayingSounds.length;) {
 			if (this.PlayingSounds[i].src === soundSrc) {
 				this.PlayingSounds[i].src.audioElem.pause();
 				this.PlayingSounds.splice(i, 1);
-			}
-
-			else
+			} else {
 				++i;
+			}
+		}
 
 		// the HTML 5 audio tag doesn't support volume or other fance stuff unfortunately.
 		try {
 			soundSrc.audioElem.currentTime = 0;
-		}
-		catch (err) { }
+		} catch (err) {}
 
 		// play
-		if (typeof volume === 'undefined')
+		if (typeof volume === "undefined") {
 			volume = 1.0;
+		}
 
 		soundSrc.audioElem.volume = volume * this.GlobalVolume;
 		soundSrc.audioElem.play();
@@ -112,10 +120,11 @@ export class SoundManager {
 		pl.ownVolume = volume;
 		this.PlayingSounds.push(pl);
 
-		// a.audioElem.loop = looped; // this is only supported in chrome, firefox 
+		// a.audioElem.loop = looped; // this is only supported in chrome, firefox
 		// happily this, so we do this on our own with the next lines of code
-		if (soundSrc.lastListener)
-			soundSrc.audioElem.removeEventListener('ended', soundSrc.lastListener, false);
+		if (soundSrc.lastListener) {
+			soundSrc.audioElem.removeEventListener("ended", soundSrc.lastListener, false);
+		}
 		soundSrc.audioElem.lastListener = null;
 
 		if (looped) {
@@ -123,14 +132,15 @@ export class SoundManager {
 
 			var endFunction = () => {
 				if (!pl.hasStopped) {
-					try { this.currentTime = 0; }
-					catch (err) { }
+					try {
+						this.currentTime = 0;
+					} catch (err) {}
 					this.play2D();
-					//CL3D.Debug.print('foobar');
+					// CL3D.Debug.print('foobar');
 				}
 			};
 
-			soundSrc.audioElem.addEventListener('ended', endFunction, false);
+			soundSrc.audioElem.addEventListener("ended", endFunction, false);
 			soundSrc.audioElem.lastListener = endFunction;
 		}
 
@@ -142,8 +152,9 @@ export class SoundManager {
 	 * @public
 	 */
 	stop(playingSnd) {
-		if (!playingSnd)
+		if (!playingSnd) {
 			return;
+		}
 
 		playingSnd.src.audioElem.pause();
 		playingSnd.hasStopped = true;
@@ -171,21 +182,20 @@ export class SoundManager {
 				var pl = this.PlayingSounds[i];
 				pl.src.audioElem.volume = pl.ownVolume * this.GlobalVolume;
 			}
-		}
-		catch (err) { }
+		} catch (err) {}
 	}
 
 	/**
 	 * @public
 	 */
 	setVolume(playingSnd, v) {
-		if (!playingSnd)
+		if (!playingSnd) {
 			return;
+		}
 
 		try {
 			playingSnd.src.audioElem.volume = v;
-		}
-		catch (err) { }
+		} catch (err) {}
 	}
 
 	/**
@@ -205,12 +215,13 @@ export class SoundManager {
 	 * @public
 	 */
 	clearFinishedPlayingSounds() {
-		for (var i = 0; i < this.PlayingSounds.length;)
-			if (this.PlayingSounds[i].hasPlayingCompleted())
+		for (var i = 0; i < this.PlayingSounds.length;) {
+			if (this.PlayingSounds[i].hasPlayingCompleted()) {
 				this.PlayingSounds.splice(i, 1);
-
-			else
+			} else {
 				++i;
+			}
+		}
 	}
 
 	/**
@@ -245,27 +256,25 @@ export class SoundSource {
 		this.Name = name;
 
 		var a = null;
-		try
-		{
+		try {
 			a = new Audio();
 			a.src = name;
-		}
-		catch (err) { }
+		} catch (err) {}
 
-		//var a = document.createElement('audio');
-		//a.src = name;		
-		//a.controls = 1;
+		// var a = document.createElement('audio');
+		// a.src = name;
+		// a.controls = 1;
 		this.loaded = true;
 		// this.loaded = false;
-		//var me = this;
-		//a.addEventListener('canplaythrough', function() { me.onAudioLoaded() ;}, false);
+		// var me = this;
+		// a.addEventListener('canplaythrough', function() { me.onAudioLoaded() ;}, false);
 		this.audioElem = a;
 	}
 
 	onAudioLoaded() {
-		//this.loaded = true;
+		// this.loaded = true;
 	}
-};
+}
 
 // -----------------------------------------------------------------------------------------
 // Playing Sound
@@ -287,11 +296,13 @@ export class PlayingSound {
 	}
 
 	hasPlayingCompleted() {
-		if (this.hasStopped)
+		if (this.hasStopped) {
 			return true;
+		}
 
-		if (this.looping)
+		if (this.looping) {
 			return false;
+		}
 
 		var d = new Date();
 		var now = d.getTime();
@@ -299,4 +310,4 @@ export class PlayingSound {
 
 		return dur > 0 && (now > this.startTime + dur);
 	}
-};
+}

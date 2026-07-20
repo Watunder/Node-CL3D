@@ -1,12 +1,12 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
 
 /**
  * The scene is usually rendered from the currently active camera. Some cameras have an {@link Animator} attached to
- * them which controlls the position and look target of the camera, for example a {@link AnimatorCameraFPS}. You can 
- * get access to this animator using camera.getAnimatorOfType('camerafps');. 
+ * them which controlls the position and look target of the camera, for example a {@link AnimatorCameraFPS}. You can
+ * get access to this animator using camera.getAnimatorOfType('camerafps');.
  * @class Scene Node which is a (controlable) camera.
  * @constructor
  * @extends CL3D.SceneNode
@@ -28,16 +28,16 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		this.Projection = new CL3D.Matrix4();
 		this.ViewMatrix = new CL3D.Matrix4();
 
-		this.Fovy = CL3D.PI / 2.5; // Field of view, in radians. 
-		this.Aspect = 4.0 / 3.0; // Aspect ratio. 
-		this.ZNear = 0.1; // value of the near view-plane. 
+		this.Fovy = CL3D.PI / 2.5; // Field of view, in radians.
+		this.Aspect = 4.0 / 3.0; // Aspect ratio.
+		this.ZNear = 0.1; // value of the near view-plane.
 		this.ZFar = 3000; // Z-value of the far view-plane.
 		this.TargetAndRotationAreBound = true;
 		this.AutoAdjustAspectratio = true;
 		this.ViewMatrixIsSetByUser = false;
 
-		//this.recalculateProjectionMatrix();
-		//this.recalculateViewArea();
+		// this.recalculateProjectionMatrix();
+		// this.recalculateViewArea();
 	}
 	/**
 	 * @public
@@ -55,7 +55,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'camera';
+		return "camera";
 	}
 	/**
 	 * Sets the aspect ratio of the camera. The default is 4 / 3
@@ -88,8 +88,9 @@ export class CameraSceneNode extends CL3D.SceneNode {
 	 */
 	setFov(fov) {
 		if (!CL3D.equals(this.Fovy, fov)) {
-			if (isNaN(fov))
+			if (isNaN(fov)) {
 				return;
+			}
 
 			this.Fovy = fov;
 			this.recalculateProjectionMatrix();
@@ -132,8 +133,9 @@ export class CameraSceneNode extends CL3D.SceneNode {
 	 * @public
 	 */
 	setUpVector(upvector) {
-		if (upvector)
+		if (upvector) {
 			this.UpVector = upvector.clone();
+		}
 	}
 	/**
 	 * Gets the value of the near plane of the camera. All geometry before this plane is clipped away.
@@ -184,16 +186,17 @@ export class CameraSceneNode extends CL3D.SceneNode {
 	 */
 	OnAnimate(mgr, timeMs) {
 		// old, simple version:
-		//var ret:Boolean = super.OnAnimate(mgr, timeMs);
-		//ViewMatrix.buildCameraLookAtMatrixLH(Pos, Target, UpVector);
-		//recalculateViewArea();
-		//return ret;
+		// var ret:Boolean = super.OnAnimate(mgr, timeMs);
+		// ViewMatrix.buildCameraLookAtMatrixLH(Pos, Target, UpVector);
+		// recalculateViewArea();
+		// return ret;
 		// new, more valid version
-		//var ret = super.OnAnimate(mgr, timeMs);
+		// var ret = super.OnAnimate(mgr, timeMs);
 		var ret = CL3D.SceneNode.prototype.OnAnimate.call(this, mgr, timeMs);
 
-		if (!this.ViewMatrixIsSetByUser)
+		if (!this.ViewMatrixIsSetByUser) {
 			this.calculateViewMatrix();
+		}
 
 		return ret;
 	}
@@ -203,8 +206,9 @@ export class CameraSceneNode extends CL3D.SceneNode {
 	calculateViewMatrix() {
 		var pos = this.getAbsolutePosition();
 		var targetToSet = this.Target.clone();
-		if (pos.equals(targetToSet))
+		if (pos.equals(targetToSet)) {
 			targetToSet.X += 1;
+		}
 
 		this.ViewMatrix.buildCameraLookAtMatrixLH(pos, targetToSet, this.UpVector);
 		this.recalculateViewArea();
@@ -214,7 +218,7 @@ export class CameraSceneNode extends CL3D.SceneNode {
 	 */
 	OnRegisterSceneNode(mgr) {
 		if (mgr.getActiveCamera() === this) {
-			mgr.registerNodeForRendering(this, 2); //REGISTER_MODE_CAMERA);
+			mgr.registerNodeForRendering(this, 2); // REGISTER_MODE_CAMERA);
 			CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr);
 		}
 	}
@@ -222,16 +226,18 @@ export class CameraSceneNode extends CL3D.SceneNode {
 	 * @public
 	 */
 	render(renderer) {
-		// we need to rebuild the camera lookat matrix again because the user might have changed 
+		// we need to rebuild the camera lookat matrix again because the user might have changed
 		// the camera position, target or upvector in OnBeforeDraw
-		if (!this.ViewMatrixIsSetByUser)
+		if (!this.ViewMatrixIsSetByUser) {
 			this.calculateViewMatrix();
+		}
 
 		// if auto aspect, set now
 		if (this.Aspect == 0 || this.AutoAdjustAspectratio) {
 			this.setAutoAspectIfNoFixedSet(renderer.width, renderer.height);
-			if (this.Aspect == 0)
+			if (this.Aspect == 0) {
 				this.setAspectRatio(3.0 / 4.0);
+			}
 		}
 
 		// render finally
@@ -277,8 +283,9 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		var ret = false;
 
 		for (var i = 0; i < this.Animators.length; ++i) {
-			if (this.Animators[i].onKeyDown(event))
+			if (this.Animators[i].onKeyDown(event)) {
 				ret = true;
+			}
 		}
 
 		return ret;
@@ -290,8 +297,9 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		var ret = false;
 
 		for (var i = 0; i < this.Animators.length; ++i) {
-			if (this.Animators[i].onKeyUp(event))
+			if (this.Animators[i].onKeyUp(event)) {
 				ret = true;
+			}
 		}
 
 		return ret;
@@ -305,25 +313,30 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		var c = new CL3D.CameraSceneNode();
 		this.cloneMembers(c, newparent, oldNodeId, newNodeId);
 
-		if (this.Target)
+		if (this.Target) {
 			c.Target = this.Target.clone();
+		}
 
-		if (this.UpVector)
+		if (this.UpVector) {
 			c.UpVector = this.UpVector.clone();
+		}
 
-		if (this.Projection)
+		if (this.Projection) {
 			c.Projection = this.Projection.clone();
+		}
 
-		if (this.ViewMatrix)
+		if (this.ViewMatrix) {
 			c.ViewMatrix = this.ViewMatrix.clone();
+		}
 
 		c.Fovy = this.Fovy;
 		c.Aspect = this.Aspect;
 		c.ZNear = this.ZNear;
 		c.ZFar = this.ZFar;
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
 		return c;
 	}
@@ -331,8 +344,9 @@ export class CameraSceneNode extends CL3D.SceneNode {
 	 * @public
 	 */
 	setAutoAspectIfNoFixedSet(viewPortWidth, viewPortHeight) {
-		if (viewPortWidth == 0 || viewPortHeight == 0)
+		if (viewPortWidth == 0 || viewPortHeight == 0) {
 			return;
+		}
 
 		var casp = this.Aspect;
 
@@ -346,4 +360,4 @@ export class CameraSceneNode extends CL3D.SceneNode {
 		this.setAspectRatio(newaspect);
 		this.AutoAdjustAspectratio = true;
 	}
-};
+}

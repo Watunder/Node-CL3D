@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 // ------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ import * as CL3D from "./main.js";
 
 /**
  * Interface to return triangles with specific properties, useful for collision detection.
- * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection: 
+ * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection:
  * For example if you know that a collision may have happened in the area between (1,1,1) and (10,10,10), you can get all triangles of the scene
  * node in this area with the TriangleSelector easily and check every triangle if it collided.<br/>
  * <br/>
@@ -58,11 +58,13 @@ export class TriangleSelector {
 	 * @returns {CL3D.Vect3d}  a 3d position as {@link Vect3d} if a collision was found or null if no collision was found
 	 */
 	getCollisionPointWithLine(start, end, bIgnoreBackFaces, outTriangle, ignoreInvisibleItems) {
-		if (!start || !end)
+		if (!start || !end) {
 			return null;
+		}
 
-		if (this.Node != null && ignoreInvisibleItems && this.Node.Visible == false)
+		if (this.Node != null && ignoreInvisibleItems && this.Node.Visible == false) {
 			return null;
+		}
 
 		var box = new CL3D.Box3d();
 		box.MinEdge = start.clone();
@@ -77,7 +79,7 @@ export class TriangleSelector {
 		linevect.normalize();
 
 		var intersection;
-		var nearest = 999999999.9; //FLT_MAX;
+		var nearest = 999999999.9; // FLT_MAX;
 		var raylength = end.substract(start).getLengthSQ();
 
 		var minX = Math.min(start.X, end.X);
@@ -92,26 +94,36 @@ export class TriangleSelector {
 		for (var i = 0; i < triangles.length; ++i) {
 			var triangle = triangles[i];
 
-			if (bIgnoreBackFaces && !triangle.getPlane().isFrontFacing(linevect))
+			if (bIgnoreBackFaces && !triangle.getPlane().isFrontFacing(linevect)) {
 				continue;
+			}
 
-			if (minX > triangle.pointA.X && minX > triangle.pointB.X && minX > triangle.pointC.X)
+			if (minX > triangle.pointA.X && minX > triangle.pointB.X && minX > triangle.pointC.X) {
 				continue;
-			if (maxX < triangle.pointA.X && maxX < triangle.pointB.X && maxX < triangle.pointC.X)
+			}
+			if (maxX < triangle.pointA.X && maxX < triangle.pointB.X && maxX < triangle.pointC.X) {
 				continue;
-			if (minY > triangle.pointA.Y && minY > triangle.pointB.Y && minY > triangle.pointC.Y)
+			}
+			if (minY > triangle.pointA.Y && minY > triangle.pointB.Y && minY > triangle.pointC.Y) {
 				continue;
-			if (maxY < triangle.pointA.Y && maxY < triangle.pointB.Y && maxY < triangle.pointC.Y)
+			}
+			if (maxY < triangle.pointA.Y && maxY < triangle.pointB.Y && maxY < triangle.pointC.Y) {
 				continue;
-			if (minZ > triangle.pointA.Z && minZ > triangle.pointB.Z && minZ > triangle.pointC.Z)
+			}
+			if (minZ > triangle.pointA.Z && minZ > triangle.pointB.Z && minZ > triangle.pointC.Z) {
 				continue;
-			if (maxZ < triangle.pointA.Z && maxZ < triangle.pointB.Z && maxZ < triangle.pointC.Z)
+			}
+			if (maxZ < triangle.pointA.Z && maxZ < triangle.pointB.Z && maxZ < triangle.pointC.Z) {
 				continue;
+			}
 
-			if (start.getDistanceFromSQ(triangle.pointA) >= nearest &&
-				start.getDistanceFromSQ(triangle.pointB) >= nearest &&
-				start.getDistanceFromSQ(triangle.pointC) >= nearest)
+			if (
+				start.getDistanceFromSQ(triangle.pointA) >= nearest
+				&& start.getDistanceFromSQ(triangle.pointB) >= nearest
+				&& start.getDistanceFromSQ(triangle.pointC) >= nearest
+			) {
 				continue;
+			}
 
 			intersection = triangle.getIntersectionWithLine(start, linevect);
 			if (intersection) {
@@ -120,44 +132,46 @@ export class TriangleSelector {
 
 				if (tmp < raylength && tmp2 < raylength && tmp < nearest) {
 					nearest = tmp;
-					if (outTriangle)
+					if (outTriangle) {
 						triangle.copyTo(outTriangle);
+					}
 					returnPoint = intersection;
 				}
 			}
 		}
 
-		if (returnPoint)
+		if (returnPoint) {
 			return returnPoint.clone();
+		}
 		return null;
 	}
 
 	/**
-	  * Returns the scenenode this selector is for
-	  * @returns returns {@link SceneNode} if this selector is for a specific scene node
+	 * Returns the scenenode this selector is for
+	 * @returns returns {@link SceneNode} if this selector is for a specific scene node
 	 */
 	getRelatedSceneNode() {
 		return null;
 	}
 
 	/**
-	  * If there are multiple scene nodes in this selector, it is possible to let it ignore one
-	  * specific node, for example to prevent colliding it against itself.
+	 * If there are multiple scene nodes in this selector, it is possible to let it ignore one
+	 * specific node, for example to prevent colliding it against itself.
 	 */
 	setNodeToIgnore(n) {
 		// to be implemented in derived classes
 	}
 
 	/**
-	  * Creates a clone of this triangle selector, for a new scene node
-	  * @param {CL3D.SceneNode} node scene node the selector is based on
-	  * @returns {CL3D.TriangleSelector} returns triangleSelector if this selector can be cloned or null if not
+	 * Creates a clone of this triangle selector, for a new scene node
+	 * @param {CL3D.SceneNode} node scene node the selector is based on
+	 * @returns {CL3D.TriangleSelector} returns triangleSelector if this selector can be cloned or null if not
 	 */
 	createClone(node) {
 		// to be implemented in derived classes
 		return null;
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------------
 // MeshTriangleSelector
@@ -166,7 +180,7 @@ export class TriangleSelector {
 /**
  * Implementation of TriangleSelector for meshes, useful for collision detection.<br/>
  * Note use {@link OctTreeTriangleSelector} instead of this one if your mesh is huge, otherwise collision detection might be slow.
- * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection: 
+ * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection:
  * For example if you know that a collision may have happened in the area between (1,1,1) and (10,10,10), you can get all triangles of the scene
  * node in this area with the TriangleSelector easily and check every triangle if it collided.<br/>
  * @class Interface to return triangles with specific properties, useful for collision detection.
@@ -182,8 +196,9 @@ export class MeshTriangleSelector extends CL3D.TriangleSelector {
 	constructor(mesh, scenenode, materialToIgnore, materialToIgnore2) {
 		super();
 
-		if (!mesh)
+		if (!mesh) {
 			return;
+		}
 
 		this.Node = scenenode;
 
@@ -194,11 +209,13 @@ export class MeshTriangleSelector extends CL3D.TriangleSelector {
 			for (var b = 0; b < mesh.MeshBuffers.length; ++b) {
 				var mb = mesh.MeshBuffers[b];
 				if (mb) {
-					if (materialToIgnore != null && mb.Mat && mb.Mat.Type == materialToIgnore)
+					if (materialToIgnore != null && mb.Mat && mb.Mat.Type == materialToIgnore) {
 						continue;
+					}
 
-					if (materialToIgnore2 != null && mb.Mat && mb.Mat.Type == materialToIgnore2)
+					if (materialToIgnore2 != null && mb.Mat && mb.Mat.Type == materialToIgnore2) {
 						continue;
+					}
 
 					var idxcnt = mb.Indices.length;
 					for (var j = 0; j < idxcnt; j += 3) {
@@ -220,44 +237,48 @@ export class MeshTriangleSelector extends CL3D.TriangleSelector {
 	 * @param {Array} outArray output array of the triangles
 	 */
 	getAllTriangles(transform, outArray) {
-		if (!this.Node.AbsoluteTransformation)
+		if (!this.Node.AbsoluteTransformation) {
 			return;
+		}
 
 		var mat; // Matrix4
 
-		if (transform)
+		if (transform) {
 			mat = transform.multiply(this.Node.AbsoluteTransformation);
-
-		else
+		} else {
 			mat = this.Node.AbsoluteTransformation;
+		}
 
-		var i; //:int;
+		var i; // :int;
 
 		if (mat.isIdentity()) {
 			// copy directly
-			for (i = 0; i < this.Triangles.length; ++i)
+			for (i = 0; i < this.Triangles.length; ++i) {
 				outArray.push(this.Triangles[i]);
-		}
-
-		else {
+			}
+		} else {
 			// transform before copying
 			if (mat.isTranslateOnly()) {
 				// translate only
 				for (i = 0; i < this.Triangles.length; ++i) {
-					outArray.push(new CL3D.Triangle3d(
-						mat.getTranslatedVect(this.Triangles[i].pointA),
-						mat.getTranslatedVect(this.Triangles[i].pointB),
-						mat.getTranslatedVect(this.Triangles[i].pointC)));
+					outArray.push(
+						new CL3D.Triangle3d(
+							mat.getTranslatedVect(this.Triangles[i].pointA),
+							mat.getTranslatedVect(this.Triangles[i].pointB),
+							mat.getTranslatedVect(this.Triangles[i].pointC),
+						),
+					);
 				}
-			}
-
-			else {
+			} else {
 				// do full transform
 				for (i = 0; i < this.Triangles.length; ++i) {
-					outArray.push(new CL3D.Triangle3d(
-						mat.getTransformedVect(this.Triangles[i].pointA),
-						mat.getTransformedVect(this.Triangles[i].pointB),
-						mat.getTransformedVect(this.Triangles[i].pointC)));
+					outArray.push(
+						new CL3D.Triangle3d(
+							mat.getTransformedVect(this.Triangles[i].pointA),
+							mat.getTransformedVect(this.Triangles[i].pointB),
+							mat.getTransformedVect(this.Triangles[i].pointC),
+						),
+					);
 				}
 			}
 		}
@@ -278,17 +299,17 @@ export class MeshTriangleSelector extends CL3D.TriangleSelector {
 	}
 
 	/**
-	  * Returns the scenenode this selector is for
-	  * @returns returns {@link SceneNode} if this selector is for a specific scene node
+	 * Returns the scenenode this selector is for
+	 * @returns returns {@link SceneNode} if this selector is for a specific scene node
 	 */
 	getRelatedSceneNode() {
 		return this.Node;
 	}
 
 	/**
-	  * Creates a clone of this triangle selector, for a new scene node
-	  * @param node {CL3D.SceneNode} scene node the selector is based on
-	  * @returns returns {@link TriangleSelector} if this selector can be cloned or null if not
+	 * Creates a clone of this triangle selector, for a new scene node
+	 * @param node {CL3D.SceneNode} scene node the selector is based on
+	 * @returns returns {@link TriangleSelector} if this selector can be cloned or null if not
 	 */
 	createClone(node) {
 		var clone = new CL3D.MeshTriangleSelector(null, node);
@@ -296,7 +317,7 @@ export class MeshTriangleSelector extends CL3D.TriangleSelector {
 		clone.Triangles = this.Triangles;
 		return clone;
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------------
 // BoundingBoxTriangleSelector
@@ -304,7 +325,7 @@ export class MeshTriangleSelector extends CL3D.TriangleSelector {
 
 /**
  * Implementation of TriangleSelector based on a simple, static bounding box, useful for collision detection.<br/>
- * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection: 
+ * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection:
  * For example if you know that a collision may have happened in the area between (1,1,1) and (10,10,10), you can get all triangles of the scene
  * node in this area with the TriangleSelector easily and check every triangle if it collided.<br/>
  * @class Interface to return triangles with specific properties, useful for collision detection.
@@ -317,8 +338,9 @@ export class BoundingBoxTriangleSelector extends CL3D.MeshTriangleSelector {
 	constructor(box, scenenode) {
 		super();
 
-		if (!scenenode)
+		if (!scenenode) {
 			return;
+		}
 
 		this.Node = scenenode;
 
@@ -349,9 +371,9 @@ export class BoundingBoxTriangleSelector extends CL3D.MeshTriangleSelector {
 	}
 
 	/**
-	  * Creates a clone of this triangle selector, for a new scene node
-	  * @param node {CL3D.SceneNode} scene node the selector is based on
-	  * @returns returns {@link TriangleSelector} if this selector can be cloned or null if not
+	 * Creates a clone of this triangle selector, for a new scene node
+	 * @param node {CL3D.SceneNode} scene node the selector is based on
+	 * @returns returns {@link TriangleSelector} if this selector can be cloned or null if not
 	 */
 	createClone(node) {
 		var clone = new CL3D.BoundingBoxTriangleSelector(null, node);
@@ -359,23 +381,23 @@ export class BoundingBoxTriangleSelector extends CL3D.MeshTriangleSelector {
 		clone.Triangles = this.Triangles;
 		return clone;
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------------
 // MetaTriangleSelector
 // ------------------------------------------------------------------------------------------------------
 
 /**
- * Interface for making multiple triangle selectors work as one big selector. 
+ * Interface for making multiple triangle selectors work as one big selector.
  * This is nothing more than a collection of one or more triangle selectors providing together the interface of one triangle selector.
  * In this way, collision tests can be done with different triangle soups in one pass.
  * See {@link MeshTriangleSelector} for an implementation of a triangle selector for meshes.<br/>
- * @class Interface for making multiple triangle selectors work as one big selector. 
+ * @class Interface for making multiple triangle selectors work as one big selector.
  * @public
  * @extends CL3D.TriangleSelector
  * @constructor
  */
-export class MetaTriangleSelector extends CL3D.TriangleSelector{
+export class MetaTriangleSelector extends CL3D.TriangleSelector {
 	constructor() {
 		super();
 
@@ -395,8 +417,9 @@ export class MetaTriangleSelector extends CL3D.TriangleSelector{
 		for (var i = 0; i < this.Selectors.length; ++i) {
 			var sel = this.Selectors[i];
 
-			if (nodeToIgnore != null && nodeToIgnore == sel.getRelatedSceneNode())
+			if (nodeToIgnore != null && nodeToIgnore == sel.getRelatedSceneNode()) {
 				continue;
+			}
 
 			sel.getAllTriangles(transform, outArray);
 		}
@@ -417,8 +440,9 @@ export class MetaTriangleSelector extends CL3D.TriangleSelector{
 		for (var i = 0; i < this.Selectors.length; ++i) {
 			var sel = this.Selectors[i];
 
-			if (nodeToIgnore != null && nodeToIgnore == sel.getRelatedSceneNode())
+			if (nodeToIgnore != null && nodeToIgnore == sel.getRelatedSceneNode()) {
 				continue;
+			}
 
 			sel.getTrianglesInBox(box, transform, outArray);
 		}
@@ -445,10 +469,9 @@ export class MetaTriangleSelector extends CL3D.TriangleSelector{
 			if (e === t) {
 				this.Selectors.splice(i, 1);
 				return;
-			}
-
-			else
+			} else {
 				++i;
+			}
 		}
 	}
 
@@ -473,11 +496,12 @@ export class MetaTriangleSelector extends CL3D.TriangleSelector{
 	getCollisionPointWithLine(start, end, bIgnoreBackFaces, outTriangle, ignoreInvisibleItems) {
 		// we would not need to re-implement this function here, because it would also work from the base class, since it calls getAllTriangles().
 		// but we call it for every node separately, so that the 'ignoreInvisibleItems' also can be used
-		var nearest = 999999999.9; //FLT_MAX;
+		var nearest = 999999999.9; // FLT_MAX;
 		var returnPos = null;
 		var tritmp = null;
-		if (outTriangle)
+		if (outTriangle) {
 			tritmp = new CL3D.Triangle3d();
+		}
 
 		for (var i = 0; i < this.Selectors.length; ++i) {
 			var pos = this.Selectors[i].getCollisionPointWithLine(start, end, bIgnoreBackFaces, tritmp, ignoreInvisibleItems);
@@ -488,8 +512,9 @@ export class MetaTriangleSelector extends CL3D.TriangleSelector{
 					returnPos = pos.clone();
 					nearest = tmp;
 
-					if (outTriangle)
+					if (outTriangle) {
 						tritmp.copyTo(outTriangle);
+					}
 				}
 			}
 		}
@@ -498,13 +523,13 @@ export class MetaTriangleSelector extends CL3D.TriangleSelector{
 	}
 
 	/**
-	  * If there are multiple scene nodes in this selector, it is possible to let it ignore one
-	  * specific node, for example to prevent colliding it against itself.
+	 * If there are multiple scene nodes in this selector, it is possible to let it ignore one
+	 * specific node, for example to prevent colliding it against itself.
 	 */
 	setNodeToIgnore(n) {
 		this.NodeToIgnore = n;
 	}
-};
+}
 
 // ------------------------------------------------------------------------------------------------------
 // Octtree selector
@@ -519,12 +544,12 @@ export class SOctTreeNode {
 		this.Box = new CL3D.Box3d();
 		this.Child = new Array(); // always 8 childs
 	}
-};
+}
 
 /**
  * Implementation of TriangleSelector for huge meshes, useful for collision detection.
  * The internal structure of this mesh is an occtree, speeding up queries using an axis aligne box ({@link getTrianglesInBox}).
- * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection: 
+ * Every {@link SceneNode} may have a triangle selector, available with SceneNode::Selector. This is used for doing collision detection:
  * For example if you know that a collision may have happened in the area between (1,1,1) and (10,10,10), you can get all triangles of the scene
  * node in this area with the TriangleSelector easily and check every triangle if it collided.<br/>
  * @class OctTree implementation of a triangle selector, useful for collision detection.
@@ -544,30 +569,31 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 		this.DebugNodeCount = 0;
 		this.DebugPolyCount = 0;
 
-		if (minimalPolysPerNode == null)
+		if (minimalPolysPerNode == null) {
 			this.MinimalPolysPerNode = 64;
-
-		else
+		} else {
 			this.MinimalPolysPerNode = minimalPolysPerNode;
+		}
 
-		if (!mesh)
+		if (!mesh) {
 			return;
+		}
 
 		this.Node = scenenode;
 		this.Root = new CL3D.SOctTreeNode();
 		this.Triangles = new Array(); // Additional array to store all triangles to be able to return all quickly without iterating the tree
 
-
-
 		// create triangle array
 		for (var b = 0; b < mesh.MeshBuffers.length; ++b) {
 			var mb = mesh.MeshBuffers[b];
 			if (mb) {
-				if (materialToIgnore != null && mb.Mat && mb.Mat.Type == materialToIgnore)
+				if (materialToIgnore != null && mb.Mat && mb.Mat.Type == materialToIgnore) {
 					continue;
+				}
 
-				if (materialToIgnore2 != null && mb.Mat && mb.Mat.Type == materialToIgnore2)
+				if (materialToIgnore2 != null && mb.Mat && mb.Mat.Type == materialToIgnore2) {
 					continue;
+				}
 
 				var idxcnt = mb.Indices.length;
 				for (var j = 0; j < idxcnt; j += 3) {
@@ -584,8 +610,8 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 
 		this.constructTree(this.Root);
 
-		//console.log("Constructed Octtree with " + this.DebugNodeCount + 
-		//	" nodes and triangles:" + this.DebugPolyCount);
+		// console.log("Constructed Octtree with " + this.DebugNodeCount +
+		// 	" nodes and triangles:" + this.DebugPolyCount);
 	}
 
 	/**
@@ -623,20 +649,20 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 				for (var i = 0; i < node.Triangles.length; ++i) {
 					tri = node.Triangles[i];
 
-					if (tri.isTotalInsideBox(box))
+					if (tri.isTotalInsideBox(box)) {
 						node.Child[ch].Triangles.push(tri);
-
-					else
+					} else {
 						keepTriangles.push(tri);
+					}
 				}
 
 				node.Triangles = keepTriangles;
 
-				if (node.Child[ch].Triangles.length == 0)
+				if (node.Child[ch].Triangles.length == 0) {
 					node.Child[ch] = null;
-
-				else
+				} else {
 					this.constructTree(node.Child[ch]);
+				}
 			}
 		}
 
@@ -663,8 +689,9 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 	 * @param {Array} outArray output array of the triangles
 	 */
 	getTrianglesInBox(box, transform, outArray) {
-		if (!this.Node.AbsoluteTransformation)
+		if (!this.Node.AbsoluteTransformation) {
 			return;
+		}
 
 		var mat = new CL3D.Matrix4();
 		var invbox = box.clone();
@@ -677,11 +704,13 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 
 		mat.makeIdentity();
 
-		if (transform)
+		if (transform) {
 			mat = transform.clone();
+		}
 
-		if (this.Node)
+		if (this.Node) {
 			mat = mat.multiply(this.Node.getAbsoluteTransformation());
+		}
 
 		if (this.Root) {
 			this.getTrianglesFromOctTree(this.Root, outArray, invbox, mat);
@@ -692,8 +721,9 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 	 * @public
 	 */
 	getTrianglesFromOctTree(node, outArray, box, transform) {
-		if (!node.Box.intersectsWithBox(box))
+		if (!node.Box.intersectsWithBox(box)) {
 			return;
+		}
 
 		var cnt = node.Triangles.length;
 
@@ -701,29 +731,32 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 
 		if (transform.isIdentity()) {
 			// copy directly
-			for (i = 0; i < cnt; ++i)
+			for (i = 0; i < cnt; ++i) {
 				outArray.push(node.Triangles[i]);
-		}
-
-		else {
+			}
+		} else {
 			// transform before copying
 			if (transform.isTranslateOnly()) {
 				// translate only
 				for (i = 0; i < cnt; ++i) {
-					outArray.push(new CL3D.Triangle3d(
-						transform.getTranslatedVect(node.Triangles[i].pointA),
-						transform.getTranslatedVect(node.Triangles[i].pointB),
-						transform.getTranslatedVect(node.Triangles[i].pointC)));
+					outArray.push(
+						new CL3D.Triangle3d(
+							transform.getTranslatedVect(node.Triangles[i].pointA),
+							transform.getTranslatedVect(node.Triangles[i].pointB),
+							transform.getTranslatedVect(node.Triangles[i].pointC),
+						),
+					);
 				}
-			}
-
-			else {
+			} else {
 				// do full transform
 				for (i = 0; i < cnt; ++i) {
-					outArray.push(new CL3D.Triangle3d(
-						transform.getTransformedVect(node.Triangles[i].pointA),
-						transform.getTransformedVect(node.Triangles[i].pointB),
-						transform.getTransformedVect(node.Triangles[i].pointC)));
+					outArray.push(
+						new CL3D.Triangle3d(
+							transform.getTransformedVect(node.Triangles[i].pointA),
+							transform.getTransformedVect(node.Triangles[i].pointB),
+							transform.getTransformedVect(node.Triangles[i].pointC),
+						),
+					);
 				}
 			}
 		}
@@ -731,14 +764,15 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 		// also for children
 		for (i = 0; i < node.Child.length; ++i) {
 			var c = node.Child[i];
-			if (c != null)
+			if (c != null) {
 				this.getTrianglesFromOctTree(c, outArray, box, transform);
+			}
 		}
 	}
 
 	/**
-	  * Returns the scenenode this selector is for
-	  * @returns returns {@link SceneNode} if this selector is for a specific scene node
+	 * Returns the scenenode this selector is for
+	 * @returns returns {@link SceneNode} if this selector is for a specific scene node
 	 */
 	getRelatedSceneNode() {
 		return this.Node;
@@ -756,8 +790,9 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 			var c = toclone.Child[i];
 			var clonedchild = null;
 
-			if (c)
+			if (c) {
 				clonedchild = this.createOcTreeNodeClone(c);
+			}
 
 			clone.Child.push(clonedchild);
 		}
@@ -766,9 +801,9 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 	}
 
 	/**
-	  * Creates a clone of this triangle selector, for a new scene node
-	  * @param node {CL3D.SceneNode} scene node the selector is based on
-	  * @returns returns {@link TriangleSelector} if this selector can be cloned or null if not
+	 * Creates a clone of this triangle selector, for a new scene node
+	 * @param node {CL3D.SceneNode} scene node the selector is based on
+	 * @returns returns {@link TriangleSelector} if this selector can be cloned or null if not
 	 */
 	createClone(node) {
 		var clone = new CL3D.OctTreeTriangleSelector(null, node, this.MinimalPolysPerNode);
@@ -777,9 +812,10 @@ export class OctTreeTriangleSelector extends CL3D.TriangleSelector {
 		clone.Triangles = this.Triangles;
 		clone.Root = null;
 
-		if (this.Root)
+		if (this.Root) {
 			clone.Root = this.createOcTreeNodeClone(this.Root);
+		}
 
 		return clone;
 	}
-};
+}

@@ -1,18 +1,17 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "./main.js";
 
-//const EVT_STANDARD = 0;
-//const EVT_2TCOORDS = 1;
-//const EVT_TANGENTS = 2;
+// const EVT_STANDARD = 0;
+// const EVT_2TCOORDS = 1;
+// const EVT_TANGENTS = 2;
 
 /**
- * A buffer containing a set of geometry with one material, usually part of a {@link Mesh}. 
- * @class A buffer containing a set of geometry with one material. 
+ * A buffer containing a set of geometry with one material, usually part of a {@link Mesh}.
+ * @class A buffer containing a set of geometry with one material.
  * @constructor
  * @public
- *
  */
 export class MeshBuffer {
 	/**
@@ -44,7 +43,7 @@ export class MeshBuffer {
 	Vertices = null;
 
 	/**
-	 * Object for the renderer to store renderer created arrays for rendering the geometry. 
+	 * Object for the renderer to store renderer created arrays for rendering the geometry.
 	 * @public
 	 */
 	RendererNativeArray = null;
@@ -61,7 +60,7 @@ export class MeshBuffer {
 	 */
 	Binormals = null;
 
-	//MeshBuffer.prototype.VertexType = null;
+	// MeshBuffer.prototype.VertexType = null;
 
 	constructor() {
 		this.Box = new CL3D.Box3d();
@@ -80,14 +79,13 @@ export class MeshBuffer {
 	 * @param {Boolean} onlyPositionsChanged set to true if only the positions changed in the mesh buffer. This will trigger a faster update then
 	 */
 	update(onlyPositionsChanged, onlyUpdateBufferIfPossible) {
-		if (onlyPositionsChanged)
+		if (onlyPositionsChanged) {
 			this.OnlyPositionsChanged = true;
-
-		else if (onlyUpdateBufferIfPossible)
+		} else if (onlyUpdateBufferIfPossible) {
 			this.OnlyUpdateBufferIfPossible = true;
-
-		else
+		} else {
 			this.RendererNativeArray = null;
+		}
 	}
 	/**
 	 * Clears the native render array and frees up memory
@@ -97,32 +95,41 @@ export class MeshBuffer {
 		let obj = this.RendererNativeArray;
 		if (obj && obj.gl) {
 			// firefox doesn't garbage collect these arrays (Obviously a bug). So we need to collect them here ourselves.
-			if (obj.positionBuffer)
+			if (obj.positionBuffer) {
 				obj.gl.deleteBuffer(obj.positionBuffer);
+			}
 
-			if (obj.positionsArray)
+			if (obj.positionsArray) {
 				delete obj.positionsArray;
+			}
 
-			if (obj.texcoordsBuffer)
+			if (obj.texcoordsBuffer) {
 				obj.gl.deleteBuffer(obj.texcoordsBuffer);
+			}
 
-			if (obj.texcoordsBuffer2)
+			if (obj.texcoordsBuffer2) {
 				obj.gl.deleteBuffer(obj.texcoordsBuffer2);
+			}
 
-			if (obj.normalBuffer)
+			if (obj.normalBuffer) {
 				obj.gl.deleteBuffer(obj.normalBuffer);
+			}
 
-			if (obj.colorBuffer)
+			if (obj.colorBuffer) {
 				obj.gl.deleteBuffer(obj.colorBuffer);
+			}
 
-			if (obj.indexBuffer)
+			if (obj.indexBuffer) {
 				obj.gl.deleteBuffer(obj.colorBuffer);
+			}
 
-			if (this.Tangents)
+			if (this.Tangents) {
 				obj.gl.deleteBuffer(obj.gl.tangentBuffer);
+			}
 
-			if (this.Binormals)
+			if (this.Binormals) {
 				obj.gl.deleteBuffer(obj.gl.binormalBuffer);
+			}
 		}
 
 		delete this.RendererNativeArray;
@@ -132,10 +139,9 @@ export class MeshBuffer {
 	 * @public
 	 */
 	recalculateBoundingBox() {
-		if (!this.Vertices || this.Vertices.length == 0)
+		if (!this.Vertices || this.Vertices.length == 0) {
 			this.Box.reset(0, 0, 0);
-
-		else {
+		} else {
 			let vtx = this.Vertices[0];
 
 			this.Box.MinEdge = vtx.Pos.clone();
@@ -172,18 +178,21 @@ export class MeshBuffer {
 		}
 
 		if (this.Indices) {
-			for (let i = 0; i < this.Indices.length; ++i)
+			for (let i = 0; i < this.Indices.length; ++i) {
 				ret.Indices.push(this.Indices[i]);
+			}
 		}
 
 		if (this.Tangents) {
-			for (let i = 0; i < this.Tangents.length; ++i)
+			for (let i = 0; i < this.Tangents.length; ++i) {
 				ret.Tangents.push(this.Tangents[i].clone());
+			}
 		}
 
 		if (this.Binormals) {
-			for (let i = 0; i < this.Binormals.length; ++i)
+			for (let i = 0; i < this.Binormals.length; ++i) {
 				ret.Binormals.push(this.Binormals[i].clone());
+			}
 		}
 
 		return ret;

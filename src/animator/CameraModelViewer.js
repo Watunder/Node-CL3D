@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -10,7 +10,7 @@ import * as CL3D from "../main.js";
  * @constructor
  * @public
  * @extends CL3D.Animator
- * @class Special scene node animator for model viewer cameras. 
+ * @class Special scene node animator for model viewer cameras.
  */
 export class AnimatorCameraModelViewer extends CL3D.Animator {
 	/**
@@ -38,8 +38,8 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 	NoVerticalMovement = false;
 
 	/**
- 	 * @param {CL3D.CameraSceneNode} cam an instance of a {@link CameraSceneNode} this animator will be attached to. Can be null if the camera is not yet known.
- 	 * @param {CL3D.CopperLicht} engine An instance of the {@link CopperLicht} 3d engine, for receiving the mouse and keyboard input.
+	 * @param {CL3D.CameraSceneNode} cam an instance of a {@link CameraSceneNode} this animator will be attached to. Can be null if the camera is not yet known.
+	 * @param {CL3D.CopperLicht} engine An instance of the {@link CopperLicht} 3d engine, for receiving the mouse and keyboard input.
 	 */
 	constructor(cam, engine) {
 		super();
@@ -77,7 +77,7 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'cameramodelviewer';
+		return "cameramodelviewer";
 	}
 
 	/**
@@ -87,16 +87,19 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
-		if (this.Camera == null)
+		if (this.Camera == null) {
 			return false;
+		}
 
-		if (!(this.Camera.scene.getActiveCamera() === this.Camera))
+		if (!(this.Camera.scene.getActiveCamera() === this.Camera)) {
 			return false;
+		}
 
 		var now = CL3D.CLTimer.getTime();
 		var timeDiff = now - this.lastAnimTime;
-		if (timeDiff > 250)
+		if (timeDiff > 250) {
 			timeDiff = 250;
+		}
 		this.lastAnimTime = now;
 
 		// move forwards/backwards
@@ -116,31 +119,30 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 
 			this.LastMouseDownLookX = mx;
 			this.LastMouseDownLookY = my;
-		}
-
-		else {
+		} else {
 			this.LastMouseDownLookX = -1;
 			this.LastMouseDownLookY = -1;
 		}
 
 		// sliding after movement ended
-		if (this.SlideAfterMovementEnd &&
-			this.SlidingSpeed != 0) {
+		if (
+			this.SlideAfterMovementEnd
+			&& this.SlidingSpeed != 0
+		) {
 			if (CL3D.iszero(moveX)) {
 				// slide a bit after movement has finished
 				moveX = this.SlidingMoveX;
 
 				this.SlidingMoveX *= 0.9; // this is not frame independent, but since the fps is capped, its quite ok
 
-				if (this.SlidingMoveX > 0)
+				if (this.SlidingMoveX > 0) {
 					this.SlidingMoveX = Math.max(0.0, this.SlidingMoveX - (timeDiff / this.SlidingSpeed));
-
-				else if (this.SlidingMoveX < 0)
+				} else if (this.SlidingMoveX < 0) {
 					this.SlidingMoveX = Math.min(0.0, this.SlidingMoveX + (timeDiff / this.SlidingSpeed));
-			}
-
-			else
+				}
+			} else {
 				this.SlidingMoveX = moveX * (this.SlidingSpeed / 1000.0);
+			}
 
 			if (CL3D.iszero(moveY)) {
 				// slide a bit after movement has finished
@@ -148,15 +150,14 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 
 				this.SlidingMoveY *= 0.9; // this is not frame independent, but since the fps is capped, its quite ok
 
-				if (this.SlidingMoveY > 0)
+				if (this.SlidingMoveY > 0) {
 					this.SlidingMoveY = Math.max(0.0, this.SlidingMoveY - (timeDiff / this.SlidingSpeed));
-
-				else if (this.SlidingMoveY < 0)
+				} else if (this.SlidingMoveY < 0) {
 					this.SlidingMoveY = Math.min(0.0, this.SlidingMoveY + (timeDiff / this.SlidingSpeed));
-			}
-
-			else
+				}
+			} else {
 				this.SlidingMoveY = moveY * (this.SlidingSpeed / 1000.0);
+			}
 		}
 
 		// horizontal movement
@@ -179,14 +180,16 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 			newPosNoY.Y = target.Y;
 
 			var minRadius = this.Radius / 10.0;
-			if (newPosNoY.getDistanceTo(target) > minRadius)
+			if (newPosNoY.getDistanceTo(target) > minRadius) {
 				pos = newpos;
+			}
 		}
 
 		// also correct vertical position if bool NoVerticalMovement is on
 		if (this.NoVerticalMovement) {
-			if (CL3D.equals(this.NoVerticalMovementYPos, -66666.0))
+			if (CL3D.equals(this.NoVerticalMovementYPos, -66666.0)) {
 				this.NoVerticalMovementYPos = pos.Y;
+			}
 
 			pos.Y = this.NoVerticalMovementYPos;
 		}
@@ -198,26 +201,31 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 		if (this.AllowZooming) {
 			var newFov = CL3D.radToDeg(this.Camera.getFov());
 
-			if (this.TargetZoomValue < this.MinZoom)
+			if (this.TargetZoomValue < this.MinZoom) {
 				this.TargetZoomValue = this.MinZoom;
-			if (this.TargetZoomValue > this.MaxZoom)
+			}
+			if (this.TargetZoomValue > this.MaxZoom) {
 				this.TargetZoomValue = this.MaxZoom;
+			}
 
 			var localZoomSpeed = this.ZoomSpeed;
 			localZoomSpeed = Math.abs(this.TargetZoomValue - newFov) / 8.0;
-			if (localZoomSpeed < this.ZoomSpeed)
+			if (localZoomSpeed < this.ZoomSpeed) {
 				localZoomSpeed = this.ZoomSpeed;
+			}
 
 			if (newFov < this.MaxZoom - localZoomSpeed && newFov < this.TargetZoomValue) {
 				newFov += localZoomSpeed;
-				if (newFov > this.MaxZoom)
+				if (newFov > this.MaxZoom) {
 					newFov = this.MaxZoom;
+				}
 			}
 
 			if (newFov > this.MinZoom + localZoomSpeed && newFov > this.TargetZoomValue) {
 				newFov -= localZoomSpeed;
-				if (newFov < this.MinZoom)
+				if (newFov < this.MinZoom) {
 					newFov = this.MinZoom;
+				}
 			}
 
 			this.Camera.setFov(CL3D.degToRad(newFov));
@@ -239,10 +247,12 @@ export class AnimatorCameraModelViewer extends CL3D.Animator {
 	onMouseWheel(delta) {
 		this.TargetZoomValue += delta * this.ZoomSpeed;
 
-		if (this.TargetZoomValue < this.MinZoom)
+		if (this.TargetZoomValue < this.MinZoom) {
 			this.TargetZoomValue = this.MinZoom;
+		}
 
-		if (this.TargetZoomValue > this.MaxZoom)
+		if (this.TargetZoomValue > this.MaxZoom) {
 			this.TargetZoomValue = this.MaxZoom;
+		}
 	}
-};
+}

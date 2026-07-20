@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -73,7 +73,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 
 	/**
 	 * @param {CL3D.CameraSceneNode} cam an instance of a {@link CameraSceneNode} this animator will be attached to. Can be null if the camera is not yet known.
- 	 * @param {CL3D.CopperLicht} engine An instance of the {@link CopperLicht} 3d engine, for receiving the mouse and keyboard input.
+	 * @param {CL3D.CopperLicht} engine An instance of the {@link CopperLicht} 3d engine, for receiving the mouse and keyboard input.
 	 */
 	constructor(cam, engine) {
 		super();
@@ -116,8 +116,9 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 
 		this.LastTimeJumpKeyWasUp = true;
 
-		if (cam)
+		if (cam) {
 			this.lookAt(cam.getTarget());
+		}
 	}
 
 	/**
@@ -126,7 +127,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 * @public
 	 */
 	getType() {
-		return 'camerafps';
+		return "camerafps";
 	}
 
 	/**
@@ -156,16 +157,18 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 * @param target target 3d position of type {@link Vect3d}.
 	 */
 	lookAt(target) {
-		if (this.Camera == null)
+		if (this.Camera == null) {
 			return;
+		}
 
 		var vect = target.substract(this.Camera.Pos);
 		vect = vect.getHorizontalAngle();
 		this.relativeRotationX = vect.X;
 		this.relativeRotationY = vect.Y;
 
-		if (this.relativeRotationX > this.MaxVerticalAngle)
+		if (this.relativeRotationX > this.MaxVerticalAngle) {
 			this.relativeRotationX -= 360.0;
+		}
 	}
 
 	/**
@@ -175,19 +178,23 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 * @param {Number} timeMs The time in milliseconds since the start of the scene.
 	 */
 	animateNode(n, timeMs) {
-		if (this.Camera == null)
+		if (this.Camera == null) {
 			return false;
+		}
 
-		if (!(this.Camera.scene.getActiveCamera() === this.Camera))
+		if (!(this.Camera.scene.getActiveCamera() === this.Camera)) {
 			return false;
+		}
 
 		var now = CL3D.CLTimer.getTime();
 		var timeDiff = now - this.lastAnimTime;
-		if (timeDiff == 0)
+		if (timeDiff == 0) {
 			return false;
+		}
 
-		if (timeDiff > 250)
+		if (timeDiff > 250) {
 			timeDiff = 250;
+		}
 		this.lastAnimTime = now;
 
 		// move forwards/backwards
@@ -197,11 +204,11 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 		if (this.MayMove && (this.upKeyDown || this.downKeyDown)) {
 			var moveVect = this.Camera.Pos.substract(this.Camera.getTarget());
 
-			if (this.NoVerticalMovement)
+			if (this.NoVerticalMovement) {
 				moveVect.Y = 0;
+			}
 
 			moveVect.normalize();
-
 
 			if (this.upKeyDown) {
 				tomove.addToThis(moveVect.multiplyWithScal(this.MoveSpeed * -timeDiff));
@@ -221,29 +228,26 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 				strafeVect = strafeVect.multiplyWithScal(this.MoveSpeed * -timeDiff);
 
 				tomove.addToThis(strafeVect);
-				//this.Camera.setTarget(this.Camera.getTarget().add(strafeVect));
+				// this.Camera.setTarget(this.Camera.getTarget().add(strafeVect));
 			}
 
 			if (this.rightKeyDown) {
 				strafeVect = strafeVect.multiplyWithScal(this.MoveSpeed * timeDiff);
 
 				tomove.addToThis(strafeVect);
-				//this.Camera.setTarget(this.Camera.getTarget().add(strafeVect));
+				// this.Camera.setTarget(this.Camera.getTarget().add(strafeVect));
 			}
 		}
 
-
 		// move smoothing
 		if (this.MoveSmoothing != 0) {
-			var lastMove = tomove.clone(); //pos.substract(this.Camera.Pos);
+			var lastMove = tomove.clone(); // pos.substract(this.Camera.Pos);
 			if (!lastMove.equalsZero()) {
 				// moved by user this frame, no smoothing, but record movement
 				this.lastMoveVector = lastMove;
 				this.lastMoveVector.multiplyThisWithScal(1.0 / timeDiff);
 				this.lastMoveTime = now;
-			}
-
-			else {
+			} else {
 				// not moved by user this frame, add movement smoothing
 				if (this.lastMoveTime != 0 && !this.lastMoveVector.equalsZero()) {
 					var smoothTime = now - this.lastMoveTime;
@@ -255,10 +259,9 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 						v.multiplyThisWithScal(smoothLength * 0.5);
 
 						tomove.addToThis(v);
-					}
-
-					else
+					} else {
 						this.lastMoveVector.set(0, 0, 0);
+					}
 				}
 			}
 		}
@@ -312,8 +315,9 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 
 		// move lookat target up / down
 		var pointerLocked = false;
-		if (this.CursorControl != null)
+		if (this.CursorControl != null) {
 			pointerLocked = this.CursorControl.isInPointerLockMode();
+		}
 
 		var maxdiff = 300; // to limit the maximum diff in pixels
 		var ydiff = 0;
@@ -321,8 +325,9 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 		var RotateSpeedFactY = 1 / 50000.0;
 
 		var bOver2DOverlay = false;
-		if (this.CursorControl != null && n.scene != null && !pointerLocked)
+		if (this.CursorControl != null && n.scene != null && !pointerLocked) {
 			bOver2DOverlay = n.scene.isCoordOver2DOverlayNode(this.CursorControl.getMouseX(), this.CursorControl.getMouseY(), true) != null;
+		}
 
 		if (this.moveByMouseDown) {
 			// this is inconsistent, removed in 2.5.4 temporarily, but it simply feels better
@@ -333,33 +338,28 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 		if (!bOver2DOverlay) {
 			if (pointerLocked) {
 				ydiff = this.CursorControl.getMouseMoveY();
-			}
-
-			else if (this.moveByMouseMove) {
+			} else if (this.moveByMouseMove) {
 				var frameHeight = this.CursorControl.getRenderer().getHeight();
 				var mousey = this.CursorControl.getMouseY();
-				//if (frameHeight > 0 && mousey > 0)
-				//	ydiff = ((mousey - (frameHeight / 2))  / frameHeight) * 100.0;
+				// if (frameHeight > 0 && mousey > 0)
+				// 	ydiff = ((mousey - (frameHeight / 2))  / frameHeight) * 100.0;
 				if (frameHeight > 0 && mousey > 0 && this.CursorControl.isMouseOverCanvas()) {
 					ydiff = Math.sin((mousey - (frameHeight / 2)) / frameHeight) * 100.0 * 0.5;
 				}
-			}
-
-			else if (this.moveByMouseDown || this.moveByPanoDrag) {
+			} else if (this.moveByMouseDown || this.moveByPanoDrag) {
 				if (this.CursorControl.isMouseDown()) {
 					// this works nice, but not for touch controls
-					//ydiff = this.CursorControl.getMouseY() - this.CursorControl.getMouseDownY();
-					//if (ydiff != 0)
-					//	this.CursorControl.LastCameraDragTime = now;
+					// ydiff = this.CursorControl.getMouseY() - this.CursorControl.getMouseDownY();
+					// if (ydiff != 0)
+					// 	this.CursorControl.LastCameraDragTime = now;
 					var my = this.CursorControl.getMouseY();
 					ydiff = this.LastMouseDownLookY == -1 ? 0 : (my - this.LastMouseDownLookY);
-					if (ydiff != 0)
+					if (ydiff != 0) {
 						this.CursorControl.LastCameraDragTime = now;
+					}
 
 					this.LastMouseDownLookY = my;
-				}
-
-				else {
+				} else {
 					this.LastMouseDownLookY = -1;
 				}
 			}
@@ -374,10 +374,12 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 		if (ydiff < -maxdiff) ydiff = -maxdiff;
 		this.relativeRotationX += ydiff * (lookTimeDiff * (this.RotateSpeed * RotateSpeedFactY));
 
-		if (this.relativeRotationX < -this.MaxVerticalAngle)
+		if (this.relativeRotationX < -this.MaxVerticalAngle) {
 			this.relativeRotationX = -this.MaxVerticalAngle;
-		if (this.relativeRotationX > this.MaxVerticalAngle)
+		}
+		if (this.relativeRotationX > this.MaxVerticalAngle) {
 			this.relativeRotationX = this.MaxVerticalAngle;
+		}
 
 		// move lookat target left / right
 		var xdiff = 0;
@@ -385,35 +387,30 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 		if (!bOver2DOverlay) {
 			if (pointerLocked) {
 				xdiff = this.CursorControl.getMouseMoveX();
-			}
-
-			else if (this.moveByMouseMove) {
+			} else if (this.moveByMouseMove) {
 				var frameWidth = this.CursorControl.getRenderer().getWidth();
 				var mousex = this.CursorControl.getMouseX();
 
-				//if (frameWidth > 0 && mousex > 0)
-				//	xdiff = ((mousex - (frameWidth / 2)) / frameWidth) * 100.0;
+				// if (frameWidth > 0 && mousex > 0)
+				// 	xdiff = ((mousex - (frameWidth / 2)) / frameWidth) * 100.0;
 				if (frameWidth > 0 && mousex > 0 && this.CursorControl.isMouseOverCanvas()) {
 					xdiff = Math.sin((mousex - (frameWidth / 2)) / frameWidth) * 100.0 * 0.5;
 				}
-			}
-
-			else if (this.moveByMouseDown || this.moveByPanoDrag) {
+			} else if (this.moveByMouseDown || this.moveByPanoDrag) {
 				if (this.CursorControl.isMouseDown()) {
 					// this works nice, but not for touch controls
 					// xdiff = (this.CursorControl.getMouseX() - this.CursorControl.getMouseDownX());
 					// if (xdiff != 0)
-					//	this.CursorControl.LastCameraDragTime = now;
+					// 	this.CursorControl.LastCameraDragTime = now;
 					// so do it like this now:
 					var mx = this.CursorControl.getMouseX();
 					xdiff = this.LastMouseDownLookX == -1 ? 0 : (mx - this.LastMouseDownLookX);
-					if (xdiff != 0)
+					if (xdiff != 0) {
 						this.CursorControl.LastCameraDragTime = now;
+					}
 
 					this.LastMouseDownLookX = mx;
-				}
-
-				else {
+				} else {
 					this.LastMouseDownLookX = -1;
 				}
 			}
@@ -425,23 +422,23 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 		if (xdiff < -maxdiff) xdiff = -maxdiff;
 		this.relativeRotationY += xdiff * (lookTimeDiff * (this.RotateSpeed * RotateSpeedFactX));
 
-		if (pointerLocked || this.moveByMouseDown || this.moveByPanoDrag)
+		if (pointerLocked || this.moveByMouseDown || this.moveByPanoDrag) {
 			this.CursorControl.setMouseDownWhereMouseIsNow();
+		}
 
 		// jump
 		if (this.MayMove) {
 			if (this.jumpKeyDown) {
 				if (this.LastTimeJumpKeyWasUp) {
-					var a = n.getAnimatorOfType('collisionresponse');
+					var a = n.getAnimatorOfType("collisionresponse");
 					if (a && a instanceof CL3D.AnimatorCollisionResponse && !a.isFalling()) {
 						this.LastTimeJumpKeyWasUp = false;
 						a.jump(this.JumpSpeed);
 					}
 				}
-			}
-
-			else
+			} else {
 				this.LastTimeJumpKeyWasUp = true;
+			}
 		}
 
 		// finally set target
@@ -454,11 +451,12 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 * @public
 	 */
 	onMouseDown(event) {
-		//super.onMouseDown(event);
+		// super.onMouseDown(event);
 		CL3D.Animator.prototype.onMouseDown.call(this, event);
 
-		if (this.moveByMouseMove && this.CursorControl.pointerLockForFPSCameras && !this.CursorControl.isInPointerLockMode())
+		if (this.moveByMouseMove && this.CursorControl.pointerLockForFPSCameras && !this.CursorControl.isInPointerLockMode()) {
 			this.CursorControl.requestPointerLock();
+		}
 	}
 
 	/**
@@ -478,7 +476,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 * @public
 	 */
 	onMouseUp(event) {
-		//super.onMouseUp(event);
+		// super.onMouseUp(event);
 		CL3D.Animator.prototype.onMouseUp.call(this, event);
 	}
 
@@ -486,7 +484,7 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 * @public
 	 */
 	onMouseMove(event) {
-		//super.onMouseMove(event);
+		// super.onMouseMove(event);
 		CL3D.Animator.prototype.onMouseMove.call(this, event);
 	}
 
@@ -494,8 +492,9 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	 * @public
 	 */
 	setKeyBool(down, code) {
-		if (code)
+		if (code) {
 			code = code.toLowerCase();
+		}
 		if (code == "a" || code == "left" || code == "arrowleft") {
 			this.leftKeyDown = down;
 
@@ -574,4 +573,4 @@ export class AnimatorCameraFPS extends CL3D.Animator {
 	getAdditionalZoomDiff() {
 		return 0;
 	}
-};
+}

@@ -1,4 +1,4 @@
-//+ Nikolaus Gebhardt
+// + Nikolaus Gebhardt
 // This file is part of the CopperLicht library, copyright by Nikolaus Gebhardt
 
 import * as CL3D from "../main.js";
@@ -34,8 +34,9 @@ export class MeshSceneNode extends CL3D.SceneNode {
 	 * @returns {CL3D.Box3d} Bounding box of this scene node.
 	 */
 	getBoundingBox() {
-		if (this.OwnedMesh)
+		if (this.OwnedMesh) {
 			return this.OwnedMesh.Box;
+		}
 		return this.Box;
 	}
 
@@ -47,7 +48,7 @@ export class MeshSceneNode extends CL3D.SceneNode {
 	getMesh() {
 		return this.OwnedMesh;
 	}
-	
+
 	/**
 	 * Sets the {@link Mesh} which should be drawn by this scene node.
 	 * @public
@@ -64,7 +65,7 @@ export class MeshSceneNode extends CL3D.SceneNode {
 	 * @returns {String} type name of the scene node.
 	 */
 	getType() {
-		return 'mesh';
+		return "mesh";
 	}
 
 	/**
@@ -79,27 +80,27 @@ export class MeshSceneNode extends CL3D.SceneNode {
 
 			for (var i = 0; i < mesh.MeshBuffers.length; ++i) {
 				var buf = mesh.MeshBuffers[i];
-				if (buf.Mat.isTransparent())
+				if (buf.Mat.isTransparent()) {
 					hasTransparentMaterials = true;
-
-				else
+				} else {
 					hasSolidMaterials = true;
+				}
 			}
 
 			if (hasTransparentMaterials) {
-				if (this.isParentActiveFPSCameraToRenderChildrenWithoutZBuffer())
+				if (this.isParentActiveFPSCameraToRenderChildrenWithoutZBuffer()) {
 					mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_TRANSPARENT_AFTER_ZBUFFER_CLEAR);
-
-				else
+				} else {
 					mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_TRANSPARENT);
+				}
 			}
 
 			if (hasSolidMaterials) {
-				if (this.isParentActiveFPSCameraToRenderChildrenWithoutZBuffer())
+				if (this.isParentActiveFPSCameraToRenderChildrenWithoutZBuffer()) {
 					mgr.registerNodeForRendering(this, CL3D.Scene.TRANSPARENT_SOLID_AFTER_ZBUFFER_CLEAR);
-
-				else
+				} else {
 					mgr.registerNodeForRendering(this, CL3D.Scene.RENDER_MODE_DEFAULT);
+				}
 			}
 
 			CL3D.SceneNode.prototype.OnRegisterSceneNode.call(this, mgr);
@@ -118,8 +119,9 @@ export class MeshSceneNode extends CL3D.SceneNode {
 			var buf = this.OwnedMesh.MeshBuffers[i];
 
 			if (buf.Mat.isTransparent() == (this.scene.getCurrentRenderMode() == CL3D.Scene.RENDER_MODE_TRANSPARENT)) {
-				if (this.ReceivesStaticShadows || !buf.Mat.Lighting)
+				if (this.ReceivesStaticShadows || !buf.Mat.Lighting) {
 					renderer.quicklyEnableShadowMap(false);
+				}
 
 				renderer.setMaterial(buf.Mat);
 				renderer.drawMeshBuffer(buf);
@@ -127,16 +129,18 @@ export class MeshSceneNode extends CL3D.SceneNode {
 		}
 
 		// reset shadow map to previous setting
-		if (bShadowMapEnabled)
+		if (bShadowMapEnabled) {
 			renderer.quicklyEnableShadowMap(true);
+		}
 	}
 
 	/**
 	 * @public
 	 */
 	getMaterialCount() {
-		if (this.OwnedMesh)
+		if (this.OwnedMesh) {
 			return this.OwnedMesh.MeshBuffers.length;
+		}
 
 		return 0;
 	}
@@ -161,15 +165,17 @@ export class MeshSceneNode extends CL3D.SceneNode {
 		var c = new CL3D.MeshSceneNode();
 		this.cloneMembers(c, newparent, oldNodeId, newNodeId);
 
-		if (this.OwnedMesh)
+		if (this.OwnedMesh) {
 			c.OwnedMesh = this.OwnedMesh.createClone();
-		//c.OwnedMesh = this.OwnedMesh;
+		}
+		// c.OwnedMesh = this.OwnedMesh;
 		c.ReadonlyMaterials = this.ReadonlyMaterials;
 		c.DoesCollision = this.DoesCollision;
 
-		if (this.Box)
+		if (this.Box) {
 			c.Box = this.Box.clone();
+		}
 
 		return c;
 	}
-};
+}
